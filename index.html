@@ -21,6 +21,7 @@
   --c-sports: #26c281;
   --c-startup: #ff4fa3;
   --c-koshien: #c8860d;
+  --c-intl: #4b3f8f;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -41,6 +42,7 @@
     --c-sports: #5be0a6;
     --c-startup: #ff85c2;
     --c-koshien: #e8b34c;
+    --c-intl: #a89cf0;
   }
 }
 :root[data-theme="dark"] {
@@ -60,6 +62,7 @@
   --c-sports: #5be0a6;
   --c-startup: #ff85c2;
   --c-koshien: #e8b34c;
+  --c-intl: #a89cf0;
 }
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -142,12 +145,12 @@ body {
 .track {
   display: flex;
   height: 100%;
-  width: 800%;
+  width: 900%;
   transition: transform .32s cubic-bezier(.22,.61,.36,1);
   will-change: transform;
 }
 .panel {
-  width: 12.5%;
+  width: 11.1111%;
   height: 100%;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
@@ -227,8 +230,9 @@ body {
       <button class="tab" id="tab-scitech" style="--tab-color:var(--c-scitech)" onclick="goTo(3)"><span class="dot"></span>科学/テック</button>
       <button class="tab" id="tab-business" style="--tab-color:var(--c-business)" onclick="goTo(4)"><span class="dot"></span>ビジネス</button>
       <button class="tab" id="tab-startup" style="--tab-color:var(--c-startup)" onclick="goTo(5)"><span class="dot"></span>スタートアップ</button>
-      <button class="tab" id="tab-koshien" style="--tab-color:var(--c-koshien)" onclick="goTo(6)"><span class="dot"></span>高校野球【埼玉】</button>
+      <button class="tab" id="tab-intl" style="--tab-color:var(--c-intl)" onclick="goTo(6)"><span class="dot"></span>海外</button>
       <button class="tab" id="tab-sports" style="--tab-color:var(--c-sports)" onclick="goTo(7)"><span class="dot"></span>芸能/スポーツ</button>
+      <button class="tab" id="tab-koshien" style="--tab-color:var(--c-koshien)" onclick="goTo(8)"><span class="dot"></span>高校野球【埼玉】</button>
     </div>
   </div>
 
@@ -263,7 +267,7 @@ body {
 
         <div class="closing">
           <span class="label serif">編集後記</span>
-          東海地方の記録的な大雨と、日銀の利上げ観測という「天気」と「お金」の大きな動きが重なった一日でした。タブまたはスワイプで8つのジャンルを読み進められます。良い一日を。
+          東海地方の記録的な大雨と、日銀の利上げ観測という「天気」と「お金」の大きな動きが重なった一日でした。タブまたはスワイプで9つのジャンルを読み進められます。良い一日を。
         </div>
         <div class="colophon">AIが検索結果をもとに要約・編集しています。詳細は各記事の出典リンクでご確認ください。<br>毎朝5時発行・次号は明日<br><a href="archive.html" style="color:inherit">過去の紙面はこちら</a></div>
       </section>
@@ -404,30 +408,30 @@ body {
         </article>
       </section>
 
-      <section class="panel" id="panel-koshien" style="--cat-color:var(--c-koshien)">
-        <div class="panel-head"><span class="chip"></span><h2 class="serif">高校野球【埼玉】</h2></div>
-        <p class="panel-sub">秋季大会 地区予選2件</p>
+      <section class="panel" id="panel-intl" style="--cat-color:var(--c-intl)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">海外</h2></div>
+        <p class="panel-sub">国際ニュース2件</p>
 
         <article class="story">
           <span class="kicker">01</span>
-          <h3>秋季埼玉県大会、地区予選が各地で開幕</h3>
-          <p class="lead">来春の選抜大会<span class="note">（＝センバツ。春に開催される全国大会で、秋の成績をもとに出場校が選ばれる）</span>につながる秋季埼玉県大会の地区予選が9月8日、各地区で1回戦を実施。東部では春日部共栄が独協埼玉に11対0（5回コールド）で勝利、南部では浦和実が大宮北に10対3（8回コールド）で勝利するなど、各地区で強豪校が初戦を突破した。</p>
+          <h3>米ロ首脳が電話会談、ウクライナ情勢を協議</h3>
+          <p class="lead">トランプ米大統領とプーチン露大統領が9月8日に電話会談を行い、ウクライナ情勢について協議した。ロシアのウシャコフ大統領補佐官が会談の実施を明らかにしたが、詳細な内容は公表されていない。</p>
           <div class="context">
             <span class="context-label">📎 知っておきたい背景</span>
-            <p>この地区予選を勝ち上がったチームが、9月16日抽選・9月25日開幕の県大会本戦に進む。県大会で上位に入ると、群馬で行われる関東大会への出場権も懸かっており、来春のセンバツ出場校選びにも直結する重要な大会だ。</p>
+            <p>両首脳の電話会談はこれまでも断続的に行われてきたが、停戦に向けた具体的な進展はまだ乏しい。首脳間の対話が続いていること自体は、外交的な解決の糸口を探る動きが途切れていないことを示している。</p>
           </div>
-          <div class="meta"><a href="https://www.hb-nippon.com/articles/16993" target="_blank" rel="noopener">高校野球ドットコム</a></div>
+          <div class="meta"><a href="https://www.jiji.com/jc/article?k=2026090801122&g=flash&m=rss" target="_blank" rel="noopener">時事ドットコム</a></div>
         </article>
 
         <article class="story">
           <span class="kicker">02</span>
-          <h3>西部・北部地区でもコールド勝ちが続出</h3>
-          <p class="lead">西部地区では聖望学園が鶴ケ島清風に26対0（5回コールド）、北部地区では深谷商が寄居城北に13対0（5回コールド）で快勝するなど、初戦から大差のつく試合が相次いだ。9日は各地区で代表決定戦などが行われる予定。</p>
+          <h3>フーシ派、サウジの石油施設を攻撃</h3>
+          <p class="lead">イエメンの親イラン武装組織フーシ派<span class="note">（＝イエメンの内戦で政府軍と戦う武装勢力の一つ）</span>は9月8日、サウジアラビア国有石油会社アラムコの施設や空軍基地を弾道ミサイルや無人機で攻撃したとする声明を出した。イエメン政権側は報復の軍事作戦を実施したとしている。</p>
           <div class="context">
             <span class="context-label">📎 知っておきたい背景</span>
-            <p>コールドゲーム<span class="note">（＝点差が大きく開いた場合に、規定の回数で試合を打ち切るルール）</span>が続出する背景には、新チームになって間もない9月時点では、実力差がまだ大きい対戦カードが組まれやすいという事情がある。地区予選が進むにつれて、対戦相手のレベルも上がっていく。</p>
+            <p>サウジアラビアは世界有数の産油国であり、石油施設への攻撃は原油価格の上昇要因になりうる。中東情勢の緊張が続くと、ガソリン価格など日本の暮らしにも間接的に影響が及ぶことがある。</p>
           </div>
-          <div class="meta"><a href="https://www.hb-nippon.com/articles/16993" target="_blank" rel="noopener">高校野球ドットコム</a></div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/articles/50719a2d387625f2a9914f41153ab6a84abb71df" target="_blank" rel="noopener">Yahoo!ニュース（共同通信）</a></div>
         </article>
       </section>
 
@@ -457,13 +461,40 @@ body {
           <div class="meta"><a href="https://news.yahoo.co.jp/articles/645d3417c63bb336714e6b0ac0d0b94253726d52" target="_blank" rel="noopener">Yahoo!ニュース（日刊スポーツ）</a></div>
         </article>
       </section>
+
+      <section class="panel" id="panel-koshien" style="--cat-color:var(--c-koshien)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">高校野球【埼玉】</h2></div>
+        <p class="panel-sub">秋季大会 地区予選2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>秋季埼玉県大会、地区予選が各地で開幕</h3>
+          <p class="lead">来春の選抜大会<span class="note">（＝センバツ。春に開催される全国大会で、秋の成績をもとに出場校が選ばれる）</span>につながる秋季埼玉県大会の地区予選が9月8日、各地区で1回戦を実施。東部では春日部共栄が独協埼玉に11対0（5回コールド）で勝利、南部では浦和実が大宮北に10対3（8回コールド）で勝利するなど、各地区で強豪校が初戦を突破した。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この地区予選を勝ち上がったチームが、9月16日抽選・9月25日開幕の県大会本戦に進む。県大会で上位に入ると、群馬で行われる関東大会への出場権も懸かっており、来春のセンバツ出場校選びにも直結する重要な大会だ。</p>
+          </div>
+          <div class="meta"><a href="https://www.hb-nippon.com/articles/16993" target="_blank" rel="noopener">高校野球ドットコム</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>西部・北部地区でもコールド勝ちが続出</h3>
+          <p class="lead">西部地区では聖望学園が鶴ケ島清風に26対0（5回コールド）、北部地区では深谷商が寄居城北に13対0（5回コールド）で快勝するなど、初戦から大差のつく試合が相次いだ。9日は各地区で代表決定戦などが行われる予定。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>コールドゲーム<span class="note">（＝点差が大きく開いた場合に、規定の回数で試合を打ち切るルール）</span>が続出する背景には、新チームになって間もない9月時点では、実力差がまだ大きい対戦カードが組まれやすいという事情がある。地区予選が進むにつれて、対戦相手のレベルも上がっていく。</p>
+          </div>
+          <div class="meta"><a href="https://www.hb-nippon.com/articles/16993" target="_blank" rel="noopener">高校野球ドットコム</a></div>
+        </article>
+      </section>
     </div>
   </div>
 </div>
 
 <script>
 (function(){
-  var cats = ['top','social','polecon','scitech','business','startup','koshien','sports'];
+  var cats = ['top','social','polecon','scitech','business','startup','intl','sports','koshien'];
   var idx = 0;
   var track = document.getElementById('track');
   var viewport = document.getElementById('viewport');
