@@ -1,30 +1,474 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><title>Yoshi's News バックナンバー</title>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yoshi's News</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap');
-:root{color-scheme:light}
-body{margin:0;background:#e3e1d5;color:#1c2430;font-family:"Zen Kaku Gothic New",-apple-system,sans-serif;line-height:1.7}
-.wrap{max-width:640px;margin:0 auto;padding:40px 20px 60px}
-.sheet{background:#fbfaf4;border:1px solid #d3d1c2;box-shadow:0 2px 4px rgba(0,0,0,.05),0 10px 24px rgba(0,0,0,.06);padding:30px 28px 34px}
-h1{font-family:"Shippori Mincho",serif;font-weight:700;font-size:clamp(28px,6vw,38px);color:#b23a2e;margin:0 0 4px;text-align:center}
-.kicker{text-align:center;font-size:12px;letter-spacing:.14em;color:#8b93a0;margin-bottom:18px}
-ul{list-style:none;margin:0;padding:0;border-top:1px solid #d3d1c2}
-li{border-bottom:1px solid #d3d1c2}
-li a{display:flex;justify-content:space-between;align-items:baseline;padding:14px 4px;text-decoration:none;color:#1c2430}
-li a:hover{color:#b23a2e}
-.issue{font-family:"Shippori Mincho",serif;font-weight:700;font-size:15px}
-.date{font-size:12px;color:#8b93a0}
+@import url('https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Zen+Old+Mincho:wght@600;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap');
+
+:root {
+  --bg: #ffffff;
+  --panel-bg: #ffffff;
+  --card: #ffffff;
+  --card-line: #eef0f3;
+  --ink: #1a1c20;
+  --ink-soft: #5b6068;
+  --ink-faint: #9aa0a8;
+  --shell: #f4f5f7;
+
+  --c-top: #ef3355;
+  --c-social: #00b3a4;
+  --c-polecon: #6d5bf0;
+  --c-scitech: #ff8a1e;
+  --c-business: #0091ff;
+  --c-sports: #26c281;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101114;
+    --panel-bg: #101114;
+    --card: #1a1c20;
+    --card-line: #2a2c31;
+    --ink: #f1f2f4;
+    --ink-soft: #b7bcc4;
+    --ink-faint: #767c86;
+    --shell: #1a1c20;
+    --c-top: #ff6b85;
+    --c-social: #3fd8c9;
+    --c-polecon: #9c8fff;
+    --c-scitech: #ffab5c;
+    --c-business: #4db2ff;
+    --c-sports: #5be0a6;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101114;
+  --panel-bg: #101114;
+  --card: #1a1c20;
+  --card-line: #2a2c31;
+  --ink: #f1f2f4;
+  --ink-soft: #b7bcc4;
+  --ink-faint: #767c86;
+  --shell: #1a1c20;
+  --c-top: #ff6b85;
+  --c-social: #3fd8c9;
+  --c-polecon: #9c8fff;
+  --c-scitech: #ffab5c;
+  --c-business: #4db2ff;
+  --c-sports: #5be0a6;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--shell);
+  color: var(--ink);
+  font-family: "Zen Kaku Gothic New", -apple-system, "Hiragino Kaku Gothic ProN", sans-serif;
+  line-height: 1.7;
+  overscroll-behavior-y: none;
+}
+.serif { font-family: "Zen Old Mincho", "Hiragino Mincho ProN", serif; }
+
+.app {
+  max-width: 680px;
+  margin: 0 auto;
+  background: var(--bg);
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ---- Header ---- */
+.topbar { padding: 20px 20px 0; flex-shrink: 0; }
+.title-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.title-row h1 {
+  font-family: "Mochiy Pop One", "Zen Kaku Gothic New", sans-serif;
+  font-size: 27px; font-weight: 400; margin: 0; letter-spacing: 0.01em;
+  -webkit-text-stroke: 1.4px #2b2013;
+  filter: drop-shadow(1.5px 2.5px 0 rgba(30,22,12,0.18));
+  background-image:
+    radial-gradient(circle at 22% 30%, #211709 0 8px, transparent 9px),
+    radial-gradient(circle at 68% 65%, #3a2b16 0 10px, transparent 11px),
+    radial-gradient(circle at 45% 88%, #241a0c 0 6px, transparent 7px),
+    radial-gradient(circle at 85% 20%, #2e2211 0 7px, transparent 8px),
+    linear-gradient(135deg, #b8a06e, #967c4c 50%, #6f5a35);
+  background-size: 42px 42px, 57px 57px, 31px 31px, 49px 49px, 100% 100%;
+  background-repeat: repeat, repeat, repeat, repeat, no-repeat;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.title-row .date { font-size: 11.5px; color: var(--ink-faint); white-space: nowrap; font-weight: 500; }
+
+.tabs { display: flex; gap: 3px; overflow-x: auto; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  flex: 1 0 auto;
+  appearance: none; border: none; background: none;
+  font-family: inherit; font-size: 12.5px; font-weight: 700;
+  color: var(--ink-faint);
+  padding: 9px 12px 11px;
+  white-space: nowrap;
+  position: relative;
+  cursor: pointer;
+  border-radius: 10px 10px 0 0;
+  transition: color .2s ease, background .2s ease;
+}
+.tab .dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  margin-right: 5px; background: currentColor; opacity: 0.45; vertical-align: middle;
+}
+.tab::after {
+  content: ""; position: absolute; left: 10px; right: 10px; bottom: 0;
+  height: 3px; border-radius: 3px 3px 0 0; background: transparent; transition: background .2s ease;
+}
+.tab.active { color: var(--tab-color); background: color-mix(in srgb, var(--tab-color) 10%, transparent); }
+.tab.active .dot { opacity: 1; }
+.tab.active::after { background: var(--tab-color); }
+
+/* ---- Swipe viewport ---- */
+.viewport { flex: 1; overflow: hidden; position: relative; touch-action: pan-y; }
+.track {
+  display: flex;
+  height: 100%;
+  width: 600%;
+  transition: transform .32s cubic-bezier(.22,.61,.36,1);
+  will-change: transform;
+}
+.panel {
+  width: 16.6667%;
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 20px 56px;
+}
+
+.panel-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.panel-head .chip { width: 8px; height: 26px; border-radius: 4px; background: var(--cat-color); flex-shrink: 0; }
+.panel-head h2 { font-size: 20px; font-weight: 700; margin: 0; letter-spacing: 0.02em; color: var(--cat-color); }
+.panel-sub { font-size: 12px; color: var(--ink-faint); margin: 0 0 18px 18px; }
+
+.story {
+  background: var(--card);
+  border: 1px solid var(--card-line);
+  border-left: 4px solid var(--cat-color);
+  border-radius: 12px;
+  padding: 18px 18px 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(20,20,30,0.05);
+}
+.story .kicker {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: "Zen Old Mincho", serif; font-size: 11.5px; font-weight: 700;
+  color: var(--cat-color); margin-bottom: 9px;
+}
+.story h3 { font-size: 16px; font-weight: 700; line-height: 1.55; margin: 0 0 10px; }
+.story .lead { font-size: 14px; color: var(--ink); margin: 0 0 14px; line-height: 1.85; }
+
+.context {
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 10px;
+  padding: 13px 15px;
+  margin: 0 0 12px;
+}
+.context-label {
+  display: block; font-size: 10.5px; font-weight: 700;
+  color: var(--cat-color); letter-spacing: 0.04em; margin-bottom: 6px;
+}
+.context p { font-size: 13px; color: var(--ink-soft); margin: 0; line-height: 1.8; }
+
+.note { font-size: 11.5px; color: var(--ink-faint); font-weight: 500; }
+
+.meta { font-size: 11px; color: var(--ink-faint); }
+.meta a { color: var(--cat-color); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--cat-color) 40%, transparent); font-weight: 700; }
+
+.closing {
+  margin: 6px 0 0; padding: 16px 18px;
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 12px; font-size: 13px; color: var(--ink-soft); text-align: center;
+}
+.closing .label {
+  display: block; font-family: "Zen Old Mincho", serif; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.2em; color: var(--cat-color); margin-bottom: 8px;
+}
+.colophon { margin: 14px 0 8px; font-size: 10.5px; color: var(--ink-faint); line-height: 1.9; text-align: center; }
+
+@media (max-width: 420px) {
+  .topbar { padding: 16px 14px 0; }
+  .panel { padding: 16px 14px 48px; }
+  .title-row h1 { font-size: 22px; }
+}
 </style>
 </head><body>
-<div class="wrap">
-  <div class="sheet">
-    <div class="kicker">オーナー専属版</div>
-    <h1>Yoshi's News バックナンバー</h1>
-    <ul>
-      <li><a href="2026-09-10.html"><span class="issue">第7号</span><span class="date">2026年9月10日（木）</span></a></li>
-      <li><a href="2026-09-09.html"><span class="issue">第6号</span><span class="date">2026年9月9日（水）</span></a></li>
-      <li><a href="2026-09-08.html"><span class="issue">第3号</span><span class="date">2026年9月8日（火）</span></a></li>
-      <li><a href="2026-09-07.html"><span class="issue">第2号</span><span class="date">2026年9月7日（月）</span></a></li>
-    </ul>
+
+
+<div class="app" id="app">
+
+  <div class="topbar">
+    <div class="title-row">
+      <h1>Yoshi's News</h1>
+      <span class="date">2026年9月10日（木）・第7号</span>
+    </div>
+    <div class="tabs" id="tabs">
+      <button class="tab" id="tab-top" style="--tab-color:var(--c-top)" onclick="goTo(0)"><span class="dot"></span>トップ</button>
+      <button class="tab" id="tab-social" style="--tab-color:var(--c-social)" onclick="goTo(1)"><span class="dot"></span>社会</button>
+      <button class="tab" id="tab-polecon" style="--tab-color:var(--c-polecon)" onclick="goTo(2)"><span class="dot"></span>政治/経済</button>
+      <button class="tab" id="tab-scitech" style="--tab-color:var(--c-scitech)" onclick="goTo(3)"><span class="dot"></span>科学/テック</button>
+      <button class="tab" id="tab-business" style="--tab-color:var(--c-business)" onclick="goTo(4)"><span class="dot"></span>ビジネス</button>
+      <button class="tab" id="tab-sports" style="--tab-color:var(--c-sports)" onclick="goTo(5)"><span class="dot"></span>スポーツ/芸能</button>
+    </div>
+  </div>
+
+  <div class="viewport" id="viewport">
+    <div class="track" id="track">
+
+      <section class="panel" id="panel-top" style="--cat-color:var(--c-top)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">トップニュース</h2></div>
+        <p class="panel-sub">今日いちばん知っておきたい2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 気象</span>
+          <h3>愛知・岐阜の庄内川で「レベル5」氾濫特別警報</h3>
+          <p class="lead">東海地方を襲った猛烈な雨により、愛知・岐阜を流れる庄内川で氾濫の危険が最高レベルに達し、気象庁と国土交通省は9月8日、氾濫特別警報<span class="note">（＝川の氾濫によって命に関わる重大な災害がすでに発生している、またはまさに発生しようとしていることを知らせる最高レベルの警報）</span>を発表した。線状降水帯の影響で名古屋市などにも大雨の危険警報が出され、前日まで伊豆諸島で警戒されていた大雨の中心が東海地方へと移った形だ。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>氾濫特別警報が出されるのは全国でも極めてまれで、発表時にはすでに氾濫が始まっている可能性が高いとされる。同じ前線・低気圧が広い範囲に影響を及ぼしており、川の近くに住む人は警報が出てからでは避難が間に合わないこともあるため、早めの行動が呼びかけられている。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20260908de49093" target="_blank" rel="noopener">NHKニュース</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 経済</span>
+          <h3>日銀、9月会合で利上げ観測強まる — 政策金利1.25%へ</h3>
+          <p class="lead">日銀が9月17〜18日に開く金融政策決定会合で、政策金利<span class="note">（＝中央銀行が銀行同士の短期のお金の貸し借りに使う目安の金利。これが上がると住宅ローンなどの金利も上がりやすい）</span>を0.25%引き上げ、1.25%とする観測が強まっている。植田総裁は「利上げは9月を含め毎回の会合でしっかり議論する」と発言しており、市場でも利上げを織り込む動きが出ている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>これまでの利上げの間隔はおよそ半年に一度のペースだったが、今回実施されれば6月会合からわずか3か月というハイペースになる。物価上昇が続くなかでの判断となり、住宅ローンを変動金利で借りている家庭や、預金の金利にも影響しうる話題だ。</p>
+          </div>
+          <div class="meta"><a href="https://www.bloomberg.com/jp/news/articles/2026-09-03/TKQ5OFT96OSH00" target="_blank" rel="noopener">Bloomberg</a></div>
+        </article>
+
+        <div class="closing">
+          <span class="label serif">編集後記</span>
+          東海地方の記録的な大雨と、日銀の利上げ観測という「天気」と「お金」の大きな動きが重なった一日でした。タブまたはスワイプで6つのジャンルを読み進められます。良い一日を。
+        </div>
+        <div class="colophon">AIが検索結果をもとに要約・編集しています。詳細は各記事の出典リンクでご確認ください。<br>毎朝5時発行・次号は明日<br><a href="archive.html" style="color:inherit">過去の紙面はこちら</a></div>
+      </section>
+
+      <section class="panel" id="panel-social" style="--cat-color:var(--c-social)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">社会</h2></div>
+        <p class="panel-sub">くらしに関わるニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>JR東日本、Suicaペンギンの後継キャラ3案を発表</h3>
+          <p class="lead">JR東日本は9月8日、Suicaのマスコットとして親しまれてきたペンギンの後継キャラクター候補3案を発表した。モチーフは「リス」「ウサギ」「ふしぎな動物」の3種類で、同日からインターネット投票を開始。結果はSuica誕生25周年にあたる11月18日に発表される。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>現在のペンギンは2026年度末で「卒業」し、新キャラクターが2027年3月31日から後を継ぐ。投票は1人1回、9月23日23時59分まで受け付けられる。長年親しまれたキャラクターの世代交代とあって、SNS上では惜しむ声も上がるなど話題になっている。</p>
+          </div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/articles/ef4ff1525f36e637a2a8ba89a3f812d0cf3367ee" target="_blank" rel="noopener">Yahoo!ニュース（日テレNEWS NNN）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>制限速度50キロ超過の事故で少年を逮捕</h3>
+          <p class="lead">山口県岩国市で、制限速度を時速50キロ以上超過するスピードで交差点に進入して事故を起こし、2人に重傷を負わせたとして、少年が危険運転致傷<span class="note">（＝著しく危険な運転で人にケガをさせる罪。ふつうの交通事故より重く扱われる）</span>の疑いで逮捕された。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>危険運転致傷罪は、単なるスピード違反による事故よりも重い罪に問われる。無謀な運転による重大事故は後を絶たず、免許を取ったばかりの若い世代への安全運転教育の重要性が改めて指摘されている。</p>
+          </div>
+          <div class="meta"><a href="https://news.livedoor.com/topics/detail/32272015/" target="_blank" rel="noopener">livedoorニュース</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-polecon" style="--cat-color:var(--c-polecon)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">政治／経済</h2></div>
+        <p class="panel-sub">政治・経済の動き2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 政治</span>
+          <h3>高市首相、内閣改造・党役員人事は9月中下旬に</h3>
+          <p class="lead">高市早苗首相は、内閣改造<span class="note">（＝首相が大臣の顔ぶれを入れ替えること）</span>と自民党の役員人事を、9月中旬から下旬にかけて行う方向で調整している。鈴木俊一幹事長の続投の可否や、日本維新の会からの入閣による連立基盤の強化などが焦点となっている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>消費税の軽減などを盛り込んだ税制改正の大綱がまとまった直後というタイミングでの人事となる見通しで、その後10月上旬には臨時国会が召集される予定。新しい体制がどのような政策を優先するかが今後の焦点になる。</p>
+          </div>
+          <div class="meta"><a href="https://www.nikkei.com/article/DGXZQOUA1984N0Z10C26A8000000/" target="_blank" rel="noopener">日本経済新聞</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 政治</span>
+          <h3>沖縄県知事選、9月13日投開票 — 事実上の一騎打ちに</h3>
+          <p class="lead">任期満了に伴う沖縄県知事選挙が8月27日に告示され、過去最多となる6人が立候補した。米軍普天間飛行場の名護市辺野古移設を容認する新人・古謝玄太氏（42）と、移設に反対する現職・玉城デニー氏（66）による事実上の一騎打ちとなっており、9月13日に投開票が行われる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>米軍基地の移設問題に加えて、物価高騰対策も大きな争点となっている。沖縄の民意がどちらに傾くかは、国と地方の関係や日米関係にも影響しうるとして全国的にも注目されている選挙だ。</p>
+          </div>
+          <div class="meta"><a href="https://www.nikkei.com/article/DGXZQOCC271490X20C26A8000000/" target="_blank" rel="noopener">日本経済新聞</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-scitech" style="--cat-color:var(--c-scitech)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">科学／テック</h2></div>
+        <p class="panel-sub">研究・技術のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>分子研と日立、新方式の量子コンピューターが稼働</h3>
+          <p class="lead">分子科学研究所と日立製作所などの研究グループが、「中性原子方式」と呼ばれる新しい方式の量子コンピューター<span class="note">（＝ふつうのコンピューターとは違うしくみで、特定の種類の計算を非常に高速にこなせるとされる次世代のコンピューター）</span>の運用を始めたと発表した。富士通は量子コンピューター向けの基本ソフト（OS）開発にこの技術を活用する。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>量子コンピューター開発の競争は近年、量子ビットの数を増やす「量」の競争から、計算ミスを減らして精度を高める「質」の競争へと軸足が移りつつある。国産技術の選択肢が増えることは、将来の創薬や材料開発への応用の幅を広げると期待されている。</p>
+          </div>
+          <div class="meta"><a href="https://www.nikkei.com/article/DGXZQOSG225WL0S6A720C2000000/" target="_blank" rel="noopener">日本経済新聞</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>Google、高速AIモデル「Gemini 3.8 Flash」を発表</h3>
+          <p class="lead">Googleは、軽量・高速なAIモデル「Gemini 3.8 Flash」と、サイバーセキュリティに特化した「Gemini 3.8 Flash Cyber」を発表した。前バージョンからわずか3週間というハイペースでの更新で、価格や速度はそのままに、プログラミングや複数段階の推論<span class="note">（＝いくつもの手がかりを順番に組み合わせて結論を導く、AIの「考える」処理のこと）</span>の性能が大きく向上したという。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>AI各社による新モデルの発表競争は数週間おきという異例の速さで続いている。性能が上がる一方で低価格が維持されている点は、企業がAIを業務に取り入れるハードルを下げる要因にもなっている。</p>
+          </div>
+          <div class="meta"><a href="https://blog.google/intl/ja-jp/company-news/technology/gemini-38-flash-38-flash-cyber/" target="_blank" rel="noopener">Google 公式ブログ</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-business" style="--cat-color:var(--c-business)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ビジネス</h2></div>
+        <p class="panel-sub">企業・産業のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>Apple、9月10日未明に新製品発表会 — 初の折りたたみiPhoneへ期待</h3>
+          <p class="lead">Appleは日本時間9月10日午前2時から新製品発表イベントを開催する。Apple初となる折りたたみ式iPhone（通称「iPhone Ultra」）や、「iPhone 18 Pro」シリーズの披露が有力視されている。折りたたみモデルは日本国内で35万円を超える価格になるとの見方もある。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>折りたたみスマートフォン自体はGalaxyなど他社製品ではすでに一般的だが、Appleにとっては数年ぶりとなる新しい「型」の製品になる。価格や画面の折り目の目立ちにくさなど、実際に披露される仕様に注目が集まっている。</p>
+          </div>
+          <div class="meta"><a href="https://www.nikkei.com/article/DGXZQOGN26BT20W6A820C2000000/" target="_blank" rel="noopener">日本経済新聞</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>トヨタ、2028年から「レベル2++」自動運転を量産車に投入</h3>
+          <p class="lead">トヨタ自動車は、AIが周囲の状況認識から判断、車両操作までを一体的に担う「E2E」<span class="note">（＝End to Endの略。人が細かくルールを決めるのではなく、AIが状況を丸ごと学習して判断する技術のこと）</span>技術を使った高度運転支援「レベル2++」を、2028年から量産車に導入する方針を明らかにした。あわせて商用シャトルでは完全自動運転にあたる「レベル4」の実現も目指すという。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>「レベル2++」は法律上の正式な自動運転レベルではなく、運転の責任はあくまでドライバーにあるが、AIが担う支援の範囲は従来より大きく広がる。安全のための「ルール」とAIの「柔軟な判断」を組み合わせる点が特徴で、実用化が進めば身近な車の運転支援が大きく変わる可能性がある。</p>
+          </div>
+          <div class="meta"><a href="https://car.watch.impress.co.jp/docs/news/2136234.html" target="_blank" rel="noopener">Car Watch</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-sports" style="--cat-color:var(--c-sports)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">スポーツ／芸能</h2></div>
+        <p class="panel-sub">厳選2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>阪神とソフトバンク、両リーグで優勝マジック点灯</h3>
+          <p class="lead">プロ野球セ・リーグでは阪神タイガースに優勝マジックナンバー<span class="note">（＝リーグ優勝するまでに、あと何勝すればよいかを示す数字）</span>「23」が、パ・リーグでは福岡ソフトバンクホークスに「14」がそれぞれ点灯している。シミュレーションでは、優勝決定日はパ・リーグが9月23日ごろ、セ・リーグが9月30日ごろになると予想されている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>マジックナンバーは、自チームの残り勝ち数と2位以下のチームの残り試合数などから算出される優勝までの目安。数字が小さくなるほど優勝に近づいていることを意味し、シーズン終盤の風物詩として毎年注目される。</p>
+          </div>
+          <div class="meta"><a href="https://www.baseballchannel.jp/npb/286914/" target="_blank" rel="noopener">ベースボールチャンネル</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>声優・小田切ゆいさん、引退を発表</h3>
+          <p class="lead">声優の小田切ゆいさんが、所属事務所「81プロデュース」からの退所と、声優業からの引退を発表した。「リアデイルの大地にて」や「神様に拾われた男」などの作品でキャラクターを演じてきた、芸歴およそ10年のベテランだった。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>本人はコメントで「この決断に至るまでたくさん悩み、考え抜いた」と心境を明かしており、今後は声優以外の道を歩む考えを示している。長く親しまれてきた声優の引退は、出演作品のファンにとっても大きな話題となっている。</p>
+          </div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/articles/645d3417c63bb336714e6b0ac0d0b94253726d52" target="_blank" rel="noopener">Yahoo!ニュース（日刊スポーツ）</a></div>
+        </article>
+      </section>
+
+    </div>
   </div>
 </div>
+
+<script>
+(function(){
+  var cats = ['top','social','polecon','scitech','business','sports'];
+  var idx = 0;
+  var track = document.getElementById('track');
+  var viewport = document.getElementById('viewport');
+  var vw = viewport.clientWidth;
+
+  function setActive(i){
+    cats.forEach(function(c, j){
+      document.getElementById('tab-' + c).classList.toggle('active', j === i);
+    });
+    var activeTab = document.getElementById('tab-' + cats[i]);
+    if (activeTab && activeTab.scrollIntoView) activeTab.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+  }
+
+  function settle(i, animate){
+    idx = Math.max(0, Math.min(cats.length - 1, i));
+    track.style.transition = animate ? 'transform .32s cubic-bezier(.22,.61,.36,1)' : 'none';
+    track.style.transform = 'translateX(' + (-idx * vw) + 'px)';
+    setActive(idx);
+  }
+
+  window.goTo = function(i){ settle(i, true); };
+
+  window.addEventListener('resize', function(){
+    vw = viewport.clientWidth;
+    settle(idx, false);
+  });
+
+  var dragging = false, decided = null, sx = 0, sy = 0, dx = 0;
+  viewport.addEventListener('touchstart', function(e){
+    dragging = true; decided = null;
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY; dx = 0;
+    track.style.transition = 'none';
+  }, { passive: true });
+
+  viewport.addEventListener('touchmove', function(e){
+    if (!dragging) return;
+    var cx = e.touches[0].clientX, cy = e.touches[0].clientY;
+    var mdx = cx - sx, mdy = cy - sy;
+    if (decided === null) {
+      if (Math.abs(mdx) > 8 || Math.abs(mdy) > 8) {
+        decided = Math.abs(mdx) > Math.abs(mdy) ? 'x' : 'y';
+      }
+    }
+    if (decided === 'x') {
+      e.preventDefault();
+      dx = mdx;
+      var atStart = idx === 0 && dx > 0;
+      var atEnd = idx === cats.length - 1 && dx < 0;
+      var eased = (atStart || atEnd) ? dx * 0.35 : dx;
+      track.style.transform = 'translateX(' + (-idx * vw + eased) + 'px)';
+    }
+  }, { passive: false });
+
+  viewport.addEventListener('touchend', function(){
+    if (!dragging) return;
+    dragging = false;
+    if (decided === 'x') {
+      var threshold = vw * 0.18;
+      if (dx <= -threshold) settle(idx + 1, true);
+      else if (dx >= threshold) settle(idx - 1, true);
+      else settle(idx, true);
+    }
+    decided = null; dx = 0;
+  });
+
+  settle(0, false);
+})();
+</script>
+
 </body></html>
