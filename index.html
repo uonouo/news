@@ -22,6 +22,7 @@
   --c-startup: #ff4fa3;
   --c-koshien: #c8860d;
   --c-intl: #4b3f8f;
+  --c-gadget: #00bcd4;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -43,6 +44,7 @@
     --c-startup: #ff85c2;
     --c-koshien: #e8b34c;
     --c-intl: #a89cf0;
+    --c-gadget: #4dd8ea;
   }
 }
 :root[data-theme="dark"] {
@@ -63,6 +65,7 @@
   --c-startup: #ff85c2;
   --c-koshien: #e8b34c;
   --c-intl: #a89cf0;
+  --c-gadget: #4dd8ea;
 }
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -114,43 +117,44 @@ body {
 }
 .title-row .date { font-size: 11.5px; color: var(--ink-faint); white-space: nowrap; font-weight: 500; margin-top: 2px; }
 
-.tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px 3px; }
+.tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px 4px; }
 .tab {
-  appearance: none; border: none; background: none;
+  appearance: none; background: var(--card);
   font-family: inherit; font-size: 10.5px; font-weight: 700;
   color: var(--ink-faint);
-  padding: 7px 4px 9px;
+  border: 1.5px solid var(--card-line);
+  padding: 7px 4px 8px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   position: relative;
   cursor: pointer;
-  border-radius: 10px 10px 0 0;
-  transition: color .2s ease, background .2s ease;
+  border-radius: 10px;
+  transition: color .2s ease, background .2s ease, border-color .2s ease;
 }
 .tab .dot {
   display: inline-block; width: 6px; height: 6px; border-radius: 50%;
   margin-right: 5px; background: currentColor; opacity: 0.45; vertical-align: middle;
 }
-.tab::after {
-  content: ""; position: absolute; left: 10px; right: 10px; bottom: 0;
-  height: 3px; border-radius: 3px 3px 0 0; background: transparent; transition: background .2s ease;
+.tab.active {
+  color: var(--tab-color);
+  border-color: var(--tab-color);
+  background: color-mix(in srgb, var(--tab-color) 14%, var(--card));
+  font-weight: 900;
 }
-.tab.active { color: var(--tab-color); background: color-mix(in srgb, var(--tab-color) 10%, transparent); }
 .tab.active .dot { opacity: 1; }
-.tab.active::after { background: var(--tab-color); }
 
 /* ---- Swipe viewport ---- */
 .viewport { flex: 1; overflow: hidden; position: relative; touch-action: pan-y; }
 .track {
   display: flex;
   height: 100%;
-  width: 900%;
+  width: 1000%;
   transition: transform .32s cubic-bezier(.22,.61,.36,1);
   will-change: transform;
 }
 .panel {
-  width: 11.1111%;
+  width: 10%;
   height: 100%;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
@@ -230,9 +234,10 @@ body {
       <button class="tab" id="tab-scitech" style="--tab-color:var(--c-scitech)" onclick="goTo(3)"><span class="dot"></span>科学/テック</button>
       <button class="tab" id="tab-business" style="--tab-color:var(--c-business)" onclick="goTo(4)"><span class="dot"></span>ビジネス</button>
       <button class="tab" id="tab-startup" style="--tab-color:var(--c-startup)" onclick="goTo(5)"><span class="dot"></span>スタートアップ</button>
-      <button class="tab" id="tab-intl" style="--tab-color:var(--c-intl)" onclick="goTo(6)"><span class="dot"></span>海外</button>
-      <button class="tab" id="tab-sports" style="--tab-color:var(--c-sports)" onclick="goTo(7)"><span class="dot"></span>芸能/スポーツ</button>
-      <button class="tab" id="tab-koshien" style="--tab-color:var(--c-koshien)" onclick="goTo(8)"><span class="dot"></span>高校野球【埼玉】</button>
+      <button class="tab" id="tab-gadget" style="--tab-color:var(--c-gadget)" onclick="goTo(6)"><span class="dot"></span>ガジェット</button>
+      <button class="tab" id="tab-intl" style="--tab-color:var(--c-intl)" onclick="goTo(7)"><span class="dot"></span>海外</button>
+      <button class="tab" id="tab-sports" style="--tab-color:var(--c-sports)" onclick="goTo(8)"><span class="dot"></span>芸能/スポーツ</button>
+      <button class="tab" id="tab-koshien" style="--tab-color:var(--c-koshien)" onclick="goTo(9)"><span class="dot"></span>高校野球【埼玉】</button>
     </div>
   </div>
 
@@ -267,7 +272,7 @@ body {
 
         <div class="closing">
           <span class="label serif">編集後記</span>
-          東海地方の記録的な大雨と、日銀の利上げ観測という「天気」と「お金」の大きな動きが重なった一日でした。タブまたはスワイプで9つのジャンルを読み進められます。良い一日を。
+          東海地方の記録的な大雨と、日銀の利上げ観測という「天気」と「お金」の大きな動きが重なった一日でした。タブまたはスワイプで10のジャンルを読み進められます。良い一日を。
         </div>
         <div class="colophon">AIが検索結果をもとに要約・編集しています。詳細は各記事の出典リンクでご確認ください。<br>毎朝5時発行・次号は明日<br><a href="archive.html" style="color:inherit">過去の紙面はこちら</a></div>
       </section>
@@ -408,6 +413,33 @@ body {
         </article>
       </section>
 
+      <section class="panel" id="panel-gadget" style="--cat-color:var(--c-gadget)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ガジェット</h2></div>
+        <p class="panel-sub">新製品・展示会2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>世界最大級の見本市「IFA 2026」がベルリンで閉幕</h3>
+          <p class="lead">家電・IT分野で世界最大級の見本市「IFAベルリン2026」が9月4日から8日まで開催され、閉幕した。今年のテーマは「The Future is Now（未来はもう始まっている）」で、AIやロボット、スマートホーム技術が実際の暮らしにどう溶け込むかを製品・サービスで示す展示が中心となった。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>家電量販店に並ぶ前の最新トレンドを一足先に見られる場として、IFAは毎年注目されている。今年は自動車メーカーのフォルクスワーゲンが初めて本格出展するなど、家電・自動車・住まいの垣根を越えた「つながる暮らし」がより意識された展示会になった。</p>
+          </div>
+          <div class="meta"><a href="https://corriente.jp/ifa2026-kickoff-event/" target="_blank" rel="noopener">corriente.jp</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>Belkin、全固体電池搭載の急速充電器を披露</h3>
+          <p class="lead">周辺機器メーカーのBelkinがIFA 2026で、全固体電池<span class="note">（＝液体を使わない、より安全で長寿命とされる新しいタイプの電池）</span>技術を採用した充電器「UltraCharge Pro」や、スピーカーの新製品「SoundForm」シリーズを披露した。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>全固体電池はスマートフォンや電気自動車向けの次世代電池としても期待されている技術。身近な充電器のようなガジェットにいち早く採用されることで、実用化に向けた技術の成熟度を測る目安にもなっている。</p>
+          </div>
+          <div class="meta"><a href="https://prtimes.jp/main/html/rd/p/000000343.000017218.html" target="_blank" rel="noopener">PR TIMES</a></div>
+        </article>
+      </section>
+
       <section class="panel" id="panel-intl" style="--cat-color:var(--c-intl)">
         <div class="panel-head"><span class="chip"></span><h2 class="serif">海外</h2></div>
         <p class="panel-sub">国際ニュース2件</p>
@@ -494,7 +526,7 @@ body {
 
 <script>
 (function(){
-  var cats = ['top','social','polecon','scitech','business','startup','intl','sports','koshien'];
+  var cats = ['top','social','polecon','scitech','business','startup','gadget','intl','sports','koshien'];
   var idx = 0;
   var track = document.getElementById('track');
   var viewport = document.getElementById('viewport');
