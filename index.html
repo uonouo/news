@@ -1,7 +1,7 @@
 <!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Yoshi's News</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Zen+Old+Mincho:wght@600;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Zen+Old+Mincho:wght@600;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap');
 
 :root {
   --bg: #ffffff;
@@ -19,6 +19,8 @@
   --c-scitech: #ff8a1e;
   --c-business: #0091ff;
   --c-sports: #26c281;
+  --c-startup: #ff4fa3;
+  --c-koshien: #c8860d;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -37,6 +39,8 @@
     --c-scitech: #ffab5c;
     --c-business: #4db2ff;
     --c-sports: #5be0a6;
+    --c-startup: #ff85c2;
+    --c-koshien: #e8b34c;
   }
 }
 :root[data-theme="dark"] {
@@ -54,6 +58,8 @@
   --c-scitech: #ffab5c;
   --c-business: #4db2ff;
   --c-sports: #5be0a6;
+  --c-startup: #ff85c2;
+  --c-koshien: #e8b34c;
 }
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -89,9 +95,9 @@ body {
   margin-bottom: 14px;
 }
 .title-row h1 {
-  font-family: "Mochiy Pop One", "Zen Kaku Gothic New", sans-serif;
-  font-size: 27px; font-weight: 400; margin: 0; letter-spacing: 0.01em;
-  -webkit-text-stroke: 1.4px #2b2013;
+  font-family: "Baloo 2", "Zen Kaku Gothic New", sans-serif;
+  font-size: 30px; font-weight: 800; margin: 0; letter-spacing: 0.01em;
+  -webkit-text-stroke: 2px #2b2013;
   filter: drop-shadow(1.5px 2.5px 0 rgba(30,22,12,0.18));
   background-image:
     radial-gradient(circle at 22% 30%, #211709 0 8px, transparent 9px),
@@ -105,15 +111,15 @@ body {
 }
 .title-row .date { font-size: 11.5px; color: var(--ink-faint); white-space: nowrap; font-weight: 500; }
 
-.tabs { display: flex; gap: 3px; overflow-x: auto; scrollbar-width: none; }
-.tabs::-webkit-scrollbar { display: none; }
+.tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px 3px; }
 .tab {
-  flex: 1 0 auto;
   appearance: none; border: none; background: none;
-  font-family: inherit; font-size: 12.5px; font-weight: 700;
+  font-family: inherit; font-size: 10.5px; font-weight: 700;
   color: var(--ink-faint);
-  padding: 9px 12px 11px;
+  padding: 7px 4px 9px;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   position: relative;
   cursor: pointer;
   border-radius: 10px 10px 0 0;
@@ -136,12 +142,12 @@ body {
 .track {
   display: flex;
   height: 100%;
-  width: 600%;
+  width: 800%;
   transition: transform .32s cubic-bezier(.22,.61,.36,1);
   will-change: transform;
 }
 .panel {
-  width: 16.6667%;
+  width: 12.5%;
   height: 100%;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
@@ -220,7 +226,9 @@ body {
       <button class="tab" id="tab-polecon" style="--tab-color:var(--c-polecon)" onclick="goTo(2)"><span class="dot"></span>政治/経済</button>
       <button class="tab" id="tab-scitech" style="--tab-color:var(--c-scitech)" onclick="goTo(3)"><span class="dot"></span>科学/テック</button>
       <button class="tab" id="tab-business" style="--tab-color:var(--c-business)" onclick="goTo(4)"><span class="dot"></span>ビジネス</button>
-      <button class="tab" id="tab-sports" style="--tab-color:var(--c-sports)" onclick="goTo(5)"><span class="dot"></span>スポーツ/芸能</button>
+      <button class="tab" id="tab-startup" style="--tab-color:var(--c-startup)" onclick="goTo(5)"><span class="dot"></span>スタートアップ</button>
+      <button class="tab" id="tab-koshien" style="--tab-color:var(--c-koshien)" onclick="goTo(6)"><span class="dot"></span>高校野球【埼玉】</button>
+      <button class="tab" id="tab-sports" style="--tab-color:var(--c-sports)" onclick="goTo(7)"><span class="dot"></span>芸能/スポーツ</button>
     </div>
   </div>
 
@@ -255,7 +263,7 @@ body {
 
         <div class="closing">
           <span class="label serif">編集後記</span>
-          東海地方の記録的な大雨と、日銀の利上げ観測という「天気」と「お金」の大きな動きが重なった一日でした。タブまたはスワイプで6つのジャンルを読み進められます。良い一日を。
+          東海地方の記録的な大雨と、日銀の利上げ観測という「天気」と「お金」の大きな動きが重なった一日でした。タブまたはスワイプで8つのジャンルを読み進められます。良い一日を。
         </div>
         <div class="colophon">AIが検索結果をもとに要約・編集しています。詳細は各記事の出典リンクでご確認ください。<br>毎朝5時発行・次号は明日<br><a href="archive.html" style="color:inherit">過去の紙面はこちら</a></div>
       </section>
@@ -341,6 +349,7 @@ body {
         </article>
       </section>
 
+
       <section class="panel" id="panel-business" style="--cat-color:var(--c-business)">
         <div class="panel-head"><span class="chip"></span><h2 class="serif">ビジネス</h2></div>
         <p class="panel-sub">企業・産業のニュース2件</p>
@@ -368,8 +377,62 @@ body {
         </article>
       </section>
 
+      <section class="panel" id="panel-startup" style="--cat-color:var(--c-startup)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">スタートアップ</h2></div>
+        <p class="panel-sub">資金調達・注目トピック2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>メタジェンセラピューティクス、大学ファンドから1.9億円調達</h3>
+          <p class="lead">創薬スタートアップのメタジェンセラピューティクスが、シリーズBエクステンションラウンド<span class="note">（＝一度終えた資金調達ラウンドを、追加で同じ条件のまま延長して行う調達のこと）</span>で大学ファンドから1.9億円を調達したと発表した。累計調達額は68億円以上に達した。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>創薬（新しい薬を開発すること）は研究期間が長く、利益が出るまでに莫大な資金が必要になる分野。大学発の研究成果をもとにしたスタートアップに、大学ファンドが継続的に出資する流れは、日本の研究成果を実用化につなげる仕組みの一つとして注目されている。</p>
+          </div>
+          <div class="meta"><a href="https://www.nikkei.com/article/DGXZQOUC1326O0T10C25A9000000/" target="_blank" rel="noopener">日本経済新聞</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>スタートアップのM&A、前年同期比37%増</h3>
+          <p class="lead">2026年上半期、スタートアップが他社に買収される形の「M&A」<span class="note">（＝企業の合併・買収のこと。ここでは大企業がスタートアップを買い取ること）</span>件数が前年同期比37%増加した。一方で、上位20社による資金調達額が調達総額全体の31%を占めるなど、有望な企業に投資が集中する傾向も強まっている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>スタートアップが成長した後の「出口」は、これまで株式上場（IPO）が主流だったが、大企業に買収されるM&Aという道も広がりつつある。投資家にとっては資金を回収する手段が増える一方、有望株への資金の集中は「格差」が広がっているとも言える。</p>
+          </div>
+          <div class="meta"><a href="https://initial.inc/articles/japan-startup-finance-2026h1" target="_blank" rel="noopener">スピーダ スタートアップ情報リサーチ</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-koshien" style="--cat-color:var(--c-koshien)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">高校野球【埼玉】</h2></div>
+        <p class="panel-sub">秋季大会 地区予選2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>秋季埼玉県大会、地区予選が各地で開幕</h3>
+          <p class="lead">来春の選抜大会<span class="note">（＝センバツ。春に開催される全国大会で、秋の成績をもとに出場校が選ばれる）</span>につながる秋季埼玉県大会の地区予選が9月8日、各地区で1回戦を実施。東部では春日部共栄が独協埼玉に11対0（5回コールド）で勝利、南部では浦和実が大宮北に10対3（8回コールド）で勝利するなど、各地区で強豪校が初戦を突破した。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この地区予選を勝ち上がったチームが、9月16日抽選・9月25日開幕の県大会本戦に進む。県大会で上位に入ると、群馬で行われる関東大会への出場権も懸かっており、来春のセンバツ出場校選びにも直結する重要な大会だ。</p>
+          </div>
+          <div class="meta"><a href="https://www.hb-nippon.com/articles/16993" target="_blank" rel="noopener">高校野球ドットコム</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>西部・北部地区でもコールド勝ちが続出</h3>
+          <p class="lead">西部地区では聖望学園が鶴ケ島清風に26対0（5回コールド）、北部地区では深谷商が寄居城北に13対0（5回コールド）で快勝するなど、初戦から大差のつく試合が相次いだ。9日は各地区で代表決定戦などが行われる予定。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>コールドゲーム<span class="note">（＝点差が大きく開いた場合に、規定の回数で試合を打ち切るルール）</span>が続出する背景には、新チームになって間もない9月時点では、実力差がまだ大きい対戦カードが組まれやすいという事情がある。地区予選が進むにつれて、対戦相手のレベルも上がっていく。</p>
+          </div>
+          <div class="meta"><a href="https://www.hb-nippon.com/articles/16993" target="_blank" rel="noopener">高校野球ドットコム</a></div>
+        </article>
+      </section>
+
       <section class="panel" id="panel-sports" style="--cat-color:var(--c-sports)">
-        <div class="panel-head"><span class="chip"></span><h2 class="serif">スポーツ／芸能</h2></div>
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">芸能／スポーツ</h2></div>
         <p class="panel-sub">厳選2件</p>
 
         <article class="story">
@@ -394,14 +457,13 @@ body {
           <div class="meta"><a href="https://news.yahoo.co.jp/articles/645d3417c63bb336714e6b0ac0d0b94253726d52" target="_blank" rel="noopener">Yahoo!ニュース（日刊スポーツ）</a></div>
         </article>
       </section>
-
     </div>
   </div>
 </div>
 
 <script>
 (function(){
-  var cats = ['top','social','polecon','scitech','business','sports'];
+  var cats = ['top','social','polecon','scitech','business','startup','koshien','sports'];
   var idx = 0;
   var track = document.getElementById('track');
   var viewport = document.getElementById('viewport');
