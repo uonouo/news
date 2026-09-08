@@ -1,0 +1,474 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yoshi's News</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Zen+Old+Mincho:wght@600;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap');
+
+:root {
+  --bg: #ffffff;
+  --panel-bg: #ffffff;
+  --card: #ffffff;
+  --card-line: #eef0f3;
+  --ink: #1a1c20;
+  --ink-soft: #5b6068;
+  --ink-faint: #9aa0a8;
+  --shell: #f4f5f7;
+
+  --c-top: #ef3355;
+  --c-social: #00b3a4;
+  --c-polecon: #6d5bf0;
+  --c-scitech: #ff8a1e;
+  --c-business: #0091ff;
+  --c-sports: #26c281;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101114;
+    --panel-bg: #101114;
+    --card: #1a1c20;
+    --card-line: #2a2c31;
+    --ink: #f1f2f4;
+    --ink-soft: #b7bcc4;
+    --ink-faint: #767c86;
+    --shell: #1a1c20;
+    --c-top: #ff6b85;
+    --c-social: #3fd8c9;
+    --c-polecon: #9c8fff;
+    --c-scitech: #ffab5c;
+    --c-business: #4db2ff;
+    --c-sports: #5be0a6;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101114;
+  --panel-bg: #101114;
+  --card: #1a1c20;
+  --card-line: #2a2c31;
+  --ink: #f1f2f4;
+  --ink-soft: #b7bcc4;
+  --ink-faint: #767c86;
+  --shell: #1a1c20;
+  --c-top: #ff6b85;
+  --c-social: #3fd8c9;
+  --c-polecon: #9c8fff;
+  --c-scitech: #ffab5c;
+  --c-business: #4db2ff;
+  --c-sports: #5be0a6;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--shell);
+  color: var(--ink);
+  font-family: "Zen Kaku Gothic New", -apple-system, "Hiragino Kaku Gothic ProN", sans-serif;
+  line-height: 1.7;
+  overscroll-behavior-y: none;
+}
+.serif { font-family: "Zen Old Mincho", "Hiragino Mincho ProN", serif; }
+
+.app {
+  max-width: 680px;
+  margin: 0 auto;
+  background: var(--bg);
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ---- Header ---- */
+.topbar { padding: 20px 20px 0; flex-shrink: 0; }
+.title-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.title-row h1 {
+  font-family: "Mochiy Pop One", "Zen Kaku Gothic New", sans-serif;
+  font-size: 27px; font-weight: 400; margin: 0; letter-spacing: 0.01em;
+  -webkit-text-stroke: 1.4px #2b2013;
+  filter: drop-shadow(1.5px 2.5px 0 rgba(30,22,12,0.18));
+  background-image:
+    radial-gradient(circle at 22% 30%, #211709 0 8px, transparent 9px),
+    radial-gradient(circle at 68% 65%, #3a2b16 0 10px, transparent 11px),
+    radial-gradient(circle at 45% 88%, #241a0c 0 6px, transparent 7px),
+    radial-gradient(circle at 85% 20%, #2e2211 0 7px, transparent 8px),
+    linear-gradient(135deg, #b8a06e, #967c4c 50%, #6f5a35);
+  background-size: 42px 42px, 57px 57px, 31px 31px, 49px 49px, 100% 100%;
+  background-repeat: repeat, repeat, repeat, repeat, no-repeat;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.title-row .date { font-size: 11.5px; color: var(--ink-faint); white-space: nowrap; font-weight: 500; }
+
+.tabs { display: flex; gap: 3px; overflow-x: auto; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  flex: 1 0 auto;
+  appearance: none; border: none; background: none;
+  font-family: inherit; font-size: 12.5px; font-weight: 700;
+  color: var(--ink-faint);
+  padding: 9px 12px 11px;
+  white-space: nowrap;
+  position: relative;
+  cursor: pointer;
+  border-radius: 10px 10px 0 0;
+  transition: color .2s ease, background .2s ease;
+}
+.tab .dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  margin-right: 5px; background: currentColor; opacity: 0.45; vertical-align: middle;
+}
+.tab::after {
+  content: ""; position: absolute; left: 10px; right: 10px; bottom: 0;
+  height: 3px; border-radius: 3px 3px 0 0; background: transparent; transition: background .2s ease;
+}
+.tab.active { color: var(--tab-color); background: color-mix(in srgb, var(--tab-color) 10%, transparent); }
+.tab.active .dot { opacity: 1; }
+.tab.active::after { background: var(--tab-color); }
+
+/* ---- Swipe viewport ---- */
+.viewport { flex: 1; overflow: hidden; position: relative; touch-action: pan-y; }
+.track {
+  display: flex;
+  height: 100%;
+  width: 600%;
+  transition: transform .32s cubic-bezier(.22,.61,.36,1);
+  will-change: transform;
+}
+.panel {
+  width: 16.6667%;
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 20px 56px;
+}
+
+.panel-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.panel-head .chip { width: 8px; height: 26px; border-radius: 4px; background: var(--cat-color); flex-shrink: 0; }
+.panel-head h2 { font-size: 20px; font-weight: 700; margin: 0; letter-spacing: 0.02em; color: var(--cat-color); }
+.panel-sub { font-size: 12px; color: var(--ink-faint); margin: 0 0 18px 18px; }
+
+.story {
+  background: var(--card);
+  border: 1px solid var(--card-line);
+  border-left: 4px solid var(--cat-color);
+  border-radius: 12px;
+  padding: 18px 18px 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(20,20,30,0.05);
+}
+.story .kicker {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: "Zen Old Mincho", serif; font-size: 11.5px; font-weight: 700;
+  color: var(--cat-color); margin-bottom: 9px;
+}
+.story h3 { font-size: 16px; font-weight: 700; line-height: 1.55; margin: 0 0 10px; }
+.story .lead { font-size: 14px; color: var(--ink); margin: 0 0 14px; line-height: 1.85; }
+
+.context {
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 10px;
+  padding: 13px 15px;
+  margin: 0 0 12px;
+}
+.context-label {
+  display: block; font-size: 10.5px; font-weight: 700;
+  color: var(--cat-color); letter-spacing: 0.04em; margin-bottom: 6px;
+}
+.context p { font-size: 13px; color: var(--ink-soft); margin: 0; line-height: 1.8; }
+
+.note { font-size: 11.5px; color: var(--ink-faint); font-weight: 500; }
+
+.meta { font-size: 11px; color: var(--ink-faint); }
+.meta a { color: var(--cat-color); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--cat-color) 40%, transparent); font-weight: 700; }
+
+.closing {
+  margin: 6px 0 0; padding: 16px 18px;
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 12px; font-size: 13px; color: var(--ink-soft); text-align: center;
+}
+.closing .label {
+  display: block; font-family: "Zen Old Mincho", serif; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.2em; color: var(--cat-color); margin-bottom: 8px;
+}
+.colophon { margin: 14px 0 8px; font-size: 10.5px; color: var(--ink-faint); line-height: 1.9; text-align: center; }
+
+@media (max-width: 420px) {
+  .topbar { padding: 16px 14px 0; }
+  .panel { padding: 16px 14px 48px; }
+  .title-row h1 { font-size: 22px; }
+}
+</style>
+</head><body>
+
+
+<div class="app" id="app">
+
+  <div class="topbar">
+    <div class="title-row">
+      <h1>Yoshi's News</h1>
+      <span class="date">2026年9月9日（水）・第6号</span>
+    </div>
+    <div class="tabs" id="tabs">
+      <button class="tab" id="tab-top" style="--tab-color:var(--c-top)" onclick="goTo(0)"><span class="dot"></span>トップ</button>
+      <button class="tab" id="tab-social" style="--tab-color:var(--c-social)" onclick="goTo(1)"><span class="dot"></span>社会</button>
+      <button class="tab" id="tab-polecon" style="--tab-color:var(--c-polecon)" onclick="goTo(2)"><span class="dot"></span>政治/経済</button>
+      <button class="tab" id="tab-scitech" style="--tab-color:var(--c-scitech)" onclick="goTo(3)"><span class="dot"></span>科学/テック</button>
+      <button class="tab" id="tab-business" style="--tab-color:var(--c-business)" onclick="goTo(4)"><span class="dot"></span>ビジネス</button>
+      <button class="tab" id="tab-sports" style="--tab-color:var(--c-sports)" onclick="goTo(5)"><span class="dot"></span>スポーツ/芸能</button>
+    </div>
+  </div>
+
+  <div class="viewport" id="viewport">
+    <div class="track" id="track">
+
+      <section class="panel" id="panel-top" style="--cat-color:var(--c-top)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">トップニュース</h2></div>
+        <p class="panel-sub">今日いちばん知っておきたい2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 気象</span>
+          <h3>伊豆諸島で記録的大雨、特別警報も</h3>
+          <p class="lead">東京・伊豆諸島で猛烈な雨が続き、大島町で約550ミリ、新島村で約500ミリという記録的な雨量を観測。新島村には土砂災害の特別警報<span class="note">（＝命に関わる重大な危険が迫っているときに気象庁が出す最も強い警報）</span>が発表された。関東地方でも10日にかけて線状降水帯<span class="note">（＝同じ場所に発達した雨雲が次々と流れ込み、猛烈な雨が長時間続く現象）</span>による大雨の恐れがあり、最大級の警戒が呼びかけられている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>24時間で1か月分の平均雨量を超えるような雨が降ると、地盤がゆるんで土砂災害の危険が急激に高まる。伊豆諸島だけでなく関東の広い範囲でも同様の危険があるとされており、自治体からの避難情報にはいつも以上に注意を払いたいタイミングだ。</p>
+          </div>
+          <div class="meta"><a href="https://tenki.jp/forecaster/deskpart/2026/09/07/40503.html" target="_blank" rel="noopener">tenki.jp</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 経済</span>
+          <h3>円相場、一時153円台に上昇 — 半年ぶりの円高水準</h3>
+          <p class="lead">9月8日の東京外国為替市場で、円相場は対ドルで一時1ドル=153円台まで上昇し、2月中旬以来およそ半年ぶりの円高水準となった。日米当局による円安是正への思惑や、日銀の利上げ加速観測を背景に、円を買う動きが優勢になった。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>円高<span class="note">（＝円の価値が上がり、同じ1ドルを買うのに必要な円が少なくなること）</span>が進むと、海外旅行や輸入品の値段は下がりやすくなる一方、海外で稼ぐ輸出企業の利益は目減りしやすい。日銀の利上げ観測とも密接に関わっており、しばらく為替の動きから目が離せない。</p>
+          </div>
+          <div class="meta"><a href="https://www.nikkei.com/markets/currencies/" target="_blank" rel="noopener">日本経済新聞</a></div>
+        </article>
+
+        <div class="closing">
+          <span class="label serif">編集後記</span>
+          今日は関東周辺の大雨と、円相場の大きな動きが重なった一日。タブまたはスワイプで6つのジャンルを読み進められます。良い一日を。
+        </div>
+        <div class="colophon">AIが検索結果をもとに要約・編集しています。詳細は各記事の出典リンクでご確認ください。<br>毎朝5時発行・次号は明日</div>
+      </section>
+
+      <section class="panel" id="panel-social" style="--cat-color:var(--c-social)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">社会</h2></div>
+        <p class="panel-sub">くらしに関わるニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>あおり運転の末、殺人未遂容疑で25歳の男逮捕</h3>
+          <p class="lead">千葉県長柄町の県道であおり運転<span class="note">（＝車で相手を執拗に追い立てたり、幅寄せ・急ブレーキなどで威圧したりする危険な運転行為）</span>をしていたとされる会社員の男（25）が、被害者の男性をはねようと車を急発進させたとして、殺人未遂の疑いで逮捕された。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>あおり運転は2020年の道路交通法改正で厳罰化されたが、依然として全国で摘発が続いている。今回は殺人未遂という重い容疑での立件となっており、ちょっとした感情的なトラブルが重大事件に発展するリスクを改めて示す事例だ。</p>
+          </div>
+          <div class="meta"><a href="https://news.livedoor.com/topics/detail/32274720/" target="_blank" rel="noopener">livedoorニュース</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>デヴィ夫人、スタッフへの暴行罪で罰金20万円求刑</h3>
+          <p class="lead">タレントのデヴィ夫人（86）が、東京・渋谷の飲食店で女性スタッフにシャンパングラスを投げつけたことなどをめぐる暴行罪<span class="note">（＝人の体に対して暴力を振るう罪。ケガをさせなくても成立しうる）</span>で起訴され、検察側は罰金20万円を求刑した。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>暴行罪は、実際にケガをさせていなくても、人の体に対して物を投げつけたり手を上げたりする行為があれば成立しうる。芸能人やインフルエンサーの言動が動画やSNSで記録・拡散されやすい時代になり、こうしたトラブルが表面化しやすくなっている面もある。</p>
+          </div>
+          <div class="meta"><a href="https://news.livedoor.com/topics/detail/32270607/" target="_blank" rel="noopener">livedoorニュース</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-polecon" style="--cat-color:var(--c-polecon)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">政治／経済</h2></div>
+        <p class="panel-sub">政治・経済の動き2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 政治</span>
+          <h3>国民民主党代表選、玉木雄一郎氏が3選</h3>
+          <p class="lead">国民民主党の代表選が9月6日に投開票され、玉木雄一郎代表（57）が新人の橋本幹彦衆院議員（30）を127対32ポイントの大差で破り、3選を果たした。任期は2029年9月まで。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>玉木氏は今回の任期を「政権準備期間」と位置づけ、議席を増やして政策実現を主導する形での政権参加を目指すとしている。与野党の勢力図が流動的な中、国民民主党の今後の立ち位置は国会運営や政策のゆくえに影響しうるテーマだ。</p>
+          </div>
+          <div class="meta"><a href="https://www.jiji.com/jc/article?k=2026090600216&g=pol" target="_blank" rel="noopener">時事ドットコム</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 経済</span>
+          <h3>食料品の消費税、2027年4月から2年間「1%」へ</h3>
+          <p class="lead">政府は、酒類と外食を除く飲食料品にかかる消費税（軽減税率<span class="note">（＝生活必需品などの税率を通常より低くするしくみ。日本では現在8%）</span>の対象）について、2027年4月から2年間、税率を現行の8%から1%に引き下げる方針を閣議決定した。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>実施は2029年3月末までの時限措置で、期間終了後は8%に戻る見込み。外食（店内飲食）は対象外で10%のまま据え置かれる。家計への影響が大きい税制変更のため、秋の臨時国会での関連法案の審議ゆくえが注目される。</p>
+          </div>
+          <div class="meta"><a href="https://www.keihi.com/column/65166/" target="_blank" rel="noopener">TOKIUM</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-scitech" style="--cat-color:var(--c-scitech)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">科学／テック</h2></div>
+        <p class="panel-sub">研究・技術のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>ショウジョウバエの全脳神経接続、初めて地図化</h3>
+          <p class="lead">米HHMIジャネリア研究キャンパスとGoogle Researchなどの国際チームが、成体の雄ショウジョウバエの脳と中枢神経系にある16万6000個超のニューロンと、1億2500万個の神経接続をすべて地図化したと発表した。10年がかりのプロジェクトの成果で、これまでで最大規模の脳マップだという。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>AIを使って数百万枚の2D画像を組み合わせ、3Dの神経形状を再構築する手法が使われた。この配線図（コネクトーム<span class="note">（＝脳の中の神経細胞同士のつながり方をすべて記録した地図のこと）</span>）は無料で公開されており、感覚から行動までの複雑な脳の働きを解明する基盤資料として、世界中の研究者が活用できる。</p>
+          </div>
+          <div class="meta"><a href="https://blog.google/innovation-and-ai/technology/research/male-fruit-fly-brain-map/" target="_blank" rel="noopener">Google Blog</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>OpenAI「ChatGPT Health」がEpicの電子カルテと連携開始</h3>
+          <p class="lead">OpenAIは、医療機関向けの「ChatGPT for Healthcare」を、大手電子カルテ<span class="note">（＝紙のカルテの代わりに患者の診療記録をコンピューターで管理するシステム）</span>システムのEpicと連携させたと発表した。診断の変化や検査結果、薬の処方状況について質問すると、関連するカルテ部分をもとにAIが要約してくれる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>読み取り専用の連携で、ChatGPTがカルテを書き換えることはできない。あわせてPubMedなど9つの公的医療情報源にアクセスできるプラグインも用意されており、医師がAIを日常業務に取り込む動きが世界的に加速していることを示す事例だ。</p>
+          </div>
+          <div class="meta"><a href="https://ai.watch.impress.co.jp/docs/news/2138097.html" target="_blank" rel="noopener">AI Watch</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-business" style="--cat-color:var(--c-business)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ビジネス</h2></div>
+        <p class="panel-sub">企業・産業のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>Apple、翌日未明に発表会「Surprise and Shine」— 初の折りたたみiPhoneも</h3>
+          <p class="lead">Appleは日本時間9月10日午前2時、新製品発表会「Surprise and Shine」を開催する。ジョン・ターナス氏がCEO就任後初めて手がける発表会となり、Apple初の折りたたみ式iPhone（通称「iPhone Ultra」）がお披露目される見通しだ。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>折りたたみiPhoneは、閉じた状態で約5.5インチ、開くと約7.8インチの画面になる本のような構造が噂されている。Appleにとって数年ぶりの新しい「型」の製品となるため、スマートフォン業界全体の設計トレンドにも影響を与える可能性がある注目イベントだ。</p>
+          </div>
+          <div class="meta"><a href="https://www.macrumors.com/2026/08/26/apple-iphone-event-2026/" target="_blank" rel="noopener">MacRumors</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>iPhone 18 Pro/Ultraなど新モデル、A20 Proチップ搭載へ</h3>
+          <p class="lead">発表が見込まれる新型iPhoneは、いずれも2nmプロセス<span class="note">（＝半導体の回路の細かさを示す数値。小さいほど高性能・省電力になりやすい）</span>で作られた最新の「A20 Pro」チップを搭載するとみられる。折りたたみモデルの「iPhone Ultra」は、日本国内で35万〜45万円前後になるとの観測もある。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>手頃な価格帯の通常モデル「iPhone 18」は今回見送られ、2027年春に発売される見通し。高価格帯モデルから優先的に刷新する戦略は近年のAppleに共通する傾向で、初値の高さはトップニュースで触れた円相場の動き次第でも変わってくる。</p>
+          </div>
+          <div class="meta"><a href="https://selectra.jp/telecom/mobile/foldable-iphone-rumors-leaks" target="_blank" rel="noopener">Selectra</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-sports" style="--cat-color:var(--c-sports)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">スポーツ／芸能</h2></div>
+        <p class="panel-sub">厳選2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>大谷翔平、4試合ぶりにスタメン復帰</h3>
+          <p class="lead">ロサンゼルス・ドジャースの大谷翔平選手が、敵地でのシンシナティ・レッズ戦で4試合ぶりにスタメン復帰し、1番指名打者としてラインアップに名を連ねた。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>シーズン終盤は故障明けの選手起用に慎重になるチームが多く、数試合の欠場からの復帰は珍しくない。ポストシーズンを見据えた戦略的な調整の一環とみられ、今後のコンディション管理にも注目したい。</p>
+          </div>
+          <div class="meta"><a href="https://www.goal.com/jp/%E3%83%8B%E3%83%A5%E3%83%BC%E3%82%B9/shohei-ohtani-latest-match-result-dodgers-mlb2026/blt48edd53499725504" target="_blank" rel="noopener">Goal.com</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>「WEST.」藤井流星・小瀧望が脱退を発表</h3>
+          <p class="lead">7人組アイドルグループ「WEST.」の藤井流星さん（33）と小瀧望さん（30）が、グループからの脱退を発表した。公式サイトでは、2人からの申し出を受けてグループとして意思を尊重した旨が説明されている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>脱退の背景には、同じグループの別メンバー2人が結婚を発表したことがあるとみられている。脱退時期は未定で、10月末に予定されている音楽イベントへの7人そろっての出演は難しいとして、チケットの払い戻し対応も行われる見通しだ。</p>
+          </div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/articles/657ea6f07bb240859f2ae0b677dac67ff3d6d83a" target="_blank" rel="noopener">Yahoo!ニュース</a></div>
+        </article>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var cats = ['top','social','polecon','scitech','business','sports'];
+  var idx = 0;
+  var track = document.getElementById('track');
+  var viewport = document.getElementById('viewport');
+  var vw = viewport.clientWidth;
+
+  function setActive(i){
+    cats.forEach(function(c, j){
+      document.getElementById('tab-' + c).classList.toggle('active', j === i);
+    });
+    var activeTab = document.getElementById('tab-' + cats[i]);
+    if (activeTab && activeTab.scrollIntoView) activeTab.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+  }
+
+  function settle(i, animate){
+    idx = Math.max(0, Math.min(cats.length - 1, i));
+    track.style.transition = animate ? 'transform .32s cubic-bezier(.22,.61,.36,1)' : 'none';
+    track.style.transform = 'translateX(' + (-idx * vw) + 'px)';
+    setActive(idx);
+  }
+
+  window.goTo = function(i){ settle(i, true); };
+
+  window.addEventListener('resize', function(){
+    vw = viewport.clientWidth;
+    settle(idx, false);
+  });
+
+  var dragging = false, decided = null, sx = 0, sy = 0, dx = 0;
+  viewport.addEventListener('touchstart', function(e){
+    dragging = true; decided = null;
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY; dx = 0;
+    track.style.transition = 'none';
+  }, { passive: true });
+
+  viewport.addEventListener('touchmove', function(e){
+    if (!dragging) return;
+    var cx = e.touches[0].clientX, cy = e.touches[0].clientY;
+    var mdx = cx - sx, mdy = cy - sy;
+    if (decided === null) {
+      if (Math.abs(mdx) > 8 || Math.abs(mdy) > 8) {
+        decided = Math.abs(mdx) > Math.abs(mdy) ? 'x' : 'y';
+      }
+    }
+    if (decided === 'x') {
+      e.preventDefault();
+      dx = mdx;
+      var atStart = idx === 0 && dx > 0;
+      var atEnd = idx === cats.length - 1 && dx < 0;
+      var eased = (atStart || atEnd) ? dx * 0.35 : dx;
+      track.style.transform = 'translateX(' + (-idx * vw + eased) + 'px)';
+    }
+  }, { passive: false });
+
+  viewport.addEventListener('touchend', function(){
+    if (!dragging) return;
+    dragging = false;
+    if (decided === 'x') {
+      var threshold = vw * 0.18;
+      if (dx <= -threshold) settle(idx + 1, true);
+      else if (dx >= threshold) settle(idx - 1, true);
+      else settle(idx, true);
+    }
+    decided = null; dx = 0;
+  });
+
+  settle(0, false);
+})();
+</script>
+
+</body></html>
