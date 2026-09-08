@@ -1,0 +1,600 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><title>けさの朝刊 第3号（2026年9月8日）</title><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found]){display:none!important}</style></head><body>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap');
+
+:root {
+  --gap-bg: #e3e1d5;
+  --paper: #fbfaf4;
+  --ink: #1c2430;
+  --ink-soft: #4b5563;
+  --ink-faint: #8b93a0;
+  --line: #d3d1c2;
+  --accent: #b23a2e;
+  --accent-soft: rgba(178, 58, 46, 0.09);
+
+  --c-sports: #2f7a4f;
+  --c-sports-soft: rgba(47, 122, 79, 0.1);
+  --c-ent: #b23a6e;
+  --c-ent-soft: rgba(178, 58, 110, 0.1);
+  --c-life: #a97423;
+  --c-life-soft: rgba(169, 116, 35, 0.12);
+  --c-econ: #35618c;
+  --c-econ-soft: rgba(53, 97, 140, 0.1);
+  --c-intl: #6a4c93;
+  --c-intl-soft: rgba(106, 76, 147, 0.1);
+  --c-social: #4a6b6b;
+  --c-social-soft: rgba(74, 107, 107, 0.1);
+  --c-politics: #5c5470;
+  --c-politics-soft: rgba(92, 84, 112, 0.1);
+  --c-tech: #b5651d;
+  --c-tech-soft: rgba(181, 101, 29, 0.1);
+  --c-science: #2f6b52;
+  --c-science-soft: rgba(47, 107, 82, 0.1);
+
+  --up: #b23a2e;
+  --down: #35618c;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --gap-bg: #0d1015;
+    --paper: #1b1f27;
+    --ink: #ecebe0;
+    --ink-soft: #a9b0bc;
+    --ink-faint: #6b7280;
+    --line: #333947;
+    --accent: #e2645a;
+    --accent-soft: rgba(226, 100, 90, 0.14);
+    --c-sports: #55b382;
+    --c-sports-soft: rgba(85, 179, 130, 0.14);
+    --c-ent: #dd77a4;
+    --c-ent-soft: rgba(221, 119, 164, 0.14);
+    --c-life: #d1a24a;
+    --c-life-soft: rgba(209, 162, 74, 0.16);
+    --c-econ: #6ea3d6;
+    --c-econ-soft: rgba(110, 163, 214, 0.14);
+    --c-intl: #a98bd6;
+    --c-intl-soft: rgba(169, 139, 214, 0.14);
+    --c-social: #7fa3a3;
+    --c-social-soft: rgba(127, 163, 163, 0.14);
+    --c-politics: #9089ab;
+    --c-politics-soft: rgba(144, 137, 171, 0.14);
+    --c-tech: #d68a4a;
+    --c-tech-soft: rgba(214, 138, 74, 0.14);
+    --c-science: #5aab86;
+    --c-science-soft: rgba(90, 171, 134, 0.14);
+    --up: #e2645a;
+    --down: #6ea3d6;
+  }
+}
+
+:root[data-theme="dark"] {
+  --gap-bg: #0d1015;
+  --paper: #1b1f27;
+  --ink: #ecebe0;
+  --ink-soft: #a9b0bc;
+  --ink-faint: #6b7280;
+  --line: #333947;
+  --accent: #e2645a;
+  --accent-soft: rgba(226, 100, 90, 0.14);
+  --c-sports: #55b382;
+  --c-sports-soft: rgba(85, 179, 130, 0.14);
+  --c-ent: #dd77a4;
+  --c-ent-soft: rgba(221, 119, 164, 0.14);
+  --c-life: #d1a24a;
+  --c-life-soft: rgba(209, 162, 74, 0.16);
+  --c-econ: #6ea3d6;
+  --c-econ-soft: rgba(110, 163, 214, 0.14);
+  --c-intl: #a98bd6;
+  --c-intl-soft: rgba(169, 139, 214, 0.14);
+  --c-social: #7fa3a3;
+  --c-social-soft: rgba(127, 163, 163, 0.14);
+  --c-politics: #9089ab;
+  --c-politics-soft: rgba(144, 137, 171, 0.14);
+  --c-tech: #d68a4a;
+  --c-tech-soft: rgba(214, 138, 74, 0.14);
+  --c-science: #5aab86;
+  --c-science-soft: rgba(90, 171, 134, 0.14);
+  --up: #e2645a;
+  --down: #6ea3d6;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  background: var(--gap-bg);
+  color: var(--ink);
+  font-family: "Zen Kaku Gothic New", -apple-system, "Hiragino Kaku Gothic ProN", sans-serif;
+  line-height: 1.75;
+}
+
+.paper-stack {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 28px 16px 60px;
+}
+
+.sheet {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05), 0 10px 24px rgba(0,0,0,0.06);
+  padding: 30px 28px 34px;
+  margin-bottom: 26px;
+}
+
+/* ---- Front page masthead ---- */
+.nameplate { text-align: center; padding-bottom: 8px; }
+.nameplate .kicker { font-size: 12px; letter-spacing: 0.14em; color: var(--ink-faint); margin-bottom: 6px; }
+.nameplate h1 {
+  font-family: "Shippori Mincho", serif;
+  font-weight: 700;
+  font-size: clamp(34px, 7vw, 50px);
+  margin: 0;
+  color: var(--accent);
+  letter-spacing: 0.02em;
+}
+
+.masthead-meta {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  padding: 9px 2px 10px;
+  border-top: 1px solid var(--line);
+  border-bottom: 4px double var(--ink);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+}
+
+.stamp {
+  position: absolute;
+  top: -44px;
+  right: 2px;
+  width: 50px;
+  height: 50px;
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  color: var(--accent);
+  font-family: "Shippori Mincho", serif;
+  font-weight: 700;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(-8deg);
+  background: var(--paper);
+}
+
+/* index box (front page) */
+.index-box {
+  margin-top: 18px;
+  border: 1px solid var(--line);
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--ink-soft);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 22px;
+}
+.index-box .label { font-weight: 700; color: var(--ink); letter-spacing: 0.06em; margin-right: 4px; }
+.index-box a { color: var(--ink-soft); text-decoration: none; border-bottom: 1px solid var(--line); }
+
+/* ---- Section page header (2面以降) ---- */
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-bottom: 10px;
+  border-bottom: 3px solid var(--page-accent);
+  margin-bottom: 20px;
+}
+.section-head .paper-name {
+  font-family: "Shippori Mincho", serif;
+  font-size: 13px;
+  color: var(--ink-faint);
+  letter-spacing: 0.06em;
+}
+.section-head .section-title {
+  font-family: "Shippori Mincho", serif;
+  font-weight: 700;
+  font-size: 26px;
+  color: var(--page-accent);
+}
+.section-head .page-date { font-size: 12px; color: var(--ink-faint); }
+
+/* ---- Articles ---- */
+.tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #fff;
+  background: var(--page-accent, var(--accent));
+  padding: 2px 9px;
+  border-radius: 2px;
+  margin-bottom: 9px;
+}
+.tag.plain { background: none; color: var(--page-accent, var(--accent)); padding: 0; }
+
+.top-story { padding-bottom: 22px; border-bottom: 1px solid var(--line); margin-bottom: 22px; }
+.top-story h2 {
+  font-family: "Shippori Mincho", serif;
+  font-weight: 700;
+  font-size: clamp(23px, 4.2vw, 30px);
+  line-height: 1.45;
+  margin: 0 0 12px;
+  text-wrap: balance;
+}
+.top-story p.body-text { font-size: 16.5px; color: var(--ink-soft); margin: 0 0 10px; }
+.top-story p.body-text::first-letter {
+  font-family: "Shippori Mincho", serif;
+  font-weight: 700;
+  font-size: 2.5em;
+  float: left;
+  line-height: 0.85;
+  margin: 0.03em 0.08em 0 0;
+  color: var(--ink);
+}
+
+.sub-story { padding-bottom: 18px; border-bottom: 1px solid var(--line); margin-bottom: 18px; }
+.sub-story h2 {
+  font-family: "Shippori Mincho", serif;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 1.5;
+  margin: 0 0 8px;
+}
+.sub-story p.body-text { font-size: 15px; color: var(--ink-soft); margin: 0 0 8px; }
+
+.articles { columns: 2; column-gap: 34px; column-rule: 1px solid var(--line); }
+.article { break-inside: avoid; margin-bottom: 20px; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
+.article h3 { font-family: "Shippori Mincho", serif; font-weight: 700; font-size: 17px; line-height: 1.5; margin: 0 0 7px; }
+.article p.body-text { font-size: 14.5px; color: var(--ink-soft); margin: 0 0 7px; }
+
+.source { font-size: 12px; color: var(--ink-faint); text-decoration: none; border-bottom: 1px solid var(--line); padding-bottom: 1px; }
+.source::before { content: "→ "; }
+
+.crossref { font-size: 12.5px; color: var(--ink-faint); font-style: normal; }
+.crossref a { color: var(--page-accent); text-decoration: none; border-bottom: 1px solid currentColor; }
+
+/* ---- Boxes: ranking / market / trivia / intl ---- */
+.box {
+  break-inside: avoid;
+  border: 1px solid var(--line);
+  padding: 14px 16px;
+  margin-bottom: 20px;
+  background: var(--box-tint, transparent);
+}
+.box .box-title {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--page-accent);
+  margin-bottom: 10px;
+}
+
+table.rank { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+table.rank th, table.rank td { text-align: left; padding: 5px 4px; border-bottom: 1px solid var(--line); }
+table.rank th { font-weight: 500; color: var(--ink-faint); font-size: 11px; }
+table.rank td.num { font-variant-numeric: tabular-nums; text-align: right; }
+table.rank tr.lead td { font-weight: 700; }
+
+table.market { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+table.market td { padding: 5px 4px; border-bottom: 1px solid var(--line); }
+table.market td.val { text-align: right; font-variant-numeric: tabular-nums; }
+table.market td.chg { text-align: right; width: 60px; font-variant-numeric: tabular-nums; }
+.chg.up { color: var(--up); }
+.chg.down { color: var(--down); }
+.market-note { font-size: 11px; color: var(--ink-faint); margin-top: 8px; }
+
+.trivia p { font-size: 13.5px; color: var(--ink-soft); margin: 0; }
+
+.intl-item { margin-bottom: 10px; }
+.intl-item:last-child { margin-bottom: 0; }
+.intl-item h4 { font-size: 13.5px; font-weight: 700; margin: 0 0 4px; color: var(--ink); }
+.intl-item p { font-size: 13px; color: var(--ink-soft); margin: 0; }
+
+/* ---- Editor's note + colophon (last page) ---- */
+.editors-note {
+  margin-top: 4px;
+  padding: 14px 18px;
+  border-left: 3px solid var(--accent);
+  background: var(--accent-soft);
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+.editors-note .label { display: block; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: var(--accent); margin-bottom: 5px; }
+
+.colophon {
+  margin-top: 22px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--ink-faint);
+}
+
+@media (max-width: 640px) {
+  .sheet { padding: 22px 18px 26px; }
+  .articles { columns: 1; column-rule: none; }
+  .stamp { top: -38px; width: 42px; height: 42px; font-size: 17px; }
+  .index-box { flex-direction: column; gap: 4px; }
+}
+</style>
+
+<div class="paper-stack">
+
+  <!-- 1面：表紙 -->
+  <div class="sheet" style="--page-accent:var(--accent)">
+    <div class="nameplate">
+      <div class="kicker">オーナー専属版</div>
+      <h1>けさの朝刊</h1>
+    </div>
+    <div class="masthead-meta">
+      <span>2026年9月8日（火）　第3号</span>
+      <span>編集：よし</span>
+      <div class="stamp">朝</div>
+    </div>
+
+    <div class="index-box">
+      <span class="label">本日の紙面</span>
+      <span>2面：社会</span>
+      <span>3面：政治</span>
+      <span>4面：経済</span>
+      <span>5面：国際</span>
+      <span>6面：スポーツ・芸能</span>
+      <span>7面：くらし・トレンド</span>
+      <span>8面：テック</span>
+      <span>9面：科学</span>
+    </div>
+
+    <div class="top-story" style="margin-top:22px;">
+      <span class="tag">TOP STORY</span>
+      <h2>秋篠宮ご夫妻、天皇陛下の名代としてノルウェーへ</h2>
+      <p class="body-text">秋篠宮ご夫妻が9月8日、ノルウェーへ向けて出発された。前国王の葬儀に参列するため、天皇陛下の名代としての公式訪問となる。皇室が海外の弔問行事に名代を派遣するのは外交儀礼上重要な意味を持ち、両国の友好関係を示す機会にもなる。日程の詳細はノルウェー到着後に順次発表される見通しで、現地での動静が引き続き注目される。</p>
+      <a class="source" href="https://www.jiji.com/jc/archives?g=soc_archive_0" target="_blank" rel="noopener">時事ドットコム</a>
+    </div>
+
+    <div class="sub-story" style="border-bottom:none; margin-bottom:0;">
+      <span class="tag" style="background:var(--c-econ);">経済</span>
+      <h2>日銀、9月にも追加利上げ観測が強まる</h2>
+      <p class="body-text">根強いインフレを背景に、日銀が9月17〜18日の金融政策決定会合で追加利上げに踏み切るとの観測が市場で強まっている。通常の倍にあたる0.5ポイントの利上げになるとの見方も出ており、実現すれば住宅ローンや企業の借入コストへの影響が大きい。国内株式市場は9月7日時点で日経平均が大幅続伸し上げ幅を四桁に広げるなど堅調に推移しており、利上げ観測と株高が同時に進む展開になっている。</p>
+      <a class="source" href="https://equity.jiji.com/" target="_blank" rel="noopener">時事エクイティ</a>
+    </div>
+  </div>
+
+  <!-- 2面：社会 -->
+  <div class="sheet" style="--page-accent:var(--c-social); --box-tint:var(--c-social-soft);">
+    <div class="section-head">
+      <span class="paper-name">けさの朝刊</span>
+      <span class="section-title">社会</span>
+      <span class="page-date">2面</span>
+    </div>
+    <div class="articles">
+      <div class="article">
+        <span class="tag">賃金</span>
+        <h3>最低賃金1177円、33府県で目安を超える</h3>
+        <p class="body-text">2026年度の最低賃金改定で、全国加重平均は前年から56円引き上げられ時給1177円となった。今年は33の府県で国の示した目安額を超える引き上げ幅となっており、地方でも賃上げの勢いが目安を上回るケースが目立つ。物価上昇に見合った賃金確保を求める声が反映された形だが、人件費の増加にどう対応するか、中小企業の経営判断が引き続き課題になる。</p>
+        <a class="source" href="https://www.jiji.com/jc/archives?g=soc_archive_0" target="_blank" rel="noopener">時事ドットコム</a>
+      </div>
+      <div class="article">
+        <span class="tag">司法</span>
+        <h3>元研修医の盗撮事件、不起訴に</h3>
+        <p class="body-text">盗撮容疑で書類送検されていた元研修医の男性について、検察が不起訴処分としたことが分かった。詳しい処分の理由は明らかにされていないが、証拠関係などを踏まえた判断とみられる。関係者の間では処分の妥当性を巡って様々な受け止めが出ている。</p>
+        <a class="source" href="https://www.jiji.com/jc/archives?g=soc_archive_0" target="_blank" rel="noopener">時事ドットコム</a>
+      </div>
+      <div class="article">
+        <span class="tag">注意喚起</span>
+        <h3>特殊詐欺容疑で逮捕、被害相次ぐ</h3>
+        <p class="body-text">特殊詐欺に関与した疑いで容疑者が逮捕されたことが報じられている。家族を装って現金をだまし取る手口の被害は各地で依然として相次いでおり、身に覚えのない電話や不審な連絡には安易に応じないよう、警察が改めて注意を呼びかけている。</p>
+        <a class="source" href="https://www.jiji.com/jc/archives?g=soc_archive_0" target="_blank" rel="noopener">時事ドットコム</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3面：政治 -->
+  <div class="sheet" style="--page-accent:var(--c-politics); --box-tint:var(--c-politics-soft);">
+    <div class="section-head">
+      <span class="paper-name">けさの朝刊</span>
+      <span class="section-title">政治</span>
+      <span class="page-date">3面</span>
+    </div>
+    <div class="articles">
+      <div class="article">
+        <span class="tag">内閣</span>
+        <h3>内閣改造、財務・外務・防衛は留任方向で調整</h3>
+        <p class="body-text">高市内閣の人事調整が引き続き進められており、片山財務相・茂木外相・小泉防衛相はいずれも留任の方向で最終調整されていると伝えられている。閣僚の骨格を維持しつつ、経済対策や外交日程への対応を切れ目なく進めたい狙いがあるとみられる。正式な発表のタイミングは今後の国会日程とも絡んで流動的だ。</p>
+        <a class="source" href="https://www.policynews.jp/schedule" target="_blank" rel="noopener">政策ニュース.jp</a>
+      </div>
+      <div class="article">
+        <span class="tag">地方選挙</span>
+        <h3>秋の地方選挙、石川県知事選など日程本格化</h3>
+        <p class="body-text">2026年は全国各地で首長選・議会選が相次ぐ「統一地方選」の年にあたり、石川県知事選をはじめとした秋の選挙日程が本格化している。地域の防災・経済対策への関心が高まる中、各候補の政策論戦の行方が注目される。</p>
+        <a class="source" href="https://en.wikipedia.org/wiki/2026_Ishikawa_gubernatorial_election" target="_blank" rel="noopener">選挙関連情報</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4面：経済 -->
+  <div class="sheet" style="--page-accent:var(--c-econ); --box-tint:var(--c-econ-soft);">
+    <div class="section-head">
+      <span class="paper-name">けさの朝刊</span>
+      <span class="section-title">経済</span>
+      <span class="page-date">4面</span>
+    </div>
+
+    <div class="box">
+      <div class="box-title">マーケットひとこと</div>
+      <div class="trivia"><p>9月7日時点で日経平均は大幅続伸し、上げ幅を四桁（円）に広げるなど堅調に推移した。米国では9月8日にレイバーデー明けの取引が本格化し、7月分の消費者信用残高など経済指標の発表が相次ぐ。日銀の利上げ観測とあわせて、当面は金利動向に神経質な展開が続きそうだ。</p></div>
+    </div>
+
+    <div class="articles">
+      <div class="article">
+        <span class="tag" style="background:var(--c-econ);">金融政策</span>
+        <h3>日銀、通常の倍となる利上げ幅も視野に</h3>
+        <p class="body-text">根強いインフレを受け、日銀が9月17〜18日の金融政策決定会合で追加利上げに動くとの観測が強まっている。通常0.25ポイント刻みの利上げに対し、今回は倍の0.5ポイント引き上げになるとの見方も出ており、実現すれば近年で最大級の利上げ幅となる。住宅ローン金利や企業の資金調達コストへの波及が注目される。</p>
+        <a class="source" href="https://www.zaikei.co.jp/article/20260905/868751.html" target="_blank" rel="noopener">財経新聞</a>
+      </div>
+      <div class="article">
+        <span class="tag" style="background:var(--c-econ);">賃金</span>
+        <h3>最低賃金、33府県で目安超えの引き上げ</h3>
+        <p class="body-text">全国加重平均が時給1177円となった2026年度の最低賃金改定では、33の府県で国の目安額を超える引き上げが実現した。都市部だけでなく地方でも積極的な賃上げの動きが広がっていることを示す結果で、中小企業の価格転嫁や生産性向上との両立が今後の焦点になる。</p>
+        <a class="source" href="https://www.jiji.com/jc/archives?g=soc_archive_0" target="_blank" rel="noopener">時事ドットコム</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5面：国際 -->
+  <div class="sheet" style="--page-accent:var(--c-intl); --box-tint:var(--c-intl-soft);">
+    <div class="section-head">
+      <span class="paper-name">けさの朝刊</span>
+      <span class="section-title">国際</span>
+      <span class="page-date">5面</span>
+    </div>
+    <div class="articles">
+      <div class="article">
+        <span class="tag">外交</span>
+        <h3>米特使、モスクワでロシア高官と協議継続</h3>
+        <p class="body-text">米国の特使団が9月5日にモスクワ入りし、ウクライナ情勢を巡ってロシア側高官との協議を続けている。停戦の枠組みを巡る溝は依然として大きいとみられるが、米国が仲介外交を継続する姿勢を崩していないことを示す動きだ。今後、協議の内容がウクライナ側にどう伝えられるかが焦点になる。</p>
+        <a class="source" href="https://www.npr.org/sections/world/" target="_blank" rel="noopener">NPR</a>
+      </div>
+      <div class="article">
+        <span class="tag">アジア</span>
+        <h3>ミャンマー大統領、ベトナム訪問で関係修復探る</h3>
+        <p class="body-text">ミャンマーの大統領がベトナムを訪問した。ASEAN加盟国への訪問はこれで3カ国目となり、国際社会での孤立を避け、地域内での立場を回復したい狙いがあるとみられる。ASEAN側がミャンマー情勢にどう向き合うかも、あわせて注目されている。</p>
+        <a class="source" href="https://www.npr.org/sections/world/" target="_blank" rel="noopener">NPR</a>
+      </div>
+      <div class="article">
+        <span class="tag">災害</span>
+        <h3>ネパール・チベットで岩石・氷河なだれ</h3>
+        <p class="body-text">ネパールと中国チベット自治区にまたがる山岳地帯で、岩石と氷河が同時に崩れる大規模ななだれが発生した。現地では救助・復旧作業が続いており、被害の全容確認が急がれている。山岳地帯特有の複合災害として、今後の気候変動との関連も指摘されている。</p>
+        <a class="source" href="https://www.npr.org/sections/world/" target="_blank" rel="noopener">NPR</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6面：スポーツ・芸能 -->
+  <div class="sheet" style="--page-accent:var(--c-sports); --box-tint:var(--c-sports-soft);">
+    <div class="section-head">
+      <span class="paper-name">けさの朝刊</span>
+      <span class="section-title">スポーツ・芸能</span>
+      <span class="page-date">6面</span>
+    </div>
+    <div class="articles">
+      <div class="article">
+        <span class="tag" style="background:var(--c-ent);">芸能</span>
+        <h3>草間リチャード敬太、ミュージカルで俳優復帰へ</h3>
+        <p class="body-text">元Aぇ!groupの草間リチャード敬太さん（30）が、来年1月のミュージカルで俳優として活動を再開することが分かった。昨年10月に公然わいせつ容疑で逮捕されグループを脱退して以降、公の場での活動は控えていたが、舞台という形での再起を目指すという。</p>
+        <a class="source" href="https://www.tokyo-sports.co.jp/list/entame" target="_blank" rel="noopener">東京スポーツ</a>
+      </div>
+      <div class="article">
+        <span class="tag" style="background:var(--c-ent);">テレビ</span>
+        <h3>「今さらシロー！」、後継番組に昇格</h3>
+        <p class="body-text">9月末で終了する情報番組の後番組として、岡田准一さんと秋山竜次さんが出演する「今さらシロー！」が昇格することが発表された。あわせて、アジア大会中継のため人気ドラマ「VIVANT」の放送が一部休止となることも決まっている。</p>
+        <a class="source" href="https://www.chunichi.co.jp/chuspo/entertainment" target="_blank" rel="noopener">中日スポーツ</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7面：くらし・トレンド -->
+  <div class="sheet" style="--page-accent:var(--c-life); --box-tint:var(--c-life-soft);">
+    <div class="section-head">
+      <span class="paper-name">けさの朝刊</span>
+      <span class="section-title">くらし・トレンド</span>
+      <span class="page-date">7面</span>
+    </div>
+    <div class="articles">
+      <div class="article">
+        <span class="tag">グルメ</span>
+        <h3>さつまいもスイーツ、秋の主役に</h3>
+        <p class="body-text">この秋はさつまいもスイーツが各社から続々登場している。ハーゲンダッツの「濃蜜いも」をはじめ、品種や食感、調理方法にこだわった限定商品が目立っており、単なる焼き芋の枠を超えた展開になっている。栗スイーツも、モンブランだけでなくパフェやジェラート、シェイクなど多彩な形で楽しむスタイルが広がっている。</p>
+        <a class="source" href="https://foodmedia.tenpos.com/newstrend/news/64849/" target="_blank" rel="noopener">テンポスフードメディア</a>
+      </div>
+      <div class="article">
+        <span class="tag">グルメ</span>
+        <h3>台湾グルメ「胡椒餅」が話題に</h3>
+        <p class="body-text">スパイシーな肉あんを詰めて焼き上げる台湾の屋台グルメ「胡椒餅（フージャオビン）」が注目を集めている。専門店の出店や催事出品が増えており、秋のフードイベントでも取り扱いが広がりそうだ。</p>
+        <a class="source" href="https://www.crank-in.net/trend/gourmet" target="_blank" rel="noopener">クランクイン！トレンド</a>
+      </div>
+      <div class="article">
+        <span class="tag">トレンド</span>
+        <h3>麻布台ヒルズ、モンブラン祭りは9/18から</h3>
+        <p class="body-text">麻布台ヒルズで9月18日から11月3日まで「HARVEST WEEKS」が開催され、26店舗・33種類のモンブランやおいもスイーツが展開される。開催まで2週間ほどとなり、来場を楽しみにする声がSNSでも増えてきている。</p>
+        <a class="source" href="https://www.fashion-press.net/news/calendar/gourmet/" target="_blank" rel="noopener">ファッションプレス</a>
+      </div>
+      <div class="box">
+        <div class="box-title">きょうは何の日</div>
+        <div class="trivia"><p>9月8日は「国際識字デー」。ユネスコが1965年に制定した国際デーで、世界中で読み書きの力を広げる取り組みを記念する日。日本では「サンフランシスコ平和条約調印記念日」でもある。</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 9面：テック -->
+  <div class="sheet" style="--page-accent:var(--c-tech); --box-tint:var(--c-tech-soft);">
+    <div class="section-head">
+      <span class="paper-name">けさの朝刊</span>
+      <span class="section-title">テック</span>
+      <span class="page-date">8面</span>
+    </div>
+    <div class="articles">
+      <div class="article">
+        <span class="tag">AI</span>
+        <h3>Perplexity、メール操作AIと長期記憶技術を発表</h3>
+        <p class="body-text">Perplexityが、メール経由でタスクを実行できる新機能「Computer in Email」を発表し、あわせて長期記憶システム「Brain」の技術詳細を公開した。過去のやり取りを踏まえて文脈を保持し続けるAIアシスタントの実用化が進んでいることを示す動きで、SpaceXAIの自律型AIチームメイト「Grok Bot」など、各社の自律エージェント競争も引き続き活発になっている。</p>
+        <a class="source" href="https://bizfreak.co.jp/blog/scacww61z3" target="_blank" rel="noopener">bizfreak.co.jp</a>
+      </div>
+      <div class="article">
+        <span class="tag">AI倫理</span>
+        <h3>生成コンテンツの「透かし」表示が広がる</h3>
+        <p class="body-text">Anthropicが生成テキストに不可視の電子透かしを導入したほか、Googleは画像・動画・音楽について、埋め込み済みの不可視透かしに加えて利用者が可視の透かしを切り替えられる機能を追加した。AI生成物と人が作ったものの区別を分かりやすくする取り組みが各社で進んでいる。</p>
+        <a class="source" href="https://bizfreak.co.jp/blog/scacww61z3" target="_blank" rel="noopener">bizfreak.co.jp</a>
+      </div>
+      <div class="article">
+        <span class="tag">活用事例</span>
+        <h3>建設現場向け音声AI、9月提供開始</h3>
+        <p class="body-text">Ecomottとグリフィーが、建設現場向けに音声検知エッジAIの提供を9月から始める。現場の音声から異常や危険を検知し、安全管理を自動化する狙いがあり、現場作業に特化したAI活用がさらに広がりそうだ。</p>
+        <a class="source" href="https://bizfreak.co.jp/blog/scacww61z3" target="_blank" rel="noopener">bizfreak.co.jp</a>
+      </div>
+      <div class="article">
+        <span class="tag">ガジェット</span>
+        <h3>Apple秋イベント、あす未明にiPhone 18 Pro発表へ</h3>
+        <p class="body-text">Appleが9月9日深夜に秋の新製品発表イベントを予定しており、「iPhone 18 Pro」「iPhone 18 Pro Max」の発表が有力視されている。今回は価格が現行モデルからさらに引き上げられる見通しで、Pro Maxは26万円前後からになるとの観測も出ている。</p>
+        <a class="source" href="https://www.gizmodo.jp/article/apple-fall-event-26-products/" target="_blank" rel="noopener">ギズモード・ジャパン</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 10面：科学 -->
+  <div class="sheet" style="--page-accent:var(--c-science); --box-tint:var(--c-science-soft);">
+    <div class="section-head">
+      <span class="paper-name">けさの朝刊</span>
+      <span class="section-title">科学</span>
+      <span class="page-date">9面</span>
+    </div>
+    <div class="articles">
+      <div class="article">
+        <span class="tag">材料science</span>
+        <h3>結晶づくりを1分未満で、東京科学大が新手法</h3>
+        <p class="body-text">東京科学大学の研究グループが、目的の結晶を1分未満で直接作り出す新しい合成手法を発表した。ポイントは原料の準備段階にあり、事前の下ごしらえを工夫することで結晶化の時間を大幅に短縮できるという。新素材の開発サイクルを速める基盤技術として、今後の応用が期待されている。</p>
+        <a class="source" href="https://www.isct.ac.jp/ja/017/research/science-for-all" target="_blank" rel="noopener">Science Tokyo</a>
+      </div>
+    </div>
+
+    <div class="editors-note">
+      <span class="label">編集後記</span>
+      今日は皇室外交から日銀の利上げ観測、台湾グルメまで幅広い一日でした。政治・経済は要点だけに絞っているので、気になる面から拾い読みしてもらえればと思います。良い一日を。
+    </div>
+
+    <div class="colophon">
+      <span>AIが検索結果をもとに要約・編集しています。詳細は各見出しのリンク先でご確認ください。</span>
+      <span>毎朝7時発行・次号は明日</span>
+    </div>
+  </div>
+
+</div>
+</body></html>
