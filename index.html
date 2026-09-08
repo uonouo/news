@@ -117,32 +117,31 @@ body {
 }
 .title-row .date { font-size: 11.5px; color: var(--ink-faint); white-space: nowrap; font-weight: 500; margin-top: 2px; }
 
-.tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px 4px; }
+.tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px 3px; }
 .tab {
-  appearance: none; background: var(--card);
+  appearance: none; border: none; background: none;
   font-family: inherit; font-size: 10.5px; font-weight: 700;
   color: var(--ink-faint);
-  border: 1.5px solid var(--card-line);
-  padding: 7px 4px 8px;
+  padding: 7px 4px 9px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   position: relative;
   cursor: pointer;
-  border-radius: 10px;
-  transition: color .2s ease, background .2s ease, border-color .2s ease;
+  border-radius: 10px 10px 0 0;
+  transition: color .2s ease, background .2s ease;
 }
 .tab .dot {
   display: inline-block; width: 6px; height: 6px; border-radius: 50%;
   margin-right: 5px; background: currentColor; opacity: 0.45; vertical-align: middle;
 }
-.tab.active {
-  color: var(--tab-color);
-  border-color: var(--tab-color);
-  background: color-mix(in srgb, var(--tab-color) 14%, var(--card));
-  font-weight: 900;
+.tab::after {
+  content: ""; position: absolute; left: 10px; right: 10px; bottom: 0;
+  height: 3px; border-radius: 3px 3px 0 0; background: transparent; transition: background .2s ease;
 }
+.tab.active { color: var(--tab-color); background: color-mix(in srgb, var(--tab-color) 10%, transparent); }
 .tab.active .dot { opacity: 1; }
+.tab.active::after { background: var(--tab-color); }
 
 /* ---- Swipe viewport ---- */
 .viewport { flex: 1; overflow: hidden; position: relative; touch-action: pan-y; }
