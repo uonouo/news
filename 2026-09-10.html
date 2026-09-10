@@ -1,7 +1,7 @@
 <!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Yoshi's News</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Zen+Old+Mincho:wght@600;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Zen+Old+Mincho:wght@600;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap');
 
 :root {
   --bg: #ffffff;
@@ -19,6 +19,10 @@
   --c-scitech: #ff8a1e;
   --c-business: #0091ff;
   --c-sports: #26c281;
+  --c-startup: #ff4fa3;
+  --c-koshien: #c8860d;
+  --c-intl: #4b3f8f;
+  --c-gadget: #00bcd4;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -37,6 +41,10 @@
     --c-scitech: #ffab5c;
     --c-business: #4db2ff;
     --c-sports: #5be0a6;
+    --c-startup: #ff85c2;
+    --c-koshien: #e8b34c;
+    --c-intl: #a89cf0;
+    --c-gadget: #4dd8ea;
   }
 }
 :root[data-theme="dark"] {
@@ -54,6 +62,10 @@
   --c-scitech: #ffab5c;
   --c-business: #4db2ff;
   --c-sports: #5be0a6;
+  --c-startup: #ff85c2;
+  --c-koshien: #e8b34c;
+  --c-intl: #a89cf0;
+  --c-gadget: #4dd8ea;
 }
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -81,39 +93,41 @@ body {
 
 /* ---- Header ---- */
 .topbar { padding: 20px 20px 0; flex-shrink: 0; }
+.title-line { display: flex; align-items: center; gap: 8px; }
+.mascot { height: 50px; width: auto; flex-shrink: 0; border-radius: 8px; }
 .title-row {
   display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
   margin-bottom: 14px;
 }
 .title-row h1 {
-  font-family: "Mochiy Pop One", "Zen Kaku Gothic New", sans-serif;
-  font-size: 27px; font-weight: 400; margin: 0; letter-spacing: 0.01em;
-  -webkit-text-stroke: 1.4px #2b2013;
-  filter: drop-shadow(1.5px 2.5px 0 rgba(30,22,12,0.18));
+  font-family: "Baloo 2", "Zen Kaku Gothic New", sans-serif;
+  font-size: 48px; font-weight: 800; margin: 0; letter-spacing: 0.01em; line-height: 1;
+  -webkit-text-stroke: 2.4px #2b2013;
+  filter: drop-shadow(2px 3px 0 rgba(30,22,12,0.18));
   background-image:
-    radial-gradient(circle at 22% 30%, #211709 0 8px, transparent 9px),
-    radial-gradient(circle at 68% 65%, #3a2b16 0 10px, transparent 11px),
-    radial-gradient(circle at 45% 88%, #241a0c 0 6px, transparent 7px),
-    radial-gradient(circle at 85% 20%, #2e2211 0 7px, transparent 8px),
+    radial-gradient(circle at 22% 30%, #211709 0 7px, transparent 8px),
+    radial-gradient(circle at 68% 65%, #3a2b16 0 9px, transparent 10px),
+    radial-gradient(circle at 45% 88%, #241a0c 0 5px, transparent 6px),
+    radial-gradient(circle at 85% 20%, #2e2211 0 6px, transparent 7px),
     linear-gradient(135deg, #b8a06e, #967c4c 50%, #6f5a35);
-  background-size: 42px 42px, 57px 57px, 31px 31px, 49px 49px, 100% 100%;
+  background-size: 30px 30px, 41px 41px, 23px 23px, 35px 35px, 100% 100%;
   background-repeat: repeat, repeat, repeat, repeat, no-repeat;
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
-.title-row .date { font-size: 11.5px; color: var(--ink-faint); white-space: nowrap; font-weight: 500; }
+.title-row .date { font-size: 11.5px; color: var(--ink-faint); white-space: nowrap; font-weight: 500; margin-top: 2px; }
 
-.tabs { display: flex; gap: 3px; overflow-x: auto; scrollbar-width: none; }
-.tabs::-webkit-scrollbar { display: none; }
+.tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px 3px; }
 .tab {
-  flex: 1 0 auto;
   appearance: none; border: none; background: none;
-  font-family: inherit; font-size: 12.5px; font-weight: 700;
+  font-family: inherit; font-size: 10.5px; font-weight: 700;
   color: var(--ink-faint);
-  padding: 9px 12px 11px;
+  padding: 7px 4px 9px;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   position: relative;
   cursor: pointer;
   border-radius: 10px 10px 0 0;
@@ -136,12 +150,12 @@ body {
 .track {
   display: flex;
   height: 100%;
-  width: 600%;
+  width: 1000%;
   transition: transform .32s cubic-bezier(.22,.61,.36,1);
   will-change: transform;
 }
 .panel {
-  width: 16.6667%;
+  width: 10%;
   height: 100%;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
@@ -201,7 +215,8 @@ body {
 @media (max-width: 420px) {
   .topbar { padding: 16px 14px 0; }
   .panel { padding: 16px 14px 48px; }
-  .title-row h1 { font-size: 22px; }
+  .title-row h1 { font-size: 38px; }
+  .mascot { height: 40px; }
 }
 </style>
 </head><body>
@@ -211,7 +226,10 @@ body {
 
   <div class="topbar">
     <div class="title-row">
-      <h1>Yoshi's News</h1>
+      <div class="title-line">
+        <img class="mascot" src="mascot.jpg" alt="オオサンショウウオのマスコット">
+        <h1>Yoshi's News</h1>
+      </div>
       <span class="date">2026年9月10日（木）・第7号</span>
     </div>
     <div class="tabs" id="tabs">
@@ -220,7 +238,11 @@ body {
       <button class="tab" id="tab-polecon" style="--tab-color:var(--c-polecon)" onclick="goTo(2)"><span class="dot"></span>政治/経済</button>
       <button class="tab" id="tab-scitech" style="--tab-color:var(--c-scitech)" onclick="goTo(3)"><span class="dot"></span>科学/テック</button>
       <button class="tab" id="tab-business" style="--tab-color:var(--c-business)" onclick="goTo(4)"><span class="dot"></span>ビジネス</button>
-      <button class="tab" id="tab-sports" style="--tab-color:var(--c-sports)" onclick="goTo(5)"><span class="dot"></span>スポーツ/芸能</button>
+      <button class="tab" id="tab-startup" style="--tab-color:var(--c-startup)" onclick="goTo(5)"><span class="dot"></span>スタートアップ</button>
+      <button class="tab" id="tab-gadget" style="--tab-color:var(--c-gadget)" onclick="goTo(6)"><span class="dot"></span>ガジェット</button>
+      <button class="tab" id="tab-intl" style="--tab-color:var(--c-intl)" onclick="goTo(7)"><span class="dot"></span>海外</button>
+      <button class="tab" id="tab-sports" style="--tab-color:var(--c-sports)" onclick="goTo(8)"><span class="dot"></span>芸能/スポーツ</button>
+      <button class="tab" id="tab-koshien" style="--tab-color:var(--c-koshien)" onclick="goTo(9)"><span class="dot"></span>高校野球【埼玉】</button>
     </div>
   </div>
 
@@ -233,31 +255,31 @@ body {
 
         <article class="story">
           <span class="kicker">01 ／ 気象</span>
-          <h3>愛知・岐阜の庄内川で「レベル5」氾濫特別警報</h3>
-          <p class="lead">東海地方を襲った猛烈な雨により、愛知・岐阜を流れる庄内川で氾濫の危険が最高レベルに達し、気象庁と国土交通省は9月8日、氾濫特別警報<span class="note">（＝川の氾濫によって命に関わる重大な災害がすでに発生している、またはまさに発生しようとしていることを知らせる最高レベルの警報）</span>を発表した。線状降水帯の影響で名古屋市などにも大雨の危険警報が出され、前日まで伊豆諸島で警戒されていた大雨の中心が東海地方へと移った形だ。</p>
+          <h3>秋雨前線の大雨、10日にピークを越え小康状態へ</h3>
+          <p class="lead">日本列島に停滞していた秋雨前線<span class="note">（＝秋に日本付近に長く居座り、雨を降らせ続ける前線）</span>による大雨は9月10日にピークを越え、ようやく小康状態に向かう見通しとなった。ただし東海・関東甲信では地盤がゆるんだ状態が続いており、引き続き足元や斜面の崩れに注意が呼びかけられている。</p>
           <div class="context">
             <span class="context-label">📎 知っておきたい背景</span>
-            <p>氾濫特別警報が出されるのは全国でも極めてまれで、発表時にはすでに氾濫が始まっている可能性が高いとされる。同じ前線・低気圧が広い範囲に影響を及ぼしており、川の近くに住む人は警報が出てからでは避難が間に合わないこともあるため、早めの行動が呼びかけられている。</p>
+            <p>雨のピークを越えても、地盤に染み込んだ水はすぐには抜けないため、土砂災害の危険はしばらく残る。「雨が弱まった＝もう安全」ではなく、数日は崖や斜面に近づかないなど注意を続けることが大切だ。</p>
           </div>
-          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20260908de49093" target="_blank" rel="noopener">NHKニュース</a></div>
+          <div class="meta"><a href="https://gigazine.net/news/20260910-headline/" target="_blank" rel="noopener">GIGAZINE</a></div>
         </article>
 
         <article class="story">
-          <span class="kicker">02 ／ 経済</span>
-          <h3>日銀、9月会合で利上げ観測強まる — 政策金利1.25%へ</h3>
-          <p class="lead">日銀が9月17〜18日に開く金融政策決定会合で、政策金利<span class="note">（＝中央銀行が銀行同士の短期のお金の貸し借りに使う目安の金利。これが上がると住宅ローンなどの金利も上がりやすい）</span>を0.25%引き上げ、1.25%とする観測が強まっている。植田総裁は「利上げは9月を含め毎回の会合でしっかり議論する」と発言しており、市場でも利上げを織り込む動きが出ている。</p>
+          <span class="kicker">02 ／ ビジネス</span>
+          <h3>Apple、初の折りたたみ「iPhone Duo」を発表</h3>
+          <p class="lead">Appleは9月10日未明の発表会で、初の折りたたみ式iPhoneとなる「iPhone Duo」を公開した。歴代iPhone最大の画面を備え、折りたたんで自立させることもできる。予約は10月16日夜開始、発売は10月23日、価格は36万4800円からとなる。あわせて「iPhone 18 Pro」（21万9800円から）も発表された。</p>
           <div class="context">
             <span class="context-label">📎 知っておきたい背景</span>
-            <p>これまでの利上げの間隔はおよそ半年に一度のペースだったが、今回実施されれば6月会合からわずか3か月というハイペースになる。物価上昇が続くなかでの判断となり、住宅ローンを変動金利で借りている家庭や、預金の金利にも影響しうる話題だ。</p>
+            <p>折りたたみスマートフォン自体はGalaxyなど他社製品ですでに一般的だが、Appleにとっては数年ぶりの新しい「型」の製品になる。36万円超という価格は既存のiPhoneの中でも突出して高く、実際にどれだけ売れるかが今後の注目点だ。</p>
           </div>
-          <div class="meta"><a href="https://www.bloomberg.com/jp/news/articles/2026-09-03/TKQ5OFT96OSH00" target="_blank" rel="noopener">Bloomberg</a></div>
+          <div class="meta"><a href="https://www.famitsu.com/article/202609/87398" target="_blank" rel="noopener">ファミ通.com</a></div>
         </article>
 
         <div class="closing">
           <span class="label serif">編集後記</span>
-          東海地方の記録的な大雨と、日銀の利上げ観測という「天気」と「お金」の大きな動きが重なった一日でした。タブまたはスワイプで6つのジャンルを読み進められます。良い一日を。
+          長引いた大雨がようやく峠を越えた一日に、Appleの折りたたみiPhoneという大ニュースが重なりました。タブまたはスワイプで10のジャンルを読み進められます。良い一日を。
         </div>
-        <div class="colophon">AIが検索結果をもとに要約・編集しています。詳細は各記事の出典リンクでご確認ください。<br>毎朝5時発行・次号は明日</div>
+        <div class="colophon">AIが検索結果をもとに要約・編集しています。詳細は各記事の出典リンクでご確認ください。<br>毎朝5時発行・次号は明日<br><a href="archive.html" style="color:inherit">過去の紙面はこちら</a></div>
       </section>
 
       <section class="panel" id="panel-social" style="--cat-color:var(--c-social)">
@@ -266,24 +288,24 @@ body {
 
         <article class="story">
           <span class="kicker">01</span>
-          <h3>JR東日本、Suicaペンギンの後継キャラ3案を発表</h3>
-          <p class="lead">JR東日本は9月8日、Suicaのマスコットとして親しまれてきたペンギンの後継キャラクター候補3案を発表した。モチーフは「リス」「ウサギ」「ふしぎな動物」の3種類で、同日からインターネット投票を開始。結果はSuica誕生25周年にあたる11月18日に発表される。</p>
+          <h3>コメ農家の廃業・倒産、1〜8月で32件</h3>
+          <p class="lead">今年1〜8月にコメ農家の廃業・倒産が32件にのぼり、4年連続で過去最多ペースとなっていることがわかった。農家の高齢化に加え、去年からのコメ価格の乱高下も重なり、「経営が成り立たない」という声が上がっている。</p>
           <div class="context">
             <span class="context-label">📎 知っておきたい背景</span>
-            <p>現在のペンギンは2026年度末で「卒業」し、新キャラクターが2027年3月31日から後を継ぐ。投票は1人1回、9月23日23時59分まで受け付けられる。長年親しまれたキャラクターの世代交代とあって、SNS上では惜しむ声も上がるなど話題になっている。</p>
+            <p>コメの値段が上がると消費者の負担は増えるが、農家の収入が必ずしも安定するわけではなく、肥料や燃料などのコスト増も経営を圧迫している。スーパーのコメの価格だけでは見えにくい、生産現場の厳しさを示す数字だ。</p>
           </div>
-          <div class="meta"><a href="https://news.yahoo.co.jp/articles/ef4ff1525f36e637a2a8ba89a3f812d0cf3367ee" target="_blank" rel="noopener">Yahoo!ニュース（日テレNEWS NNN）</a></div>
+          <div class="meta"><a href="https://www.agrinews.co.jp/" target="_blank" rel="noopener">日本農業新聞</a></div>
         </article>
 
         <article class="story">
           <span class="kicker">02</span>
-          <h3>制限速度50キロ超過の事故で少年を逮捕</h3>
-          <p class="lead">山口県岩国市で、制限速度を時速50キロ以上超過するスピードで交差点に進入して事故を起こし、2人に重傷を負わせたとして、少年が危険運転致傷<span class="note">（＝著しく危険な運転で人にケガをさせる罪。ふつうの交通事故より重く扱われる）</span>の疑いで逮捕された。</p>
+          <h3>NHK、20代記者を懲戒解雇</h3>
+          <p class="lead">NHKは、相手の同意を得ずに身体的接触をしたとして、20代の記者を懲戒解雇<span class="note">（＝会社が社員を、最も重い処分として一方的に辞めさせること）</span>処分にしたと発表した。</p>
           <div class="context">
             <span class="context-label">📎 知っておきたい背景</span>
-            <p>危険運転致傷罪は、単なるスピード違反による事故よりも重い罪に問われる。無謀な運転による重大事故は後を絶たず、免許を取ったばかりの若い世代への安全運転教育の重要性が改めて指摘されている。</p>
+            <p>懲戒解雇は数ある処分の中でも最も重く、退職金が支払われないなど本人への影響も大きい。公共放送であるNHKが厳しい処分で臨んだ背景には、社会全体でハラスメントへの目が厳しくなっていることがある。</p>
           </div>
-          <div class="meta"><a href="https://news.livedoor.com/topics/detail/32272015/" target="_blank" rel="noopener">livedoorニュース</a></div>
+          <div class="meta"><a href="https://www.jiji.com/jc/archives?g=soc_archive_0" target="_blank" rel="noopener">時事ドットコム</a></div>
         </article>
       </section>
 
@@ -292,25 +314,25 @@ body {
         <p class="panel-sub">政治・経済の動き2件</p>
 
         <article class="story">
-          <span class="kicker">01 ／ 政治</span>
-          <h3>高市首相、内閣改造・党役員人事は9月中下旬に</h3>
-          <p class="lead">高市早苗首相は、内閣改造<span class="note">（＝首相が大臣の顔ぶれを入れ替えること）</span>と自民党の役員人事を、9月中旬から下旬にかけて行う方向で調整している。鈴木俊一幹事長の続投の可否や、日本維新の会からの入閣による連立基盤の強化などが焦点となっている。</p>
+          <span class="kicker">01 ／ 経済</span>
+          <h3>75歳以上医療費、現役世代の負担が過去最大の7.2兆円に</h3>
+          <p class="lead">75歳以上の高齢者医療を支えるため現役世代が負担する支援金<span class="note">（＝若い世代が納める保険料の一部を、高齢者の医療費に回す仕組み）</span>が、2024年度に過去最大の7.2兆円に達したことがわかった。高齢化の進行にともない、現役世代1人あたりの負担も年々重くなっている。</p>
           <div class="context">
             <span class="context-label">📎 知っておきたい背景</span>
-            <p>消費税の軽減などを盛り込んだ税制改正の大綱がまとまった直後というタイミングでの人事となる見通しで、その後10月上旬には臨時国会が召集される予定。新しい体制がどのような政策を優先するかが今後の焦点になる。</p>
+            <p>日本の医療保険は「支え合い」の仕組みで、若い世代の保険料が高齢者の医療費の一部にも使われている。少子高齢化が進むほど、支える側の人数は減り、1人あたりの負担は増えやすい構造になっている。</p>
           </div>
-          <div class="meta"><a href="https://www.nikkei.com/article/DGXZQOUA1984N0Z10C26A8000000/" target="_blank" rel="noopener">日本経済新聞</a></div>
+          <div class="meta"><a href="https://note.com/clever_murre828/n/n5ce370fd29b6" target="_blank" rel="noopener">まとめ記事（note）</a></div>
         </article>
 
         <article class="story">
-          <span class="kicker">02 ／ 政治</span>
-          <h3>沖縄県知事選、9月13日投開票 — 事実上の一騎打ちに</h3>
-          <p class="lead">任期満了に伴う沖縄県知事選挙が8月27日に告示され、過去最多となる6人が立候補した。米軍普天間飛行場の名護市辺野古移設を容認する新人・古謝玄太氏（42）と、移設に反対する現職・玉城デニー氏（66）による事実上の一騎打ちとなっており、9月13日に投開票が行われる。</p>
+          <span class="kicker">02 ／ 経済</span>
+          <h3>小麦の政府売り渡し価格、10月から12%引き上げへ</h3>
+          <p class="lead">政府が製粉会社などに売り渡す輸入小麦の価格が、10月から平均12%引き上げられることが発表された。パンや麺類など、小麦を使う食品の価格にも今後影響が及ぶ可能性がある。</p>
           <div class="context">
             <span class="context-label">📎 知っておきたい背景</span>
-            <p>米軍基地の移設問題に加えて、物価高騰対策も大きな争点となっている。沖縄の民意がどちらに傾くかは、国と地方の関係や日米関係にも影響しうるとして全国的にも注目されている選挙だ。</p>
+            <p>日本は小麦のほとんどを輸入に頼っており、政府が一括で買い付けて国内の製粉会社に売り渡す仕組みになっている。海外の小麦価格や為替の動きが、半年ごとの売り渡し価格の見直しを通じて、家庭の食卓にも波及していく。</p>
           </div>
-          <div class="meta"><a href="https://www.nikkei.com/article/DGXZQOCC271490X20C26A8000000/" target="_blank" rel="noopener">日本経済新聞</a></div>
+          <div class="meta"><a href="https://note.com/clever_murre828/n/n5ce370fd29b6" target="_blank" rel="noopener">まとめ記事（note）</a></div>
         </article>
       </section>
 
@@ -320,24 +342,24 @@ body {
 
         <article class="story">
           <span class="kicker">01</span>
-          <h3>分子研と日立、新方式の量子コンピューターが稼働</h3>
-          <p class="lead">分子科学研究所と日立製作所などの研究グループが、「中性原子方式」と呼ばれる新しい方式の量子コンピューター<span class="note">（＝ふつうのコンピューターとは違うしくみで、特定の種類の計算を非常に高速にこなせるとされる次世代のコンピューター）</span>の運用を始めたと発表した。富士通は量子コンピューター向けの基本ソフト（OS）開発にこの技術を活用する。</p>
+          <h3>OpenAI、数学の未解決問題「ミレニアム懸賞問題」の一つを解く</h3>
+          <p class="lead">OpenAIは、数学の7つの未解決問題「ミレニアム懸賞問題<span class="note">（＝解けたら賞金100万ドルが贈られる、数学史上でも特に難しいとされる7つの問題）</span>」のひとつ、流体の動きを表す「ナビエ–ストークス方程式」に関する問題を解いたと発表した。</p>
           <div class="context">
             <span class="context-label">📎 知っておきたい背景</span>
-            <p>量子コンピューター開発の競争は近年、量子ビットの数を増やす「量」の競争から、計算ミスを減らして精度を高める「質」の競争へと軸足が移りつつある。国産技術の選択肢が増えることは、将来の創薬や材料開発への応用の幅を広げると期待されている。</p>
+            <p>ナビエ–ストークス方程式は、水や空気の流れを説明する基本的な数式だが、その性質の一部は100年以上未解明のままだった。AIが人類未踏の数学的難問に貢献した例として、研究者の間で大きな注目を集めている。</p>
           </div>
-          <div class="meta"><a href="https://www.nikkei.com/article/DGXZQOSG225WL0S6A720C2000000/" target="_blank" rel="noopener">日本経済新聞</a></div>
+          <div class="meta"><a href="https://qiita.com/ishisaka/items/7cb2763b15ecd73cf363" target="_blank" rel="noopener">Qiita</a></div>
         </article>
 
         <article class="story">
           <span class="kicker">02</span>
-          <h3>Google、高速AIモデル「Gemini 3.8 Flash」を発表</h3>
-          <p class="lead">Googleは、軽量・高速なAIモデル「Gemini 3.8 Flash」と、サイバーセキュリティに特化した「Gemini 3.8 Flash Cyber」を発表した。前バージョンからわずか3週間というハイペースでの更新で、価格や速度はそのままに、プログラミングや複数段階の推論<span class="note">（＝いくつもの手がかりを順番に組み合わせて結論を導く、AIの「考える」処理のこと）</span>の性能が大きく向上したという。</p>
+          <h3>OpenAIの新モデル群、最大14日間動く自律型AIエージェントに対応</h3>
+          <p class="lead">OpenAIの新しいAIモデル群「GPT-5.6」シリーズが、100万トークン<span class="note">（＝AIが一度に読み書きできる文章量の単位。多いほど長い文書をまとめて扱える）</span>規模の長い文章に対応したほか、最大14日間動き続けられる自律型AIエージェント<span class="note">（＝人が逐一指示しなくても、目的に向けて自分で判断しながら作業を続けるAI）</span>の実行環境が用意された。</p>
           <div class="context">
             <span class="context-label">📎 知っておきたい背景</span>
-            <p>AI各社による新モデルの発表競争は数週間おきという異例の速さで続いている。性能が上がる一方で低価格が維持されている点は、企業がAIを業務に取り入れるハードルを下げる要因にもなっている。</p>
+            <p>これまでのAIは1回のやり取りで完結する使い方が中心だったが、何日にもわたって自律的に作業を続けられるAIが実用段階に入りつつある。便利になる一方、AIが長時間・自律的に動くことへの安全対策も今後の課題になる。</p>
           </div>
-          <div class="meta"><a href="https://blog.google/intl/ja-jp/company-news/technology/gemini-38-flash-38-flash-cyber/" target="_blank" rel="noopener">Google 公式ブログ</a></div>
+          <div class="meta"><a href="https://journal.omoshigo.link/trend/workai/20260910-20444/" target="_blank" rel="noopener">働き方×AIニュース</a></div>
         </article>
       </section>
 
@@ -347,61 +369,168 @@ body {
 
         <article class="story">
           <span class="kicker">01</span>
-          <h3>Apple、9月10日未明に新製品発表会 — 初の折りたたみiPhoneへ期待</h3>
-          <p class="lead">Appleは日本時間9月10日午前2時から新製品発表イベントを開催する。Apple初となる折りたたみ式iPhone（通称「iPhone Ultra」）や、「iPhone 18 Pro」シリーズの披露が有力視されている。折りたたみモデルは日本国内で35万円を超える価格になるとの見方もある。</p>
+          <h3>日本生命社長「海外事業拡大は契約者利益のため」</h3>
+          <p class="lead">日本生命保険の朝日智司社長がラジオ番組に出演し、海外事業を拡大する狙いについて「契約者利益を最大化する手段」と説明した。同社の海外事業の利益割合は現在4%にとどまるが、大型買収の完了後には20%程度まで高まる見通しだという。</p>
           <div class="context">
             <span class="context-label">📎 知っておきたい背景</span>
-            <p>折りたたみスマートフォン自体はGalaxyなど他社製品ではすでに一般的だが、Appleにとっては数年ぶりとなる新しい「型」の製品になる。価格や画面の折り目の目立ちにくさなど、実際に披露される仕様に注目が集まっている。</p>
+            <p>少子高齢化が進む日本国内だけでは生命保険会社の成長に限りがあるため、大手各社は海外展開を成長のエンジンと位置づけている。海外事業の利益が国内の契約者にどう還元されるのか、今後の説明が注目される。</p>
           </div>
-          <div class="meta"><a href="https://www.nikkei.com/article/DGXZQOGN26BT20W6A820C2000000/" target="_blank" rel="noopener">日本経済新聞</a></div>
+          <div class="meta"><a href="https://www.nikkei.com/article/DGXZQOUA0741B0X00C26A9000000/" target="_blank" rel="noopener">日本経済新聞</a></div>
         </article>
 
         <article class="story">
           <span class="kicker">02</span>
-          <h3>トヨタ、2028年から「レベル2++」自動運転を量産車に投入</h3>
-          <p class="lead">トヨタ自動車は、AIが周囲の状況認識から判断、車両操作までを一体的に担う「E2E」<span class="note">（＝End to Endの略。人が細かくルールを決めるのではなく、AIが状況を丸ごと学習して判断する技術のこと）</span>技術を使った高度運転支援「レベル2++」を、2028年から量産車に導入する方針を明らかにした。あわせて商用シャトルでは完全自動運転にあたる「レベル4」の実現も目指すという。</p>
+          <h3>サムスン、AI半導体で日韓連合 — 横浜に研究拠点</h3>
+          <p class="lead">韓国サムスン電子が、AI向け半導体<span class="note">（＝AIの計算処理に特化してつくられた、コンピューターの頭脳にあたる部品）</span>の開発をめぐり日本企業と連携する方針を明らかにし、横浜市に新たな研究拠点を開設する。</p>
           <div class="context">
             <span class="context-label">📎 知っておきたい背景</span>
-            <p>「レベル2++」は法律上の正式な自動運転レベルではなく、運転の責任はあくまでドライバーにあるが、AIが担う支援の範囲は従来より大きく広がる。安全のための「ルール」とAIの「柔軟な判断」を組み合わせる点が特徴で、実用化が進めば身近な車の運転支援が大きく変わる可能性がある。</p>
+            <p>AI半導体の開発競争は米国企業が先行しているが、日本には素材・製造装置に強みを持つ企業が多い。日韓の企業が連携することで、それぞれの得意分野を組み合わせた開発体制を作る狙いがあるとみられる。</p>
           </div>
-          <div class="meta"><a href="https://car.watch.impress.co.jp/docs/news/2136234.html" target="_blank" rel="noopener">Car Watch</a></div>
+          <div class="meta"><a href="https://kabuyoho.jp/consNewsTop" target="_blank" rel="noopener">株予報ニュース</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-startup" style="--cat-color:var(--c-startup)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">スタートアップ</h2></div>
+        <p class="panel-sub">資金調達・注目トピック2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>メタジェンセラピューティクス、大学ファンドから1.9億円調達</h3>
+          <p class="lead">創薬スタートアップのメタジェンセラピューティクスが、シリーズBエクステンションラウンド<span class="note">（＝一度終えた資金調達ラウンドを、追加で同じ条件のまま延長して行う調達のこと）</span>で大学ファンドから1.9億円を調達したと発表した。累計調達額は68億円以上に達した。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>創薬（新しい薬を開発すること）は研究期間が長く、利益が出るまでに莫大な資金が必要になる分野。大学発の研究成果をもとにしたスタートアップに、大学ファンドが継続的に出資する流れは、日本の研究成果を実用化につなげる仕組みの一つとして注目されている。</p>
+          </div>
+          <div class="meta"><a href="https://www.nikkei.com/article/DGXZQOUC1326O0T10C25A9000000/" target="_blank" rel="noopener">日本経済新聞</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>スタートアップ投資、「集まる会社に集中」が加速</h3>
+          <p class="lead">2026年上半期の国内スタートアップ投資動向によると、資金は有望とされる一部の企業に集中する傾向が強まっており、1社あたりの調達は「大型化」と「厳選化」が同時に進んでいる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>国の「スタートアップ育成5か年計画」のもとで投資額全体は拡大しているが、実際にはお金を集めやすい会社とそうでない会社の差が広がっている。起業家にとっては、より明確な事業の強みを示すことが重要になってきている。</p>
+          </div>
+          <div class="meta"><a href="https://lp.startup-db.com/media/articles/investment-report-2026-half" target="_blank" rel="noopener">STARTUP DB Media</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-gadget" style="--cat-color:var(--c-gadget)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ガジェット</h2></div>
+        <p class="panel-sub">新製品2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>iPhone Duo・18 Proの本体スペックが判明</h3>
+          <p class="lead">Appleが発表した「iPhone Duo」は歴代最大の画面を持ち、折りたたんで自立させることもできる。「iPhone 18 Pro」は歴代最長のバッテリー持続時間と、可変絞り<span class="note">（＝レンズに入る光の量を調節する機構。写真の明るさやボケ方を変えられる）</span>に対応した4800万画素カメラを搭載する。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>スマートフォンのカメラは年々スペックが上がっているが、可変絞りは一眼カメラに近い表現力を小さな本体に詰め込む技術。折りたたみモデルと合わせ、Appleが「形」と「写真表現」の両方で新しい提案をした年といえる。</p>
+          </div>
+          <div class="meta"><a href="https://contents.online.nojima.co.jp/item/applenew_202609/" target="_blank" rel="noopener">ノジマオンライン</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>Apple Watch Series 12、心拍変動をより高頻度に計測</h3>
+          <p class="lead">新しい「Apple Watch Series 12」は、心拍変動（HRV）<span class="note">（＝心臓の拍動間隔のわずかなばらつき。ストレスや体調の目安として使われる）</span>をこれまでより高い頻度で計測できるようになった。9月18日発売で、価格は7万1800円から。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>健康管理機能の強化はスマートウォッチ市場全体の大きなトレンドで、日常的な体調変化に早く気づけることが期待されている。一方でセンサーが増えるほど価格も上がりやすく、必要な機能を見極めて選ぶことが大切になる。</p>
+          </div>
+          <div class="meta"><a href="https://contents.online.nojima.co.jp/item/applenew_202609/" target="_blank" rel="noopener">ノジマオンライン</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-intl" style="--cat-color:var(--c-intl)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">海外</h2></div>
+        <p class="panel-sub">国際ニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>ロシアの攻撃でウクライナ全土24人死亡</h3>
+          <p class="lead">ロシアによる攻撃でウクライナ全土で24人が死亡、72人が負傷した。首都キーウでは24階建ての住宅にミサイルが着弾し、9人が負傷した。ロシア軍は年内に射程800kmの新型弾道ミサイルの最終試験を計画しているとも報じられている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>戦闘の長期化にともない、住宅など民間施設への被害が繰り返し伝えられている。新型ミサイルの開発が続いていることは、停戦交渉が進む一方で軍事的な緊張が緩んでいない現実を示している。</p>
+          </div>
+          <div class="meta"><a href="https://www.trtnihongo.com/audio/bfac55f74029" target="_blank" rel="noopener">TRT日本語</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>米、対カナダで関税対立——ビールなど禁輸</h3>
+          <p class="lead">トランプ政権は、関税<span class="note">（＝外国から輸入する品物にかける税金）</span>をめぐって対立するカナダからのビールなどの輸入を禁止する措置を発動した。両国間の貿易摩擦が新たな段階に入っている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>アメリカとカナダは隣国同士で経済的なつながりが深いが、近年は関税をめぐる対立が繰り返されている。特定の品目を狙い撃ちする形の措置は、相手国内の特定の産業・地域に的を絞った圧力になりやすい。</p>
+          </div>
+          <div class="meta"><a href="https://www.trtnihongo.com/audio/be319ba27873" target="_blank" rel="noopener">TRT日本語</a></div>
         </article>
       </section>
 
       <section class="panel" id="panel-sports" style="--cat-color:var(--c-sports)">
-        <div class="panel-head"><span class="chip"></span><h2 class="serif">スポーツ／芸能</h2></div>
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">芸能／スポーツ</h2></div>
         <p class="panel-sub">厳選2件</p>
 
         <article class="story">
           <span class="kicker">01</span>
-          <h3>阪神とソフトバンク、両リーグで優勝マジック点灯</h3>
-          <p class="lead">プロ野球セ・リーグでは阪神タイガースに優勝マジックナンバー<span class="note">（＝リーグ優勝するまでに、あと何勝すればよいかを示す数字）</span>「23」が、パ・リーグでは福岡ソフトバンクホークスに「14」がそれぞれ点灯している。シミュレーションでは、優勝決定日はパ・リーグが9月23日ごろ、セ・リーグが9月30日ごろになると予想されている。</p>
+          <h3>長澤まさみ、22年ぶりにゴジラ映画へ出演</h3>
+          <p class="lead">女優の長澤まさみさんが、22年ぶりにゴジラ映画へ出演することが明らかになった。デビュー間もない時期にゴジラ作品に出演して以来の、節目の復帰となる。</p>
           <div class="context">
             <span class="context-label">📎 知っておきたい背景</span>
-            <p>マジックナンバーは、自チームの残り勝ち数と2位以下のチームの残り試合数などから算出される優勝までの目安。数字が小さくなるほど優勝に近づいていることを意味し、シーズン終盤の風物詩として毎年注目される。</p>
+            <p>ゴジラシリーズは日本を代表する映画シリーズの一つで、出演者の顔ぶれは毎回大きな話題になる。長年第一線で活躍してきた俳優の「原点回帰」的な出演は、ファンにとって特別な意味を持つ。</p>
           </div>
-          <div class="meta"><a href="https://www.baseballchannel.jp/npb/286914/" target="_blank" rel="noopener">ベースボールチャンネル</a></div>
+          <div class="meta"><a href="https://gigazine.net/news/20260910-headline/" target="_blank" rel="noopener">GIGAZINE</a></div>
         </article>
 
         <article class="story">
           <span class="kicker">02</span>
-          <h3>声優・小田切ゆいさん、引退を発表</h3>
-          <p class="lead">声優の小田切ゆいさんが、所属事務所「81プロデュース」からの退所と、声優業からの引退を発表した。「リアデイルの大地にて」や「神様に拾われた男」などの作品でキャラクターを演じてきた、芸歴およそ10年のベテランだった。</p>
+          <h3>King &amp; Prince、オリコン週間ランキングで4冠達成</h3>
+          <p class="lead">King &amp; Princeが、オリコンの週間音楽ランキングで4部門を制する「4冠」を達成した。</p>
           <div class="context">
             <span class="context-label">📎 知っておきたい背景</span>
-            <p>本人はコメントで「この決断に至るまでたくさん悩み、考え抜いた」と心境を明かしており、今後は声優以外の道を歩む考えを示している。長く親しまれてきた声優の引退は、出演作品のファンにとっても大きな話題となっている。</p>
+            <p>複数部門での同時1位は、CD・配信・レンタルなど複数の指標で幅広く支持されていることを示す。グループの人気の高さと、ファン層の厚さを裏付ける結果といえる。</p>
           </div>
-          <div class="meta"><a href="https://news.yahoo.co.jp/articles/645d3417c63bb336714e6b0ac0d0b94253726d52" target="_blank" rel="noopener">Yahoo!ニュース（日刊スポーツ）</a></div>
+          <div class="meta"><a href="https://gigazine.net/news/20260910-headline/" target="_blank" rel="noopener">GIGAZINE</a></div>
         </article>
       </section>
 
+      <section class="panel" id="panel-koshien" style="--cat-color:var(--c-koshien)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">高校野球【埼玉】</h2></div>
+        <p class="panel-sub">秋季大会2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>秋季埼玉県大会、9月16日に抽選——25日開幕へ</h3>
+          <p class="lead">来春の選抜大会<span class="note">（＝センバツ。春に開催される全国大会で、秋の成績をもとに出場校が選ばれる）</span>につながる秋季埼玉県大会は、9月4日から地区予選が始まっており、9月16日に県大会の組み合わせ抽選、9月25日から10月4日にかけて県大会本戦が行われる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>県大会で上位に入ると、群馬で行われる関東大会への出場権も懸かっており、来春のセンバツ出場校選びにも直結する重要な大会だ。地区予選は悪天候の影響で日程が一部変更になるなど、今年は天候にも左右される大会になっている。</p>
+          </div>
+          <div class="meta"><a href="https://www.hb-nippon.com/tournaments/983" target="_blank" rel="noopener">高校野球ドットコム</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>浦和学院・花咲徳栄の2強を、昌平・春日部共栄が追う構図</h3>
+          <p class="lead">今大会は、近年実績のある浦和学院と花咲徳栄の「2強」を、新チームで力をつけてきた昌平や春日部共栄などが追う構図が注目されている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>夏の大会でチームが総入れ替わりした直後の秋季大会は、各校の「地力」がはっきり表れやすいとされる。ここでの結果が、そのまま来春のセンバツ選考の材料にもなるため、選手たちにとっても重要な意味を持つ大会だ。</p>
+          </div>
+          <div class="meta"><a href="https://new.dudmc.com/corealpha/1918614/" target="_blank" rel="noopener">秋季埼玉高校野球2026速報</a></div>
+        </article>
+      </section>
     </div>
   </div>
 </div>
 
 <script>
 (function(){
-  var cats = ['top','social','polecon','scitech','business','sports'];
+  var cats = ['top','social','polecon','scitech','business','startup','gadget','intl','sports','koshien'];
   var idx = 0;
   var track = document.getElementById('track');
   var viewport = document.getElementById('viewport');
