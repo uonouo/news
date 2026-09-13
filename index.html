@@ -198,6 +198,13 @@ body {
 
 .note { font-size: 11.5px; color: var(--ink-faint); font-weight: 500; }
 
+.term-link {
+  color: var(--cat-color);
+  text-decoration: none;
+  border-bottom: 1px dotted color-mix(in srgb, var(--cat-color) 55%, transparent);
+  font-weight: 700;
+}
+
 .meta { font-size: 11px; color: var(--ink-faint); }
 .meta a { color: var(--cat-color); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--cat-color) 40%, transparent); font-weight: 700; }
 
@@ -267,10 +274,10 @@ body {
         <article class="story">
           <span class="kicker">02 ／ テック</span>
           <h3>GitLabに重大な脆弱性——CVSS満点10.0、悪用が活発化</h3>
-          <p class="lead">開発者向けサービス「GitLab」に、深刻度を示す指標<span class="note">（＝CVSS。脆弱性の危険度を0〜10で表す国際的な基準）</span>が満点の10.0となる脆弱性が見つかり、9月11日以降、実際の悪用が活発になっているという。</p>
+          <p class="lead">プログラムのソースコード<span class="note">（＝ソフトウェアの設計図にあたる、人間が書いたプログラムの文章そのもの）</span>を複数人で管理するための開発者向けサービス「GitLab」<span class="note">（＝世界中の企業のエンジニアがチームで使う、コード保管・共同編集サービス。似たものにGitHubがある）</span>に、脆弱性<span class="note">（＝ソフトウェアの設計や実装上の欠陥で、悪意ある第三者に攻撃の糸口を与えてしまうもの）</span>の深刻度を示す指標CVSS<span class="note">（＝脆弱性の危険度を0〜10の数値で表す国際的な基準）</span>が満点の10.0となる問題が見つかり、9月11日以降、実際の悪用が活発になっているという。</p>
           <div class="context">
             <span class="context-label">📎 知っておきたい背景</span>
-            <p>CVSS10.0は「誰でも簡単に、しかも深刻な被害を与えられる」レベルの脆弱性を意味する。GitLabを使って社内システムを管理している企業は多く、パッチ（修正プログラム）の適用が急がれている。</p>
+            <p>この記事を理解する前提は「GitLabに何が保存されているか」。GitLabには企業の非公開のプログラム（アプリの中身そのもの）が大量に保管されており、そこに侵入されるとサービスの乗っ取りや顧客情報の流出につながりかねない。CVSS10.0は「専門知識がなくても悪用でき、しかも被害が最大級」という組み合わせを意味し、脆弱性の中でも特に危険度が高い部類にあたる。企業側は、この欠陥を直すための修正プログラム（パッチ）を大急ぎで適用する必要に迫られている状態だ。</p>
           </div>
           <div class="meta"><a href="https://qiita.com/aakan/items/2e1c5f4cfe40dbb74fb3" target="_blank" rel="noopener">Qiita（生成AI・セキュリティニュースまとめ）</a></div>
         </article>
@@ -357,7 +364,7 @@ body {
           <p class="lead">AIに外部の資料を参照させて回答させる技術「RAG」<span class="note">（＝Retrieval-Augmented Generation。AIが答える前に関連資料を検索し、それをもとに回答を作る仕組み）</span>について、簡単なアプリは作れても、回答の正確さを保つのは難しいという課題が2026年の共通認識になりつつある。</p>
           <div class="context">
             <span class="context-label">📎 知っておきたい背景</span>
-            <p>RAGは「AIがもっともらしい嘘をつく」問題を減らす手法として期待されてきたが、検索結果の質や量が結果の正確さを大きく左右する。実用段階に入った企業ほど、この精度の壁に直面しているという。</p>
+            <p>RAGは、AIが自信満々に間違った情報を答えてしまう<a class="term-link" href="https://www.google.com/search?q=AI+ハルシネーション+とは" target="_blank" rel="noopener">「ハルシネーション」</a>という問題を減らす手法として期待されてきた。ただし、AIが検索してくる資料の質や量が結果の正確さを大きく左右するため、「参照元は用意したのに、答えはやっぱり不正確」という壁に、実用段階に入った企業ほど直面しているという。</p>
           </div>
           <div class="meta"><a href="https://www.itmedia.co.jp/aiplus/subtop/news" target="_blank" rel="noopener">ITmedia AI+</a></div>
         </article>
@@ -370,10 +377,10 @@ body {
         <article class="story">
           <span class="kicker">01</span>
           <h3>クレスコ、Web制作のアストラザスタジオを子会社化</h3>
-          <p class="lead">ITサービス企業のクレスコは、Webサイトの企画・制作・運用を手がけるアストラザスタジオを子会社化すると発表した。</p>
+          <p class="lead">ITサービス企業のクレスコは、Webサイトの企画・制作・運用を手がけるアストラザスタジオを子会社化<span class="note">（＝ある会社が別の会社の株式の過半数を取得し、自社のグループ会社にすること。買収された会社は名前や業務をそのまま残しつつ、経営の方針は親会社の意向が強く反映されるようになる）</span>すると発表した。</p>
           <div class="context">
             <span class="context-label">📎 知っておきたい背景</span>
-            <p>ITサービス企業がWeb制作会社を傘下に収めることで、システム開発からサイト運用までを一貫して提供できる体制づくりを狙っているとみられる。中小規模のM&amp;Aは業界内で日常的に行われている。</p>
+            <p>この記事を理解するポイントは「なぜIT企業がWeb制作会社を買うのか」。システム開発（アプリやサーバーの中身を作る仕事）とWeb制作（見た目や使い勝手を作る仕事）は、これまで別の会社に別々に発注されることが多かった。クレスコのようなIT企業が両方を自社グループでまかなえるようになると、顧客は1社に発注するだけで完結し、クレスコ側も受注できる仕事の幅が広がるというメリットがある。こうした「川上から川下まで自社で抱え込む」動きは、IT・広告業界のM&amp;Aで繰り返し見られるパターンだ。</p>
           </div>
           <div class="meta"><a href="https://maonline.jp/news/summary20260912" target="_blank" rel="noopener">M&amp;A Online</a></div>
         </article>
@@ -381,10 +388,10 @@ body {
         <article class="story">
           <span class="kicker">02</span>
           <h3>シンメンテHDと三機サービス、12月に経営統合へ</h3>
-          <p class="lead">シンメンテホールディングスと三機サービスが、2026年12月に経営統合すると発表した。</p>
+          <p class="lead">シンメンテホールディングスと三機サービスが、2026年12月に経営統合<span class="note">（＝複数の会社が一つの会社、あるいは一つの持株会社のもとにまとまり、経営の意思決定を統一すること。買収と違い、対等に近い形で一緒になる場合に使われることが多い）</span>すると発表した。</p>
           <div class="context">
             <span class="context-label">📎 知っておきたい背景</span>
-            <p>設備管理・メンテナンス業界では、人手不足や技術継承の課題を背景に、企業同士が統合して規模を拡大する動きが目立っている。統合によりサービス提供エリアや人材の融通がしやすくなることが期待される。</p>
+            <p>この統合の背景を理解する鍵は「設備管理・メンテナンス業界が抱える人手不足」。ビルや工場の設備を点検・修理する仕事は、経験を積んだ技術者でないと務まらないが、担い手の高齢化と若手不足が同時に進んでいる。1社ずつでは対応エリアや人員に限りがあるため、複数の会社が一緒になって技術者を融通し合い、対応できる地域と件数を広げる——というのがこの手の統合が増えている理由だ。単なる規模拡大ではなく、人手不足という業界構造そのものへの対応だと捉えると理解しやすい。</p>
           </div>
           <div class="meta"><a href="https://maonline.jp/news/summary20260912" target="_blank" rel="noopener">M&amp;A Online</a></div>
         </article>
@@ -408,10 +415,10 @@ body {
         <article class="story">
           <span class="kicker">02</span>
           <h3>AI創薬に大型案件が集中——投資家の「選別」さらに進む</h3>
-          <p class="lead">スタートアップ全体の資金調達動向をみると、AIを使った新薬開発（AI創薬）を中心とする一部の大型案件に資金が集中する傾向が強まっている。</p>
+          <p class="lead">スタートアップ全体の資金調達動向をみると、AIを使った新薬開発「AI創薬」<span class="note">（＝新しい薬の候補となる物質を、実験室で1つずつ試す代わりに、AIに膨大な化合物データを学習させて効きそうな候補を絞り込ませる手法。新薬開発にかかる年月とコストを大幅に減らせるとされる）</span>を中心とする一部の大型案件に資金が集中する傾向が強まっている。</p>
           <div class="context">
             <span class="context-label">📎 知っておきたい背景</span>
-            <p>調達額全体は増えていても、実際に資金を得られる企業の数は絞られてきている。有望と判断された分野・企業により多くの資金が集まる「選別」の動きが、スタートアップ業界全体で進んでいる。</p>
+            <p>この記事のポイントは「調達額は増えているのに、恩恵を受ける会社は減っている」というねじれ。新薬開発は成功すれば莫大な利益を生む一方、開発途中で失敗する確率も非常に高いハイリスク・ハイリターンな事業。投資家は「当たれば大きいAI創薬」のような有望株に大金を集中させ、それ以外の分野・企業への投資を絞る「選別」を進めている。上のデジタルヘルスの記事とあわせて読むと、スタートアップ業界全体で「広く薄く」から「狭く厚く」への資金の流れの変化が起きていることがわかる。</p>
           </div>
           <div class="meta"><a href="https://initial.inc/articles/japan-startup-finance-2026h1" target="_blank" rel="noopener">スピーダ スタートアップ情報リサーチ</a></div>
         </article>
