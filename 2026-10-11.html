@@ -1,0 +1,610 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yoshi's News</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Zen+Old+Mincho:wght@600;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap');
+
+:root {
+  --bg: #ffffff;
+  --panel-bg: #ffffff;
+  --card: #ffffff;
+  --card-line: #eef0f3;
+  --ink: #1a1c20;
+  --ink-soft: #5b6068;
+  --ink-faint: #9aa0a8;
+  --shell: #f4f5f7;
+
+  --c-top: #ef3355;
+  --c-social: #00b3a4;
+  --c-polecon: #6d5bf0;
+  --c-scitech: #ff8a1e;
+  --c-business: #0091ff;
+  --c-sports: #26c281;
+  --c-startup: #ff4fa3;
+  --c-koshien: #c8860d;
+  --c-intl: #4b3f8f;
+  --c-gadget: #00bcd4;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101114;
+    --panel-bg: #101114;
+    --card: #1a1c20;
+    --card-line: #2a2c31;
+    --ink: #f1f2f4;
+    --ink-soft: #b7bcc4;
+    --ink-faint: #767c86;
+    --shell: #1a1c20;
+    --c-top: #ff6b85;
+    --c-social: #3fd8c9;
+    --c-polecon: #9c8fff;
+    --c-scitech: #ffab5c;
+    --c-business: #4db2ff;
+    --c-sports: #5be0a6;
+    --c-startup: #ff85c2;
+    --c-koshien: #e8b34c;
+    --c-intl: #a89cf0;
+    --c-gadget: #4dd8ea;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101114;
+  --panel-bg: #101114;
+  --card: #1a1c20;
+  --card-line: #2a2c31;
+  --ink: #f1f2f4;
+  --ink-soft: #b7bcc4;
+  --ink-faint: #767c86;
+  --shell: #1a1c20;
+  --c-top: #ff6b85;
+  --c-social: #3fd8c9;
+  --c-polecon: #9c8fff;
+  --c-scitech: #ffab5c;
+  --c-business: #4db2ff;
+  --c-sports: #5be0a6;
+  --c-startup: #ff85c2;
+  --c-koshien: #e8b34c;
+  --c-intl: #a89cf0;
+  --c-gadget: #4dd8ea;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--shell);
+  color: var(--ink);
+  font-family: "Zen Kaku Gothic New", -apple-system, "Hiragino Kaku Gothic ProN", sans-serif;
+  line-height: 1.7;
+  overscroll-behavior-y: none;
+}
+.serif { font-family: "Zen Old Mincho", "Hiragino Mincho ProN", serif; }
+
+.app {
+  max-width: 680px;
+  margin: 0 auto;
+  background: var(--bg);
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ---- Header ---- */
+.topbar { padding: 20px 20px 0; flex-shrink: 0; }
+.title-line { display: flex; align-items: center; gap: 8px; }
+.mascot { height: 50px; width: auto; flex-shrink: 0; border-radius: 8px; }
+.title-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  margin-bottom: 14px;
+}
+.title-row h1 {
+  font-family: "Baloo 2", "Zen Kaku Gothic New", sans-serif;
+  font-size: 48px; font-weight: 800; margin: 0; letter-spacing: 0.01em; line-height: 1;
+  -webkit-text-stroke: 2.4px #2b2013;
+  filter: drop-shadow(2px 3px 0 rgba(30,22,12,0.18));
+  background-image:
+    radial-gradient(circle at 22% 30%, #211709 0 7px, transparent 8px),
+    radial-gradient(circle at 68% 65%, #3a2b16 0 9px, transparent 10px),
+    radial-gradient(circle at 45% 88%, #241a0c 0 5px, transparent 6px),
+    radial-gradient(circle at 85% 20%, #2e2211 0 6px, transparent 7px),
+    linear-gradient(135deg, #b8a06e, #967c4c 50%, #6f5a35);
+  background-size: 30px 30px, 41px 41px, 23px 23px, 35px 35px, 100% 100%;
+  background-repeat: repeat, repeat, repeat, repeat, no-repeat;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.title-row .date { font-size: 11.5px; color: var(--ink-faint); white-space: nowrap; font-weight: 500; margin-top: 2px; }
+
+.tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px 3px; }
+.tab {
+  appearance: none; border: none; background: none;
+  font-family: inherit; font-size: 10.5px; font-weight: 700;
+  color: var(--ink-faint);
+  padding: 7px 4px 9px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+  cursor: pointer;
+  border-radius: 10px 10px 0 0;
+  transition: color .2s ease, background .2s ease;
+}
+.tab .dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  margin-right: 5px; background: currentColor; opacity: 0.45; vertical-align: middle;
+}
+.tab::after {
+  content: ""; position: absolute; left: 10px; right: 10px; bottom: 0;
+  height: 3px; border-radius: 3px 3px 0 0; background: transparent; transition: background .2s ease;
+}
+.tab.active { color: var(--tab-color); background: color-mix(in srgb, var(--tab-color) 10%, transparent); }
+.tab.active .dot { opacity: 1; }
+.tab.active::after { background: var(--tab-color); }
+
+/* ---- Swipe viewport ---- */
+.viewport { flex: 1; overflow: hidden; position: relative; touch-action: pan-y; }
+.track {
+  display: flex;
+  height: 100%;
+  width: 1000%;
+  transition: transform .32s cubic-bezier(.22,.61,.36,1);
+  will-change: transform;
+}
+.panel {
+  width: 10%;
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 20px 56px;
+}
+
+.panel-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.panel-head .chip { width: 8px; height: 26px; border-radius: 4px; background: var(--cat-color); flex-shrink: 0; }
+.panel-head h2 { font-size: 20px; font-weight: 700; margin: 0; letter-spacing: 0.02em; color: var(--cat-color); }
+.panel-sub { font-size: 12px; color: var(--ink-faint); margin: 0 0 18px 18px; }
+
+.story {
+  background: var(--card);
+  border: 1px solid var(--card-line);
+  border-left: 4px solid var(--cat-color);
+  border-radius: 12px;
+  padding: 18px 18px 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(20,20,30,0.05);
+}
+.story .kicker {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: "Zen Old Mincho", serif; font-size: 11.5px; font-weight: 700;
+  color: var(--cat-color); margin-bottom: 9px;
+}
+.story h3 { font-size: 16px; font-weight: 700; line-height: 1.55; margin: 0 0 10px; }
+.story .lead { font-size: 14px; color: var(--ink); margin: 0 0 14px; line-height: 1.85; }
+
+.context {
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 10px;
+  padding: 13px 15px;
+  margin: 0 0 12px;
+}
+.context-label {
+  display: block; font-size: 10.5px; font-weight: 700;
+  color: var(--cat-color); letter-spacing: 0.04em; margin-bottom: 6px;
+}
+.context p { font-size: 13px; color: var(--ink-soft); margin: 0; line-height: 1.8; }
+
+.note { font-size: 11.5px; color: var(--ink-faint); font-weight: 500; }
+
+.term-link {
+  color: var(--cat-color);
+  text-decoration: none;
+  border-bottom: 1px dotted color-mix(in srgb, var(--cat-color) 55%, transparent);
+  font-weight: 700;
+}
+
+.meta { font-size: 11px; color: var(--ink-faint); }
+.meta a { color: var(--cat-color); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--cat-color) 40%, transparent); font-weight: 700; }
+
+.closing {
+  margin: 6px 0 0; padding: 16px 18px;
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 12px; font-size: 13px; color: var(--ink-soft); text-align: center;
+}
+.closing .label {
+  display: block; font-family: "Zen Old Mincho", serif; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.2em; color: var(--cat-color); margin-bottom: 8px;
+}
+.colophon { margin: 14px 0 8px; font-size: 10.5px; color: var(--ink-faint); line-height: 1.9; text-align: center; }
+
+@media (max-width: 420px) {
+  .topbar { padding: 16px 14px 0; }
+  .panel { padding: 16px 14px 48px; }
+  .title-row h1 { font-size: 38px; }
+  .mascot { height: 40px; }
+}
+</style>
+</head><body>
+
+
+<div class="app" id="app">
+
+  <div class="topbar">
+    <div class="title-row">
+      <div class="title-line">
+        <img class="mascot" src="mascot.jpg" alt="オオサンショウウオのマスコット">
+        <h1>Yoshi's News</h1>
+      </div>
+      <span class="date">2026年10月11日（日）・第38号</span>
+    </div>
+    <div class="tabs" id="tabs">
+      <button class="tab" id="tab-top" style="--tab-color:var(--c-top)" onclick="goTo(0)"><span class="dot"></span>トップ</button>
+      <button class="tab" id="tab-social" style="--tab-color:var(--c-social)" onclick="goTo(1)"><span class="dot"></span>社会</button>
+      <button class="tab" id="tab-polecon" style="--tab-color:var(--c-polecon)" onclick="goTo(2)"><span class="dot"></span>政治/経済</button>
+      <button class="tab" id="tab-scitech" style="--tab-color:var(--c-scitech)" onclick="goTo(3)"><span class="dot"></span>科学/テック</button>
+      <button class="tab" id="tab-business" style="--tab-color:var(--c-business)" onclick="goTo(4)"><span class="dot"></span>ビジネス</button>
+      <button class="tab" id="tab-startup" style="--tab-color:var(--c-startup)" onclick="goTo(5)"><span class="dot"></span>スタートアップ</button>
+      <button class="tab" id="tab-gadget" style="--tab-color:var(--c-gadget)" onclick="goTo(6)"><span class="dot"></span>ガジェット</button>
+      <button class="tab" id="tab-intl" style="--tab-color:var(--c-intl)" onclick="goTo(7)"><span class="dot"></span>海外</button>
+      <button class="tab" id="tab-sports" style="--tab-color:var(--c-sports)" onclick="goTo(8)"><span class="dot"></span>芸能/スポーツ</button>
+      <button class="tab" id="tab-koshien" style="--tab-color:var(--c-koshien)" onclick="goTo(9)"><span class="dot"></span>高校野球【埼玉】</button>
+    </div>
+  </div>
+
+  <div class="viewport" id="viewport">
+    <div class="track" id="track">
+
+      <section class="panel" id="panel-top" style="--cat-color:var(--c-top)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">トップニュース</h2></div>
+        <p class="panel-sub">今日いちばん知っておきたい2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 社会</span>
+          <h3>大阪・だんじり祭りで横転事故相次ぐ——2人死亡</h3>
+          <p class="lead">大阪府内で開かれていた伝統の「だんじり祭り」で、だんじり（山車）が横転する事故が相次いだ。泉佐野市と泉大津市であわせて2人が死亡し、複数の重軽傷者が出た。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>「だんじり祭り」<span class="note">（＝主に関西地方で行われる、豪華な装飾を施した山車（だんじり）を町内で引き回す伝統の祭りのこと。勢いよく方向転換する「やりまわし」などの迫力ある場面が見どころとされる）</span>は、重さ数トンにも及ぶだんじりを人力で勢いよく引き回すため、タイミングや息が合わないと横転しやすいという構造的なリスクを抱えている。見どころとされる迫力ある演出そのものが、重大事故につながりやすいという難しさが、毎年のように各地のだんじり祭りで指摘されている。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261010de57626" target="_blank" rel="noopener">NHKニュース</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 国際</span>
+          <h3>米露、ロシアが軽油30万トン超を国際市場に供給で合意——トランプ大統領発表</h3>
+          <p class="lead">トランプ米大統領は、ロシアが軽油30万トン超を国際市場に直ちに供給することで、ロシア大統領と合意したと明らかにした。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、10月初めに既報のG7による石油備蓄放出など、世界的にディーゼル（軽油）の供給不足・価格高騰への対応が続いていた中での合意だという点にある。「軽油」<span class="note">（＝ディーゼルエンジンの燃料で、トラックや船舶、発電機など物流・産業の広い場面で使われる燃料のこと）</span>は、原油から作られる石油製品の一つで、不足すると物流コストの上昇を通じて多くの商品の価格に影響する。米露間でこうした実務的な合意が成立したことは、両国関係の緊張が続く中でも、エネルギー分野では協力の余地が残っていることを示している。</p>
+          </div>
+          <div class="meta"><a href="https://www.jiji.com/jc/archives?g=int_archive_0" target="_blank" rel="noopener">時事ドットコム</a></div>
+        </article>
+
+        <div class="closing">
+          <span class="label serif">編集後記</span>
+          だんじり祭りでの事故、心が痛みます。伝統の祭りだからこそ、安全管理の難しさも改めて浮き彫りになりました。国際面では米露のエネルギー分野での合意があり、緊張する中でも実務的な協力が続いていることが分かります。プロ野球はクライマックスシリーズが始まり、企業の情報漏えいも相次いでいます。タブまたはスワイプで10のジャンルを読み進められます。良い一日を。
+        </div>
+        <div class="colophon">AIが検索結果をもとに要約・編集しています。詳細は各記事の出典リンクでご確認ください。<br>毎朝5時発行・次号は明日<br><a href="archive.html" style="color:inherit">過去の紙面はこちら</a></div>
+      </section>
+
+      <section class="panel" id="panel-social" style="--cat-color:var(--c-social)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">社会</h2></div>
+        <p class="panel-sub">くらしに関わるニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>10日間で国内有名企業10社超、情報漏洩・障害・サイバー攻撃被害</h3>
+          <p class="lead">ここ10日間のうちに、国内の有名企業10社を超えるところで、情報漏洩・システム障害・サイバー攻撃の被害が相次いで発覚したことが分かった。今週は「手間いらず」「バイトル」など複数のサービスで漏えいが報じられている（10月10日既報）。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、個別の企業の問題ではなく、短期間に集中して多発しているという「頻度」自体が異常事態だという点にある。1社だけの事例であれば個別の管理ミスと見られがちだが、10日間で10社超となると、サイバー攻撃の手法自体が広範囲の企業に通用しやすくなっている可能性や、業界全体のセキュリティー対策が攻撃の進化に追いついていない可能性が考えられる。</p>
+          </div>
+          <div class="meta"><a href="https://enterprisezine.jp/news/detail/25188" target="_blank" rel="noopener">EnterpriseZine</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>長野県小海町長、キノコ採りに出て行方不明に</h3>
+          <p class="lead">長野県小海町の町長が、1人で山林へキノコ採りに出かけたまま戻らず、行方不明になっていることが分かった。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、キノコ採りのような身近なレジャーが、山林での遭難事故につながりやすいという点にある。キノコが生えやすい場所は見通しの悪い斜面や林の奥であることが多く、採取に集中しているうちに現在地を見失ってしまうケースが後を絶たない。単独で山に入ることのリスクが、改めて浮き彫りになった出来事。</p>
+          </div>
+          <div class="meta"><a href="https://happylnk.substack.com/p/720261010" target="_blank" rel="noopener">土曜日の朝に知っておきたい7つの話題</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-polecon" style="--cat-color:var(--c-polecon)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">政治／経済</h2></div>
+        <p class="panel-sub">政治・経済の動き2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 経済</span>
+          <h3>高市政権、「リフレ政策は不要」とのメッセージ</h3>
+          <p class="lead">高市早苗政権は、リフレ政策（意図的に物価上昇を促して経済を活性化させる政策）は不要だというメッセージを打ち出していると報じられた。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>「リフレ政策」<span class="note">（＝デフレ（物価が下がり続ける状態）から脱却するために、金融緩和などを通じてあえて緩やかな物価上昇（インフレ）を促す経済政策のこと）</span>は、かつて日本が長年のデフレに苦しんでいた時代に重視された考え方。現在は物価が上昇基調にあるため（10月8日既報の実質賃金プラスなど）、「これ以上あえて物価を上げる必要はない」という政権のメッセージは、経済の状況が過去とは変わってきていることを示す一つのサインと言える。</p>
+          </div>
+          <div class="meta"><a href="https://www.nikkei.com/" target="_blank" rel="noopener">日本経済新聞</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 国際</span>
+          <h3>ICC所長、米制裁を受け「独立性と公平性を保ちながら使命を果たす」</h3>
+          <p class="lead">ICC（国際刑事裁判所）の赤根智子所長は、米国によるICC本体への制裁を受け、「独立性と公平性を保ちながら、引き続き使命を果たす」と表明した。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、10月10日既報の米国によるICC制裁方針が、実際にICCの運営に影響を及ぼし始めているという点にある。日本人である赤根所長が「独立性と公平性」を強調したのは、大国からの政治的圧力に左右されず、国際法に基づいた判断を続けるという立場を明確にする意図があるとみられる。ノーベル平和賞（10月9日既報）の受賞理由とも重なる、国際法の権威をめぐる綱引きが続いている。</p>
+          </div>
+          <div class="meta"><a href="https://www.jiji.com/jc/archives?g=int_archive_0" target="_blank" rel="noopener">時事ドットコム</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-scitech" style="--cat-color:var(--c-scitech)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">科学／テック</h2></div>
+        <p class="panel-sub">研究・技術のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>Google「AMIE」医療診断AI、論文がThe Lancetに掲載——診断一致率90%</h3>
+          <p class="lead">Googleの医療診断AI「AMIE」について、実際の臨床現場での研究論文が医学誌「The Lancet」に掲載された。医師の診断との一致率は90%だったという。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>「The Lancet」<span class="note">（＝イギリスで発行されている、世界で最も権威があるとされる医学雑誌の一つ。掲載される研究には厳しい審査（査読）が行われる）</span>のような権威ある医学誌に論文が掲載されることは、AIの医療応用において、単なる技術的な実験ではなく、医学的な厳密さを備えた成果として認められたことを意味する。「診断一致率90%」という数字は高く見えるが、残り10%の不一致がどのような種類の見落としなのかが、実用化にあたって今後重要な検証ポイントになる。</p>
+          </div>
+          <div class="meta"><a href="https://ledge.ai/" target="_blank" rel="noopener">Ledge.ai</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>Anthropic、電力網や水道を守るサイバー防衛プログラム「Cyber Mission」発足</h3>
+          <p class="lead">Anthropicは、電力網や水道といった社会基盤（インフラ）をサイバー攻撃から守るための防衛プログラム「Cyber Mission」を発足させた。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、電力網や水道のような「社会インフラ」<span class="note">（＝電力・水道・交通など、社会全体の生活や経済活動を支える基盤的な設備・システムのこと。攻撃されると広範囲に深刻な影響が及ぶ）</span>が、サイバー攻撃の重大な標的になり得るという危機感にある。AI企業が自社の技術をこうした防御目的に特化して提供するのは、攻撃側にもAIが使われるようになっている現状に対し、防御側の能力を高めることで対抗しようとする狙いがある。</p>
+          </div>
+          <div class="meta"><a href="https://ledge.ai/" target="_blank" rel="noopener">Ledge.ai</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-business" style="--cat-color:var(--c-business)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ビジネス</h2></div>
+        <p class="panel-sub">企業・産業のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>ファーストリテイリング、26年8月期売上高が過去最高の3兆9633億円</h3>
+          <p class="lead">「ユニクロ」などを展開するファーストリテイリングの2026年8月期の連結売上高は、過去最高の3兆9633億円となった（10月9日既報の過去最高益の詳細）。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「3兆9633億円」という具体的な数字の大きさにある。日本のアパレル企業がここまでの規模の売上高を記録するのは極めて珍しく、国内外での店舗展開とブランド力の強さを裏付けている。4兆円という大台に迫る数字は、次の決算でさらなる話題を呼びそうだ。</p>
+          </div>
+          <div class="meta"><a href="https://www.nikkei.com/" target="_blank" rel="noopener">日本経済新聞</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>米7〜9月決算、3割増益の見通し——中東情勢・円安でコスト負担も</h3>
+          <p class="lead">米国企業の7〜9月期決算が本格化しており、全体で3割増益の見通しとされている。一方で、中東情勢の悪化や円安の定着により、企業のコスト負担が高まっているとの指摘もある。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「3割増益の見通し」という明るい数字と、「コスト負担が高まっている」という懸念が同時に報じられている点にある。好調な決算の裏側で、原材料やエネルギーのコスト上昇という逆風も強まっており、今後の決算発表シーズンでは、増益の勢いがどこまで続くかが市場の大きな関心事になっている。</p>
+          </div>
+          <div class="meta"><a href="https://www.nikkei.com/markets/world-markets/" target="_blank" rel="noopener">日本経済新聞</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-startup" style="--cat-color:var(--c-startup)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">スタートアップ</h2></div>
+        <p class="panel-sub">資金調達・注目トピック2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>New Innovations、借り入れで17億5000万円を調達</h3>
+          <p class="lead">AI業務用ロボットを手がけるNew Innovationsは、借り入れによるデット調達（融資による資金調達）で17億5000万円を調達したと発表した。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>「AI業務用ロボット」<span class="note">（＝工場や倉庫などの現場で、AIの判断能力を組み込んで実際の作業を行うロボットのこと）</span>の開発・製造には大きな設備投資が必要になることが多く、株式発行による出資だけでなく、融資（借り入れ）を組み合わせて資金を確保する動きが広がっている。デット調達は株式を薄めずに資金を得られる利点があり、事業の収益見通しに一定の確からしさがある場合に選ばれやすい手法。</p>
+          </div>
+          <div class="meta"><a href="https://www.nikkei.com/" target="_blank" rel="noopener">日本経済新聞</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>Mujin、第三者割当増資と借り入れで364億円を調達</h3>
+          <p class="lead">ロボット制御ソフトウエアを手がけるMujinは、第三者割当増資と借り入れを組み合わせて、総額364億円の資金調達を実施したと発表した。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、364億円という金額が、国内のスタートアップ資金調達の中でも極めて大規模な部類に入るという点にある。「ロボット制御ソフトウエア」<span class="note">（＝ロボットの手足となる部分に対し、どのタイミングでどう動くべきかを指示する、いわばロボットの「頭脳」にあたるプログラムのこと）</span>は、物流・製造業の自動化が進む中で需要が急拡大している分野。この規模の調達は、同社の技術が国内外で高く評価されていることを示している。</p>
+          </div>
+          <div class="meta"><a href="https://www.nikkei.com/" target="_blank" rel="noopener">日本経済新聞</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-gadget" style="--cat-color:var(--c-gadget)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ガジェット</h2></div>
+        <p class="panel-sub">新製品2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>Sony「Xperia 10 VIII」、グローバルで発表——決済機能を強化</h3>
+          <p class="lead">ソニーは、決済機能を強化したミッドレンジ（中価格帯）のスマートフォン「Xperia 10 VIII」をグローバルで発表した。日本国内では10月8日に発売済み（10月8日既報）で、価格は9万9000円。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>「決済機能の強化」<span class="note">（＝スマートフォンを使った非接触型の支払い（タッチ決済）の精度や対応範囲を広げること）</span>は、現金を持たずに生活する人が増える中で、スマートフォン選びの重要な判断材料の一つになっている。中価格帯モデルにもこうした実用機能を手厚く搭載することで、価格を抑えつつ日常使いの満足度を高める狙いがあるとみられる。</p>
+          </div>
+          <div class="meta"><a href="https://www.itmedia.co.jp/" target="_blank" rel="noopener">ITmedia</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>ZOOM、スマホ対応マルチエフェクター「NEURIG」発表</h3>
+          <p class="lead">音響機器メーカーのZOOMは、スマートフォンと連携できるギター用マルチエフェクター「NEURIG」を発表した。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>「マルチエフェクター」<span class="note">（＝ギターなどの楽器の音を加工し、歪みや反響などさまざまな音響効果を1台で切り替えて使える機材のこと）</span>にスマートフォン連携機能を持たせることで、アプリ上で音作りの細かな調整や、新しい音色データの追加ができるようになる。従来は機材本体の操作パネルだけで調整していたが、スマートフォンの画面を使うことでより直感的な操作が可能になる。</p>
+          </div>
+          <div class="meta"><a href="https://www.soundhouse.co.jp/news/detail?NewsNo=24192" target="_blank" rel="noopener">サウンドハウス</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-intl" style="--cat-color:var(--c-intl)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">海外</h2></div>
+        <p class="panel-sub">国際ニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>パナマでM7.7地震——ホテルなど倒壊</h3>
+          <p class="lead">中米パナマでマグニチュード7.7の地震が発生し、ホテルなどの建物が倒壊した。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「マグニチュード7.7」という数字の大きさにある。マグニチュード<span class="note">（＝地震そのものの規模（エネルギーの大きさ）を表す指標のこと。数字が1大きくなるごとに、地震のエネルギーは約32倍になる）</span>7クラスの地震は、都市部で発生すれば大規模な建物倒壊につながりやすい規模。日本への津波の影響については、今回確認できていないが、環太平洋地域で起きる大地震は、遠方の国々にも津波の警戒が必要になることがある。</p>
+          </div>
+          <div class="meta"><a href="https://ryukyushimpo.jp/kyodo/entry-5546264.html" target="_blank" rel="noopener">共同通信（琉球新報経由）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>中国とEU、貿易摩擦めぐり協議</h3>
+          <p class="lead">中国とEU（欧州連合）は、両者の間で生じている貿易摩擦について協議を行った。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、10月初めに既報の中国によるEU産化学製品のダンピング調査など、中国とEUの間で貿易上の緊張が続いているという経緯にある。米中間の関税をめぐる緊張緩和が進む一方で、中国がEUとの間では別の貿易摩擦を抱えているという構図は、世界の貿易関係が一方では緩和し、他方では緊張するという複雑な状況を改めて映し出している。</p>
+          </div>
+          <div class="meta"><a href="https://www.jetro.go.jp/biznews/" target="_blank" rel="noopener">ジェトロ ビジネス短信</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-sports" style="--cat-color:var(--c-sports)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">芸能／スポーツ</h2></div>
+        <p class="panel-sub">厳選2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>クライマックスシリーズ、ファーストステージ第1戦——DeNA・西武が初戦勝利</h3>
+          <p class="lead">プロ野球クライマックスシリーズのファーストステージ第1戦が10月10日に行われた。セ・リーグは東京ドームでDeNAが巨人に2-1で勝利。パ・リーグはベルーナドームで西武が日本ハムに3-2で勝利した。ファーストステージは3試合制で、先に2勝したチームが、セは阪神、パはソフトバンクが待つファイナルステージに進む。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、10月5日既報のクライマックスシリーズの仕組み上、ファーストステージを勝ち上がったチームが、レギュラーシーズン1位のチーム（阪神・ソフトバンク）が持つ「アドバンテージ」に挑む立場になるという点にある。ファーストステージ自体も3試合制の短期決戦であり、初戦を取ったチームが有利に大会を進められる。</p>
+          </div>
+          <div class="meta"><a href="https://www.baseballchannel.jp/npb/294485/" target="_blank" rel="noopener">ベースボールチャンネル</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>山下智久さん主演ドラマ「俺たちの箱根駅伝」スタート</h3>
+          <p class="lead">俳優の山下智久さんが主演するドラマ「俺たちの箱根駅伝」が放送を開始した。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「箱根駅伝」<span class="note">（＝毎年1月2・3日に関東の大学を中心に行われる、正月の恒例行事として広く親しまれている長距離リレー競走のこと）</span>という、多くの日本人に馴染みのある題材をドラマ化している点にある。実在する有名なスポーツイベントを題材にした作品は、競技を知っている視聴者にとって親近感を持ちやすく、ドラマを通じて競技への関心が高まる効果も期待される。</p>
+          </div>
+          <div class="meta"><a href="https://news.livedoor.com/topics/category/ent/" target="_blank" rel="noopener">ライブドアニュース</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-koshien" style="--cat-color:var(--c-koshien)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">高校野球【埼玉】</h2></div>
+        <p class="panel-sub">秋季大会2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>山村学園投手「ここがゴールではなく、選抜出場が目標」</h3>
+          <p class="lead">秋季関東大会（10月8日既報）に向け、山村学園の投手は「ここがゴールではなく、選抜出場が目標。関東大会に向けて練習に励みたい」と話した。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「選抜（センバツ）出場」という言葉が示す通り、関東大会がそれ自体の勝敗だけでなく、来春の全国大会出場への通過点として位置づけられているという点にある。秋季埼玉県大会での準優勝（10月6日既報）に満足せず、さらに上を目指す姿勢が選手のコメントから読み取れる。</p>
+          </div>
+          <div class="meta"><a href="https://www.hb-nippon.com/articles/18066" target="_blank" rel="noopener">高校野球ドットコム</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>関東大会まで1週間——西武台・山村学園とも初戦突破なら来春センバツへ前進</h3>
+          <p class="lead">秋季関東地区高校野球大会の開幕（10月17日）まで1週間となった。西武台（埼玉1位）・山村学園（埼玉2位）とも、初戦を突破できれば来春のセンバツ甲子園出場校選考に向けて大きく前進する。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、初戦の相手がいずれも全国的な強豪（横浜・山梨学院、10月9日既報）であるという厳しさにある。埼玉県大会を制した勢いをそのまま関東大会にぶつけられるか、両校の調整状況が今後の注目点になる。</p>
+          </div>
+          <div class="meta"><a href="https://saitama-baseball.com/akikanto2026/" target="_blank" rel="noopener">埼玉高校野球情報局</a></div>
+        </article>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var cats = ['top','social','polecon','scitech','business','startup','gadget','intl','sports','koshien'];
+  var idx = 0;
+  var track = document.getElementById('track');
+  var viewport = document.getElementById('viewport');
+  var vw = viewport.clientWidth;
+
+  function setActive(i){
+    cats.forEach(function(c, j){
+      document.getElementById('tab-' + c).classList.toggle('active', j === i);
+    });
+    var activeTab = document.getElementById('tab-' + cats[i]);
+    if (activeTab && activeTab.scrollIntoView) activeTab.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+  }
+
+  function settle(i, animate){
+    idx = Math.max(0, Math.min(cats.length - 1, i));
+    track.style.transition = animate ? 'transform .32s cubic-bezier(.22,.61,.36,1)' : 'none';
+    track.style.transform = 'translateX(' + (-idx * vw) + 'px)';
+    setActive(idx);
+  }
+
+  window.goTo = function(i){ settle(i, true); };
+
+  window.addEventListener('resize', function(){
+    vw = viewport.clientWidth;
+    settle(idx, false);
+  });
+
+  var dragging = false, decided = null, sx = 0, sy = 0, dx = 0;
+  viewport.addEventListener('touchstart', function(e){
+    dragging = true; decided = null;
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY; dx = 0;
+    track.style.transition = 'none';
+  }, { passive: true });
+
+  viewport.addEventListener('touchmove', function(e){
+    if (!dragging) return;
+    var cx = e.touches[0].clientX, cy = e.touches[0].clientY;
+    var mdx = cx - sx, mdy = cy - sy;
+    if (decided === null) {
+      if (Math.abs(mdx) > 8 || Math.abs(mdy) > 8) {
+        decided = Math.abs(mdx) > Math.abs(mdy) ? 'x' : 'y';
+      }
+    }
+    if (decided === 'x') {
+      e.preventDefault();
+      dx = mdx;
+      var atStart = idx === 0 && dx > 0;
+      var atEnd = idx === cats.length - 1 && dx < 0;
+      var eased = (atStart || atEnd) ? dx * 0.35 : dx;
+      track.style.transform = 'translateX(' + (-idx * vw + eased) + 'px)';
+    }
+  }, { passive: false });
+
+  viewport.addEventListener('touchend', function(){
+    if (!dragging) return;
+    dragging = false;
+    if (decided === 'x') {
+      var threshold = vw * 0.18;
+      if (dx <= -threshold) settle(idx + 1, true);
+      else if (dx >= threshold) settle(idx - 1, true);
+      else settle(idx, true);
+    }
+    decided = null; dx = 0;
+  });
+
+  settle(0, false);
+})();
+</script>
+
+</body></html>
