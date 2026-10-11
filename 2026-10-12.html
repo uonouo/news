@@ -1,0 +1,610 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yoshi's News</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Zen+Old+Mincho:wght@600;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap');
+
+:root {
+  --bg: #ffffff;
+  --panel-bg: #ffffff;
+  --card: #ffffff;
+  --card-line: #eef0f3;
+  --ink: #1a1c20;
+  --ink-soft: #5b6068;
+  --ink-faint: #9aa0a8;
+  --shell: #f4f5f7;
+
+  --c-top: #ef3355;
+  --c-social: #00b3a4;
+  --c-polecon: #6d5bf0;
+  --c-scitech: #ff8a1e;
+  --c-business: #0091ff;
+  --c-sports: #26c281;
+  --c-startup: #ff4fa3;
+  --c-koshien: #c8860d;
+  --c-intl: #4b3f8f;
+  --c-gadget: #00bcd4;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101114;
+    --panel-bg: #101114;
+    --card: #1a1c20;
+    --card-line: #2a2c31;
+    --ink: #f1f2f4;
+    --ink-soft: #b7bcc4;
+    --ink-faint: #767c86;
+    --shell: #1a1c20;
+    --c-top: #ff6b85;
+    --c-social: #3fd8c9;
+    --c-polecon: #9c8fff;
+    --c-scitech: #ffab5c;
+    --c-business: #4db2ff;
+    --c-sports: #5be0a6;
+    --c-startup: #ff85c2;
+    --c-koshien: #e8b34c;
+    --c-intl: #a89cf0;
+    --c-gadget: #4dd8ea;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101114;
+  --panel-bg: #101114;
+  --card: #1a1c20;
+  --card-line: #2a2c31;
+  --ink: #f1f2f4;
+  --ink-soft: #b7bcc4;
+  --ink-faint: #767c86;
+  --shell: #1a1c20;
+  --c-top: #ff6b85;
+  --c-social: #3fd8c9;
+  --c-polecon: #9c8fff;
+  --c-scitech: #ffab5c;
+  --c-business: #4db2ff;
+  --c-sports: #5be0a6;
+  --c-startup: #ff85c2;
+  --c-koshien: #e8b34c;
+  --c-intl: #a89cf0;
+  --c-gadget: #4dd8ea;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--shell);
+  color: var(--ink);
+  font-family: "Zen Kaku Gothic New", -apple-system, "Hiragino Kaku Gothic ProN", sans-serif;
+  line-height: 1.7;
+  overscroll-behavior-y: none;
+}
+.serif { font-family: "Zen Old Mincho", "Hiragino Mincho ProN", serif; }
+
+.app {
+  max-width: 680px;
+  margin: 0 auto;
+  background: var(--bg);
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ---- Header ---- */
+.topbar { padding: 20px 20px 0; flex-shrink: 0; }
+.title-line { display: flex; align-items: center; gap: 8px; }
+.mascot { height: 50px; width: auto; flex-shrink: 0; border-radius: 8px; }
+.title-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  margin-bottom: 14px;
+}
+.title-row h1 {
+  font-family: "Baloo 2", "Zen Kaku Gothic New", sans-serif;
+  font-size: 48px; font-weight: 800; margin: 0; letter-spacing: 0.01em; line-height: 1;
+  -webkit-text-stroke: 2.4px #2b2013;
+  filter: drop-shadow(2px 3px 0 rgba(30,22,12,0.18));
+  background-image:
+    radial-gradient(circle at 22% 30%, #211709 0 7px, transparent 8px),
+    radial-gradient(circle at 68% 65%, #3a2b16 0 9px, transparent 10px),
+    radial-gradient(circle at 45% 88%, #241a0c 0 5px, transparent 6px),
+    radial-gradient(circle at 85% 20%, #2e2211 0 6px, transparent 7px),
+    linear-gradient(135deg, #b8a06e, #967c4c 50%, #6f5a35);
+  background-size: 30px 30px, 41px 41px, 23px 23px, 35px 35px, 100% 100%;
+  background-repeat: repeat, repeat, repeat, repeat, no-repeat;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.title-row .date { font-size: 11.5px; color: var(--ink-faint); white-space: nowrap; font-weight: 500; margin-top: 2px; }
+
+.tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px 3px; }
+.tab {
+  appearance: none; border: none; background: none;
+  font-family: inherit; font-size: 10.5px; font-weight: 700;
+  color: var(--ink-faint);
+  padding: 7px 4px 9px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+  cursor: pointer;
+  border-radius: 10px 10px 0 0;
+  transition: color .2s ease, background .2s ease;
+}
+.tab .dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  margin-right: 5px; background: currentColor; opacity: 0.45; vertical-align: middle;
+}
+.tab::after {
+  content: ""; position: absolute; left: 10px; right: 10px; bottom: 0;
+  height: 3px; border-radius: 3px 3px 0 0; background: transparent; transition: background .2s ease;
+}
+.tab.active { color: var(--tab-color); background: color-mix(in srgb, var(--tab-color) 10%, transparent); }
+.tab.active .dot { opacity: 1; }
+.tab.active::after { background: var(--tab-color); }
+
+/* ---- Swipe viewport ---- */
+.viewport { flex: 1; overflow: hidden; position: relative; touch-action: pan-y; }
+.track {
+  display: flex;
+  height: 100%;
+  width: 1000%;
+  transition: transform .32s cubic-bezier(.22,.61,.36,1);
+  will-change: transform;
+}
+.panel {
+  width: 10%;
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 20px 56px;
+}
+
+.panel-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.panel-head .chip { width: 8px; height: 26px; border-radius: 4px; background: var(--cat-color); flex-shrink: 0; }
+.panel-head h2 { font-size: 20px; font-weight: 700; margin: 0; letter-spacing: 0.02em; color: var(--cat-color); }
+.panel-sub { font-size: 12px; color: var(--ink-faint); margin: 0 0 18px 18px; }
+
+.story {
+  background: var(--card);
+  border: 1px solid var(--card-line);
+  border-left: 4px solid var(--cat-color);
+  border-radius: 12px;
+  padding: 18px 18px 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(20,20,30,0.05);
+}
+.story .kicker {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: "Zen Old Mincho", serif; font-size: 11.5px; font-weight: 700;
+  color: var(--cat-color); margin-bottom: 9px;
+}
+.story h3 { font-size: 16px; font-weight: 700; line-height: 1.55; margin: 0 0 10px; }
+.story .lead { font-size: 14px; color: var(--ink); margin: 0 0 14px; line-height: 1.85; }
+
+.context {
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 10px;
+  padding: 13px 15px;
+  margin: 0 0 12px;
+}
+.context-label {
+  display: block; font-size: 10.5px; font-weight: 700;
+  color: var(--cat-color); letter-spacing: 0.04em; margin-bottom: 6px;
+}
+.context p { font-size: 13px; color: var(--ink-soft); margin: 0; line-height: 1.8; }
+
+.note { font-size: 11.5px; color: var(--ink-faint); font-weight: 500; }
+
+.term-link {
+  color: var(--cat-color);
+  text-decoration: none;
+  border-bottom: 1px dotted color-mix(in srgb, var(--cat-color) 55%, transparent);
+  font-weight: 700;
+}
+
+.meta { font-size: 11px; color: var(--ink-faint); }
+.meta a { color: var(--cat-color); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--cat-color) 40%, transparent); font-weight: 700; }
+
+.closing {
+  margin: 6px 0 0; padding: 16px 18px;
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 12px; font-size: 13px; color: var(--ink-soft); text-align: center;
+}
+.closing .label {
+  display: block; font-family: "Zen Old Mincho", serif; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.2em; color: var(--cat-color); margin-bottom: 8px;
+}
+.colophon { margin: 14px 0 8px; font-size: 10.5px; color: var(--ink-faint); line-height: 1.9; text-align: center; }
+
+@media (max-width: 420px) {
+  .topbar { padding: 16px 14px 0; }
+  .panel { padding: 16px 14px 48px; }
+  .title-row h1 { font-size: 38px; }
+  .mascot { height: 40px; }
+}
+</style>
+</head><body>
+
+
+<div class="app" id="app">
+
+  <div class="topbar">
+    <div class="title-row">
+      <div class="title-line">
+        <img class="mascot" src="mascot.jpg" alt="オオサンショウウオのマスコット">
+        <h1>Yoshi's News</h1>
+      </div>
+      <span class="date">2026年10月12日（月・スポーツの日）・第39号</span>
+    </div>
+    <div class="tabs" id="tabs">
+      <button class="tab" id="tab-top" style="--tab-color:var(--c-top)" onclick="goTo(0)"><span class="dot"></span>トップ</button>
+      <button class="tab" id="tab-social" style="--tab-color:var(--c-social)" onclick="goTo(1)"><span class="dot"></span>社会</button>
+      <button class="tab" id="tab-polecon" style="--tab-color:var(--c-polecon)" onclick="goTo(2)"><span class="dot"></span>政治/経済</button>
+      <button class="tab" id="tab-scitech" style="--tab-color:var(--c-scitech)" onclick="goTo(3)"><span class="dot"></span>科学/テック</button>
+      <button class="tab" id="tab-business" style="--tab-color:var(--c-business)" onclick="goTo(4)"><span class="dot"></span>ビジネス</button>
+      <button class="tab" id="tab-startup" style="--tab-color:var(--c-startup)" onclick="goTo(5)"><span class="dot"></span>スタートアップ</button>
+      <button class="tab" id="tab-gadget" style="--tab-color:var(--c-gadget)" onclick="goTo(6)"><span class="dot"></span>ガジェット</button>
+      <button class="tab" id="tab-intl" style="--tab-color:var(--c-intl)" onclick="goTo(7)"><span class="dot"></span>海外</button>
+      <button class="tab" id="tab-sports" style="--tab-color:var(--c-sports)" onclick="goTo(8)"><span class="dot"></span>芸能/スポーツ</button>
+      <button class="tab" id="tab-koshien" style="--tab-color:var(--c-koshien)" onclick="goTo(9)"><span class="dot"></span>高校野球【埼玉】</button>
+    </div>
+  </div>
+
+  <div class="viewport" id="viewport">
+    <div class="track" id="track">
+
+      <section class="panel" id="panel-top" style="--cat-color:var(--c-top)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">トップニュース</h2></div>
+        <p class="panel-sub">今日いちばん知っておきたい2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 科学</span>
+          <h3>2026年ノーベル経済学賞、本日18時45分ごろ発表へ——今年の発表ラッシュの最後を飾る</h3>
+          <p class="lead">今年のノーベル賞は10月5日の生理学・医学賞から始まり、物理学賞（6日）、化学賞（7日）と続いてきた。最後の経済学賞は、本日10月12日の日本時間18時45分ごろ、スウェーデンで発表される予定。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、ノーベル賞<span class="note">（＝物理学・化学・生理学医学・文学・平和・経済学の6分野で、人類に最大の貢献をした人に贈られる国際的な賞。スウェーデンとノルウェーの委員会が選考する）</span>が、分野ごとに発表日が毎年固定された順番（医学→物理→化学→文学→平和→経済学）で1週間かけて発表されるという点にある。経済学賞は医学・物理・化学などの自然科学と異なり、「実在するのか」という議論が歴史的にあった分野だが、現代の経済政策（例えば日本の消費税や金融政策の議論）に直結する研究が選ばれることが多く、受賞者の研究テーマそのものが世界の経済論争の縮図になりやすい。</p>
+          </div>
+          <div class="meta"><a href="https://pro.edgex.exchange/ja-JP/news/article/2026-nobel-prize-announcements" target="_blank" rel="noopener">2026 Nobel Prize announcements</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 社会</span>
+          <h3>国内ランサムウエア被害「過去最悪」、Qilin中心メンバーをドイツへ引き渡し</h3>
+          <p class="lead">世界各国の企業を狙う国際ハッカー集団「Qilin」の中心メンバーとみられるロシア国籍の男（28）を、日本の捜査当局が国内で拘束し、今月ドイツ当局に引き渡していたことが分かった。Qilinによる被害は国内で53社に上るとされる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「ランサムウエア」<span class="note">（＝企業などのコンピューターのデータを勝手に暗号化して使えなくし、元に戻す対価として金銭（ランサム＝身代金）を要求する悪質なソフトウエアのこと）</span>の集団の中心人物が、被害国の日本ではなく、別の被害国であるドイツの要請で日本国内で拘束されたという、国境を越えた捜査協力の構図にある。10月に入ってKDDIや第一興商など国内有名企業で情報漏えいが相次ぎ（10月10日既報）、東京商工リサーチ調べで2026年は上場企業の大規模漏えいが過去最悪ペースとなっているが、犯罪集団の摘発が被害の抑止にどこまでつながるかが今後の焦点になる。</p>
+          </div>
+          <div class="meta"><a href="https://kumanichi.com/articles/2044544" target="_blank" rel="noopener">熊本日日新聞（共同通信）</a></div>
+        </article>
+
+        <div class="closing">
+          <span class="label serif">編集後記</span>
+          スポーツの日で3連休最終日ですが、ニュースは盛りだくさんです。今夜はノーベル経済学賞の発表、プロ野球は両リーグでファイナルステージが開幕。サイバー犯罪の摘発や企業決算など、お金と技術の話題も目立ちました。タブまたはスワイプで10のジャンルを読み進められます。良い祝日を。
+        </div>
+        <div class="colophon">AIが検索結果をもとに要約・編集しています。詳細は各記事の出典リンクでご確認ください。<br>毎朝5時発行・次号は明日<br><a href="archive.html" style="color:inherit">過去の紙面はこちら</a></div>
+      </section>
+
+      <section class="panel" id="panel-social" style="--cat-color:var(--c-social)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">社会</h2></div>
+        <p class="panel-sub">くらしに関わるニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>上場企業の情報漏えい、2026年は過去最悪ペース——10月5日時点で10件</h3>
+          <p class="lead">東京商工リサーチの調べによると、上場企業とその子会社で2026年に起きた100万件以上の個人情報漏えいは、10月5日時点で10件に達した。2025年通年の6件を既に上回っており、過去最悪のペースだという（10月11日既報のKDDI・第一興商などの漏えいを含む）。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、1年がまだ3カ月近く残っている段階で、すでに前年1年分を超えているという「ペースの異常さ」にある。最大規模はKDDIで、インターネットサービスプロバイダー向けメールシステムへの不正アクセスにより1223万件超のメールアドレスが漏えいしたとされる。セキュリティー会社は、7月以降に被害が増加していることから、サイバー攻撃にAIが悪用されている可能性が高いとみている（本日既報のQilin摘発とも関連する動き）。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261006de55037" target="_blank" rel="noopener">NHKニュース</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>沖縄・米兵事件、発生から1週間——全容解明急ぐ</h3>
+          <p class="lead">沖縄県内で米兵が関わった事件の発生から10日で1週間となり、地元では反発が強まっている。那覇署に拘束されていた米海兵隊の男（上等兵）は検察官送致された。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、沖縄で米軍関係者による事件が起きるたびに、在日米軍基地の存在そのものに対する地元の感情が強く刺激されるという構造的な背景にある。日米地位協定<span class="note">（＝日本にいる米軍の法的な扱いを定めた取り決め。米兵の身柄引き渡しの手続きなどに関わり、事件が起きるたびにその運用が議論になる）</span>のもとでの捜査手続きの進め方も、過去から繰り返し論点になってきた。1週間経っても「全容解明」が終わっていないこと自体が、地元の不満を長引かせる要因になっている。</p>
+          </div>
+          <div class="meta"><a href="https://www.kobe-np.co.jp/news/zenkoku/compact/202610/0020912596.shtml" target="_blank" rel="noopener">神戸新聞（共同通信）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-polecon" style="--cat-color:var(--c-polecon)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">政治／経済</h2></div>
+        <p class="panel-sub">政治・経済の動き2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 政治</span>
+          <h3>臨時国会、代表質問始まる——消費税減税法案が最大の焦点</h3>
+          <p class="lead">10月5日に召集された臨時国会では、衆参両院で各党の代表質問が行われた。政府は飲食料品の消費税率を2027年4月から2年間、8%から1%へ引き下げる法案を提出しており、高市首相は財源について「赤字国債に頼らず、歳出・歳入両面の見直しで確保する」と強調した。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、消費税<span class="note">（＝モノやサービスを買うときに広く一律にかかる税金。国の主要な税収源の一つで、社会保障の財源にも使われている）</span>の減税が「一時的な2年間限定」とされている点にある。永続的な減税ではなく期限付きにすることで、財源の穴を小さく見せつつ、物価高に苦しむ有権者への対応を急いだという事情がうかがえる。野党側は、簑和生農相の道路予算削減発言の是非など、閣僚の資質も論戦の対象にしている。</p>
+          </div>
+          <div class="meta"><a href="https://kumanichi.com/articles/2042949" target="_blank" rel="noopener">熊本日日新聞（共同通信）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 経済</span>
+          <h3>米中、相互に関税引き下げリストを発表——11月の休戦期限が目前に</h3>
+          <p class="lead">米国と中国は9月27日、それぞれ約300億ドル規模の関税引き下げリストを発表した。米国は中国産の玩具・家電など77品目、中国は米国産の農産品・冷凍牛肉・医療機器など1619品目が対象で、実施時期は未定とされている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、2025年10月の釜山合意による米中の関税「休戦」<span class="note">（＝互いに新たな関税の上乗せを一時的に見合わせる取り決めのこと。恒久的な解決ではなく、期限付きの一時停止にすぎない）</span>が、本年11月に期限を迎えるという時間的な切迫感にある。今回の相互リスト発表は、休戦を単なる停止から実際の関税引き下げへ進める一歩だが、対象品目はまだ一部にすぎない。11月の中国・深センでのAPEC首脳会談でさらに協議が続く見通しで、そこまでに全体像がまとまるかが焦点になる。</p>
+          </div>
+          <div class="meta"><a href="https://www.iima.or.jp/docs/merumaga/2026/20261001asakawa.pdf" target="_blank" rel="noopener">国際通貨研究所</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-scitech" style="--cat-color:var(--c-scitech)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">科学／テック</h2></div>
+        <p class="panel-sub">研究・技術のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>サイバー攻撃に生成AIが悪用か——セキュリティー会社が分析</h3>
+          <p class="lead">相次ぐ企業への不正アクセス・情報漏えい（本日既報）について、セキュリティー会社は、7月以降に被害が急増していることから、攻撃の手口にAIが悪用されている可能性が高いと分析している。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、これまでサイバー攻撃にはある程度の専門知識や手間が必要だったが、生成AI<span class="note">（＝文章やプログラムのコードなどを、人が指示するだけで自動的に作り出せるAIのこと）</span>を使うことで、攻撃に使う不正なプログラムの作成や、だましの文章（フィッシングメールなど）の生成が、より速く・より巧妙に・より大量にできるようになった可能性がある点にある。攻撃する側の「生産性」が上がったことで、被害件数そのものが増えているのではないか、という見方が専門家の間で強まっている。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261006de55037" target="_blank" rel="noopener">NHKニュース</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>立教大学の論文、AI分野最高峰「NeurIPS 2026」に採択</h3>
+          <p class="lead">立教大学の研究チームによる、イベントカメラからの知識蒸留でAIに「形を見る力」を与える研究が、AI分野の国際会議「NeurIPS 2026」に採択された。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「NeurIPS」<span class="note">（＝世界で最も権威があるAI研究の国際会議の一つ。採択される論文は厳しい審査を通過する必要があり、採択自体が研究の質の高さを示す指標になる）</span>という場で、日本の大学の研究が認められたという点にある。「イベントカメラ」<span class="note">（＝一般的なカメラのように一定間隔で画像を撮るのではなく、物の動きなど変化があった部分だけを高速に検知する特殊なカメラのこと）</span>から得られる情報をAIに効率よく学ばせる（知識蒸留する）ことで、AIが物の輪郭や形をより正確に認識できるようになる。自動運転やロボットの物体認識など、実用面への応用が期待される基礎研究。</p>
+          </div>
+          <div class="meta"><a href="https://digitalpr.jp/r/19496" target="_blank" rel="noopener">PR TIMES</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-business" style="--cat-color:var(--c-business)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ビジネス</h2></div>
+        <p class="panel-sub">企業・産業のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>トヨタ、4〜6月期は純利益77.9%増——通期業績を上方修正</h3>
+          <p class="lead">トヨタ自動車の2026年度（2027年3月期）第1四半期（4〜6月期）決算は、売上高13兆5254億円（前年同期比10.4%増）、営業利益1兆634億円（同8.8%減）となった一方、当期利益は1兆4770億円で前年同期比77.9%増となった。好調なハイブリッド車（HEV）の需要に対応するため、国内で次世代電池への切り替えも計画している。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「営業利益は減益なのに、当期利益は大幅増益」という、一見矛盾した数字の組み合わせにある。営業利益<span class="note">（＝本業の自動車の製造・販売だけで稼いだ利益のこと）</span>が減った一方で、当期利益<span class="note">（＝本業以外の資産売却や為替の影響なども含めた、最終的な利益のこと）</span>が大きく増えたのは、本業そのものはコスト増などでやや苦しんでいる一方、円安や投資先企業の株価上昇といった本業外の要因が業績全体を押し上げたことを示している。</p>
+          </div>
+          <div class="meta"><a href="https://monoist.itmedia.co.jp/mn/articles/2608/05/news048.html" target="_blank" rel="noopener">MONOist</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>2026年度の日本企業業績、製造業は増益超・非製造業は苦戦の見通し</h3>
+          <p class="lead">三菱UFJアセットマネジメントの資料によると、2026年度の会社予想（期初計画）の前年比利益成長率は、全体で0.4%減、製造業が6.6%増、非製造業が10.3%減となっている。中東情勢の不安定さを背景に、企業のガイダンス（業績見通し）は全体的に保守的だという。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「製造業は増益」「非製造業は減益」という業種間のコントラストにある。製造業<span class="note">（＝自動車や電機など、モノを作って売る業種のこと。輸出が多く、円安になると海外での売上が円換算で増えやすい）</span>は円安のメリットを受けやすい一方、非製造業<span class="note">（＝小売・外食・物流など、サービスや流通が中心の業種のこと。原材料や燃料の輸入コストの上昇が直接の負担になりやすい）</span>は原材料・燃料の輸入コスト上昇の影響をより強く受ける。同じ「円安」という現象が、業種によって追い風にも逆風にもなるという構図が表れている。</p>
+          </div>
+          <div class="meta"><a href="https://www.bk.mufg.jp/tameru/toushin/report/pdf/market_report_jp_443.pdf" target="_blank" rel="noopener">三菱UFJアセットマネジメント</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-startup" style="--cat-color:var(--c-startup)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">スタートアップ</h2></div>
+        <p class="panel-sub">資金調達・注目トピック2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>国内スタートアップ投資、26年上半期は5033億円——件数は35%減、大型化が進む</h3>
+          <p class="lead">STARTUP DBの調査によると、2026年上半期の国内スタートアップの資金調達額は速報値で5033億円となり、前年同期比4%増となった。一方、調達社数は1061社と35%減少しており、投資家が投資先をより厳選している様子がうかがえる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「金額は増えたのに、社数は大きく減った」という組み合わせにある。これは、投資家が広く薄く多くのスタートアップに投資する姿勢から、見込みのある一部の企業に大きな金額を集中させる姿勢へ変わってきていることを意味する。1社あたりの調達額が5億円以上となる大型案件の割合が増えたことが、全体の金額を押し上げている。</p>
+          </div>
+          <div class="meta"><a href="https://webtan.impress.co.jp/r/prtimes/items/000000464.000032589" target="_blank" rel="noopener">Web担当者Forum（PR TIMES）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>世界のスタートアップ投資、1〜3月期は297億ドルで過去最高——AI大手4社が6割超</h3>
+          <p class="lead">TechCrunchの報道によると、2026年1〜3月期の世界のスタートアップ投資額は297億ドルとなり、過去最高を更新した。OpenAI・Anthropic・xAI・Waymoの4件の大型案件だけで、四半期全体の63%以上を占めたという。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「過去最高」という見出しの裏側に、実は投資の集中が極端に進んでいるという事実がある点にある。297億ドルという全体の記録的な金額のうち、6割超がわずか4社に集まっているということは、残りの大多数のスタートアップにとっては、実感としては資金調達がむしろ厳しくなっている可能性を示している。AI関連企業への投資の一極集中が、世界的なスタートアップ市場の実像をゆがめて見せている構図がある。</p>
+          </div>
+          <div class="meta"><a href="https://kiroku.today/url/techcrunch.com/2026/04/01/startup-funding-shatters-all-records-in-q1" target="_blank" rel="noopener">TechCrunch</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-gadget" style="--cat-color:var(--c-gadget)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ガジェット</h2></div>
+        <p class="panel-sub">新製品2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>Apple初の折りたたみ「iPhone Duo」、10月23日発売——予約は16日午後9時から</h3>
+          <p class="lead">アップルは、同社初の折りたたみスマートフォン「iPhone Duo」を発表した。価格は36万4800円から。予約は10月16日午後9時に始まり、発売日は10月23日。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、サムスンなど他社が何年も前から折りたたみスマートフォン<span class="note">（＝画面を半分に折って小さく持ち歩け、開くと大きな画面として使えるスマートフォンのこと）</span>を展開してきた中、アップルが満を持して初めて参入したという点にある。36万円超という価格は通常のiPhoneの2〜3倍にあたり、折りたたみ機構の精密な設計コストの高さを物語っている。アップルの参入は、折りたたみスマホという市場そのものが「一部メーカーの実験的な製品」から「主要メーカーも手がける定番カテゴリー」へ格上げされたことを示す出来事とも言える。</p>
+          </div>
+          <div class="meta"><a href="https://iphone-mania.jp/?p=607205" target="_blank" rel="noopener">iPhone Mania</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>ソニー、新型Xperia発表会を10月26日に予告</h3>
+          <p class="lead">ソニーは、10月26日正午にYouTubeで新型Xperiaの発表会を開催すると予告した。機種名などの詳細はまだ明らかにされていない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、10月8日に発売済みの中価格帯モデル「Xperia 10 VIII」（10月11日既報）とは別に、新たな発表会が予告されている点にある。スマートフォンメーカーは通常、価格帯の異なる複数のモデルを時期をずらして発表することが多く、今回の発表会では、より上位の機種や、全く新しいシリーズが発表される可能性がある。詳細は発表会当日まで明らかにされないのが通例。</p>
+          </div>
+          <div class="meta"><a href="https://news.kakaku.com/prdnews/cd%3Dkeitai/ctcd%3D3147/" target="_blank" rel="noopener">価格.com マガジン</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-intl" style="--cat-color:var(--c-intl)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">海外</h2></div>
+        <p class="panel-sub">国際ニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>パナマ地震、M7.7に上方修正——死傷者数は依然不明</h3>
+          <p class="lead">中米パナマで10月9日に発生した地震について、米地質調査所（USGS）はマグニチュードを当初の8.0から7.6を経て7.7に修正した（パナマの地質機関は7.2と発表）。首都を含む各地で建物が損傷し、避難が行われている。パナマ大統領は、確認時点で死傷者はいないとしているが、今後変わる可能性にも言及した。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、地震発生直後の速報値が、後の詳しい分析で何度も修正されるという地震観測の仕組みにある。マグニチュード<span class="note">（＝地震そのものの規模（エネルギーの大きさ）を表す指標のこと。数字が1大きくなるごとに、地震のエネルギーは約32倍になる）</span>7クラスの地震は都市部で発生すれば大規模な建物倒壊につながりやすく、リゾート地プラヤ・ベナオでは多階建てのビルが倒壊し、下敷きになった車が複数あったとも報じられている。パナマ運河の運航は通常通り続いており、国際的な物流への直接の影響は限定的とみられる。</p>
+          </div>
+          <div class="meta"><a href="https://www.adn.com/nation-world/2026/10/09/magnitude-77-earthquake-shakes-panama-prompting-evacuations/" target="_blank" rel="noopener">Anchorage Daily News（AP）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>EUと中国、貿易摩擦の協議——10月中の成果目指す</h3>
+          <p class="lead">EU（欧州連合）と中国は、貿易不均衡や中国による重要鉱物の輸出管理措置を巡って閣僚級協議を行い、10月までに具体的な成果を目指すことで一致した。貿易の流れを監視する枠組みを共同で設置することでも一致している。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、米中間の関税緊張が緩和に向かう一方（本日既報）で、中国がEUとの間では別の貿易摩擦を抱えているという、世界貿易の「まだら模様」にある。重要鉱物<span class="note">（＝電気自動車や半導体などハイテク製品の製造に欠かせない、レアアース（希土類）などの鉱物資源のこと。中国が世界の生産・輸出の多くを握っている）</span>の輸出管理は、中国が持つ国際的な交渉力の源の一つであり、EU企業にとっては調達の先行きが見えにくいことが経済活動の不安材料になっている。EUの対中貿易赤字は2025年に約3600億ユーロに達しており、この規模の大きさが協議の緊迫度を物語っている。</p>
+          </div>
+          <div class="meta"><a href="https://kumanichi.com/articles/2008263" target="_blank" rel="noopener">熊本日日新聞（共同通信）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-sports" style="--cat-color:var(--c-sports)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">芸能／スポーツ</h2></div>
+        <p class="panel-sub">厳選2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>セ・リーグCS、阪神とのファイナルステージが本日開幕——第1戦は甲子園</h3>
+          <p class="lead">プロ野球クライマックスシリーズ（10月11日既報）のファーストステージを勝ち上がったチームと、リーグ優勝した阪神が対戦するファイナルステージが本日開幕する。第1戦は甲子園球場で行われる予定。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、クライマックスシリーズ<span class="note">（＝プロ野球の各リーグで、レギュラーシーズン2位・3位のチームがまず対戦し（ファーストステージ）、その勝者がリーグ優勝チームと対戦する（ファイナルステージ）という2段階のトーナメント方式の試合のこと。ファイナルステージの勝者が日本シリーズに進む）</span>の仕組み上、リーグ優勝チームの阪神は、シーズン中の成績の良さを反映した「アドバンテージ」（最初から一定の勝ち星が与えられること）を持った状態で登場する点にある。下位からの勝ち上がりチームにとっては、このハンデを乗り越えられるかが最大の壁になる。</p>
+          </div>
+          <div class="meta"><a href="https://npb.jp/games/2026/info_cs.html" target="_blank" rel="noopener">NPB公式サイト</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>パ・リーグCS、ソフトバンクとのファイナルステージも本日開幕——2勝のアドバンテージ消化なるか</h3>
+          <p class="lead">パ・リーグは、3年連続22度目の優勝を飾ったソフトバンクが待つファイナルステージが本日開幕する。今季の新ルールでは、優勝球団と2位球団の差が10ゲーム以上ある場合、優勝球団のアドバンテージが1勝から2勝に増える。ソフトバンクはこの条件を満たしているとされる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「2勝のアドバンテージ」という今季からの新ルールの重さにある。これは、実質的に対戦相手より2試合多く勝っている状態からシリーズが始まるのに等しく、シーズンの強さの差がそのまま短期決戦に反映される仕組み。ファーストステージ（10月10日開幕）で埼玉西武が北海道日本ハムを破り勝ち上がった場合、西武はこの大きなハンデを覆す必要がある。</p>
+          </div>
+          <div class="meta"><a href="https://www.baseballchannel.jp/npb/294388/" target="_blank" rel="noopener">ベースボールチャンネル</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-koshien" style="--cat-color:var(--c-koshien)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">高校野球【埼玉】</h2></div>
+        <p class="panel-sub">秋季大会2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>西武台、関東大会1回戦は横浜と対戦——組み合わせ抽選会が決定（10月8日既報）</h3>
+          <p class="lead">10月8日に東京都内で行われた秋季関東大会の組み合わせ抽選会（10月8日既報）の結果、埼玉1位の西武台は1回戦で神奈川の強豪・横浜と対戦することが決まった。大会は10月17日、群馬県で開幕する。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、横浜が全国的にも知られる強豪校である点にある。甲子園常連校<span class="note">（＝春・夏の全国高校野球選手権（甲子園）に何度も出場している、歴史と実績のある強豪校のこと）</span>と初戦で当たるのは、組み合わせ抽選の結果とはいえ厳しい巡り合わせ。ただし、関東大会は来春のセンバツ甲子園出場校選考の重要な判断材料になるため、初戦を突破できれば西武台の評価は大きく上がる。</p>
+          </div>
+          <div class="meta"><a href="https://www.kanaloco.jp/sports/baseball/hsbaseball/article-1310892.html" target="_blank" rel="noopener">神奈川新聞</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>山村学園、関東大会開幕まで5日——調整が続く</h3>
+          <p class="lead">選抜（センバツ）出場を目指す山村学園（10月11日既報）は、10月17日に群馬県で開幕する秋季関東大会に向けて調整を続けている。埼玉県大会を準優勝で終えた勢いをそのまま持ち込めるかが注目される。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、関東大会が単なる「地方大会の延長戦」ではなく、来春のセンバツ出場校を選ぶ選考委員が実際に視察に訪れる、いわば「本番の試合」として扱われるという点にある。埼玉県大会での強さをそのまま関東という、より広い地域の強豪が集まる舞台で再現できるかどうかが、センバツ選考における評価を大きく左右する。開幕まで残り5日、最終調整の過程が注目されている。</p>
+          </div>
+          <div class="meta"><a href="https://www.hb-nippon.com/teams/4663/games" target="_blank" rel="noopener">高校野球ドットコム</a></div>
+        </article>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var cats = ['top','social','polecon','scitech','business','startup','gadget','intl','sports','koshien'];
+  var idx = 0;
+  var track = document.getElementById('track');
+  var viewport = document.getElementById('viewport');
+  var vw = viewport.clientWidth;
+
+  function setActive(i){
+    cats.forEach(function(c, j){
+      document.getElementById('tab-' + c).classList.toggle('active', j === i);
+    });
+    var activeTab = document.getElementById('tab-' + cats[i]);
+    if (activeTab && activeTab.scrollIntoView) activeTab.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+  }
+
+  function settle(i, animate){
+    idx = Math.max(0, Math.min(cats.length - 1, i));
+    track.style.transition = animate ? 'transform .32s cubic-bezier(.22,.61,.36,1)' : 'none';
+    track.style.transform = 'translateX(' + (-idx * vw) + 'px)';
+    setActive(idx);
+  }
+
+  window.goTo = function(i){ settle(i, true); };
+
+  window.addEventListener('resize', function(){
+    vw = viewport.clientWidth;
+    settle(idx, false);
+  });
+
+  var dragging = false, decided = null, sx = 0, sy = 0, dx = 0;
+  viewport.addEventListener('touchstart', function(e){
+    dragging = true; decided = null;
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY; dx = 0;
+    track.style.transition = 'none';
+  }, { passive: true });
+
+  viewport.addEventListener('touchmove', function(e){
+    if (!dragging) return;
+    var cx = e.touches[0].clientX, cy = e.touches[0].clientY;
+    var mdx = cx - sx, mdy = cy - sy;
+    if (decided === null) {
+      if (Math.abs(mdx) > 8 || Math.abs(mdy) > 8) {
+        decided = Math.abs(mdx) > Math.abs(mdy) ? 'x' : 'y';
+      }
+    }
+    if (decided === 'x') {
+      e.preventDefault();
+      dx = mdx;
+      var atStart = idx === 0 && dx > 0;
+      var atEnd = idx === cats.length - 1 && dx < 0;
+      var eased = (atStart || atEnd) ? dx * 0.35 : dx;
+      track.style.transform = 'translateX(' + (-idx * vw + eased) + 'px)';
+    }
+  }, { passive: false });
+
+  viewport.addEventListener('touchend', function(){
+    if (!dragging) return;
+    dragging = false;
+    if (decided === 'x') {
+      var threshold = vw * 0.18;
+      if (dx <= -threshold) settle(idx + 1, true);
+      else if (dx >= threshold) settle(idx - 1, true);
+      else settle(idx, true);
+    }
+    decided = null; dx = 0;
+  });
+
+  settle(0, false);
+})();
+</script>
+
+</body></html>
