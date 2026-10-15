@@ -1,0 +1,610 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yoshi's News</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Zen+Old+Mincho:wght@600;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap');
+
+:root {
+  --bg: #ffffff;
+  --panel-bg: #ffffff;
+  --card: #ffffff;
+  --card-line: #eef0f3;
+  --ink: #1a1c20;
+  --ink-soft: #5b6068;
+  --ink-faint: #9aa0a8;
+  --shell: #f4f5f7;
+
+  --c-top: #ef3355;
+  --c-social: #00b3a4;
+  --c-polecon: #6d5bf0;
+  --c-scitech: #ff8a1e;
+  --c-business: #0091ff;
+  --c-sports: #26c281;
+  --c-startup: #ff4fa3;
+  --c-koshien: #c8860d;
+  --c-intl: #4b3f8f;
+  --c-gadget: #00bcd4;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101114;
+    --panel-bg: #101114;
+    --card: #1a1c20;
+    --card-line: #2a2c31;
+    --ink: #f1f2f4;
+    --ink-soft: #b7bcc4;
+    --ink-faint: #767c86;
+    --shell: #1a1c20;
+    --c-top: #ff6b85;
+    --c-social: #3fd8c9;
+    --c-polecon: #9c8fff;
+    --c-scitech: #ffab5c;
+    --c-business: #4db2ff;
+    --c-sports: #5be0a6;
+    --c-startup: #ff85c2;
+    --c-koshien: #e8b34c;
+    --c-intl: #a89cf0;
+    --c-gadget: #4dd8ea;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101114;
+  --panel-bg: #101114;
+  --card: #1a1c20;
+  --card-line: #2a2c31;
+  --ink: #f1f2f4;
+  --ink-soft: #b7bcc4;
+  --ink-faint: #767c86;
+  --shell: #1a1c20;
+  --c-top: #ff6b85;
+  --c-social: #3fd8c9;
+  --c-polecon: #9c8fff;
+  --c-scitech: #ffab5c;
+  --c-business: #4db2ff;
+  --c-sports: #5be0a6;
+  --c-startup: #ff85c2;
+  --c-koshien: #e8b34c;
+  --c-intl: #a89cf0;
+  --c-gadget: #4dd8ea;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--shell);
+  color: var(--ink);
+  font-family: "Zen Kaku Gothic New", -apple-system, "Hiragino Kaku Gothic ProN", sans-serif;
+  line-height: 1.7;
+  overscroll-behavior-y: none;
+}
+.serif { font-family: "Zen Old Mincho", "Hiragino Mincho ProN", serif; }
+
+.app {
+  max-width: 680px;
+  margin: 0 auto;
+  background: var(--bg);
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ---- Header ---- */
+.topbar { padding: 20px 20px 0; flex-shrink: 0; }
+.title-line { display: flex; align-items: center; gap: 8px; }
+.mascot { height: 50px; width: auto; flex-shrink: 0; border-radius: 8px; }
+.title-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  margin-bottom: 14px;
+}
+.title-row h1 {
+  font-family: "Baloo 2", "Zen Kaku Gothic New", sans-serif;
+  font-size: 48px; font-weight: 800; margin: 0; letter-spacing: 0.01em; line-height: 1;
+  -webkit-text-stroke: 2.4px #2b2013;
+  filter: drop-shadow(2px 3px 0 rgba(30,22,12,0.18));
+  background-image:
+    radial-gradient(circle at 22% 30%, #211709 0 7px, transparent 8px),
+    radial-gradient(circle at 68% 65%, #3a2b16 0 9px, transparent 10px),
+    radial-gradient(circle at 45% 88%, #241a0c 0 5px, transparent 6px),
+    radial-gradient(circle at 85% 20%, #2e2211 0 6px, transparent 7px),
+    linear-gradient(135deg, #b8a06e, #967c4c 50%, #6f5a35);
+  background-size: 30px 30px, 41px 41px, 23px 23px, 35px 35px, 100% 100%;
+  background-repeat: repeat, repeat, repeat, repeat, no-repeat;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.title-row .date { font-size: 11.5px; color: var(--ink-faint); white-space: nowrap; font-weight: 500; margin-top: 2px; }
+
+.tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px 3px; }
+.tab {
+  appearance: none; border: none; background: none;
+  font-family: inherit; font-size: 10.5px; font-weight: 700;
+  color: var(--ink-faint);
+  padding: 7px 4px 9px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+  cursor: pointer;
+  border-radius: 10px 10px 0 0;
+  transition: color .2s ease, background .2s ease;
+}
+.tab .dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  margin-right: 5px; background: currentColor; opacity: 0.45; vertical-align: middle;
+}
+.tab::after {
+  content: ""; position: absolute; left: 10px; right: 10px; bottom: 0;
+  height: 3px; border-radius: 3px 3px 0 0; background: transparent; transition: background .2s ease;
+}
+.tab.active { color: var(--tab-color); background: color-mix(in srgb, var(--tab-color) 10%, transparent); }
+.tab.active .dot { opacity: 1; }
+.tab.active::after { background: var(--tab-color); }
+
+/* ---- Swipe viewport ---- */
+.viewport { flex: 1; overflow: hidden; position: relative; touch-action: pan-y; }
+.track {
+  display: flex;
+  height: 100%;
+  width: 1000%;
+  transition: transform .32s cubic-bezier(.22,.61,.36,1);
+  will-change: transform;
+}
+.panel {
+  width: 10%;
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 20px 56px;
+}
+
+.panel-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.panel-head .chip { width: 8px; height: 26px; border-radius: 4px; background: var(--cat-color); flex-shrink: 0; }
+.panel-head h2 { font-size: 20px; font-weight: 700; margin: 0; letter-spacing: 0.02em; color: var(--cat-color); }
+.panel-sub { font-size: 12px; color: var(--ink-faint); margin: 0 0 18px 18px; }
+
+.story {
+  background: var(--card);
+  border: 1px solid var(--card-line);
+  border-left: 4px solid var(--cat-color);
+  border-radius: 12px;
+  padding: 18px 18px 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(20,20,30,0.05);
+}
+.story .kicker {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: "Zen Old Mincho", serif; font-size: 11.5px; font-weight: 700;
+  color: var(--cat-color); margin-bottom: 9px;
+}
+.story h3 { font-size: 16px; font-weight: 700; line-height: 1.55; margin: 0 0 10px; }
+.story .lead { font-size: 14px; color: var(--ink); margin: 0 0 14px; line-height: 1.85; }
+
+.context {
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 10px;
+  padding: 13px 15px;
+  margin: 0 0 12px;
+}
+.context-label {
+  display: block; font-size: 10.5px; font-weight: 700;
+  color: var(--cat-color); letter-spacing: 0.04em; margin-bottom: 6px;
+}
+.context p { font-size: 13px; color: var(--ink-soft); margin: 0; line-height: 1.8; }
+
+.note { font-size: 11.5px; color: var(--ink-faint); font-weight: 500; }
+
+.term-link {
+  color: var(--cat-color);
+  text-decoration: none;
+  border-bottom: 1px dotted color-mix(in srgb, var(--cat-color) 55%, transparent);
+  font-weight: 700;
+}
+
+.meta { font-size: 11px; color: var(--ink-faint); }
+.meta a { color: var(--cat-color); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--cat-color) 40%, transparent); font-weight: 700; }
+
+.closing {
+  margin: 6px 0 0; padding: 16px 18px;
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 12px; font-size: 13px; color: var(--ink-soft); text-align: center;
+}
+.closing .label {
+  display: block; font-family: "Zen Old Mincho", serif; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.2em; color: var(--cat-color); margin-bottom: 8px;
+}
+.colophon { margin: 14px 0 8px; font-size: 10.5px; color: var(--ink-faint); line-height: 1.9; text-align: center; }
+
+@media (max-width: 420px) {
+  .topbar { padding: 16px 14px 0; }
+  .panel { padding: 16px 14px 48px; }
+  .title-row h1 { font-size: 38px; }
+  .mascot { height: 40px; }
+}
+</style>
+</head><body>
+
+
+<div class="app" id="app">
+
+  <div class="topbar">
+    <div class="title-row">
+      <div class="title-line">
+        <img class="mascot" src="mascot.jpg" alt="オオサンショウウオのマスコット">
+        <h1>Yoshi's News</h1>
+      </div>
+      <span class="date">2026年10月16日（金）・第43号</span>
+    </div>
+    <div class="tabs" id="tabs">
+      <button class="tab" id="tab-top" style="--tab-color:var(--c-top)" onclick="goTo(0)"><span class="dot"></span>トップ</button>
+      <button class="tab" id="tab-social" style="--tab-color:var(--c-social)" onclick="goTo(1)"><span class="dot"></span>社会</button>
+      <button class="tab" id="tab-polecon" style="--tab-color:var(--c-polecon)" onclick="goTo(2)"><span class="dot"></span>政治/経済</button>
+      <button class="tab" id="tab-scitech" style="--tab-color:var(--c-scitech)" onclick="goTo(3)"><span class="dot"></span>科学/テック</button>
+      <button class="tab" id="tab-business" style="--tab-color:var(--c-business)" onclick="goTo(4)"><span class="dot"></span>ビジネス</button>
+      <button class="tab" id="tab-startup" style="--tab-color:var(--c-startup)" onclick="goTo(5)"><span class="dot"></span>スタートアップ</button>
+      <button class="tab" id="tab-gadget" style="--tab-color:var(--c-gadget)" onclick="goTo(6)"><span class="dot"></span>ガジェット</button>
+      <button class="tab" id="tab-intl" style="--tab-color:var(--c-intl)" onclick="goTo(7)"><span class="dot"></span>海外</button>
+      <button class="tab" id="tab-sports" style="--tab-color:var(--c-sports)" onclick="goTo(8)"><span class="dot"></span>芸能/スポーツ</button>
+      <button class="tab" id="tab-koshien" style="--tab-color:var(--c-koshien)" onclick="goTo(9)"><span class="dot"></span>高校野球【埼玉】</button>
+    </div>
+  </div>
+
+  <div class="viewport" id="viewport">
+    <div class="track" id="track">
+
+      <section class="panel" id="panel-top" style="--cat-color:var(--c-top)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">トップニュース</h2></div>
+        <p class="panel-sub">今日いちばん知っておきたい2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 社会</span>
+          <h3>クマの被害、2025年度は過去10年で最悪水準——216件・死者13人</h3>
+          <p class="lead">環境省の集計によると、2025年度のクマによる人身被害は216件、被害者238人に上り、うち死者は13人だった。過去10年で最も深刻な水準となっている。2026年も春から各地で目撃や住宅地への出没が相次いでおり、10月に入っても警戒が続いている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、クマの被害が「山奥の出来事」ではなく、住宅地や市街地の近くでも起きているという変化にある。えさとなる木の実<span class="note">（＝クマが冬眠前に大量に食べて栄養を蓄える、ブナやミズナラなどの実のこと。実りが少ない「不作」の年は、クマがえさを求めて人里に下りてきやすくなるとされる）</span>が不足する年は、クマが人の生活圏に近づくリスクが高まると指摘されている。被害者数・死者数ともに過去10年で最悪ということは、従来の「クマに注意」という一般的な呼びかけだけでは対応が追いついていない可能性を示している。</p>
+          </div>
+          <div class="meta"><a href="https://www.pref.nagano.lg.jp/shinrin/sangyo/ringyo/choju/joho/documents/917mokugeki.pdf" target="_blank" rel="noopener">長野県（目撃情報一覧）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 政治</span>
+          <h3>政府、臨時国会に新規法案21本提出へ——消費税・支援金法案の一本化に異論も</h3>
+          <p class="lead">臨時国会（10月15日既報）に向け、政府は新規の法案21本を提出する方針を示した。目玉となる飲食料品の消費税率引き下げと、低所得者向けの支援金給付を一つにまとめた「消費税・支援金法案」については、一本化の形そのものに異論も出ているという。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「21本」という法案の本数の多さと、その中でも「消費税・支援金法案」という1本の法案に特に注目が集まっている理由にある。減税と給付を1本の法案にまとめる<span class="note">（＝複数の政策を、別々の法律ではなく1つの法律の中にまとめて盛り込むこと。まとめて審議・採決できる一方、一部に反対があると全体の成立が難しくなるという側面もある）</span>ことで、審議を効率化できる利点がある一方、支援金部分に異論があっても減税部分まで一緒に止まってしまうリスクがあるため、分けるべきだという指摘が出ている。</p>
+          </div>
+          <div class="meta"><a href="https://kumanichi.com/articles/2041683" target="_blank" rel="noopener">熊本日日新聞（共同通信）</a></div>
+        </article>
+
+        <div class="closing">
+          <span class="label serif">編集後記</span>
+          クマの被害が過去10年で最悪というのは心配なニュースです。国会は21本もの法案を抱えて本格化、ビジネス面ではソニーの好決算が目を引きました。高校野球埼玉は関東大会開幕前日、横浜の主将が「泥臭く優勝目指す」と意気込んでいます。タブまたはスワイプで10のジャンルを読み進められます。良い一日を。
+        </div>
+        <div class="colophon">AIが検索結果をもとに要約・編集しています。詳細は各記事の出典リンクでご確認ください。<br>毎朝5時発行・次号は明日<br><a href="archive.html" style="color:inherit">過去の紙面はこちら</a></div>
+      </section>
+
+      <section class="panel" id="panel-social" style="--cat-color:var(--c-social)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">社会</h2></div>
+        <p class="panel-sub">くらしに関わるニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>長野・札幌などでクマの目撃相次ぐ——10月も警戒続く</h3>
+          <p class="lead">本日既報のクマ被害の背景として、2026年は春から各地で目撃情報が相次いでいる。長野県では9月上旬だけで親子3頭の目撃など多数が記録され、札幌市でも市街地付近で親子3頭のヒグマが自動撮影カメラに写った。北海道・厚沢部ではトウモロコシ400本の食害も報告されている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、本州の「ツキノワグマ」と北海道の「ヒグマ」<span class="note">（＝本州・四国に生息する比較的小型のクマが「ツキノワグマ」、北海道に生息し体が大きく力も強いクマが「ヒグマ」と呼ばれる。ヒグマは人への被害がより重大になりやすいとされる）</span>で、種類も生息地も異なるという点にある。全国各地でほぼ同時期に出没が相次いでいるということは、エサ不足などの共通した環境要因が、広い範囲で同時に起きている可能性を示唆している。</p>
+          </div>
+          <div class="meta"><a href="https://www.hokkaido-np.co.jp/article/1220934/" target="_blank" rel="noopener">北海道新聞</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>良品計画の好決算、原動力は「内製化」——値下げ抑制で利益率改善</h3>
+          <p class="lead">良品計画の直近の四半期決算（10月15日既報の本決算に先立つ内容）では、営業収益が前年同期比16.9%増、営業利益は36.0%増となった。生産体制の内製化による原価低減や、値下げの抑制などにより、利益率の改善が進んだことが主因とされている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「内製化」<span class="note">（＝これまで外部の協力会社に委託していた生産工程の一部を、自社で手がける体制に切り替えること。中間マージンを減らせる分、コストを抑えやすくなる）</span>という、普段あまり意識しない「作り方」の工夫が、私たちが店頭で見る「値下げの少なさ」につながっているという点にある。安売りに頼らずに増益を実現できているということは、ブランドの価格競争力そのものが強まっていることの表れでもある。</p>
+          </div>
+          <div class="meta"><a href="https://www.ryutsuu.biz/accounts/s011450.html" target="_blank" rel="noopener">流通ニュース</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-polecon" style="--cat-color:var(--c-polecon)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">政治／経済</h2></div>
+        <p class="panel-sub">政治・経済の動き2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 政治</span>
+          <h3>消費税・支援金法案、与党は衆院での再可決も視野——参院自民は否定的</h3>
+          <p class="lead">与党は衆院で7割を超える議席を持つため、参院で法案が否決されても、衆院での再可決によって成立させることが制度上は可能。ただロイターの報道によると、参院自民党はそうした手法に頼ることはあり得ないとの立場を示している。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「できる」こと（衆院の再可決）と「するべきだ」と考えること（参院自民の立場）が分かれている点にある。衆院の再可決<span class="note">（＝参議院で否決された法案でも、衆議院で出席議員の3分の2以上の賛成があれば、そのまま法律として成立させられる憲法上の仕組みのこと）</span>は、強行的な手段と受け取られやすく、多用すれば野党との関係だけでなく、同じ与党内の参院議員との関係も悪化させかねない。制度上の「最後の切り札」を、実際に使うかどうかは別問題だという、与党内の慎重さがうかがえる。</p>
+          </div>
+          <div class="meta"><a href="https://kumanichi.com/articles/2042949" target="_blank" rel="noopener">熊本日日新聞（共同通信）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 経済</span>
+          <h3>イオン、中間決算の進捗率21.9%——経常利益2900億円の計画に対し</h3>
+          <p class="lead">イオンの今期・経常利益の会社予想は2900億円とされているが、第1四半期の実績は635億円余りで、進捗率は21.9%だった。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「進捗率21.9%」<span class="note">（＝1年間の目標（通期予想）に対して、ある時点までにどれだけ達成できているかを示す割合のこと。4分の1の時点（四半期）で単純に25%を超えていれば順調、下回っていればやや遅れている、という目安に使われる）</span>という数字の見方にある。25%をやや下回っているが、スーパーマーケット事業は季節によって売上の偏りがあるため、この数字だけで「遅れている」と判断するのは早計で、下半期の実績も合わせて見る必要がある。</p>
+          </div>
+          <div class="meta"><a href="https://kabuyoho.jp/report?bcode=8267" target="_blank" rel="noopener">株予報（SBI証券）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-scitech" style="--cat-color:var(--c-scitech)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">科学／テック</h2></div>
+        <p class="panel-sub">研究・技術のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>イメージセンサーとは——ソニーの好決算を支える「目」の技術</h3>
+          <p class="lead">ソニーグループの第1四半期決算（本日既報のビジネス面）で、営業利益40%増の原動力となったのが、イメージング・センシングソリューション部門だった。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、イメージセンサー<span class="note">（＝カメラのレンズを通して入ってきた光を、電気信号に変換してデジタル画像を作り出す半導体部品のこと。スマートフォンのカメラや自動車の自動運転用カメラなど、あらゆる撮影機器に使われている「目」にあたる部品）</span>が、スマートフォンだけでなく、自動車の自動運転・安全運転支援システムなど、新しい分野での需要も伸びている点にある。ソニーはこの分野で世界的に高い市場シェアを持っており、スマートフォン市場の成長が鈍化する中でも、自動車向けなどの新需要が業績を支える構図になっている。</p>
+          </div>
+          <div class="meta"><a href="https://gamebiz.jp/news/410388" target="_blank" rel="noopener">gamebiz</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>熊本テクノロジーセンター、地震から生産正常化——半導体工場の地震対策</h3>
+          <p class="lead">ソニーの半導体工場「熊本テクノロジーセンター」は、震度5強の地震の影響で一時生産を停止していたが、8月中旬までに生産は正常化した。通期業績への影響は軽微とみられている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、半導体工場<span class="note">（＝イメージセンサーなどの半導体部品を製造する工場のこと。精密な製造装置を使うため、わずかな振動でも製造中の製品に影響が出やすく、地震の多い日本では耐震対策が重要な経営課題になっている）</span>が地震によって一時停止しても、比較的短期間（1〜2カ月程度）で復旧できたという点にある。熊本県は過去にも大きな地震（2016年の熊本地震）に見舞われた地域であり、半導体メーカー各社は、その経験を踏まえた耐震・早期復旧の体制づくりを進めてきたとみられる。</p>
+          </div>
+          <div class="meta"><a href="https://www.businessinsider.jp/article/2608-sony-group-q1-earnings-2026/" target="_blank" rel="noopener">Business Insider Japan</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-business" style="--cat-color:var(--c-business)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ビジネス</h2></div>
+        <p class="panel-sub">企業・産業のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>ソニー、第1四半期は営業利益40%増——イメージセンサー部門がけん引</h3>
+          <p class="lead">ソニーグループの2026年度第1四半期決算は、連結営業利益が前年同期比40%増の4765億円に達した。イメージング・センシングソリューション部門（本日既報の科学・テック面）が原動力となり、同社は通期業績予想を上方修正。売上高12.5兆円（2%増）、営業利益1.72兆円（8%増）を見込む。関税還付金と為替差益も業績を押し上げた。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「40%増」という大幅な伸びの背景に、本業の好調さだけでなく、関税還付金<span class="note">（＝一度払った関税（輸入品にかかる税金）の一部が、後から返金されること）</span>や為替差益<span class="note">（＝外国のお金（ドルなど）でやりとりする取引で、円安・円高の動きによって生まれる利益のこと。輸出企業は円安になるほど利益が増えやすい）</span>といった、本業以外の追い風も加わっている点にある。複数の好条件が重なったことで、単純な数字以上に業績が良く見えている可能性もあり、今後はこの追い風がどこまで続くかが注目点になる。</p>
+          </div>
+          <div class="meta"><a href="https://gamebiz.jp/news/410388" target="_blank" rel="noopener">gamebiz</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>Jフロントリテイリング、前期は当期利益が減少——百貨店事業に課題</h3>
+          <p class="lead">大丸松坂屋百貨店などを展開するJフロントリテイリングの2026年2月期決算では、親会社の所有者に帰属する当期利益が前期比で減少したことが明らかになった。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、同じ小売業の中でも、良品計画（本日既報）やイオン（本日既報）のように好調な企業と、Jフロントのように苦戦する企業に分かれている点にある。百貨店業態<span class="note">（＝高級ブランド品や化粧品など、幅広い商品を1つの大きな建物に集めて販売する業態のこと。インバウンド（訪日外国人）需要に支えられる一方、国内の中間層の購買力低下の影響を受けやすいとも指摘される）</span>は、インバウンド需要の恩恵を受けやすい一方、店舗の維持コストが大きく、経営環境の変化の影響を受けやすいという構造的な課題を抱えている。</p>
+          </div>
+          <div class="meta"><a href="https://kabuyoho.jp/sp/report?bcode=3086" target="_blank" rel="noopener">株予報（SBI証券）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-startup" style="--cat-color:var(--c-startup)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">スタートアップ</h2></div>
+        <p class="panel-sub">資金調達・注目トピック2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>インドのスタートアップ、1週間で16件・3.28億ドルを調達——後期段階への投資集中が鮮明</h3>
+          <p class="lead">インドのスタートアップ業界では、ある1週間に16件の資金調達ラウンドを通じて、合計3.28億ドルが調達されたと報じられている。投資は後期段階（事業が成熟しつつある企業）に集中している傾向が指摘されている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「後期段階への投資集中」<span class="note">（＝創業直後のアイデア段階（初期段階）の企業より、すでに事業が形になり成長が見えている企業（後期段階）に、投資家の資金が集まりやすくなっている状況のこと）</span>という傾向が、世界的に共通して起きている現象だという点にある。本日既報の国内スタートアップ動向（社数は減るが金額は増える傾向）とも共通する構図で、投資家がリスクを避け、より確実性の高い投資先を選ぶようになっていることの表れと言える。</p>
+          </div>
+          <div class="meta"><a href="https://book.st-hakky.com/news/latest-news-startup-tech" target="_blank" rel="noopener">st-hakky</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>Ludens AI、AIコンパニオンロボット開発で約6億円を調達——PKSHAのファンドなどから</h3>
+          <p class="lead">Ludens AIは、エンジェルラウンド（創業初期の資金調達）で約6億円を調達したと発表した。投資家にはPKSHA Algorithm Fundなどが含まれ、AIコンパニオンロボット（人と心を通わせることを目的とした会話型AIロボット）の開発加速や人材採用に充てる方針。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「コンパニオン」<span class="note">（＝「仲間」「話し相手」という意味の英語。コンパニオンロボットは、作業を代行するロボットとは異なり、人との会話や交流そのものを目的としたロボットを指す）</span>という言葉が示す、ロボットの役割の変化にある。これまでのロボットは工場での作業代行などが中心だったが、生成AIの発展により、人と自然な会話ができるロボットの実用化が視野に入ってきている。独居高齢者の見守りや孤独感の軽減など、社会的な課題の解決にもつながる可能性がある分野として注目されている。</p>
+          </div>
+          <div class="meta"><a href="https://thebridge.jp/en/2026/04/ludens-ai-secures-approximately-%c2%a5600-million-in-angel-round-funding-for-ai-companion-robot-development-investors-include-pksha-algorithm-fund" target="_blank" rel="noopener">THE BRIDGE</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-gadget" style="--cat-color:var(--c-gadget)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ガジェット</h2></div>
+        <p class="panel-sub">新製品2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>2026年10月のゲーム発売、123作品——本日はバンダイナムコから15作品</h3>
+          <p class="lead">2026年10月は、Nintendo Switch 2・Nintendo Switch・PS5・PS4向けなど、合計123作品のゲームが発売される月となっている。本日16日はバンダイナムコエンターテインメントから15作品が発売される。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「123作品」という発売本数の多さが、ゲーム市場全体の活発さを示している点にある。10月から12月にかけては、年末商戦<span class="note">（＝クリスマスや年末年始のプレゼント需要を見込んで、企業が新製品やコンテンツを集中的に発売する、年間で最も商戦が激しくなる時期のこと）</span>に向けて、各メーカーが有力タイトルを続々と投入する時期にあたる。</p>
+          </div>
+          <div class="meta"><a href="https://bestcalendar.jp/release/game/2026/10" target="_blank" rel="noopener">ベストカレンダー</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>任天堂、新作ラインアップを発表——「Fire Emblem: Fortune's Weave」「Metroid Ravenous」など</h3>
+          <p class="lead">任天堂は、新作タイトルや拡張コンテンツを紹介する発表会を開催した。発表内容には、「ファイアーエムブレム」シリーズの新作「Fire Emblem: Fortune's Weave」や、「メトロイド」シリーズの新作「Metroid Ravenous」などが含まれている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「ファイアーエムブレム」「メトロイド」<span class="note">（＝ともに任天堂が長年展開してきた人気シリーズ。「ファイアーエムブレム」は戦略性の高いシミュレーションRPG、「メトロイド」は探索型アクションゲームとして、それぞれ熱心なファン層を持つ）</span>がいずれも、任天堂を長年支えてきた看板シリーズだという点にある。新作の発表は、既存ファンの期待に応えつつ、ハードウエア（本日既報のゲーム発売ラッシュ）全体の盛り上がりを後押しする狙いがある。</p>
+          </div>
+          <div class="meta"><a href="https://arynews.tv/nintendo-direct-sept-2026-reveals-highly-packed-games-for-switch-and-next-gen" target="_blank" rel="noopener">ARY News</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-intl" style="--cat-color:var(--c-intl)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">海外</h2></div>
+        <p class="panel-sub">国際ニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>ウクライナ和平交渉、停滞続く——ロシアは「ドンバス撤退」を前提条件に</h3>
+          <p class="lead">ロシアのウシャコフ大統領補佐官は、ウクライナがドンバス地方から撤退するまでは、新たな三者間協議に意味を見いだせないとの考えを示している。米戦争研究所（ISW）は、戦場での停滞により、ロシアが要求の達成を難しくしていると分析している。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「ドンバス撤退」が交渉の前提条件とされている点にある。ドンバス地方<span class="note">（＝ウクライナ東部の地域名。ロシア系住民が多く、2014年以降、ロシアが支援する武装勢力との戦闘が続いていた地域で、2022年の全面侵攻後は激しい戦場になっている）</span>からの撤退は、ウクライナにとって領土の一部を実質的に放棄することを意味するため、受け入れが極めて難しい条件。双方が譲れない条件を前提に据えている限り、交渉そのものが前に進みにくい構図が続いている。</p>
+          </div>
+          <div class="meta"><a href="https://www.jiia.or.jp/jpn/upload/R08_Russia_report_07.pdf" target="_blank" rel="noopener">日本国際問題研究所</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>APEC CEOサミット、11月17〜18日に深センで開催——1000人規模の政財界関係者が参加予定</h3>
+          <p class="lead">アジア太平洋経済協力（APEC）のCEOサミットが、11月17〜18日に中国・深センで開催される。中国国際貿易促進委員会（CCPIT）が主催し、APEC各国・地域から約1000人の政治家・経済人が集まる見込み。首脳会議（本日既報の11月18〜19日）の直前に行われる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「CEOサミット」と「首脳会議」が別々に、しかも日程を重ねて開催されるという点にある。首脳会議は各国のリーダーが政治的な議論をする場であるのに対し、CEOサミット<span class="note">（＝各国の大企業の経営者（CEO）が集まり、経済・貿易に関する議論や交流を行う会議のこと。政府間の会議とは別に、ビジネス界独自の視点で意見交換が行われる）</span>は、実際に経済活動を担う企業経営者どうしが直接意見交換する場となる。両方が同じ時期・同じ都市で開かれることで、政治と経済の両面から議論が深まる仕組みになっている。</p>
+          </div>
+          <div class="meta"><a href="https://www.sz.gov.cn/en_szgov/news/infocus/APEC2026/News/content/post_12977146.html" target="_blank" rel="noopener">深圳市人民政府</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-sports" style="--cat-color:var(--c-sports)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">芸能／スポーツ</h2></div>
+        <p class="panel-sub">厳選2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>MLBポストシーズン開幕——大谷翔平選手のドジャース、連覇の本命に</h3>
+          <p class="lead">メジャーリーグ（MLB）の今季世界一を決めるポストシーズンが9月29日（日本時間30日）に開幕し、大谷翔平選手が所属するドジャースも出場している。米国のスポーツベッティング大手が公開した2026年のワールドシリーズ優勝オッズでは、ドジャースが「本命」として1位、ヤンキースが2位となっている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、優勝オッズ<span class="note">（＝ブックメーカー（賭けの元締めとなる業者）が、各チームの優勝可能性を数値化したもの。数字が低いほど「本命」、つまり優勝する可能性が高いと見られていることを示す）</span>で1位になるということが、単なる人気投票ではなく、実際の戦力・選手層を踏まえた専門家的な評価だという点にある。ドジャースは昨季世界一に輝いており、大谷選手を含む主力選手がほぼ継続していることが、連覇の有力候補と見られる主な理由とされている。</p>
+          </div>
+          <div class="meta"><a href="https://www.mlb.com/ja/news/dodgers-win-nlcs-game-four-2025-to-advance-world-series" target="_blank" rel="noopener">MLB.com 日本語版</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>プロ野球CS、ファイナルステージが進行中——日本シリーズは今月下旬に開幕予定</h3>
+          <p class="lead">クライマックスシリーズ（10月15日既報）のファイナルステージは、セ・リーグが阪神とDeNA、パ・リーグがソフトバンクと日本ハムで進行中。両リーグの勝者が対戦する日本シリーズは、例年の日程から今月下旬に開幕する見通し。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、クライマックスシリーズがあくまで「日本シリーズへの出場権を懸けた予選」という位置づけである点にある。日本シリーズ<span class="note">（＝セ・リーグとパ・リーグ、それぞれのクライマックスシリーズを勝ち抜いた1チームどうしが対戦し、その年の「日本一」を決める、プロ野球シーズン最後の大一番のこと）</span>は7戦4勝制で行われるのが通例で、クライマックスシリーズの決着が早く着くほど、出場チームにとっては休養や調整の時間を多く確保できるという利点がある。</p>
+          </div>
+          <div class="meta"><a href="https://npb.jp/games/2026/info_cs.html" target="_blank" rel="noopener">NPB公式サイト</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-koshien" style="--cat-color:var(--c-koshien)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">高校野球【埼玉】</h2></div>
+        <p class="panel-sub">秋季大会2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>横浜主将「泥臭く優勝目指す」——西武台戦に向け意気込み</h3>
+          <p class="lead">秋季関東大会（10月15日既報）の1回戦で西武台と対戦する横浜の川上慧主将は、「泥臭く優勝を目指す」と意気込みを語った。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「泥臭く」という言葉の選び方にある。横浜は全国的にも知られる強豪校であり、華麗なプレーで勝つことを期待されがちだが、主将がこうした言葉を選んだのは、関東大会という短期決戦では、見栄えよりも1つ1つのプレーを確実に積み重ねる粘り強さこそが勝敗を分けるという考えの表れとみられる。本日既報のとおり、西武台にとっては初戦から全国区の強豪との対戦となる厳しい巡り合わせ。</p>
+          </div>
+          <div class="meta"><a href="https://www.hb-nippon.com/articles/4095" target="_blank" rel="noopener">高校野球ドットコム</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>関東大会、本日16日が開幕前日——両校とも調整の最終日</h3>
+          <p class="lead">17日に群馬県・上毛新聞敷島球場で開幕する秋季関東大会（10月15日既報）は、本日16日が開幕前日となる。埼玉1位の西武台、埼玉2位の山村学園ともに、最後の調整の1日を迎える。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「開幕前日」という、大会に向けた調整の最終日であるという点にある。この日は、激しい実戦形式の練習よりも、軽めの調整や、相手チームの映像・データの最終確認など、心身ともに本番へ向けてコンディションを整える作業が中心になることが多い。明日の初戦（西武台vs横浜、山村学園vs山梨学院）に向け、両校とも静かな最終準備の一日を過ごすことになる。</p>
+          </div>
+          <div class="meta"><a href="https://www.kanaloco.jp/sports/baseball/hsbaseball/article-1310892.html" target="_blank" rel="noopener">神奈川新聞</a></div>
+        </article>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var cats = ['top','social','polecon','scitech','business','startup','gadget','intl','sports','koshien'];
+  var idx = 0;
+  var track = document.getElementById('track');
+  var viewport = document.getElementById('viewport');
+  var vw = viewport.clientWidth;
+
+  function setActive(i){
+    cats.forEach(function(c, j){
+      document.getElementById('tab-' + c).classList.toggle('active', j === i);
+    });
+    var activeTab = document.getElementById('tab-' + cats[i]);
+    if (activeTab && activeTab.scrollIntoView) activeTab.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+  }
+
+  function settle(i, animate){
+    idx = Math.max(0, Math.min(cats.length - 1, i));
+    track.style.transition = animate ? 'transform .32s cubic-bezier(.22,.61,.36,1)' : 'none';
+    track.style.transform = 'translateX(' + (-idx * vw) + 'px)';
+    setActive(idx);
+  }
+
+  window.goTo = function(i){ settle(i, true); };
+
+  window.addEventListener('resize', function(){
+    vw = viewport.clientWidth;
+    settle(idx, false);
+  });
+
+  var dragging = false, decided = null, sx = 0, sy = 0, dx = 0;
+  viewport.addEventListener('touchstart', function(e){
+    dragging = true; decided = null;
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY; dx = 0;
+    track.style.transition = 'none';
+  }, { passive: true });
+
+  viewport.addEventListener('touchmove', function(e){
+    if (!dragging) return;
+    var cx = e.touches[0].clientX, cy = e.touches[0].clientY;
+    var mdx = cx - sx, mdy = cy - sy;
+    if (decided === null) {
+      if (Math.abs(mdx) > 8 || Math.abs(mdy) > 8) {
+        decided = Math.abs(mdx) > Math.abs(mdy) ? 'x' : 'y';
+      }
+    }
+    if (decided === 'x') {
+      e.preventDefault();
+      dx = mdx;
+      var atStart = idx === 0 && dx > 0;
+      var atEnd = idx === cats.length - 1 && dx < 0;
+      var eased = (atStart || atEnd) ? dx * 0.35 : dx;
+      track.style.transform = 'translateX(' + (-idx * vw + eased) + 'px)';
+    }
+  }, { passive: false });
+
+  viewport.addEventListener('touchend', function(){
+    if (!dragging) return;
+    dragging = false;
+    if (decided === 'x') {
+      var threshold = vw * 0.18;
+      if (dx <= -threshold) settle(idx + 1, true);
+      else if (dx >= threshold) settle(idx - 1, true);
+      else settle(idx, true);
+    }
+    decided = null; dx = 0;
+  });
+
+  settle(0, false);
+})();
+</script>
+
+</body></html>
