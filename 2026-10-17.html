@@ -1,0 +1,610 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yoshi's News</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Zen+Old+Mincho:wght@600;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap');
+
+:root {
+  --bg: #ffffff;
+  --panel-bg: #ffffff;
+  --card: #ffffff;
+  --card-line: #eef0f3;
+  --ink: #1a1c20;
+  --ink-soft: #5b6068;
+  --ink-faint: #9aa0a8;
+  --shell: #f4f5f7;
+
+  --c-top: #ef3355;
+  --c-social: #00b3a4;
+  --c-polecon: #6d5bf0;
+  --c-scitech: #ff8a1e;
+  --c-business: #0091ff;
+  --c-sports: #26c281;
+  --c-startup: #ff4fa3;
+  --c-koshien: #c8860d;
+  --c-intl: #4b3f8f;
+  --c-gadget: #00bcd4;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101114;
+    --panel-bg: #101114;
+    --card: #1a1c20;
+    --card-line: #2a2c31;
+    --ink: #f1f2f4;
+    --ink-soft: #b7bcc4;
+    --ink-faint: #767c86;
+    --shell: #1a1c20;
+    --c-top: #ff6b85;
+    --c-social: #3fd8c9;
+    --c-polecon: #9c8fff;
+    --c-scitech: #ffab5c;
+    --c-business: #4db2ff;
+    --c-sports: #5be0a6;
+    --c-startup: #ff85c2;
+    --c-koshien: #e8b34c;
+    --c-intl: #a89cf0;
+    --c-gadget: #4dd8ea;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101114;
+  --panel-bg: #101114;
+  --card: #1a1c20;
+  --card-line: #2a2c31;
+  --ink: #f1f2f4;
+  --ink-soft: #b7bcc4;
+  --ink-faint: #767c86;
+  --shell: #1a1c20;
+  --c-top: #ff6b85;
+  --c-social: #3fd8c9;
+  --c-polecon: #9c8fff;
+  --c-scitech: #ffab5c;
+  --c-business: #4db2ff;
+  --c-sports: #5be0a6;
+  --c-startup: #ff85c2;
+  --c-koshien: #e8b34c;
+  --c-intl: #a89cf0;
+  --c-gadget: #4dd8ea;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--shell);
+  color: var(--ink);
+  font-family: "Zen Kaku Gothic New", -apple-system, "Hiragino Kaku Gothic ProN", sans-serif;
+  line-height: 1.7;
+  overscroll-behavior-y: none;
+}
+.serif { font-family: "Zen Old Mincho", "Hiragino Mincho ProN", serif; }
+
+.app {
+  max-width: 680px;
+  margin: 0 auto;
+  background: var(--bg);
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ---- Header ---- */
+.topbar { padding: 20px 20px 0; flex-shrink: 0; }
+.title-line { display: flex; align-items: center; gap: 8px; }
+.mascot { height: 50px; width: auto; flex-shrink: 0; border-radius: 8px; }
+.title-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  margin-bottom: 14px;
+}
+.title-row h1 {
+  font-family: "Baloo 2", "Zen Kaku Gothic New", sans-serif;
+  font-size: 48px; font-weight: 800; margin: 0; letter-spacing: 0.01em; line-height: 1;
+  -webkit-text-stroke: 2.4px #2b2013;
+  filter: drop-shadow(2px 3px 0 rgba(30,22,12,0.18));
+  background-image:
+    radial-gradient(circle at 22% 30%, #211709 0 7px, transparent 8px),
+    radial-gradient(circle at 68% 65%, #3a2b16 0 9px, transparent 10px),
+    radial-gradient(circle at 45% 88%, #241a0c 0 5px, transparent 6px),
+    radial-gradient(circle at 85% 20%, #2e2211 0 6px, transparent 7px),
+    linear-gradient(135deg, #b8a06e, #967c4c 50%, #6f5a35);
+  background-size: 30px 30px, 41px 41px, 23px 23px, 35px 35px, 100% 100%;
+  background-repeat: repeat, repeat, repeat, repeat, no-repeat;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.title-row .date { font-size: 11.5px; color: var(--ink-faint); white-space: nowrap; font-weight: 500; margin-top: 2px; }
+
+.tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px 3px; }
+.tab {
+  appearance: none; border: none; background: none;
+  font-family: inherit; font-size: 10.5px; font-weight: 700;
+  color: var(--ink-faint);
+  padding: 7px 4px 9px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+  cursor: pointer;
+  border-radius: 10px 10px 0 0;
+  transition: color .2s ease, background .2s ease;
+}
+.tab .dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  margin-right: 5px; background: currentColor; opacity: 0.45; vertical-align: middle;
+}
+.tab::after {
+  content: ""; position: absolute; left: 10px; right: 10px; bottom: 0;
+  height: 3px; border-radius: 3px 3px 0 0; background: transparent; transition: background .2s ease;
+}
+.tab.active { color: var(--tab-color); background: color-mix(in srgb, var(--tab-color) 10%, transparent); }
+.tab.active .dot { opacity: 1; }
+.tab.active::after { background: var(--tab-color); }
+
+/* ---- Swipe viewport ---- */
+.viewport { flex: 1; overflow: hidden; position: relative; touch-action: pan-y; }
+.track {
+  display: flex;
+  height: 100%;
+  width: 1000%;
+  transition: transform .32s cubic-bezier(.22,.61,.36,1);
+  will-change: transform;
+}
+.panel {
+  width: 10%;
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 20px 56px;
+}
+
+.panel-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.panel-head .chip { width: 8px; height: 26px; border-radius: 4px; background: var(--cat-color); flex-shrink: 0; }
+.panel-head h2 { font-size: 20px; font-weight: 700; margin: 0; letter-spacing: 0.02em; color: var(--cat-color); }
+.panel-sub { font-size: 12px; color: var(--ink-faint); margin: 0 0 18px 18px; }
+
+.story {
+  background: var(--card);
+  border: 1px solid var(--card-line);
+  border-left: 4px solid var(--cat-color);
+  border-radius: 12px;
+  padding: 18px 18px 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(20,20,30,0.05);
+}
+.story .kicker {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: "Zen Old Mincho", serif; font-size: 11.5px; font-weight: 700;
+  color: var(--cat-color); margin-bottom: 9px;
+}
+.story h3 { font-size: 16px; font-weight: 700; line-height: 1.55; margin: 0 0 10px; }
+.story .lead { font-size: 14px; color: var(--ink); margin: 0 0 14px; line-height: 1.85; }
+
+.context {
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 10px;
+  padding: 13px 15px;
+  margin: 0 0 12px;
+}
+.context-label {
+  display: block; font-size: 10.5px; font-weight: 700;
+  color: var(--cat-color); letter-spacing: 0.04em; margin-bottom: 6px;
+}
+.context p { font-size: 13px; color: var(--ink-soft); margin: 0; line-height: 1.8; }
+
+.note { font-size: 11.5px; color: var(--ink-faint); font-weight: 500; }
+
+.term-link {
+  color: var(--cat-color);
+  text-decoration: none;
+  border-bottom: 1px dotted color-mix(in srgb, var(--cat-color) 55%, transparent);
+  font-weight: 700;
+}
+
+.meta { font-size: 11px; color: var(--ink-faint); }
+.meta a { color: var(--cat-color); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--cat-color) 40%, transparent); font-weight: 700; }
+
+.closing {
+  margin: 6px 0 0; padding: 16px 18px;
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 12px; font-size: 13px; color: var(--ink-soft); text-align: center;
+}
+.closing .label {
+  display: block; font-family: "Zen Old Mincho", serif; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.2em; color: var(--cat-color); margin-bottom: 8px;
+}
+.colophon { margin: 14px 0 8px; font-size: 10.5px; color: var(--ink-faint); line-height: 1.9; text-align: center; }
+
+@media (max-width: 420px) {
+  .topbar { padding: 16px 14px 0; }
+  .panel { padding: 16px 14px 48px; }
+  .title-row h1 { font-size: 38px; }
+  .mascot { height: 40px; }
+}
+</style>
+</head><body>
+
+
+<div class="app" id="app">
+
+  <div class="topbar">
+    <div class="title-row">
+      <div class="title-line">
+        <img class="mascot" src="mascot.jpg" alt="オオサンショウウオのマスコット">
+        <h1>Yoshi's News</h1>
+      </div>
+      <span class="date">2026年10月17日（土）・第44号</span>
+    </div>
+    <div class="tabs" id="tabs">
+      <button class="tab" id="tab-top" style="--tab-color:var(--c-top)" onclick="goTo(0)"><span class="dot"></span>トップ</button>
+      <button class="tab" id="tab-social" style="--tab-color:var(--c-social)" onclick="goTo(1)"><span class="dot"></span>社会</button>
+      <button class="tab" id="tab-polecon" style="--tab-color:var(--c-polecon)" onclick="goTo(2)"><span class="dot"></span>政治/経済</button>
+      <button class="tab" id="tab-scitech" style="--tab-color:var(--c-scitech)" onclick="goTo(3)"><span class="dot"></span>科学/テック</button>
+      <button class="tab" id="tab-business" style="--tab-color:var(--c-business)" onclick="goTo(4)"><span class="dot"></span>ビジネス</button>
+      <button class="tab" id="tab-startup" style="--tab-color:var(--c-startup)" onclick="goTo(5)"><span class="dot"></span>スタートアップ</button>
+      <button class="tab" id="tab-gadget" style="--tab-color:var(--c-gadget)" onclick="goTo(6)"><span class="dot"></span>ガジェット</button>
+      <button class="tab" id="tab-intl" style="--tab-color:var(--c-intl)" onclick="goTo(7)"><span class="dot"></span>海外</button>
+      <button class="tab" id="tab-sports" style="--tab-color:var(--c-sports)" onclick="goTo(8)"><span class="dot"></span>芸能/スポーツ</button>
+      <button class="tab" id="tab-koshien" style="--tab-color:var(--c-koshien)" onclick="goTo(9)"><span class="dot"></span>高校野球【埼玉】</button>
+    </div>
+  </div>
+
+  <div class="viewport" id="viewport">
+    <div class="track" id="track">
+
+      <section class="panel" id="panel-top" style="--cat-color:var(--c-top)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">トップニュース</h2></div>
+        <p class="panel-sub">今日いちばん知っておきたい2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 高校野球</span>
+          <h3>秋季関東大会、本日17日に開幕——西武台は横浜、山村学園は山梨学院と対戦</h3>
+          <p class="lead">第79回秋季関東地区高校野球大会（10月16日既報）が、本日17日に群馬県・上毛新聞敷島球場で開幕する。埼玉1位の西武台は神奈川2位の横浜と、埼玉2位の山村学園は山梨1位の山梨学院と、それぞれ1回戦で対戦する。神奈川1位の慶応は栃木2位の佐野日大と対戦。計15校が出場し、決勝は25日に行われる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、この大会が「ただの地方大会」ではなく、来春のセンバツ甲子園出場校を選ぶ選考委員が実際に視察に訪れる、いわば「本番の試合」として扱われるという点にある。優勝校は11月の明治神宮野球大会<span class="note">（＝毎年11月に東京の明治神宮野球場で行われる、大学野球と高校野球それぞれの全国大会のこと。高校の部には、各地区の秋季大会を制した代表校が出場する）</span>に関東代表として出場する道も開ける。埼玉県勢2校がそろって初戦から全国区の強豪（横浜・山梨学院）と当たるという厳しい巡り合わせの中、初戦をどう突破するかが最大の注目点になる。</p>
+          </div>
+          <div class="meta"><a href="https://www.kanaloco.jp/sports/baseball/hsbaseball/article-1310892.html" target="_blank" rel="noopener">神奈川新聞</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ ガジェット</span>
+          <h3>Apple「iPhone Duo」、本日16日午後9時に予約開始——23日発売</h3>
+          <p class="lead">アップル初の折りたたみスマートフォン「iPhone Duo」（10月12日既報）は、本日16日午後9時に予約注文が始まる。発売日は10月23日で、価格は36万4800円から。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、予約開始から発売まで1週間というスケジュールの短さにある。アップルは新製品の発表から発売までの期間を短く設定することで、話題性が薄れないうちに購入まで一気に進めてもらう狙いがあるとされる。36万円超という価格は通常のiPhoneの2〜3倍にあたり、予約初日にどれだけの需要が集まるかが、折りたたみスマートフォン市場全体の今後を測る1つの指標として注目されている。</p>
+          </div>
+          <div class="meta"><a href="https://iphone-mania.jp/?p=607205" target="_blank" rel="noopener">iPhone Mania</a></div>
+        </article>
+
+        <div class="closing">
+          <span class="label serif">編集後記</span>
+          いよいよ秋季関東大会が開幕、西武台・山村学園ともに大一番です。アップルの折りたたみスマホも今夜から予約開始。半導体市場は過去最高の勢いで、AI需要の大きさを改めて感じます。タブまたはスワイプで10のジャンルを読み進められます。良い週末を。
+        </div>
+        <div class="colophon">AIが検索結果をもとに要約・編集しています。詳細は各記事の出典リンクでご確認ください。<br>毎朝5時発行・次号は明日<br><a href="archive.html" style="color:inherit">過去の紙面はこちら</a></div>
+      </section>
+
+      <section class="panel" id="panel-social" style="--cat-color:var(--c-social)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">社会</h2></div>
+        <p class="panel-sub">くらしに関わるニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>クマによる人身被害、宮城など複数県で警報継続中</h3>
+          <p class="lead">本日既報のとおり2025年度のクマ被害は過去10年で最悪水準（10月16日既報）となったが、2026年も宮城県などでクマ出没警報が継続して出されており、警戒が続いている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「警報」<span class="note">（＝注意を呼びかける「注意報」よりも一段上の、より強い警戒を求める段階のこと。自治体が出没状況に応じて段階的に発令・継続を判断する）</span>が長期間継続しているという点にある。警報が出ている間は、登山や山菜・キノコ採りなど、山に入る活動そのものを控えるよう呼びかけられることが多い。警報の継続は、クマが人の生活圏から完全には離れていない状態が続いていることを示している。</p>
+          </div>
+          <div class="meta"><a href="https://www.pref.miyagi.jp/release/2025/kumakyoukakikan.html" target="_blank" rel="noopener">宮城県</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>消費税減税、支援金の制度設計に与党内からも指摘続く</h3>
+          <p class="lead">臨時国会（10月16日既報）で審議される消費税・支援金法案について、支援金部分の対象範囲や金額が具体的に示されていない点に、自民党内からも指摘が続いている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、減税という「分かりやすい」政策と、支援金という「対象者によって受け取れる金額が変わる」政策が、同じ法案の中に組み込まれているという複雑さにある。消費税の減税は買い物をする人全員が等しく恩恵を受けるが、支援金<span class="note">（＝生活への影響が大きい人に絞って現金を直接給付する仕組みのこと。対象や金額の基準づくりに時間がかかりやすい）</span>は対象者の線引きが難しく、制度設計が複雑になりやすい。この「分かりにくさ」が、法案全体の国会審議を長引かせる要因になっている。</p>
+          </div>
+          <div class="meta"><a href="https://kumanichi.com/articles/2041683" target="_blank" rel="noopener">熊本日日新聞（共同通信）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-polecon" style="--cat-color:var(--c-polecon)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">政治／経済</h2></div>
+        <p class="panel-sub">政治・経済の動き2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 政治</span>
+          <h3>消費税減税法案、立憲民主党「財源を示していないものは認められない」</h3>
+          <p class="lead">臨時国会に提出される消費税減税関連法案（本日既報）について、立憲民主党幹部は「財源を示していないものは認められない」と述べ、反対の立場を明確にしている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「財源」<span class="note">（＝ある政策を実行するために必要なお金を、どこから、どうやって確保するかという裏付けのこと。財源が曖昧なまま政策を実行すると、将来的に国の借金（国債）が増えたり、別の分野の予算が削られたりするリスクがある）</span>という言葉が、野党の反対理由の核心になっている点にある。政府は「赤字国債に頼らず、歳出・歳入両面の見直しで確保する」（10月12日既報）と説明しているが、具体的な内訳が示されない限り、野党側はこの説明だけでは納得しないという構図が続いている。</p>
+          </div>
+          <div class="meta"><a href="https://www.sangiin.go.jp/japanese/joho1/kousei/gian/212/meisai/m212090208059.htm" target="_blank" rel="noopener">参議院</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 経済</span>
+          <h3>半導体市場、2026年1〜8月の世界売上高が初めて1兆ドル超——AI需要が追い風</h3>
+          <p class="lead">米国半導体工業会（SIA）の集計によると、2026年1〜8月の世界の半導体売上高が初めて1兆ドルを超えた。AIデータセンターへの投資拡大が主な要因で、通年では1兆6000億ドル超に達する見込みだという。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「8カ月で1兆ドル」という数字の大きさが、AIブームの経済規模をそのまま映し出している点にある。半導体<span class="note">（＝コンピューターやスマートフォン、AIの計算処理などに使われる電子部品のこと。「産業のコメ」とも呼ばれ、現代の経済活動のあらゆる場面で欠かせない）</span>は、AIを動かすための計算処理に大量に使われるため、AI投資が拡大すればするほど需要が伸びる構造になっている。本日既報のビジネス面で紹介するSamsungやTSMCの好業績も、この大きな流れの一部と言える。</p>
+          </div>
+          <div class="meta"><a href="https://eetimes.itmedia.co.jp/ee/articles/2610/10/news009.html" target="_blank" rel="noopener">EE Times Japan</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-scitech" style="--cat-color:var(--c-scitech)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">科学／テック</h2></div>
+        <p class="panel-sub">研究・技術のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>Samsung、2026年7〜9月期の暫定業績——営業利益が前年同期の約9倍に</h3>
+          <p class="lead">韓国Samsung Electronicsは10月8日、2026年第3四半期（7〜9月）の暫定業績を発表した。営業利益は前年同期の約9倍になる見込みだという。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「約9倍」という驚異的な伸び率の背景に、本日既報のAI需要による半導体市場全体の拡大があるという点にある。Samsungはメモリー半導体<span class="note">（＝データを一時的・長期的に記憶するための半導体部品のこと。AIの学習や推論には大量のデータを高速で読み書きする必要があり、メモリー半導体の需要がAIブームで急増している）</span>の世界的な大手であり、AIサーバー向けの高性能メモリーの需要急増が、業績を大きく押し上げている。暫定業績<span class="note">（＝正式な決算発表の前に、概算の数字を先行して公表すること。市場の関心が高い企業が、注目度の高さに応えて行うことが多い）</span>をいち早く出したこと自体が、好業績への自信を示しているとも言える。</p>
+          </div>
+          <div class="meta"><a href="https://eetimes.itmedia.co.jp/ee/articles/2610/10/news009.html" target="_blank" rel="noopener">EE Times Japan</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>Intel、新型パッケージ技術「EMIB-T」で日本企業と協業——半導体の性能向上の鍵</h3>
+          <p class="lead">米Intelのリップブー・タンCEOは10月7日、日本法人の設立50周年イベントで、シリコン貫通電極（TSV）を加えた次世代パッケージング技術「EMIB-T」について、日本企業と協業を進めていると明らかにした。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「パッケージング」<span class="note">（＝半導体のチップ（心臓部）を、実際に基板に取り付けて使える形に組み立てる工程のこと。複数のチップを1つにまとめることで、より高性能な部品を作れるようになる）</span>という工程が、半導体の性能向上における新たな競争の場になっている点にある。チップそのものをより小さく作る技術（微細化）が物理的な限界に近づく中、複数のチップを効率よく組み合わせる「パッケージング技術」が、性能向上の次の鍵として注目されている。日本企業との協業は、日本が持つ精密な製造技術への評価の高さを示している。</p>
+          </div>
+          <div class="meta"><a href="https://eetimes.itmedia.co.jp/ee/articles/2610/10/news009.html" target="_blank" rel="noopener">EE Times Japan</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-business" style="--cat-color:var(--c-business)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ビジネス</h2></div>
+        <p class="panel-sub">企業・産業のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>TSMC、9月売上高が前年同月比54.6%増——AI向け需要が支える</h3>
+          <p class="lead">台湾の半導体受託生産（ファウンドリー）大手TSMCの9月単月の売上高は、前年同月比54.6%増となった。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、ファウンドリー<span class="note">（＝自社では半導体を設計する企業（NVIDIAやAppleなど）の設計図を受け取り、実際の製造だけを専門に手がける会社のこと。TSMCは世界最大のファウンドリーで、最先端の半導体の多くがここで作られている）</span>というTSMCの事業モデルにある。TSMCの売上が伸びるということは、それだけ多くの企業がAI向けなどの最先端半導体の製造をTSMCに発注しているということであり、AI業界全体の投資意欲の強さを間接的に示す指標として市場関係者に注目されている。</p>
+          </div>
+          <div class="meta"><a href="https://eetimes.itmedia.co.jp/ee/articles/2610/10/news009.html" target="_blank" rel="noopener">EE Times Japan</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>Cognex、半導体製造向け新型識別システム「In-Sight 1750」発表</h3>
+          <p class="lead">画像認識技術を手がける米Cognexは、半導体製造向けのウエハー・パネル識別システム「In-Sight 1750」シリーズを発表した。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、半導体製造の裏側にある「識別」作業の重要性にある。ウエハー<span class="note">（＝半導体チップの材料となる、円盤状の薄いシリコンの板のこと。この上に無数の回路を形成し、切り分けて個々のチップにする）</span>1枚一枚には製造工程を正確に追跡するための識別番号が刻まれており、これを高速・正確に読み取るシステムが、不良品の原因追跡や生産効率の向上に直結する。本日既報のAI需要の高まりで半導体の生産量そのものが増える中、こうした製造を支える周辺技術への需要も合わせて伸びている。</p>
+          </div>
+          <div class="meta"><a href="https://eetimes.itmedia.co.jp/ee/articles/2610/10/news009.html" target="_blank" rel="noopener">EE Times Japan</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-startup" style="--cat-color:var(--c-startup)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">スタートアップ</h2></div>
+        <p class="panel-sub">資金調達・注目トピック2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>国内スタートアップの「シリーズ」呼称、実は厳密な定義がない——日本特有の事情</h3>
+          <p class="lead">スタートアップの資金調達でよく使われる「シリーズA」「シリーズB」といった呼称について、国内データベースを運営するINITIALは、優先株式の種類と対応させて定義されることが多いものの、日本では事業会社からの出資が多いため、株式の種類だけでは企業の成長段階を正確に捉えにくいと指摘している。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「シリーズA」「シリーズB」<span class="note">（＝スタートアップの資金調達の段階を表す呼び方。一般的にシリーズAは事業の立ち上げ期、シリーズBはそこから事業を拡大する時期の調達を指すが、厳密な決まりがあるわけではない）</span>という呼び方が、実は業界内での「おおよその目安」程度の意味しか持たないという点にある。ニュースで「シリーズB」と報じられていても、その企業の実際の規模や成長段階は、金額や事業内容を個別に見なければ分からないということを示している。</p>
+          </div>
+          <div class="meta"><a href="https://www.geekly.co.jp/column/?p=31603" target="_blank" rel="noopener">GEEKLY MEDIA</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>Speeda、「Japan Startup Finance 2026 上半期」公開——規模別・地域別の動向を分析</h3>
+          <p class="lead">Speedaは、国内スタートアップの資金調達動向レポート「Japan Startup Finance 2026 上半期」を公開した。設立後の経過年数別、資金調達の規模別、地域別の動向など、幅広い切り口で分析している。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、こうした定点観測レポートが、個別の資金調達ニュースだけでは見えない「全体の流れ」をつかむ手がかりになる点にある。本日既報のスタートアップ面（シリーズの定義があいまいという指摘）とも関連して、金額や件数だけでなく、企業の設立年数や地域といった多角的な切り口で分析することで、国内スタートアップ業界の実態に、より近づくことができる。</p>
+          </div>
+          <div class="meta"><a href="https://webtan.impress.co.jp/r/prtimes/items/000000281.000010548" target="_blank" rel="noopener">Web担当者Forum（PR TIMES）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-gadget" style="--cat-color:var(--c-gadget)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ガジェット</h2></div>
+        <p class="panel-sub">新製品2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>iPhone Duoの折りたたみ機構とは——アップルが初めて踏み切った理由</h3>
+          <p class="lead">本日既報のとおり予約が始まる「iPhone Duo」は、アップルが初めて手がける折りたたみスマートフォン。他社が何年も前から展開してきた折りたたみ機構に、アップルが満を持して参入する形となった。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、折りたたみ機構<span class="note">（＝画面を半分に折って小さく持ち歩け、開くと大きな画面として使えるようにする、ヒンジ（蝶番）と、折り曲げても壊れない有機ELディスプレイを組み合わせた仕組みのこと）</span>の実現には、非常に精密な部品設計と、折り曲げ耐性のあるディスプレイ技術が必要になる点にある。アップルはこれまで慎重に様子を見ていたとみられ、他社が数年かけて蓄積した技術的な課題（画面の折り目、耐久性など）がある程度解決された段階で、初めて市場に参入したと考えられる。</p>
+          </div>
+          <div class="meta"><a href="https://iphone-mania.jp/?p=607205" target="_blank" rel="noopener">iPhone Mania</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>折りたたみスマホ市場、本格競争時代へ——主要各社がそろい踏み</h3>
+          <p class="lead">本日既報のアップルの参入により、サムスンなど従来からの主要メーカーに加え、主要スマートフォンメーカーが折りたたみスマホ市場にほぼ全てそろう形になった。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「最後発」のアップルが参入したことで、折りたたみスマホという製品カテゴリーそのものが、一部メーカーの実験的な製品から、業界の主要メーカーが本格的に取り組む定番カテゴリーへ格上げされたという点にある。今後は、価格競争や機能面での差別化が一段と進み、消費者にとっては選択肢が広がる一方、各社の技術力の差がより明確に見えてくる時期に入るとみられる。</p>
+          </div>
+          <div class="meta"><a href="https://news.kakaku.com/prdnews/cd%3Dkeitai/ctcd%3D3147/" target="_blank" rel="noopener">価格.com マガジン</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-intl" style="--cat-color:var(--c-intl)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">海外</h2></div>
+        <p class="panel-sub">国際ニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>米中の関税緊張、再燃から1年——100%追加関税表明の経緯を振り返る</h3>
+          <p class="lead">2025年10月10日、トランプ米大統領は中国からの輸入品に100%の追加関税を課すと表明し、習近平国家主席との首脳会談中止も示唆した。中国によるレアアース輸出規制への対抗措置とみられ、米国株は当時大幅下落した。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、この表明が実際の政策というより、交渉を自分たちに有利に進めるための「駆け引き」の要素が強いと分析されていた点にある。レアアース<span class="note">（＝ハイテク製品や電気自動車のモーターなどに使われる、特殊な性質を持つ鉱物資源の総称。中国が世界の生産・輸出の多くを握っており、輸出規制は中国が持つ重要な交渉材料になっている）</span>の輸出規制のような、相手の弱点を突く措置に対し、関税という強いカードで応じる構図は、本日既報（10月14日既報）の米中間の関税引き下げ交渉の経緯にもつながる、長期化する綱引きの一場面と言える。</p>
+          </div>
+          <div class="meta"><a href="https://www.sakigake.jp/news/article/20251011CO0032/" target="_blank" rel="noopener">秋田魁新報（AFP）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>USTR、60の国・地域に関税方針——日本の税率は12.5%</h3>
+          <p class="lead">米通商代表部（USTR）は7月、60の国・地域に関税を課す方針を発表した。日本に対する税率は12.5%とされている。これは、2026年2月に発効した暫定的な世界一律関税が期限切れを迎えることに関連した措置。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「暫定的な世界一律関税」が期限切れになった後、国・地域ごとに税率を変える新たな段階に移っているという点にある。USTR<span class="note">（＝米通商代表部の略。米国の通商政策（貿易に関する政策）を担当する、大統領府直属の機関のこと）</span>が国ごとに異なる税率を設定するのは、相手国との貿易関係や交渉の進み具合に応じて、個別にきめ細かく対応しようとする狙いがあるとみられる。日本にとっては、この12.5%という税率が、輸出企業のコストに直接影響する重要な数字になる。</p>
+          </div>
+          <div class="meta"><a href="https://www.jetro.go.jp/biz/areareports/2026/2ea5c348bcac23e9.html" target="_blank" rel="noopener">JETRO</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-sports" style="--cat-color:var(--c-sports)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">芸能／スポーツ</h2></div>
+        <p class="panel-sub">厳選2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>プロ野球CS、ファイナルステージが大詰めへ——日本シリーズは今月下旬に</h3>
+          <p class="lead">クライマックスシリーズ（10月16日既報）のファイナルステージは、セ・リーグが阪神とDeNA、パ・リーグがソフトバンクと日本ハムで進行しており、大詰めを迎えている。両リーグの勝者による日本シリーズは、例年の日程から今月下旬に開幕する見通し。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、ファイナルステージが6戦・7戦制という長丁場であるため、決着までの日数がシーズンごとに変わる点にある。先に4勝したチームがその時点で勝ち抜けとなるため、早く決着すればチームの休養や次への準備期間が長くなり、日本シリーズに向けた戦略にも影響する。</p>
+          </div>
+          <div class="meta"><a href="https://npb.jp/games/2026/info_cs.html" target="_blank" rel="noopener">NPB公式サイト</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>MLBワールドシリーズ、ドジャースが優勝オッズ1位——大谷翔平選手の連覇に期待</h3>
+          <p class="lead">メジャーリーグ（10月16日既報）のポストシーズンが進行中。大谷翔平選手が所属するドジャースは、米国のスポーツベッティング大手が公開した優勝オッズで1位となっている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、ドジャースが前回王者であることに加え、主力メンバーがほぼ継続している点にある。ポストシーズン<span class="note">（＝レギュラーシーズン終了後に行われる、優勝チームを決めるためのトーナメント方式の試合のこと。地区シリーズ、リーグチャンピオンシップシリーズ、ワールドシリーズと段階的に進む）</span>は短期決戦の性質上、番狂わせも起きやすいが、総合力の高いチームが評価されやすいという専門家の見方が、オッズの数字にも表れている。</p>
+          </div>
+          <div class="meta"><a href="https://www.mlb.com/ja/news/dodgers-win-nlcs-game-four-2025-to-advance-world-series" target="_blank" rel="noopener">MLB.com 日本語版</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-koshien" style="--cat-color:var(--c-koshien)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">高校野球【埼玉】</h2></div>
+        <p class="panel-sub">秋季大会2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>西武台、本日1回戦で横浜と対戦——埼玉1位の実力を全国区の舞台で</h3>
+          <p class="lead">本日既報のとおり開幕する秋季関東大会で、埼玉1位の西武台は1回戦で神奈川2位の横浜と対戦する。昨夏の埼玉大会5回戦では、山村学園に10-0（5回コールド）で敗れた経験を持つが、今大会の埼玉県大会では優勝を果たしている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、夏の悔しい結果をばねに、秋の県大会で頂点に立ったという西武台の成長の軌跡にある。横浜は全国的にも知られる強豪校であり、初戦からの対戦は厳しい巡り合わせだが、県大会優勝という結果は、夏とは違うチームに仕上がっていることを示している。この一戦の結果が、来春のセンバツ選考における評価を大きく左右する。</p>
+          </div>
+          <div class="meta"><a href="https://www.hb-nippon.com/articles/9266" target="_blank" rel="noopener">高校野球ドットコム</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>山村学園、本日1回戦で山梨学院と対戦——4年ぶりの関東大会で初戦突破目指す</h3>
+          <p class="lead">本日既報のとおり開幕する秋季関東大会で、埼玉2位の山村学園は1回戦で山梨1位の山梨学院と対戦する。山村学園にとっては4年ぶりの関東大会出場で、埼玉大会準決勝では浦和実に11-1で快勝している。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「選抜出場が目標」（10月12日既報）と語ってきた山村学園の投手の言葉どおり、関東大会はあくまで来春への通過点として位置づけられているという点にある。山梨学院（10月13日既報の力関係のヒントも参照）という強豪との初戦は厳しい戦いになるとみられるが、4年ぶりの舞台でどこまで実力を発揮できるかが注目されている。</p>
+          </div>
+          <div class="meta"><a href="https://www.hb-nippon.com/articles/18083" target="_blank" rel="noopener">高校野球ドットコム</a></div>
+        </article>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var cats = ['top','social','polecon','scitech','business','startup','gadget','intl','sports','koshien'];
+  var idx = 0;
+  var track = document.getElementById('track');
+  var viewport = document.getElementById('viewport');
+  var vw = viewport.clientWidth;
+
+  function setActive(i){
+    cats.forEach(function(c, j){
+      document.getElementById('tab-' + c).classList.toggle('active', j === i);
+    });
+    var activeTab = document.getElementById('tab-' + cats[i]);
+    if (activeTab && activeTab.scrollIntoView) activeTab.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+  }
+
+  function settle(i, animate){
+    idx = Math.max(0, Math.min(cats.length - 1, i));
+    track.style.transition = animate ? 'transform .32s cubic-bezier(.22,.61,.36,1)' : 'none';
+    track.style.transform = 'translateX(' + (-idx * vw) + 'px)';
+    setActive(idx);
+  }
+
+  window.goTo = function(i){ settle(i, true); };
+
+  window.addEventListener('resize', function(){
+    vw = viewport.clientWidth;
+    settle(idx, false);
+  });
+
+  var dragging = false, decided = null, sx = 0, sy = 0, dx = 0;
+  viewport.addEventListener('touchstart', function(e){
+    dragging = true; decided = null;
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY; dx = 0;
+    track.style.transition = 'none';
+  }, { passive: true });
+
+  viewport.addEventListener('touchmove', function(e){
+    if (!dragging) return;
+    var cx = e.touches[0].clientX, cy = e.touches[0].clientY;
+    var mdx = cx - sx, mdy = cy - sy;
+    if (decided === null) {
+      if (Math.abs(mdx) > 8 || Math.abs(mdy) > 8) {
+        decided = Math.abs(mdx) > Math.abs(mdy) ? 'x' : 'y';
+      }
+    }
+    if (decided === 'x') {
+      e.preventDefault();
+      dx = mdx;
+      var atStart = idx === 0 && dx > 0;
+      var atEnd = idx === cats.length - 1 && dx < 0;
+      var eased = (atStart || atEnd) ? dx * 0.35 : dx;
+      track.style.transform = 'translateX(' + (-idx * vw + eased) + 'px)';
+    }
+  }, { passive: false });
+
+  viewport.addEventListener('touchend', function(){
+    if (!dragging) return;
+    dragging = false;
+    if (decided === 'x') {
+      var threshold = vw * 0.18;
+      if (dx <= -threshold) settle(idx + 1, true);
+      else if (dx >= threshold) settle(idx - 1, true);
+      else settle(idx, true);
+    }
+    decided = null; dx = 0;
+  });
+
+  settle(0, false);
+})();
+</script>
+
+</body></html>
