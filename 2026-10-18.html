@@ -1,0 +1,610 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yoshi's News</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Zen+Old+Mincho:wght@600;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap');
+
+:root {
+  --bg: #ffffff;
+  --panel-bg: #ffffff;
+  --card: #ffffff;
+  --card-line: #eef0f3;
+  --ink: #1a1c20;
+  --ink-soft: #5b6068;
+  --ink-faint: #9aa0a8;
+  --shell: #f4f5f7;
+
+  --c-top: #ef3355;
+  --c-social: #00b3a4;
+  --c-polecon: #6d5bf0;
+  --c-scitech: #ff8a1e;
+  --c-business: #0091ff;
+  --c-sports: #26c281;
+  --c-startup: #ff4fa3;
+  --c-koshien: #c8860d;
+  --c-intl: #4b3f8f;
+  --c-gadget: #00bcd4;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101114;
+    --panel-bg: #101114;
+    --card: #1a1c20;
+    --card-line: #2a2c31;
+    --ink: #f1f2f4;
+    --ink-soft: #b7bcc4;
+    --ink-faint: #767c86;
+    --shell: #1a1c20;
+    --c-top: #ff6b85;
+    --c-social: #3fd8c9;
+    --c-polecon: #9c8fff;
+    --c-scitech: #ffab5c;
+    --c-business: #4db2ff;
+    --c-sports: #5be0a6;
+    --c-startup: #ff85c2;
+    --c-koshien: #e8b34c;
+    --c-intl: #a89cf0;
+    --c-gadget: #4dd8ea;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101114;
+  --panel-bg: #101114;
+  --card: #1a1c20;
+  --card-line: #2a2c31;
+  --ink: #f1f2f4;
+  --ink-soft: #b7bcc4;
+  --ink-faint: #767c86;
+  --shell: #1a1c20;
+  --c-top: #ff6b85;
+  --c-social: #3fd8c9;
+  --c-polecon: #9c8fff;
+  --c-scitech: #ffab5c;
+  --c-business: #4db2ff;
+  --c-sports: #5be0a6;
+  --c-startup: #ff85c2;
+  --c-koshien: #e8b34c;
+  --c-intl: #a89cf0;
+  --c-gadget: #4dd8ea;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--shell);
+  color: var(--ink);
+  font-family: "Zen Kaku Gothic New", -apple-system, "Hiragino Kaku Gothic ProN", sans-serif;
+  line-height: 1.7;
+  overscroll-behavior-y: none;
+}
+.serif { font-family: "Zen Old Mincho", "Hiragino Mincho ProN", serif; }
+
+.app {
+  max-width: 680px;
+  margin: 0 auto;
+  background: var(--bg);
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ---- Header ---- */
+.topbar { padding: 20px 20px 0; flex-shrink: 0; }
+.title-line { display: flex; align-items: center; gap: 8px; }
+.mascot { height: 50px; width: auto; flex-shrink: 0; border-radius: 8px; }
+.title-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  margin-bottom: 14px;
+}
+.title-row h1 {
+  font-family: "Baloo 2", "Zen Kaku Gothic New", sans-serif;
+  font-size: 48px; font-weight: 800; margin: 0; letter-spacing: 0.01em; line-height: 1;
+  -webkit-text-stroke: 2.4px #2b2013;
+  filter: drop-shadow(2px 3px 0 rgba(30,22,12,0.18));
+  background-image:
+    radial-gradient(circle at 22% 30%, #211709 0 7px, transparent 8px),
+    radial-gradient(circle at 68% 65%, #3a2b16 0 9px, transparent 10px),
+    radial-gradient(circle at 45% 88%, #241a0c 0 5px, transparent 6px),
+    radial-gradient(circle at 85% 20%, #2e2211 0 6px, transparent 7px),
+    linear-gradient(135deg, #b8a06e, #967c4c 50%, #6f5a35);
+  background-size: 30px 30px, 41px 41px, 23px 23px, 35px 35px, 100% 100%;
+  background-repeat: repeat, repeat, repeat, repeat, no-repeat;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.title-row .date { font-size: 11.5px; color: var(--ink-faint); white-space: nowrap; font-weight: 500; margin-top: 2px; }
+
+.tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px 3px; }
+.tab {
+  appearance: none; border: none; background: none;
+  font-family: inherit; font-size: 10.5px; font-weight: 700;
+  color: var(--ink-faint);
+  padding: 7px 4px 9px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+  cursor: pointer;
+  border-radius: 10px 10px 0 0;
+  transition: color .2s ease, background .2s ease;
+}
+.tab .dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  margin-right: 5px; background: currentColor; opacity: 0.45; vertical-align: middle;
+}
+.tab::after {
+  content: ""; position: absolute; left: 10px; right: 10px; bottom: 0;
+  height: 3px; border-radius: 3px 3px 0 0; background: transparent; transition: background .2s ease;
+}
+.tab.active { color: var(--tab-color); background: color-mix(in srgb, var(--tab-color) 10%, transparent); }
+.tab.active .dot { opacity: 1; }
+.tab.active::after { background: var(--tab-color); }
+
+/* ---- Swipe viewport ---- */
+.viewport { flex: 1; overflow: hidden; position: relative; touch-action: pan-y; }
+.track {
+  display: flex;
+  height: 100%;
+  width: 1000%;
+  transition: transform .32s cubic-bezier(.22,.61,.36,1);
+  will-change: transform;
+}
+.panel {
+  width: 10%;
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 20px 56px;
+}
+
+.panel-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.panel-head .chip { width: 8px; height: 26px; border-radius: 4px; background: var(--cat-color); flex-shrink: 0; }
+.panel-head h2 { font-size: 20px; font-weight: 700; margin: 0; letter-spacing: 0.02em; color: var(--cat-color); }
+.panel-sub { font-size: 12px; color: var(--ink-faint); margin: 0 0 18px 18px; }
+
+.story {
+  background: var(--card);
+  border: 1px solid var(--card-line);
+  border-left: 4px solid var(--cat-color);
+  border-radius: 12px;
+  padding: 18px 18px 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(20,20,30,0.05);
+}
+.story .kicker {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: "Zen Old Mincho", serif; font-size: 11.5px; font-weight: 700;
+  color: var(--cat-color); margin-bottom: 9px;
+}
+.story h3 { font-size: 16px; font-weight: 700; line-height: 1.55; margin: 0 0 10px; }
+.story .lead { font-size: 14px; color: var(--ink); margin: 0 0 14px; line-height: 1.85; }
+
+.context {
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 10px;
+  padding: 13px 15px;
+  margin: 0 0 12px;
+}
+.context-label {
+  display: block; font-size: 10.5px; font-weight: 700;
+  color: var(--cat-color); letter-spacing: 0.04em; margin-bottom: 6px;
+}
+.context p { font-size: 13px; color: var(--ink-soft); margin: 0; line-height: 1.8; }
+
+.note { font-size: 11.5px; color: var(--ink-faint); font-weight: 500; }
+
+.term-link {
+  color: var(--cat-color);
+  text-decoration: none;
+  border-bottom: 1px dotted color-mix(in srgb, var(--cat-color) 55%, transparent);
+  font-weight: 700;
+}
+
+.meta { font-size: 11px; color: var(--ink-faint); }
+.meta a { color: var(--cat-color); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--cat-color) 40%, transparent); font-weight: 700; }
+
+.closing {
+  margin: 6px 0 0; padding: 16px 18px;
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 12px; font-size: 13px; color: var(--ink-soft); text-align: center;
+}
+.closing .label {
+  display: block; font-family: "Zen Old Mincho", serif; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.2em; color: var(--cat-color); margin-bottom: 8px;
+}
+.colophon { margin: 14px 0 8px; font-size: 10.5px; color: var(--ink-faint); line-height: 1.9; text-align: center; }
+
+@media (max-width: 420px) {
+  .topbar { padding: 16px 14px 0; }
+  .panel { padding: 16px 14px 48px; }
+  .title-row h1 { font-size: 38px; }
+  .mascot { height: 40px; }
+}
+</style>
+</head><body>
+
+
+<div class="app" id="app">
+
+  <div class="topbar">
+    <div class="title-row">
+      <div class="title-line">
+        <img class="mascot" src="mascot.jpg" alt="オオサンショウウオのマスコット">
+        <h1>Yoshi's News</h1>
+      </div>
+      <span class="date">2026年10月18日（日）・第45号</span>
+    </div>
+    <div class="tabs" id="tabs">
+      <button class="tab" id="tab-top" style="--tab-color:var(--c-top)" onclick="goTo(0)"><span class="dot"></span>トップ</button>
+      <button class="tab" id="tab-social" style="--tab-color:var(--c-social)" onclick="goTo(1)"><span class="dot"></span>社会</button>
+      <button class="tab" id="tab-polecon" style="--tab-color:var(--c-polecon)" onclick="goTo(2)"><span class="dot"></span>政治/経済</button>
+      <button class="tab" id="tab-scitech" style="--tab-color:var(--c-scitech)" onclick="goTo(3)"><span class="dot"></span>科学/テック</button>
+      <button class="tab" id="tab-business" style="--tab-color:var(--c-business)" onclick="goTo(4)"><span class="dot"></span>ビジネス</button>
+      <button class="tab" id="tab-startup" style="--tab-color:var(--c-startup)" onclick="goTo(5)"><span class="dot"></span>スタートアップ</button>
+      <button class="tab" id="tab-gadget" style="--tab-color:var(--c-gadget)" onclick="goTo(6)"><span class="dot"></span>ガジェット</button>
+      <button class="tab" id="tab-intl" style="--tab-color:var(--c-intl)" onclick="goTo(7)"><span class="dot"></span>海外</button>
+      <button class="tab" id="tab-sports" style="--tab-color:var(--c-sports)" onclick="goTo(8)"><span class="dot"></span>芸能/スポーツ</button>
+      <button class="tab" id="tab-koshien" style="--tab-color:var(--c-koshien)" onclick="goTo(9)"><span class="dot"></span>高校野球【埼玉】</button>
+    </div>
+  </div>
+
+  <div class="viewport" id="viewport">
+    <div class="track" id="track">
+
+      <section class="panel" id="panel-top" style="--cat-color:var(--c-top)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">トップニュース</h2></div>
+        <p class="panel-sub">今日いちばん知っておきたい2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ スポーツ</span>
+          <h3>DeNA、4連勝で日本シリーズ進出——3位から勝ち上がり、ソフトバンクと24日に激突</h3>
+          <p class="lead">プロ野球クライマックスシリーズ（10月17日既報）のセ・リーグファイナルステージ第4戦が17日、甲子園で行われ、DeNAが阪神に8-5で勝利。4連勝でシリーズを制し、2年ぶり5度目（大洋・横浜時代を含む）の日本シリーズ進出を決めた。8回に宮崎敏郎選手の適時打で1点差に迫り、9回に途中出場の三森大貴選手が逆転の2点適時打を放った。MVPは牧秀悟選手。日本シリーズは24日、横浜スタジアムで開幕する。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、レギュラーシーズン3位だったDeNAが、リーグ優勝した阪神の持つアドバンテージ（本日既報のセ・リーグは1勝）を乗り越えて日本シリーズに進んだという点にある。下位球団が下剋上<span class="note">（＝シーズンの成績では上位だったチームが、短期決戦で下位のチームに敗れること。クライマックスシリーズではこうした逆転劇がたびたび起きる）</span>を果たすのは、シーズンの強さと短期決戦の強さが必ずしも一致しないことを示す好例。9回2死からの逆転打という劇的な幕切れも、短期決戦の緊張感を象徴している。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261017de60916" target="_blank" rel="noopener">NHKニュース</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 高校野球</span>
+          <h3>秋季関東大会、山村学園は1回戦で山梨学院に1-2——8回に勝ち越し許す接戦</h3>
+          <p class="lead">秋季関東大会（10月17日既報の開幕記事）の1回戦が17日、上毛新聞敷島球場で行われ、埼玉2位の山村学園は山梨1位の山梨学院に1-2で敗れた。山梨学院は4回に倉田雄星選手の適時二塁打で先制。山村学園は7回に松本智司選手の同点打で追いついたが、8回に倉田選手の適時打で再び勝ち越された。山梨学院の渡部瑛太投手が9回を1失点で完投した。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、1点差という僅差の中で、山村学園が一度は同点に追いついていたという点にある。4年ぶりの関東大会出場（10月13日既報）で、全国的な強豪・山梨学院と最後まで食い下がったことは、来春のセンバツ選考<span class="note">（＝来年春の全国高校野球選手権大会（センバツ甲子園）に出場する学校を選ぶ、日本高野連の選考委員会による審査のこと。秋の大会の結果だけでなく、試合内容や選手の力も評価の対象になる）</span>において、一定の評価材料になる可能性がある。埼玉1位の西武台は、本日18日10時から横浜と対戦する。</p>
+          </div>
+          <div class="meta"><a href="https://www.hb-nippon.com/articles/18385" target="_blank" rel="noopener">高校野球ドットコム</a></div>
+        </article>
+
+        <div class="closing">
+          <span class="label serif">編集後記</span>
+          DeNAが3位から日本シリーズ進出という、下剋上の劇的なシーズンでした。高校野球埼玉は山村学園が惜しくも敗退、西武台は本日が勝負です。国会では消費税減税法案をめぐる与野党のせめぎ合いが続いています。タブまたはスワイプで10のジャンルを読み進められます。良い一日を。
+        </div>
+        <div class="colophon">AIが検索結果をもとに要約・編集しています。詳細は各記事の出典リンクでご確認ください。<br>毎朝5時発行・次号は明日<br><a href="archive.html" style="color:inherit">過去の紙面はこちら</a></div>
+      </section>
+
+      <section class="panel" id="panel-social" style="--cat-color:var(--c-social)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">社会</h2></div>
+        <p class="panel-sub">くらしに関わるニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>SNSを発端とした子どもの事件、昨年は過去最多の2095人（暫定値）</h3>
+          <p class="lead">SNSを発端に事件に巻き込まれた子どもは、昨年全国で過去最多の2095人（暫定値）に上った。保護者の目配りの重要性が指摘されている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「過去最多」という数字が、SNSが子どもの生活に深く入り込んでいる現状を映し出している点にある。SNSを通じた被害<span class="note">（＝SNS上で知り合った相手に誘い出されて暴力や性被害を受けたり、個人情報を抜き取られたりするなど、インターネットを経由して現実の事件に発展するケースのこと）</span>は、保護者が子どものスマートフォンの使い方を完全に把握するのが難しいため、家庭だけで防ぎきるのが困難という構造的な課題を抱えている。学校や地域、SNS事業者を含めた複合的な対策が求められている。</p>
+          </div>
+          <div class="meta"><a href="https://www.sakigake.jp/news/list/scd/100001002/105/" target="_blank" rel="noopener">秋田魁新報</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>消費税・支援金法案の一本化、公明党内からも疑問——与党内でも不一致</h3>
+          <p class="lead">消費税減税と支援金給付を一本化した法案（10月16日既報）について、連立与党の公明党内からも、一本化の形そのものに疑問の声が出ていると報じられている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、野党だけでなく、与党を組む公明党からも異論が出ているという点にある。自民党と公明党は連立政権<span class="note">（＝1つの政党だけでは国会で多数を確保できない場合に、複数の政党が協力して政権を運営する体制のこと。政策ごとに各党の考え方の違いが表面化することがある）</span>を組んでいるが、政策の細部では必ずしも完全に一致しているわけではない。与党内の不一致は、法案の国会提出そのものを遅らせる要因にもなり得る。</p>
+          </div>
+          <div class="meta"><a href="https://kumanichi.com/articles/2038766" target="_blank" rel="noopener">熊本日日新聞（共同通信）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-polecon" style="--cat-color:var(--c-polecon)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">政治／経済</h2></div>
+        <p class="panel-sub">政治・経済の動き2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 政治</span>
+          <h3>高市首相、野党に消費減税法案への協力要請——参院での過半数不足が課題</h3>
+          <p class="lead">高市首相は、臨時国会（本日既報）で消費税減税関連法案を成立させるため、野党に理解と協力を求めている。与党は参院で過半数に届いておらず、一致できる点では幅広く協力して前に進めたいとの考えを示している。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、衆院と参院で与党の勢力が異なるという「ねじれ」に近い状況にある。衆院では与党が7割超の議席を持つが、参院<span class="note">（＝衆議院とともに国会を構成する、もう一つの議院のこと。衆院で可決された法案も、参院で否決されると原則として成立しない（衆院の再可決という例外はある））</span>では過半数に届いていないため、法案を確実に成立させるには野党の協力が実質的に必要になる。首相が自ら協力を呼びかける背景には、この参院の事情がある。</p>
+          </div>
+          <div class="meta"><a href="https://kumanichi.com/articles/2038766" target="_blank" rel="noopener">熊本日日新聞（共同通信）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 経済</span>
+          <h3>日本シリーズ、24日に横浜スタジアムで開幕——DeNAとソフトバンクが激突</h3>
+          <p class="lead">プロ野球日本シリーズ（本日既報）は、24日に横浜スタジアムで開幕する。DeNA対ソフトバンクという対戦は、2024年と同じ組み合わせとなる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、プロ野球の大きな試合が、地元経済にも一定の効果をもたらすという点にある。日本シリーズ<span class="note">（＝セ・リーグとパ・リーグそれぞれの代表チームが対戦し、その年の「日本一」を決める、プロ野球シーズン最後の大一番のこと）</span>の開催期間中は、球場周辺の飲食店やホテル、グッズ販売などの経済活動が普段より活発になることが多い。横浜スタジアムでの開幕は、地元・横浜にとっても注目度の高いイベントになる。</p>
+          </div>
+          <div class="meta"><a href="https://www.nikkei.com/article/DGXZQODH171ZR0X11C26A0000000/" target="_blank" rel="noopener">日本経済新聞</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-scitech" style="--cat-color:var(--c-scitech)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">科学／テック</h2></div>
+        <p class="panel-sub">研究・技術のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>モバイルバッテリー、電池の状態を「見える化」——CIOの新技術とは</h3>
+          <p class="lead">モバイルバッテリー（携帯用の充電器）を手がけるCIOは、電池の状態を見える化できる新製品を発表した。使っているうちに劣化していく電池の状態が、買い替えのタイミングとして分かるようになる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、リチウムイオン電池<span class="note">（＝スマートフォンやモバイルバッテリーなどに広く使われている充電池のこと。繰り返し使うことで徐々に性能が落ちていくが、劣化の度合いは外から見ただけでは分かりにくい）</span>が、見た目では劣化がほとんど分からないという特性にある。劣化が進んだ電池は、発熱や発火のリスクがわずかに高まるとされ、見える化によって、まだ使えると思って使い続けてしまうリスクを減らせる。身近な製品の安全性向上に、地味だが実用的な技術が生かされている例。</p>
+          </div>
+          <div class="meta"><a href="https://getnavi.jp/tag/homeappliances/" target="_blank" rel="noopener">GetNavi</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>4Kテレビの新技術「RGB Mini LED」とは——高コスパモデルにも搭載広がる</h3>
+          <p class="lead">TVS REGZAは、「RGB Mini LED」という表示技術を搭載した、比較的手に取りやすい価格帯の4Kテレビ新機種「ZX3S」を発表した。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「RGB Mini LED」<span class="note">（＝通常は白色のLED（発光ダイオード）を使うバックライトを、赤・緑・青（RGB）それぞれの色のLEDに置き換えることで、より鮮やかで正確な色表現を実現する表示技術のこと。従来は高級機種に限られていた）</span>という、これまで高級機種に限られていた技術が、比較的手に取りやすい価格帯のモデルにも搭載され始めている点にある。高度な技術が時間をかけて価格帯の広いモデルにも降りてくるのは、テレビ業界でよく見られる技術普及のパターン。</p>
+          </div>
+          <div class="meta"><a href="https://getnavi.jp/tag/trend/" target="_blank" rel="noopener">GetNavi</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-business" style="--cat-color:var(--c-business)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ビジネス</h2></div>
+        <p class="panel-sub">企業・産業のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>CIOとTVS REGZA、新製品発表——身近な家電にも進む技術競争</h3>
+          <p class="lead">本日既報の科学・テック面で紹介したモバイルバッテリーのCIO、4Kテレビ新機種のTVS REGZAなど、家電メーカー各社が新製品投入を続けている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、家電業界<span class="note">（＝テレビ・冷蔵庫・モバイルバッテリーなど、家庭で使う電化製品を製造・販売する業界のこと。性能の向上だけでなく、価格競争も激しい分野とされる）</span>が、派手さは少ないものの、着実に新技術を投入し続けている点にある。AI・半導体業界のような巨大な投資額のニュースに比べると目立たないが、私たちの生活に直接関わる製品の進化こそが、技術革新の成果を最も実感しやすい分野と言える。</p>
+          </div>
+          <div class="meta"><a href="https://getnavi.jp/tag/trend/" target="_blank" rel="noopener">GetNavi</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>CS敗退の阪神、来季に向けた補強が焦点に</h3>
+          <p class="lead">クライマックスシリーズ（本日既報）でDeNAに4連敗し、日本シリーズ進出を逃した阪神は、リーグ優勝を果たしたシーズンだったものの、オフシーズンの補強が来季に向けた焦点になるとみられる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「リーグ優勝」と「クライマックスシリーズ敗退」が同時に成り立つという、プロ野球の評価の難しさにある。シーズン全体を通した強さ（リーグ優勝）と、短期決戦での強さ（CS・日本シリーズ）は必ずしも一致せず、今回のように優勝チームが短期決戦で敗れることもある。球団経営としては、来季に向けた選手補強や契約交渉（オフシーズンの経営判断）が、ファンの期待に応えるための重要な仕事になる。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261017de60916" target="_blank" rel="noopener">NHKニュース</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-startup" style="--cat-color:var(--c-startup)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">スタートアップ</h2></div>
+        <p class="panel-sub">資金調達・注目トピック2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>フォースタートアップス、月次の資金調達ランキングを継続公表——業界動向を定点観測</h3>
+          <p class="lead">フォースタートアップスが運営する「STARTUP DB」は、国内スタートアップの資金調達額を毎月ランキング形式で公表している。2026年4月分のランキングも発表された。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、こうした月次の定点観測<span class="note">（＝同じ調査方法・同じ対象について、一定の間隔で繰り返し調査を行うこと。単発の調査では見えない、変化の傾向をつかみやすくなる）</span>が、スタートアップ業界全体の「体温」を測る役割を果たしている点にある。1件1件の資金調達ニュースだけを追っていても、業界全体が盛り上がっているのか、冷え込んでいるのかは分かりにくい。月ごとの比較ができる定点データがあることで、投資家や起業家が業界の潮目を読みやすくなる。</p>
+          </div>
+          <div class="meta"><a href="https://www.forstartups.com/en/service-categories/startup-db" target="_blank" rel="noopener">forStartups</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>Speeda、「Japan Startup Finance 2026 上半期」公開——有識者インタビューも収録</h3>
+          <p class="lead">Speedaは、国内スタートアップの資金調達動向レポート「Japan Startup Finance 2026 上半期」を公開した。詳細データに加え、有識者インタビューを通じて、スタートアップを取り巻く環境（エコシステム）の最新動向を整理している。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「エコシステム」<span class="note">（＝本来は生態系を指す言葉だが、スタートアップ業界では、起業家・投資家・支援機関などが互いに関わり合いながら形成する、業界全体の仕組みや環境のことを指す）</span>という視点にある。個々の資金調達額だけでなく、起業家を支える制度や投資家の層の厚みなど、業界を取り巻く環境全体の健全さが、長期的なスタートアップの成長を左右するという考え方が、こうしたレポートの背景にある。</p>
+          </div>
+          <div class="meta"><a href="https://prtimes.jp/main/html/rd/p/000000281.000010548.html" target="_blank" rel="noopener">PR TIMES</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-gadget" style="--cat-color:var(--c-gadget)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ガジェット</h2></div>
+        <p class="panel-sub">新製品2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>CIO、電池の状態を「見える化」するモバイルバッテリーを発表</h3>
+          <p class="lead">本日既報の科学・テック面のとおり、CIOは電池の状態を見える化できる新型モバイルバッテリーを発表した。買い替えのタイミングが分かりやすくなる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、モバイルバッテリー<span class="note">（＝外出先でスマートフォンなどを充電するための、携帯型の充電用電池のこと）</span>という、すでに成熟した製品カテゴリーでも、まだ改善の余地があるという点にある。基本的な「充電できる」機能はすでに十分満たされている中、安全性や使い勝手といった細部の工夫で差別化を図る動きが広がっている。</p>
+          </div>
+          <div class="meta"><a href="https://getnavi.jp/tag/homeappliances/" target="_blank" rel="noopener">GetNavi</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>TVS REGZA、RGB Mini LED搭載の高コスパ4Kテレビ「ZX3S」投入</h3>
+          <p class="lead">本日既報の科学・テック面のとおり、TVS REGZAは「RGB Mini LED」を搭載した4Kテレビ新機種「ZX3S」を発表した。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「高コスパ」という位置づけにある。高度な表示技術を搭載しながら、価格を抑えたモデルとして投入することで、画質にこだわりたいが予算は限られているという、幅広い層の消費者の需要を取り込む狙いがあるとみられる。</p>
+          </div>
+          <div class="meta"><a href="https://getnavi.jp/tag/trend/" target="_blank" rel="noopener">GetNavi</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-intl" style="--cat-color:var(--c-intl)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">海外</h2></div>
+        <p class="panel-sub">国際ニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>イスラエル国会、17日に解散——総選挙は10月27日に</h3>
+          <p class="lead">イスラエル国会（10月16日既報）は、17日に解散した。総選挙は10月27日に行われ、ネタニヤフ首相が政権を続けられるかどうかが最大の焦点となる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、解散から総選挙まで10日というスケジュールの短さにある。この間、各政党は最後の選挙戦略を固め、有権者への訴えを強めることになる。世論調査<span class="note">（＝投票前に一般の人々に意見を聞き、支持政党や投票先の傾向を推測する調査のこと。実際の選挙結果と完全に一致するわけではないが、情勢を知る目安とされる）</span>では、軍の元参謀総長アイゼンコット氏が率いる中道政党「ヤシャル」がリクードをリードする結果も出ている。</p>
+          </div>
+          <div class="meta"><a href="https://kumanichi.com/articles/2012959" target="_blank" rel="noopener">熊本日日新聞（共同通信）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>米中、11月のAPEC首脳会談に向け関税協議続く——休戦期限が迫る</h3>
+          <p class="lead">米国と中国は、2025年10月の釜山合意による関税「休戦」（10月12日既報）の期限が11月に迫る中、11月18〜19日に深センで開かれるAPEC首脳会議（本日既報）に向けて協議を続けている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、1年前の関税緊張の再燃（本日既報の経緯）から、休戦、そして今回の首脳会談に向けた協議へと、米中関係が緊張と緩和を繰り返してきた流れにある。APEC首脳会議<span class="note">（＝アジア太平洋経済協力の首脳が集まる会議のこと。両国の首脳が直接会談する機会として、貿易問題の進展が期待されることが多い）</span>という大きな国際会議を一つの節目として、両国がどこまで関係を前進させられるかが注目されている。</p>
+          </div>
+          <div class="meta"><a href="https://www.sz.gov.cn/en_szgov/news/infocus/APEC2026/News/content/post_12977146.html" target="_blank" rel="noopener">深圳市人民政府</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-sports" style="--cat-color:var(--c-sports)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">芸能／スポーツ</h2></div>
+        <p class="panel-sub">厳選2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>日本シリーズ、2024年と同じDeNA対ソフトバンクの顔合わせに</h3>
+          <p class="lead">本日既報のとおり、DeNAが日本シリーズ進出を決め、既に進出していたソフトバンクとの対戦が確定した。この組み合わせは、2024年の日本シリーズと同じ顔合わせとなる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、同じ2球団による日本シリーズの「再戦」という点にある。前回対戦の結果や、各選手の当時の活躍（または悔しさ）が、今回のシリーズに向けたモチベーションや戦術に影響を与える可能性がある。ファンにとっても、前回の記憶と比較しながら観戦できるという、再戦ならではの楽しみ方がある。</p>
+          </div>
+          <div class="meta"><a href="https://www.nikkei.com/article/DGXZQODH171ZR0X11C26A0000000/" target="_blank" rel="noopener">日本経済新聞</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>MLBワールドシリーズ、大谷翔平選手のドジャースはなお本命——ポストシーズン進行中</h3>
+          <p class="lead">メジャーリーグ（10月16日既報）のポストシーズンは引き続き進行中。大谷翔平選手が所属するドジャースは、優勝オッズで1位を維持している。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、本日既報の日本のプロ野球と同様、米国のポストシーズンも段階的に進むトーナメント方式である点にある。地区シリーズ、リーグチャンピオンシップシリーズを勝ち抜いたチームだけが、最終的にワールドシリーズ<span class="note">（＝米大リーグの、ア・リーグとナ・リーグそれぞれの代表チームが対戦し、その年の世界一を決める最終決戦のこと）</span>に進める仕組みで、日本のクライマックスシリーズ・日本シリーズとよく似た構造を持っている。</p>
+          </div>
+          <div class="meta"><a href="https://www.mlb.com/ja/news/dodgers-win-nlcs-game-four-2025-to-advance-world-series" target="_blank" rel="noopener">MLB.com 日本語版</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-koshien" style="--cat-color:var(--c-koshien)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">高校野球【埼玉】</h2></div>
+        <p class="panel-sub">秋季大会2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>西武台、本日18日10時から横浜と対戦——関東大会1回戦</h3>
+          <p class="lead">秋季関東大会（本日既報）の1回戦、埼玉1位・西武台と神奈川2位・横浜の試合が、本日18日午前10時から上毛新聞敷島球場で行われる。西武台は埼玉大会で初優勝し、2年ぶりの関東大会出場となる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、西武台が「埼玉大会初優勝」という結果を手に、全国的な強豪・横浜との初戦に挑むという点にある。初優勝<span class="note">（＝これまで一度も達成できていなかった大会での優勝を、初めて達成すること。チームにとって歴史的な節目になる）</span>という快挙を達成したばかりのチームが、その勢いをどこまで関東大会の舞台で発揮できるかが注目される。前日には埼玉2位の山村学園が山梨学院に惜敗しており（本日既報）、埼玉県勢としては西武台の結果に一層の注目が集まっている。</p>
+          </div>
+          <div class="meta"><a href="https://www.baseball-station.com/memories/category/kanto/saitama/seibudai/" target="_blank" rel="noopener">高校野球ステーション</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>山村学園、1点差の接戦——4年ぶりの関東大会は初戦突破ならず</h3>
+          <p class="lead">本日既報のとおり、山村学園は秋季関東大会1回戦で山梨学院に1-2で敗れ、4年ぶりの関東大会出場は初戦突破とならずに終わった。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「ここがゴールではなく、選抜出場が目標」（10月12日既報）と語っていた山村学園の投手の言葉どおり、関東大会そのものは通過点だったという点にある。初戦敗退という結果にはなったが、1点差という僅差の試合内容は、来春のセンバツ選考において一定の評価材料として残る可能性がある。埼玉県勢の今大会の成績は、西武台（本日既報）の結果次第で、最終的な評価が決まることになる。</p>
+          </div>
+          <div class="meta"><a href="https://www.hb-nippon.com/articles/18385" target="_blank" rel="noopener">高校野球ドットコム</a></div>
+        </article>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var cats = ['top','social','polecon','scitech','business','startup','gadget','intl','sports','koshien'];
+  var idx = 0;
+  var track = document.getElementById('track');
+  var viewport = document.getElementById('viewport');
+  var vw = viewport.clientWidth;
+
+  function setActive(i){
+    cats.forEach(function(c, j){
+      document.getElementById('tab-' + c).classList.toggle('active', j === i);
+    });
+    var activeTab = document.getElementById('tab-' + cats[i]);
+    if (activeTab && activeTab.scrollIntoView) activeTab.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+  }
+
+  function settle(i, animate){
+    idx = Math.max(0, Math.min(cats.length - 1, i));
+    track.style.transition = animate ? 'transform .32s cubic-bezier(.22,.61,.36,1)' : 'none';
+    track.style.transform = 'translateX(' + (-idx * vw) + 'px)';
+    setActive(idx);
+  }
+
+  window.goTo = function(i){ settle(i, true); };
+
+  window.addEventListener('resize', function(){
+    vw = viewport.clientWidth;
+    settle(idx, false);
+  });
+
+  var dragging = false, decided = null, sx = 0, sy = 0, dx = 0;
+  viewport.addEventListener('touchstart', function(e){
+    dragging = true; decided = null;
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY; dx = 0;
+    track.style.transition = 'none';
+  }, { passive: true });
+
+  viewport.addEventListener('touchmove', function(e){
+    if (!dragging) return;
+    var cx = e.touches[0].clientX, cy = e.touches[0].clientY;
+    var mdx = cx - sx, mdy = cy - sy;
+    if (decided === null) {
+      if (Math.abs(mdx) > 8 || Math.abs(mdy) > 8) {
+        decided = Math.abs(mdx) > Math.abs(mdy) ? 'x' : 'y';
+      }
+    }
+    if (decided === 'x') {
+      e.preventDefault();
+      dx = mdx;
+      var atStart = idx === 0 && dx > 0;
+      var atEnd = idx === cats.length - 1 && dx < 0;
+      var eased = (atStart || atEnd) ? dx * 0.35 : dx;
+      track.style.transform = 'translateX(' + (-idx * vw + eased) + 'px)';
+    }
+  }, { passive: false });
+
+  viewport.addEventListener('touchend', function(){
+    if (!dragging) return;
+    dragging = false;
+    if (decided === 'x') {
+      var threshold = vw * 0.18;
+      if (dx <= -threshold) settle(idx + 1, true);
+      else if (dx >= threshold) settle(idx - 1, true);
+      else settle(idx, true);
+    }
+    decided = null; dx = 0;
+  });
+
+  settle(0, false);
+})();
+</script>
+
+</body></html>
