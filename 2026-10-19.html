@@ -1,0 +1,610 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yoshi's News</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Zen+Old+Mincho:wght@600;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap');
+
+:root {
+  --bg: #ffffff;
+  --panel-bg: #ffffff;
+  --card: #ffffff;
+  --card-line: #eef0f3;
+  --ink: #1a1c20;
+  --ink-soft: #5b6068;
+  --ink-faint: #9aa0a8;
+  --shell: #f4f5f7;
+
+  --c-top: #ef3355;
+  --c-social: #00b3a4;
+  --c-polecon: #6d5bf0;
+  --c-scitech: #ff8a1e;
+  --c-business: #0091ff;
+  --c-sports: #26c281;
+  --c-startup: #ff4fa3;
+  --c-koshien: #c8860d;
+  --c-intl: #4b3f8f;
+  --c-gadget: #00bcd4;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101114;
+    --panel-bg: #101114;
+    --card: #1a1c20;
+    --card-line: #2a2c31;
+    --ink: #f1f2f4;
+    --ink-soft: #b7bcc4;
+    --ink-faint: #767c86;
+    --shell: #1a1c20;
+    --c-top: #ff6b85;
+    --c-social: #3fd8c9;
+    --c-polecon: #9c8fff;
+    --c-scitech: #ffab5c;
+    --c-business: #4db2ff;
+    --c-sports: #5be0a6;
+    --c-startup: #ff85c2;
+    --c-koshien: #e8b34c;
+    --c-intl: #a89cf0;
+    --c-gadget: #4dd8ea;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101114;
+  --panel-bg: #101114;
+  --card: #1a1c20;
+  --card-line: #2a2c31;
+  --ink: #f1f2f4;
+  --ink-soft: #b7bcc4;
+  --ink-faint: #767c86;
+  --shell: #1a1c20;
+  --c-top: #ff6b85;
+  --c-social: #3fd8c9;
+  --c-polecon: #9c8fff;
+  --c-scitech: #ffab5c;
+  --c-business: #4db2ff;
+  --c-sports: #5be0a6;
+  --c-startup: #ff85c2;
+  --c-koshien: #e8b34c;
+  --c-intl: #a89cf0;
+  --c-gadget: #4dd8ea;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--shell);
+  color: var(--ink);
+  font-family: "Zen Kaku Gothic New", -apple-system, "Hiragino Kaku Gothic ProN", sans-serif;
+  line-height: 1.7;
+  overscroll-behavior-y: none;
+}
+.serif { font-family: "Zen Old Mincho", "Hiragino Mincho ProN", serif; }
+
+.app {
+  max-width: 680px;
+  margin: 0 auto;
+  background: var(--bg);
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ---- Header ---- */
+.topbar { padding: 20px 20px 0; flex-shrink: 0; }
+.title-line { display: flex; align-items: center; gap: 8px; }
+.mascot { height: 50px; width: auto; flex-shrink: 0; border-radius: 8px; }
+.title-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  margin-bottom: 14px;
+}
+.title-row h1 {
+  font-family: "Baloo 2", "Zen Kaku Gothic New", sans-serif;
+  font-size: 48px; font-weight: 800; margin: 0; letter-spacing: 0.01em; line-height: 1;
+  -webkit-text-stroke: 2.4px #2b2013;
+  filter: drop-shadow(2px 3px 0 rgba(30,22,12,0.18));
+  background-image:
+    radial-gradient(circle at 22% 30%, #211709 0 7px, transparent 8px),
+    radial-gradient(circle at 68% 65%, #3a2b16 0 9px, transparent 10px),
+    radial-gradient(circle at 45% 88%, #241a0c 0 5px, transparent 6px),
+    radial-gradient(circle at 85% 20%, #2e2211 0 6px, transparent 7px),
+    linear-gradient(135deg, #b8a06e, #967c4c 50%, #6f5a35);
+  background-size: 30px 30px, 41px 41px, 23px 23px, 35px 35px, 100% 100%;
+  background-repeat: repeat, repeat, repeat, repeat, no-repeat;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.title-row .date { font-size: 11.5px; color: var(--ink-faint); white-space: nowrap; font-weight: 500; margin-top: 2px; }
+
+.tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px 3px; }
+.tab {
+  appearance: none; border: none; background: none;
+  font-family: inherit; font-size: 10.5px; font-weight: 700;
+  color: var(--ink-faint);
+  padding: 7px 4px 9px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+  cursor: pointer;
+  border-radius: 10px 10px 0 0;
+  transition: color .2s ease, background .2s ease;
+}
+.tab .dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  margin-right: 5px; background: currentColor; opacity: 0.45; vertical-align: middle;
+}
+.tab::after {
+  content: ""; position: absolute; left: 10px; right: 10px; bottom: 0;
+  height: 3px; border-radius: 3px 3px 0 0; background: transparent; transition: background .2s ease;
+}
+.tab.active { color: var(--tab-color); background: color-mix(in srgb, var(--tab-color) 10%, transparent); }
+.tab.active .dot { opacity: 1; }
+.tab.active::after { background: var(--tab-color); }
+
+/* ---- Swipe viewport ---- */
+.viewport { flex: 1; overflow: hidden; position: relative; touch-action: pan-y; }
+.track {
+  display: flex;
+  height: 100%;
+  width: 1000%;
+  transition: transform .32s cubic-bezier(.22,.61,.36,1);
+  will-change: transform;
+}
+.panel {
+  width: 10%;
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 20px 56px;
+}
+
+.panel-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.panel-head .chip { width: 8px; height: 26px; border-radius: 4px; background: var(--cat-color); flex-shrink: 0; }
+.panel-head h2 { font-size: 20px; font-weight: 700; margin: 0; letter-spacing: 0.02em; color: var(--cat-color); }
+.panel-sub { font-size: 12px; color: var(--ink-faint); margin: 0 0 18px 18px; }
+
+.story {
+  background: var(--card);
+  border: 1px solid var(--card-line);
+  border-left: 4px solid var(--cat-color);
+  border-radius: 12px;
+  padding: 18px 18px 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(20,20,30,0.05);
+}
+.story .kicker {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: "Zen Old Mincho", serif; font-size: 11.5px; font-weight: 700;
+  color: var(--cat-color); margin-bottom: 9px;
+}
+.story h3 { font-size: 16px; font-weight: 700; line-height: 1.55; margin: 0 0 10px; }
+.story .lead { font-size: 14px; color: var(--ink); margin: 0 0 14px; line-height: 1.85; }
+
+.context {
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 10px;
+  padding: 13px 15px;
+  margin: 0 0 12px;
+}
+.context-label {
+  display: block; font-size: 10.5px; font-weight: 700;
+  color: var(--cat-color); letter-spacing: 0.04em; margin-bottom: 6px;
+}
+.context p { font-size: 13px; color: var(--ink-soft); margin: 0; line-height: 1.8; }
+
+.note { font-size: 11.5px; color: var(--ink-faint); font-weight: 500; }
+
+.term-link {
+  color: var(--cat-color);
+  text-decoration: none;
+  border-bottom: 1px dotted color-mix(in srgb, var(--cat-color) 55%, transparent);
+  font-weight: 700;
+}
+
+.meta { font-size: 11px; color: var(--ink-faint); }
+.meta a { color: var(--cat-color); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--cat-color) 40%, transparent); font-weight: 700; }
+
+.closing {
+  margin: 6px 0 0; padding: 16px 18px;
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 12px; font-size: 13px; color: var(--ink-soft); text-align: center;
+}
+.closing .label {
+  display: block; font-family: "Zen Old Mincho", serif; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.2em; color: var(--cat-color); margin-bottom: 8px;
+}
+.colophon { margin: 14px 0 8px; font-size: 10.5px; color: var(--ink-faint); line-height: 1.9; text-align: center; }
+
+@media (max-width: 420px) {
+  .topbar { padding: 16px 14px 0; }
+  .panel { padding: 16px 14px 48px; }
+  .title-row h1 { font-size: 38px; }
+  .mascot { height: 40px; }
+}
+</style>
+</head><body>
+
+
+<div class="app" id="app">
+
+  <div class="topbar">
+    <div class="title-row">
+      <div class="title-line">
+        <img class="mascot" src="mascot.jpg" alt="オオサンショウウオのマスコット">
+        <h1>Yoshi's News</h1>
+      </div>
+      <span class="date">2026年10月19日（月）・第46号</span>
+    </div>
+    <div class="tabs" id="tabs">
+      <button class="tab" id="tab-top" style="--tab-color:var(--c-top)" onclick="goTo(0)"><span class="dot"></span>トップ</button>
+      <button class="tab" id="tab-social" style="--tab-color:var(--c-social)" onclick="goTo(1)"><span class="dot"></span>社会</button>
+      <button class="tab" id="tab-polecon" style="--tab-color:var(--c-polecon)" onclick="goTo(2)"><span class="dot"></span>政治/経済</button>
+      <button class="tab" id="tab-scitech" style="--tab-color:var(--c-scitech)" onclick="goTo(3)"><span class="dot"></span>科学/テック</button>
+      <button class="tab" id="tab-business" style="--tab-color:var(--c-business)" onclick="goTo(4)"><span class="dot"></span>ビジネス</button>
+      <button class="tab" id="tab-startup" style="--tab-color:var(--c-startup)" onclick="goTo(5)"><span class="dot"></span>スタートアップ</button>
+      <button class="tab" id="tab-gadget" style="--tab-color:var(--c-gadget)" onclick="goTo(6)"><span class="dot"></span>ガジェット</button>
+      <button class="tab" id="tab-intl" style="--tab-color:var(--c-intl)" onclick="goTo(7)"><span class="dot"></span>海外</button>
+      <button class="tab" id="tab-sports" style="--tab-color:var(--c-sports)" onclick="goTo(8)"><span class="dot"></span>芸能/スポーツ</button>
+      <button class="tab" id="tab-koshien" style="--tab-color:var(--c-koshien)" onclick="goTo(9)"><span class="dot"></span>高校野球【埼玉】</button>
+    </div>
+  </div>
+
+  <div class="viewport" id="viewport">
+    <div class="track" id="track">
+
+      <section class="panel" id="panel-top" style="--cat-color:var(--c-top)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">トップニュース</h2></div>
+        <p class="panel-sub">今日いちばん知っておきたい2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 高校野球</span>
+          <h3>横浜が西武台に12-2でコールド勝ち——秋季関東大会1回戦、埼玉勢が姿を消す</h3>
+          <p class="lead">秋季関東大会（10月18日既報の開幕記事）の1回戦が18日、上毛新聞敷島球場で行われ、神奈川2位の横浜が埼玉1位の西武台に12-2（6回コールド）で勝利した。試合は序盤から横浜が大きく差をつけ、西武台の監督は試合後、レベルの差を感じたと話したという。横浜は19・20日に行われる準々決勝で、群馬2位の樹徳と対戦する。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、埼玉大会を初優勝（10月18日既報）した西武台でも、全国的な強豪・横浜との差が大きく出たという点にある。コールド勝ち<span class="note">（＝一定の点差がついた場合、規定の回数に達した時点で試合を終了させる野球のルールのこと。6回で10点差以上つくと「6回コールド」となる）</span>という結果は、両校の実力差が序盤で明確になったことを示している。これで、山村学園（10月18日既報）に続き、埼玉県勢2校とも関東大会1回戦で姿を消した。</p>
+          </div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/articles/9b58bfac2d2dd626312046e7ae3cb087f3176dac" target="_blank" rel="noopener">朝日新聞（Yahoo!ニュース）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 海外</span>
+          <h3>ロシア、北海道新聞記者をスパイ容疑で拘束——首相はスパイ活動を否定</h3>
+          <p class="lead">ロシア連邦保安局（FSB）は13日、北海道新聞の日本人記者をスパイ容疑で拘束したと発表した。高市首相はスパイ活動を否定。日本政府はロシア側に情報提供を求めてきたが、記者とはまだ接触できておらず、健康状態も確認できていない。16日には現地時間15日の「領事通報」があったことが明らかになったが、領事面会はいまだ実現していない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「領事通報」と「領事面会」<span class="note">（＝領事通報は、外国で拘束された自国民について、相手国が大使館・領事館に通知する義務のこと。領事面会は、実際に外交官が本人と直接会って状況を確認することを指し、通報があっても面会はまだ先という場合もある）</span>が別物だという点にある。通報だけでは本人の健康状態や事実関係は確認できず、面会が実現するまでは、日本政府も手探りの対応を続けるしかない状況が続いている。</p>
+          </div>
+          <div class="meta"><a href="https://kumanichi.com/articles/2047197" target="_blank" rel="noopener">熊本日日新聞（共同通信）</a></div>
+        </article>
+
+        <div class="closing">
+          <span class="label serif">編集後記</span>
+          高校野球埼玉は両校とも関東大会1回戦で敗れ、悔しい結果に。ロシアでの記者拘束は、まだ本人との面会が実現しておらず心配なニュースです。十勝岳は警戒レベルが引き下げられましたが、引き続き注意が必要です。タブまたはスワイプで10のジャンルを読み進められます。良い一日を。
+        </div>
+        <div class="colophon">AIが検索結果をもとに要約・編集しています。詳細は各記事の出典リンクでご確認ください。<br>毎朝5時発行・次号は明日<br><a href="archive.html" style="color:inherit">過去の紙面はこちら</a></div>
+      </section>
+
+      <section class="panel" id="panel-social" style="--cat-color:var(--c-social)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">社会</h2></div>
+        <p class="panel-sub">くらしに関わるニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>十勝岳、噴火警戒レベル2に引き下げ——火口周辺規制は継続</h3>
+          <p class="lead">気象庁は16日、北海道の十勝岳の噴火警戒レベルを3から2に引き下げた。火山性地震の活動に低下傾向が見られるためとしている。レベル2は「火口周辺規制」で、対象は火口から概ね1.5キロの範囲。対象市町村は美瑛町、上富良野町、新得町。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「引き下げ」といっても、まだ安全になったわけではないという点にある。噴火警戒レベル<span class="note">（＝火山の活動状況に応じて、気象庁が1（活火山であることに留意）から5（避難）までの5段階で発表する指標のこと。レベル2は火口周辺への立ち入りを規制する段階）</span>が2になっても、噴火時には大きな噴石が飛んでくるおそれがあり、風下側では火山灰や小さな噴石が遠方まで降るおそれもある。地元自治体の指示に従い、火口周辺への立ち入りは控える必要がある。</p>
+          </div>
+          <div class="meta"><a href="https://kumanichi.com/articles/2047201" target="_blank" rel="noopener">熊本日日新聞（共同通信）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>政府、ロシアに領事面会を要求——「一刻も早く」と木原長官</h3>
+          <p class="lead">本日既報の北海道新聞記者拘束問題で、木原官房長官は16日の会見で、「一刻も早く領事面会を実現し、健康状態や事実認識が確認できるよう全力で取り組む」と述べた。自民党の小林政調会長は「到底容認できず、強く抗議する」と訴えている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、政府が「情報提供」「人道的配慮」「公正公平な取り扱い」という、複数の角度からロシア側に申し入れを行っている点にある。拘束された本人の安全確保を最優先にしつつ、外交的な抗議（駐日ロシア大使への召致・抗議）も同時に行うという、2つの異なるアプローチを使い分けている状況がうかがえる。</p>
+          </div>
+          <div class="meta"><a href="https://kumanichi.com/articles/2046357" target="_blank" rel="noopener">熊本日日新聞（共同通信）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-polecon" style="--cat-color:var(--c-polecon)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">政治／経済</h2></div>
+        <p class="panel-sub">政治・経済の動き2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 政治</span>
+          <h3>自民・維新、衆院議員定数削減法案の成立にも意欲——消費減税法案と並ぶ焦点</h3>
+          <p class="lead">自民党の鈴木幹事長は、消費税減税関連法案（10月18日既報）と並び、衆院議員定数削減法案の成立にも意欲を示している。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、臨時国会が「消費税」だけでなく、国会議員自身の定数（人数）を減らす法案も同時に抱えているという点にある。議員定数削減<span class="note">（＝国会議員の総数を、法律を改正して減らすこと。「身を切る改革」として有権者に訴えやすい政策だが、実際には選挙区の区割り変更など複雑な調整が必要になる）</span>は、政治家自らが自分たちの既得権益を削る形になるため、実現すれば一定の評価を得やすい一方、各党・各議員の利害が絡みやすく、調整の難しい法案でもある。</p>
+          </div>
+          <div class="meta"><a href="https://kumanichi.com/articles/2036434" target="_blank" rel="noopener">熊本日日新聞（共同通信）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 外交</span>
+          <h3>高市首相、プーチン氏の択捉訪問に抗議した経緯——日露関係「中長期的に回復難しい」</h3>
+          <p class="lead">8月13日のプーチン大統領の択捉島（北方領土）訪問を受け、高市首相は訪問当日の会見で強く抗議し、日本の一貫した立場と相容れないと表明。日露関係の回復が中長期的に難しくなったとの見方を示していた。本日既報のロシアによる記者拘束問題は、こうした緊張した日露関係の中で起きている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、北方領土<span class="note">（＝北海道の東にある、歯舞群島・色丹島・国後島・択捉島の総称。日本はロシア（旧ソ連）による不法占拠が続いているとして、返還を求めている）</span>を巡る対立が、今回の記者拘束問題の「背景」として存在している点にある。2つの問題は直接の関係はないとみられるが、日露関係全体が緊張した状態にある中で起きているという文脈を知っておくと、ニュースの重みがより理解しやすくなる。</p>
+          </div>
+          <div class="meta"><a href="https://www.hokkaido-np.co.jp/article/1369865/" target="_blank" rel="noopener">北海道新聞</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-scitech" style="--cat-color:var(--c-scitech)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">科学／テック</h2></div>
+        <p class="panel-sub">研究・技術のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>Gartner予測「2026年までに企業の80%が生成AI導入」——国内の実態は7割超で接近</h3>
+          <p class="lead">調査会社Gartnerは、2026年までに企業の約80%が生成AIのAPI（外部のAI機能を自社サービスに組み込むための接続口）や生成AI対応アプリを導入すると予測していた。経済産業省の調査では、国内企業の7割超が既に何らかの形で生成AIを活用しているとされ、予測に近い水準まで普及が進んでいる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、数年前の「予測」が、実際の数字にかなり近づいてきているという点にある。API<span class="note">（＝Application Programming Interfaceの略。あるサービスの機能を、別のサービスやアプリから呼び出して使えるようにする、いわば「つなぎ口」のこと。生成AIのAPIを使えば、自社のアプリに手軽にAI機能を組み込める）</span>を使った導入は、自社でAIをゼロから開発するよりはるかに手軽なため、多くの企業が短期間で導入を進められた一因とみられる。予測と実態が近づいているということは、生成AIの普及スピードが、専門家の見立てどおり（あるいはそれ以上）に速かったことを示している。</p>
+          </div>
+          <div class="meta"><a href="https://atmarkit.itmedia.co.jp/ait/articles/2310/30/news048.html" target="_blank" rel="noopener">ITmedia エンタープライズ</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>「スパイ容疑」とは——各国で記者や外国人が拘束される構図</h3>
+          <p class="lead">本日既報のロシアによる北海道新聞記者の拘束は、「スパイ容疑」によるものとされている。こうした容疑での拘束は、国家間の緊張が高まっている国で、外国人記者や外交官を対象に行われることがある。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、スパイ容疑<span class="note">（＝他国のために情報収集活動（諜報活動）を行ったという疑いのこと。証拠の開示や裁判の手続きが非公開で進むことが多く、容疑の実態が外部からは確認しづらいという特徴がある）</span>による拘束が、通常の犯罪容疑と違って、手続きの透明性が低くなりやすい点にある。日本政府がスパイ活動を否定しているのも、容疑の根拠が明らかにされていないことへの反論と考えられる。拘束された本人との面会が実現しない限り、事実関係の確認自体が難しいという構造的な問題がある。</p>
+          </div>
+          <div class="meta"><a href="https://kumanichi.com/articles/2046809" target="_blank" rel="noopener">熊本日日新聞（共同通信）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-business" style="--cat-color:var(--c-business)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ビジネス</h2></div>
+        <p class="panel-sub">企業・産業のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>ニーズウェル、中間期の業績予想を上方修正——ソリューション・システム開発が堅調</h3>
+          <p class="lead">IT企業のニーズウェルは、2026年9月期第2四半期（中間期）の連結業績予想を上方修正した。ソリューション事業・システム開発事業がともに堅調で、上期の売上高は過去最高となる見込み。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「過去最高」という見通しが、特定の大型案件によるものではなく、複数の事業が「ともに堅調」であることに支えられている点にある。1つの事業だけが好調な場合に比べ、複数の事業がバランスよく伸びている方が、業績の安定性や持続性という観点では評価されやすい。</p>
+          </div>
+          <div class="meta"><a href="https://www.bridge-salon.jp/upload/tekiji_pdf/T~~39920~000000~501~0~20260430~1330~20260430514609G.pdf" target="_blank" rel="noopener">適時開示情報</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>リネットジャパングループ、通期予想を再上方修正——GIGA端末商戦が好調</h3>
+          <p class="lead">リサイクル事業を手がけるリネットジャパングループは、通期の業績予想を再び上方修正した。学校現場でのGIGA端末（1人1台配備されるパソコン・タブレット）のリサイクル商戦が好調だったことが主な理由。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「GIGA端末のリサイクル」という、あまり注目されにくい分野がビジネスとして成立している点にある。GIGAスクール構想<span class="note">（＝全国の小中学生に1人1台のパソコン・タブレット端末を配備する、国の教育政策のこと。導入から数年が経ち、古い端末の更新・入れ替えの時期を迎えている学校が増えている）</span>で配備された端末が更新時期を迎え、古い端末の回収・リサイクル需要が初めて本格化したことが、同社の業績を押し上げた。政策の「副産物」が新しいビジネス機会を生んだ一例と言える。</p>
+          </div>
+          <div class="meta"><a href="https://www2.jpx.co.jp/disc/35560/140120260512525073.pdf" target="_blank" rel="noopener">東京証券取引所（適時開示）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-startup" style="--cat-color:var(--c-startup)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">スタートアップ</h2></div>
+        <p class="panel-sub">資金調達・注目トピック2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>「シリーズB」とは——製品の市場適合性確認後、事業拡大フェーズの資金調達</h3>
+          <p class="lead">スタートアップの資金調達でよく使われる「シリーズB」は、製品が市場に受け入れられること（市場適合性）が確認された後、事業をさらに拡大するための資金を得る段階の調達を指すとされている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「シリーズA」「シリーズB」という呼び方が、企業の成長段階を示すおおまかな目印になっている点にある。市場適合性<span class="note">（＝英語のProduct-Market Fitを訳した言葉。自社の製品・サービスが、実際に市場（顧客）に求められている状態にあることを指す。ここに到達する前と後では、必要な資金の使い道が大きく変わる）</span>が確認される前（シリーズA以前）は製品開発に資金を使うことが多いが、確認された後（シリーズB以降）は、営業・マーケティングなど事業拡大のための資金需要が中心になる。</p>
+          </div>
+          <div class="meta"><a href="https://initial.inc/tags/seriesb" target="_blank" rel="noopener">INITIAL</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>インドのスタートアップ、上半期は652件・72億ドルを調達——引き続き活発</h3>
+          <p class="lead">インドのスタートアップ業界では、2026年上半期に652件のエクイティ（株式による）調達ラウンドを通じて、合計72億ドルが調達されたと報告されている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、インドが人口規模の大きさや、デジタル化の急速な進展を背景に、世界的に注目度の高いスタートアップ市場になっている点にある。エクイティ調達<span class="note">（＝会社の株式を投資家に発行する見返りに資金を得る調達方法のこと。借入（デット）と違い、返済の義務はないが、株式の一部を投資家に渡すことになる）</span>の件数・金額の規模は、本日既報のスタートアップ面（シリーズBの説明）で触れた「事業拡大フェーズ」の企業が、インド国内に数多く存在することを示している。</p>
+          </div>
+          <div class="meta"><a href="https://book.st-hakky.com/news/startup-funding-increase-48-percent-udaa" target="_blank" rel="noopener">st-hakky</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-gadget" style="--cat-color:var(--c-gadget)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ガジェット</h2></div>
+        <p class="panel-sub">新製品2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>ソニー、10月26日に新型Xperia発表会を予告</h3>
+          <p class="lead">ソニーは、10月26日午前0時（正午という情報もある）から、公式YouTubeチャンネルで新型Xperiaの発表会を開くと予告した。機種名などの詳細はまだ明らかにされていない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、10月8日に発売済みの中価格帯モデル「Xperia 10 VIII」（10月11日既報）とは別に、新たな発表会が予告されている点にある。スマートフォンメーカーは通常、価格帯の異なる複数のモデルを時期をずらして発表することが多く、今回の発表会では、より上位の機種が発表される可能性が高いとみられている。</p>
+          </div>
+          <div class="meta"><a href="https://www.techno-edge.net/special/916/recent/%E3%83%A9%E3%82%A4%E3%83%96%E9%85%8D%E4%BF%A1" target="_blank" rel="noopener">テクノエッジ</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>2026年のスマホ新製品、夏から秋にかけて出そろう——各社の発表を振り返る</h3>
+          <p class="lead">2026年は、Samsungが7月22日、Googleが8月12日にそれぞれ新製品発表イベントを開催。秋にはアップルの折りたたみ「iPhone Duo」（10月16日既報）、本日既報のソニーの新型Xperiaと続き、年末商戦に向けて主要メーカーの新製品が出そろう形になっている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、スマートフォン業界の新製品発表が、毎年ほぼ同じような時期（夏から秋）に集中する傾向がある点にある。これは、クリスマスや年末年始のプレゼント需要を見込んだ「年末商戦」に間に合わせるためで、各社が互いの発表時期を意識しながらスケジュールを組んでいるとみられる。</p>
+          </div>
+          <div class="meta"><a href="https://selectra.jp/telecom/news/new-android-smartphone-summer2026" target="_blank" rel="noopener">Selectra</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-intl" style="--cat-color:var(--c-intl)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">海外</h2></div>
+        <p class="panel-sub">国際ニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>茂木外相、駐日ロシア大使を召致して抗議</h3>
+          <p class="lead">本日既報の記者拘束問題について、外務省の中村欧州局長は駐日ロシア大使を召致し、抗議を行った。茂木外相は16日の会見で、領事通報が日本時間の未明にロシア側からあったことを明らかにしている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、大使の「召致」<span class="note">（＝相手国の大使を外務省に呼び出して、抗議や申し入れを直接伝えること。外交上、不満や懸念を強く示す手段の一つとされる）</span>が、外交的な抗議の手段として使われている点にある。通常の外交チャンネルでの申し入れよりも強いメッセージを送る意味があり、日本政府がこの問題を重く見ていることの表れと言える。</p>
+          </div>
+          <div class="meta"><a href="https://www.mofa.go.jp/mofaj/press/kaiken/kaikenit_000001_00149.html" target="_blank" rel="noopener">外務省</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>横浜、3年連続でセンバツへ前進——福井那留投手が9奪三振の好投</h3>
+          <p class="lead">本日既報のとおり西武台を12-2で破った横浜（神奈川2位）は、3年連続のセンバツ出場に向けて前進した。福井那留投手は6者連続を含む9奪三振の好投を見せた。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「3年連続」という横浜の安定した強さにある。全国的な強豪校は、毎年選手が入れ替わる高校野球において、世代が変わっても一定の実力を維持し続けることが、強豪と呼ばれる所以。6者連続奪三振<span class="note">（＝6人の打者を、連続してバットに当てさせることなく三振に取ること。投手の調子の良さを示す、分かりやすい記録の一つ）</span>という結果は、横浜の投手力の高さを裏付けている。</p>
+          </div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/articles/a92a88a622db7a195d75f331ee1b26e919dfd331" target="_blank" rel="noopener">スポーツ報知（Yahoo!ニュース）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-sports" style="--cat-color:var(--c-sports)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">芸能／スポーツ</h2></div>
+        <p class="panel-sub">厳選2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>横浜、関東大会は準々決勝へ——19・20日に樹徳と対戦</h3>
+          <p class="lead">本日既報のとおり西武台を破った横浜は、秋季関東大会の準々決勝で、群馬2位の樹徳と対戦する。試合は19日または20日に、同じ上毛新聞敷島球場で行われる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、横浜が神奈川県大会を制したことで、関東大会で「スーパーシード」（一定の実績があるチームに与えられる、初戦を免除される優遇措置に近い扱い）に近い有利な位置づけで臨んでいるとみられる点にある。決勝（10月18日既報）までの道のりはまだ長く、準々決勝を突破できるかが次の注目点になる。</p>
+          </div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/articles/f665c5941606e15ecd0061443469374807a6a3d5" target="_blank" rel="noopener">神奈川新聞（Yahoo!ニュース）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>日本シリーズ開幕まで1週間——24日に横浜スタジアムで</h3>
+          <p class="lead">プロ野球日本シリーズ（10月18日既報）は、24日に横浜スタジアムで開幕する。DeNA対ソフトバンクの対戦まで、残り1週間となった。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、クライマックスシリーズ終了から日本シリーズ開幕まで、1週間ほどの準備期間が設けられている点にある。この期間は、各球団にとって選手の休養や、相手チームの分析・対策を練るための重要な時間になる。短期決戦を勝ち抜いた直後だけに、疲労が残る選手のコンディション調整も、両チームの監督にとって重要な課題になる。</p>
+          </div>
+          <div class="meta"><a href="https://www.nikkei.com/article/DGXZQODH171ZR0X11C26A0000000/" target="_blank" rel="noopener">日本経済新聞</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-koshien" style="--cat-color:var(--c-koshien)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">高校野球【埼玉】</h2></div>
+        <p class="panel-sub">秋季大会2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>西武台、関東大会1回戦で横浜に敗退——監督「レベルの差を感じた」</h3>
+          <p class="lead">本日既報のとおり、埼玉大会初優勝で関東大会に臨んだ西武台は、1回戦で横浜に2-12（6回コールド）で敗れた。西武台の監督は試合後、横浜とのレベルの差を感じたと話した。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「初優勝」という快挙を果たしたチームでも、全国トップクラスの強豪との差は依然として大きいという、厳しい現実にある。埼玉県内では通用した戦い方が、関東大会という、より広い地域の強豪が集まる舞台では通用しなかったということであり、来年以降に向けた明確な課題が見えた試合だったとも言える。</p>
+          </div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/articles/9b58bfac2d2dd626312046e7ae3cb087f3176dac" target="_blank" rel="noopener">朝日新聞（Yahoo!ニュース）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>埼玉県勢、関東大会は2校とも1回戦で敗退——来春センバツへの影響は</h3>
+          <p class="lead">山村学園（10月18日既報、1-2で山梨学院に敗れる）、西武台（本日既報、2-12で横浜に敗れる）と、埼玉県勢2校はともに秋季関東大会の1回戦で姿を消した。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、関東大会での結果が、来春のセンバツ甲子園出場校選考に一定の影響を与えるという点にある。山村学園は1点差の接戦（10月18日既報）だった一方、西武台は大差での敗戦（本日既報）となり、試合内容には差があった。選考委員会は、こうした試合内容や、埼玉県大会での実績（西武台は優勝、山村学園は準優勝）も含めて総合的に評価するとみられ、最終的な選考結果は来年1月頃に発表される見通し。</p>
+          </div>
+          <div class="meta"><a href="https://www.hb-nippon.com/articles/18385" target="_blank" rel="noopener">高校野球ドットコム</a></div>
+        </article>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var cats = ['top','social','polecon','scitech','business','startup','gadget','intl','sports','koshien'];
+  var idx = 0;
+  var track = document.getElementById('track');
+  var viewport = document.getElementById('viewport');
+  var vw = viewport.clientWidth;
+
+  function setActive(i){
+    cats.forEach(function(c, j){
+      document.getElementById('tab-' + c).classList.toggle('active', j === i);
+    });
+    var activeTab = document.getElementById('tab-' + cats[i]);
+    if (activeTab && activeTab.scrollIntoView) activeTab.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+  }
+
+  function settle(i, animate){
+    idx = Math.max(0, Math.min(cats.length - 1, i));
+    track.style.transition = animate ? 'transform .32s cubic-bezier(.22,.61,.36,1)' : 'none';
+    track.style.transform = 'translateX(' + (-idx * vw) + 'px)';
+    setActive(idx);
+  }
+
+  window.goTo = function(i){ settle(i, true); };
+
+  window.addEventListener('resize', function(){
+    vw = viewport.clientWidth;
+    settle(idx, false);
+  });
+
+  var dragging = false, decided = null, sx = 0, sy = 0, dx = 0;
+  viewport.addEventListener('touchstart', function(e){
+    dragging = true; decided = null;
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY; dx = 0;
+    track.style.transition = 'none';
+  }, { passive: true });
+
+  viewport.addEventListener('touchmove', function(e){
+    if (!dragging) return;
+    var cx = e.touches[0].clientX, cy = e.touches[0].clientY;
+    var mdx = cx - sx, mdy = cy - sy;
+    if (decided === null) {
+      if (Math.abs(mdx) > 8 || Math.abs(mdy) > 8) {
+        decided = Math.abs(mdx) > Math.abs(mdy) ? 'x' : 'y';
+      }
+    }
+    if (decided === 'x') {
+      e.preventDefault();
+      dx = mdx;
+      var atStart = idx === 0 && dx > 0;
+      var atEnd = idx === cats.length - 1 && dx < 0;
+      var eased = (atStart || atEnd) ? dx * 0.35 : dx;
+      track.style.transform = 'translateX(' + (-idx * vw + eased) + 'px)';
+    }
+  }, { passive: false });
+
+  viewport.addEventListener('touchend', function(){
+    if (!dragging) return;
+    dragging = false;
+    if (decided === 'x') {
+      var threshold = vw * 0.18;
+      if (dx <= -threshold) settle(idx + 1, true);
+      else if (dx >= threshold) settle(idx - 1, true);
+      else settle(idx, true);
+    }
+    decided = null; dx = 0;
+  });
+
+  settle(0, false);
+})();
+</script>
+
+</body></html>
