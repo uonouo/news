@@ -1,0 +1,610 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yoshi's News</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Zen+Old+Mincho:wght@600;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap');
+
+:root {
+  --bg: #ffffff;
+  --panel-bg: #ffffff;
+  --card: #ffffff;
+  --card-line: #eef0f3;
+  --ink: #1a1c20;
+  --ink-soft: #5b6068;
+  --ink-faint: #9aa0a8;
+  --shell: #f4f5f7;
+
+  --c-top: #ef3355;
+  --c-social: #00b3a4;
+  --c-polecon: #6d5bf0;
+  --c-scitech: #ff8a1e;
+  --c-business: #0091ff;
+  --c-sports: #26c281;
+  --c-startup: #ff4fa3;
+  --c-koshien: #c8860d;
+  --c-intl: #4b3f8f;
+  --c-gadget: #00bcd4;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101114;
+    --panel-bg: #101114;
+    --card: #1a1c20;
+    --card-line: #2a2c31;
+    --ink: #f1f2f4;
+    --ink-soft: #b7bcc4;
+    --ink-faint: #767c86;
+    --shell: #1a1c20;
+    --c-top: #ff6b85;
+    --c-social: #3fd8c9;
+    --c-polecon: #9c8fff;
+    --c-scitech: #ffab5c;
+    --c-business: #4db2ff;
+    --c-sports: #5be0a6;
+    --c-startup: #ff85c2;
+    --c-koshien: #e8b34c;
+    --c-intl: #a89cf0;
+    --c-gadget: #4dd8ea;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101114;
+  --panel-bg: #101114;
+  --card: #1a1c20;
+  --card-line: #2a2c31;
+  --ink: #f1f2f4;
+  --ink-soft: #b7bcc4;
+  --ink-faint: #767c86;
+  --shell: #1a1c20;
+  --c-top: #ff6b85;
+  --c-social: #3fd8c9;
+  --c-polecon: #9c8fff;
+  --c-scitech: #ffab5c;
+  --c-business: #4db2ff;
+  --c-sports: #5be0a6;
+  --c-startup: #ff85c2;
+  --c-koshien: #e8b34c;
+  --c-intl: #a89cf0;
+  --c-gadget: #4dd8ea;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--shell);
+  color: var(--ink);
+  font-family: "Zen Kaku Gothic New", -apple-system, "Hiragino Kaku Gothic ProN", sans-serif;
+  line-height: 1.7;
+  overscroll-behavior-y: none;
+}
+.serif { font-family: "Zen Old Mincho", "Hiragino Mincho ProN", serif; }
+
+.app {
+  max-width: 680px;
+  margin: 0 auto;
+  background: var(--bg);
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ---- Header ---- */
+.topbar { padding: 20px 20px 0; flex-shrink: 0; }
+.title-line { display: flex; align-items: center; gap: 8px; }
+.mascot { height: 50px; width: auto; flex-shrink: 0; border-radius: 8px; }
+.title-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  margin-bottom: 14px;
+}
+.title-row h1 {
+  font-family: "Baloo 2", "Zen Kaku Gothic New", sans-serif;
+  font-size: 48px; font-weight: 800; margin: 0; letter-spacing: 0.01em; line-height: 1;
+  -webkit-text-stroke: 2.4px #2b2013;
+  filter: drop-shadow(2px 3px 0 rgba(30,22,12,0.18));
+  background-image:
+    radial-gradient(circle at 22% 30%, #211709 0 7px, transparent 8px),
+    radial-gradient(circle at 68% 65%, #3a2b16 0 9px, transparent 10px),
+    radial-gradient(circle at 45% 88%, #241a0c 0 5px, transparent 6px),
+    radial-gradient(circle at 85% 20%, #2e2211 0 6px, transparent 7px),
+    linear-gradient(135deg, #b8a06e, #967c4c 50%, #6f5a35);
+  background-size: 30px 30px, 41px 41px, 23px 23px, 35px 35px, 100% 100%;
+  background-repeat: repeat, repeat, repeat, repeat, no-repeat;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.title-row .date { font-size: 11.5px; color: var(--ink-faint); white-space: nowrap; font-weight: 500; margin-top: 2px; }
+
+.tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px 3px; }
+.tab {
+  appearance: none; border: none; background: none;
+  font-family: inherit; font-size: 10.5px; font-weight: 700;
+  color: var(--ink-faint);
+  padding: 7px 4px 9px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+  cursor: pointer;
+  border-radius: 10px 10px 0 0;
+  transition: color .2s ease, background .2s ease;
+}
+.tab .dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  margin-right: 5px; background: currentColor; opacity: 0.45; vertical-align: middle;
+}
+.tab::after {
+  content: ""; position: absolute; left: 10px; right: 10px; bottom: 0;
+  height: 3px; border-radius: 3px 3px 0 0; background: transparent; transition: background .2s ease;
+}
+.tab.active { color: var(--tab-color); background: color-mix(in srgb, var(--tab-color) 10%, transparent); }
+.tab.active .dot { opacity: 1; }
+.tab.active::after { background: var(--tab-color); }
+
+/* ---- Swipe viewport ---- */
+.viewport { flex: 1; overflow: hidden; position: relative; touch-action: pan-y; }
+.track {
+  display: flex;
+  height: 100%;
+  width: 1000%;
+  transition: transform .32s cubic-bezier(.22,.61,.36,1);
+  will-change: transform;
+}
+.panel {
+  width: 10%;
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 20px 56px;
+}
+
+.panel-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.panel-head .chip { width: 8px; height: 26px; border-radius: 4px; background: var(--cat-color); flex-shrink: 0; }
+.panel-head h2 { font-size: 20px; font-weight: 700; margin: 0; letter-spacing: 0.02em; color: var(--cat-color); }
+.panel-sub { font-size: 12px; color: var(--ink-faint); margin: 0 0 18px 18px; }
+
+.story {
+  background: var(--card);
+  border: 1px solid var(--card-line);
+  border-left: 4px solid var(--cat-color);
+  border-radius: 12px;
+  padding: 18px 18px 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(20,20,30,0.05);
+}
+.story .kicker {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: "Zen Old Mincho", serif; font-size: 11.5px; font-weight: 700;
+  color: var(--cat-color); margin-bottom: 9px;
+}
+.story h3 { font-size: 16px; font-weight: 700; line-height: 1.55; margin: 0 0 10px; }
+.story .lead { font-size: 14px; color: var(--ink); margin: 0 0 14px; line-height: 1.85; }
+
+.context {
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 10px;
+  padding: 13px 15px;
+  margin: 0 0 12px;
+}
+.context-label {
+  display: block; font-size: 10.5px; font-weight: 700;
+  color: var(--cat-color); letter-spacing: 0.04em; margin-bottom: 6px;
+}
+.context p { font-size: 13px; color: var(--ink-soft); margin: 0; line-height: 1.8; }
+
+.note { font-size: 11.5px; color: var(--ink-faint); font-weight: 500; }
+
+.term-link {
+  color: var(--cat-color);
+  text-decoration: none;
+  border-bottom: 1px dotted color-mix(in srgb, var(--cat-color) 55%, transparent);
+  font-weight: 700;
+}
+
+.meta { font-size: 11px; color: var(--ink-faint); }
+.meta a { color: var(--cat-color); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--cat-color) 40%, transparent); font-weight: 700; }
+
+.closing {
+  margin: 6px 0 0; padding: 16px 18px;
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 12px; font-size: 13px; color: var(--ink-soft); text-align: center;
+}
+.closing .label {
+  display: block; font-family: "Zen Old Mincho", serif; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.2em; color: var(--cat-color); margin-bottom: 8px;
+}
+.colophon { margin: 14px 0 8px; font-size: 10.5px; color: var(--ink-faint); line-height: 1.9; text-align: center; }
+
+@media (max-width: 420px) {
+  .topbar { padding: 16px 14px 0; }
+  .panel { padding: 16px 14px 48px; }
+  .title-row h1 { font-size: 38px; }
+  .mascot { height: 40px; }
+}
+</style>
+</head><body>
+
+
+<div class="app" id="app">
+
+  <div class="topbar">
+    <div class="title-row">
+      <div class="title-line">
+        <img class="mascot" src="mascot.jpg" alt="オオサンショウウオのマスコット">
+        <h1>Yoshi's News</h1>
+      </div>
+      <span class="date">2026年10月21日（水）・第48号</span>
+    </div>
+    <div class="tabs" id="tabs">
+      <button class="tab" id="tab-top" style="--tab-color:var(--c-top)" onclick="goTo(0)"><span class="dot"></span>トップ</button>
+      <button class="tab" id="tab-social" style="--tab-color:var(--c-social)" onclick="goTo(1)"><span class="dot"></span>社会</button>
+      <button class="tab" id="tab-polecon" style="--tab-color:var(--c-polecon)" onclick="goTo(2)"><span class="dot"></span>政治/経済</button>
+      <button class="tab" id="tab-scitech" style="--tab-color:var(--c-scitech)" onclick="goTo(3)"><span class="dot"></span>科学/テック</button>
+      <button class="tab" id="tab-business" style="--tab-color:var(--c-business)" onclick="goTo(4)"><span class="dot"></span>ビジネス</button>
+      <button class="tab" id="tab-startup" style="--tab-color:var(--c-startup)" onclick="goTo(5)"><span class="dot"></span>スタートアップ</button>
+      <button class="tab" id="tab-gadget" style="--tab-color:var(--c-gadget)" onclick="goTo(6)"><span class="dot"></span>ガジェット</button>
+      <button class="tab" id="tab-intl" style="--tab-color:var(--c-intl)" onclick="goTo(7)"><span class="dot"></span>海外</button>
+      <button class="tab" id="tab-sports" style="--tab-color:var(--c-sports)" onclick="goTo(8)"><span class="dot"></span>芸能/スポーツ</button>
+      <button class="tab" id="tab-koshien" style="--tab-color:var(--c-koshien)" onclick="goTo(9)"><span class="dot"></span>高校野球【埼玉】</button>
+    </div>
+  </div>
+
+  <div class="viewport" id="viewport">
+    <div class="track" id="track">
+
+      <section class="panel" id="panel-top" style="--cat-color:var(--c-top)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">トップニュース</h2></div>
+        <p class="panel-sub">今日いちばん知っておきたい2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 高校野球</span>
+          <h3>横浜、9-2で樹徳を破り3年連続センバツ当確——関東大会準々決勝</h3>
+          <p class="lead">秋季関東大会（10月20日既報の準々決勝記事）が20日に行われ、横浜（神奈川2位）が樹徳（群馬2位）に9-2（7回コールド）で勝利した。横浜は初回に5点を先制し、投打で樹徳を圧倒。3年連続となるセンバツ出場をほぼ当確とした。樹徳はエース佐々木力人投手が初回に5失点し、終盤に粘りを見せたものの、来春の選抜出場当確ラインとされるベスト4進出には届かなかった。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「初回の5失点」という、試合の最も早い段階で大差がついてしまった点にある。野球では初回の入り方が試合全体の流れを決めることが多く、樹徳は1回戦（10月20日既報の作新学院戦）での逆転勝ちの勢いを、横浜という格上の相手には持ち込めなかった。横浜は本日既報のとおり、埼玉勢2校（西武台・山村学園）を退けてきた道のりの先に立つ、まさに「全国区の壁」の高さを証明した。</p>
+          </div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/articles/cd66b3088928faecbf5ebd08f41c165283d568b7" target="_blank" rel="noopener">高校野球ドットコム（Yahoo!ニュース）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 海外</span>
+          <h3>ロシア、記者拘束の容疑を主張——「日本の情報機関の指示」と</h3>
+          <p class="lead">北海道新聞記者の拘束問題（10月20日既報）で、ロシア側は「日本の情報機関の指示を受け、防衛関連情報を収集していた」と主張しているという。真偽は不明で、日本政府・北海道新聞社はいずれも否定している。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、ロシア側が初めて、拘束理由の具体的な内容（情報機関の指示・防衛関連情報の収集）に言及したという点にある。情報機関<span class="note">（＝国家の安全保障に関わる情報を収集・分析する政府機関のこと。日本では内閣情報調査室などが該当する）</span>の「指示」という主張が事実なら重大な外交問題になるが、日本側は一貫して否定しており、領事面会（10月19日既報）が実現しない限り、記者本人の説明による事実確認もできない状況が続いている。</p>
+          </div>
+          <div class="meta"><a href="https://kumanichi.com/articles/2047171" target="_blank" rel="noopener">熊本日日新聞（共同通信）</a></div>
+        </article>
+
+        <div class="closing">
+          <span class="label serif">編集後記</span>
+          横浜が圧勝で3年連続センバツ当確、群馬の樹徳も健闘しました。ロシアの記者拘束問題は、拘束理由の主張が明らかになりましたが、まだ本人との面会はできていません。アップルは新型ホームハブの発表が報じられています。タブまたはスワイプで10のジャンルを読み進められます。良い一日を。
+        </div>
+        <div class="colophon">AIが検索結果をもとに要約・編集しています。詳細は各記事の出典リンクでご確認ください。<br>毎朝5時発行・次号は明日<br><a href="archive.html" style="color:inherit">過去の紙面はこちら</a></div>
+      </section>
+
+      <section class="panel" id="panel-social" style="--cat-color:var(--c-social)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">社会</h2></div>
+        <p class="panel-sub">くらしに関わるニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>樹徳、選抜当確ラインのベスト4に届かず——エースが初回に5失点</h3>
+          <p class="lead">本日既報のとおり横浜に9-2で敗れた樹徳は、来春の選抜（センバツ）出場の当確ラインとされるベスト4進出を逃した。エースの佐々木力人投手は初回に5失点したが、終盤には粘りを見せた。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「ベスト4」という結果が、群馬県勢にとってセンバツ出場の実質的な分岐点になっているという点にある。関東大会のような地区大会では、優勝校だけでなく、一定の成績（多くの地区でベスト4前後）を残したチームも、地区全体の「実力の高さ」を示す材料として、センバツ選考で総合的に評価される。1回戦の逆転勝ち（10月20日既報）という好材料があっても、準々決勝での大差負けは、評価にマイナスに働く可能性がある。</p>
+          </div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/articles/a530ce539c61afce67331356cbf762fa1b7a5f06" target="_blank" rel="noopener">高校野球ドットコム（Yahoo!ニュース）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>北海道新聞社、独立した報道機関と改めて強調——記者拘束問題</h3>
+          <p class="lead">本日既報のロシア側の主張を受け、北海道新聞社は改めて、自社が政府から独立した報道機関であり、政府の指示に基づいて取材や情報収集を行うことはないとの立場を強調している。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「報道の自由」と「政府からの独立性」<span class="note">（＝新聞社やテレビ局などの報道機関が、政府の意向に左右されず、自らの判断で取材・報道を行う原則のこと。民主主義社会における報道機関の基本的な役割とされる）</span>が、この問題の核心にある点にある。ロシア側の主張（本日既報）が事実であれば、報道機関が政府の情報収集活動に利用されていたことになり、報道の独立性そのものが揺らぐ深刻な問題になる。北海道新聞社がこの点を強く否定するのは、報道機関としての信頼性を守るための必然的な対応と言える。</p>
+          </div>
+          <div class="meta"><a href="https://kumanichi.com/articles/2047171" target="_blank" rel="noopener">熊本日日新聞（共同通信）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-polecon" style="--cat-color:var(--c-polecon)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">政治／経済</h2></div>
+        <p class="panel-sub">政治・経済の動き2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 政治</span>
+          <h3>臨時国会、消費税・支援金法案の審議続く——財源の具体策は年末に</h3>
+          <p class="lead">臨時国会（10月20日既報）で審議中の消費税・支援金法案は、与野党の論戦が続いている。2年間で約10兆円必要とされる財源の具体的な内訳は、年末の来年度予算編成に委ねられており、野党側はこの点を追及している。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、法案の「仕組み」は決まっているのに、「お金の出どころ」だけが先送りされているという、審議の構造にある。来年度予算編成<span class="note">（＝毎年年末頃に行われる、翌年度（4月から始まる1年間）に国がどのくらいのお金を、どの分野に使うかを決める作業のこと）</span>はまだ始まっていないため、財源論は現時点では「方針」のレベルに留まっている。野党がこの「先送り」を問題視するのは、財源が決まらないまま法案だけが先に成立することへの警戒感によるものとみられる。</p>
+          </div>
+          <div class="meta"><a href="https://www.nippon.com/ja/news/yjj2026100900138/" target="_blank" rel="noopener">nippon.com（時事通信）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 外交</span>
+          <h3>スパイ容疑の立証、どう進むのか——ロシアの「防衛関連情報」主張の重み</h3>
+          <p class="lead">本日既報のロシア側の主張（日本の情報機関の指示を受けた防衛関連情報の収集）について、こうした容疑がどのように立証されるのか、現時点では不透明なままとなっている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「防衛関連情報」<span class="note">（＝軍事基地の配置や部隊の動き、防衛装備品の性能など、国の安全保障に直接関わる情報のこと。多くの国で、これを外国に提供・収集する行為は厳しく規制されている）</span>という主張の具体性と、それを裏付ける証拠の有無が別問題だという点にある。ロシアの司法手続きは非公開で進むことが多く（10月19日既報のスパイ容疑の構図）、外部から容疑の真偽を検証するのは極めて難しい。日本政府にできることは、領事面会を通じた本人からの事情確認に限られている。</p>
+          </div>
+          <div class="meta"><a href="https://kumanichi.com/articles/2046809" target="_blank" rel="noopener">熊本日日新聞（共同通信）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-scitech" style="--cat-color:var(--c-scitech)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">科学／テック</h2></div>
+        <p class="panel-sub">研究・技術のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>Apple、新型ホームハブ投入か——Bloomberg報道、A18チップ搭載とされる</h3>
+          <p class="lead">米Bloombergのマーク・ガーマン記者の報道によると、アップルは10月13日に、新しいスマートホームハブ、HomePod mini、Apple TVの3製品を投入する見込みとされている。ホームハブ（コードネーム「J490」）は6インチ画面でA18チップを搭載し、デザインはiMac G4がモチーフとされ、4色展開になるという。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、これがまだ「報道・リーク情報」の段階であり、アップル自身の公式発表ではないという点にある。スマートホームハブ<span class="note">（＝家庭内の照明・エアコン・スマートスピーカーなど、複数のスマート家電をまとめて操作・管理するための、画面付きの操作端末のこと。Amazon・Googleは既に同種の製品を展開している）</span>は、Amazon・Googleが先行してきた分野で、アップルの本格参入は、スマートホーム市場全体の競争を活発化させる可能性がある。</p>
+          </div>
+          <div class="meta"><a href="https://gori.me/?p=171153" target="_blank" rel="noopener">ゴリミー</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>ラピダスの2ナノ半導体、量産までの技術的ハードルとは</h3>
+          <p class="lead">本日既報の「顧客不在」の懸念（10月20日既報）が指摘されるラピダスの2ナノ半導体だが、量産化そのものにも、歩留まり（不良品を出さずに作れる割合）の向上など、技術的なハードルが残っているとされる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「最先端の技術を開発すること」と「それを安定して大量生産すること」が、全く別の難しさを持つという点にある。歩留まり<span class="note">（＝製造した半導体のうち、不良品ではなく実際に使える良品の割合のこと。最先端の技術ほど歩留まりが低くなりやすく、これを高めるには長年の生産ノウハウの積み重ねが必要とされる）</span>が低いままでは、いくら技術が先進的でも、採算の取れる価格で顧客に供給できない。顧客確保（本日既報）と量産技術の確立は、ラピダスにとって同時に解決すべき2つの課題と言える。</p>
+          </div>
+          <div class="meta"><a href="https://newswitch.jp/index.php/keyword/detail/68136" target="_blank" rel="noopener">ニュースイッチ</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-business" style="--cat-color:var(--c-business)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ビジネス</h2></div>
+        <p class="panel-sub">企業・産業のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>Apple、HomePod miniとApple TVも同時投入か——「Welcome home」イベントの狙い</h3>
+          <p class="lead">本日既報のアップルの新製品投入は、報道によれば「Welcome home」というイベント名で行われ、発売は発表から約1カ月後になる見込みとされている。ホームハブ単体ではなく、関連製品を同時に投入することで、スマートホーム分野での存在感を一気に高める狙いがあるとみられる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「3製品の同時投入」という戦略にある。ホームハブ単体で売り出すより、既存製品（HomePod mini・Apple TV）と組み合わせて展開することで、「アップル製品だけで家中をスマートにする」という、一体感のある体験を訴求しやすくなる。複数の製品を連携させて売る手法は、アップルが得意とする戦略の一つ。</p>
+          </div>
+          <div class="meta"><a href="https://www.smartwatchlife.jp/82717/" target="_blank" rel="noopener">スマートウォッチライフ</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>半導体各社、AI特需で設備投資を拡大——装置メーカーにも恩恵</h3>
+          <p class="lead">AI向けの需要拡大（本日既報の半導体メモリー価格上昇とも関連）を背景に、半導体メーカー各社は設備投資を拡大している。この流れは、製造装置を手がけるメーカーにも恩恵を及ぼしているとみられる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、半導体業界が「チップを作る会社」と「チップを作るための装置を作る会社」という、2段階のビジネス構造になっている点にある。設備投資<span class="note">（＝工場の建設や、製造に使う機械・装置の購入にお金を投じること。将来の生産能力を増やすための投資で、業界の先行きへの期待の大きさを示す指標にもなる）</span>の拡大は、半導体メーカーがAI需要の長期的な拡大を見込んでいることの表れであり、その投資は装置メーカーの受注増につながるという、業界全体への波及効果を生んでいる。</p>
+          </div>
+          <div class="meta"><a href="https://www.itmedia.co.jp/news/kw/semiconductor.html" target="_blank" rel="noopener">ITmedia</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-startup" style="--cat-color:var(--c-startup)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">スタートアップ</h2></div>
+        <p class="panel-sub">資金調達・注目トピック2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>Startale Group、Web3ネイティブのエンタメアプリ「Startale App」を展開</h3>
+          <p class="lead">シンガポール拠点のStartale Group（10月15日既報のシリーズA資金調達）は、NFTやブロックチェーン技術を前提に設計された、エンタメ特化型アプリ「Startale App」を展開している。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「Web3ネイティブ」<span class="note">（＝最初からブロックチェーン技術（Web3）を使うことを前提に設計されたサービスのこと。後からブロックチェーン機能を追加するのではなく、仕組みの根幹にブロックチェーンが組み込まれている）</span>という設計思想にある。NFT<span class="note">（＝Non-Fungible Tokenの略。デジタルデータに「唯一無二であること」を証明する、ブロックチェーン上の仕組みのこと。デジタルアートやゲーム内アイテムの所有権を示す用途などで使われる）</span>をエンタメ分野に組み込むことで、ファンがコンテンツの所有権を持てるような、新しいエンタメ体験の提供を目指しているとみられる。</p>
+          </div>
+          <div class="meta"><a href="https://toyokeizai.net/articles/-/940919" target="_blank" rel="noopener">東洋経済オンライン</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>ケップル、スタートアップの資金調達情報を継続発信——業界の動向を伝える役割</h3>
+          <p class="lead">スタートアップ専門メディアのケップルは、資金調達情報を中心とした取材・報道を継続的に行っている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、本日既報のStartale Groupのような個別企業の動きが、専門メディアによる継続的な取材・報道があってこそ、多くの人に知られるようになるという点にある。スタートアップ業界<span class="note">（＝新しく設立され、急成長を目指す企業群のこと。大企業のように広報部門が充実していないことも多く、専門メディアの取材が情報発信の重要な役割を担っている）</span>は、大企業に比べて情報発信力が限られることが多く、専門メディアの存在が、業界全体の透明性や注目度を高める一因になっている。</p>
+          </div>
+          <div class="meta"><a href="https://kepple.co.jp/about" target="_blank" rel="noopener">Kepple</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-gadget" style="--cat-color:var(--c-gadget)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ガジェット</h2></div>
+        <p class="panel-sub">新製品2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>Apple「HomeView」、iMac G4がモチーフのデザインに——4色展開とされる</h3>
+          <p class="lead">本日既報のアップルの新型ホームハブは、「Apple HomeView」という名称が報じられており、2002年発売の「iMac G4」（半球型の本体に、アームで画面を支える独特なデザインで知られるパソコン）がモチーフとされている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、過去の名機のデザインを、現代の新製品に「モチーフ」として取り入れるという手法にある。iMac G4<span class="note">（＝2002年に発売された、半球型の土台から1本のアームが伸び、その先に液晶画面が付いた、特徴的なデザインのパソコンのこと。発売当時「デスクランプのよう」と評された）</span>は、発売当時から独特なデザインで知られ、今でも熱心なファンが多い。懐かしさを感じさせるデザインを、家庭に置く「ホームハブ」という製品に採用することで、生活空間になじみやすい、親しみのある印象を与える狙いがあるとみられる。</p>
+          </div>
+          <div class="meta"><a href="https://gori.me/?p=171153" target="_blank" rel="noopener">ゴリミー</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>Apple Storeに「開封禁止」の箱——新製品の発表前に話題に</h3>
+          <p class="lead">本日既報のアップルの新製品発表に先立ち、Apple Storeに「10月8日まで開封禁止」と記された箱が届いていたことが話題になっていた。新ホームハブ関連か、折りたたみ「iPhone Duo」（10月16日既報）関連かは、発表前の時点では明らかになっていなかった。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、アップルが新製品の情報を発表直前まで厳重に管理する、独特の企業文化にある。「開封禁止」の箱<span class="note">（＝店舗に新製品や販促物を事前に配送する際、正式な発表・発売日まで開けないよう指示する、厳重な情報管理の手法のこと）</span>が話題になるのは、アップルの新製品がいかに世間の関心を集めているかを示す、恒例の現象でもある。こうした「匂わせ」的な情報も、ファンやメディアの間で発表前の話題作りに一役買っている。</p>
+          </div>
+          <div class="meta"><a href="https://gori.me/?p=170859" target="_blank" rel="noopener">ゴリミー</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-intl" style="--cat-color:var(--c-intl)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">海外</h2></div>
+        <p class="panel-sub">国際ニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>日本政府、ロシアの主張に反論——領事面会は依然として実現せず</h3>
+          <p class="lead">本日既報のロシア側の主張（日本の情報機関の指示を受けた情報収集）について、日本政府はこれを否定している。拘束から1週間以上経過した現在も、領事面会（10月19日既報）は実現していない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、事態が長期化していることへの懸念にある。領事面会が実現しないまま時間が経過するほど、拘束された記者の健康状態の確認や、事実関係の解明が遅れることになる。外交的な抗議（大使の召致、10月19日既報）と、人道的な申し入れを続けながらも、ロシア側の対応を待つしかないという、日本政府のもどかしい立場が続いている。</p>
+          </div>
+          <div class="meta"><a href="https://kumanichi.com/articles/2047171" target="_blank" rel="noopener">熊本日日新聞（共同通信）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>アップルの新製品投入、海外メディアも注目——スマートホーム市場の競争激化へ</h3>
+          <p class="lead">本日既報のアップルの新型ホームハブ投入報道は、海外のテクノロジーメディアでも大きく取り上げられている。Amazon・Googleが先行するスマートホーム市場に、アップルが本格参入する形になるとみられている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、スマートホーム市場<span class="note">（＝家庭内の家電・照明・セキュリティー機器などをインターネットでつなぎ、スマートフォンや専用端末で一括管理できるようにする市場のこと）</span>が、これまでAmazon（Echo）やGoogle（Nest）が中心だった点にある。アップルの参入は、すでに多くのユーザーが持つiPhoneやApple製品との連携を強みにできるため、市場の競争構図を大きく変える可能性があると、海外でも注目されている。</p>
+          </div>
+          <div class="meta"><a href="https://www.smartwatchlife.jp/82717/" target="_blank" rel="noopener">スマートウォッチライフ</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-sports" style="--cat-color:var(--c-sports)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">芸能／スポーツ</h2></div>
+        <p class="panel-sub">厳選2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>横浜、関東大会は準決勝へ——センバツ出場にさらに前進</h3>
+          <p class="lead">本日既報のとおり樹徳を破った横浜は、秋季関東大会の準決勝に進んだ。決勝は25日に上毛新聞敷島球場で行われる予定で、横浜はここまで西武台（10月19日既報）、樹徳（本日既報）と、埼玉・群馬の代表校を連続して退けてきた。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、横浜がここまで見せている圧倒的な強さにある。初戦・準々決勝ともにコールド勝ちという結果は、単に「勝っている」以上に、相手との実力差がはっきりと表れていることを示している。準決勝・決勝でも同様の強さを維持できるかが、今後の注目点になる。</p>
+          </div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/articles/cd66b3088928faecbf5ebd08f41c165283d568b7" target="_blank" rel="noopener">高校野球ドットコム（Yahoo!ニュース）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>日本シリーズ開幕まで3日——24日に横浜スタジアムで</h3>
+          <p class="lead">プロ野球日本シリーズ（10月20日既報）は、24日に横浜スタジアムで開幕する。DeNA対ソフトバンクの対戦まで、残り3日となった。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「横浜」という地名が、本日既報の高校野球（横浜高校）と日本シリーズ開幕地（横浜スタジアム）の両方で登場している、偶然の重なりにある。もちろん両者は無関係だが、横浜という土地が、この時期の野球ニュースで何度も話題に上るという、ちょっとした共通点になっている。</p>
+          </div>
+          <div class="meta"><a href="https://www.nikkei.com/article/DGXZQODH171ZR0X11C26A0000000/" target="_blank" rel="noopener">日本経済新聞</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-koshien" style="--cat-color:var(--c-koshien)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">高校野球【埼玉】</h2></div>
+        <p class="panel-sub">秋季大会2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>埼玉県勢は姿を消すも、横浜の強さが物語る「関東大会の厳しさ」</h3>
+          <p class="lead">本日既報のとおり、横浜は樹徳を9-2で破り準決勝に進んだ。西武台（10月19日既報）を12-2で退けたのと同様の圧倒的な強さで、埼玉県勢が初戦で敗れた相手の「レベルの高さ」を改めて示す結果となった。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、西武台が敗れた相手（横浜）が、群馬の代表校・樹徳にも同じように圧勝しているという事実にある。つまり西武台は「特別に弱かった」わけではなく、横浜というチームそのものが、今大会で際立って強いということが、2試合の結果から裏付けられた。西武台の監督が語った「レベルの差」（10月19日既報）という言葉の重みが、改めて実感される結果と言える。</p>
+          </div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/articles/cd66b3088928faecbf5ebd08f41c165283d568b7" target="_blank" rel="noopener">高校野球ドットコム（Yahoo!ニュース）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>関東大会、準決勝・決勝は25日に——来春センバツの選考材料がまとまる</h3>
+          <p class="lead">秋季関東大会は、準決勝・決勝が25日に上毛新聞敷島球場で行われる予定。この結果をもって、関東地区の出場校の今秋の成績が確定し、来春のセンバツ選考の材料がまとまることになる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、埼玉県勢が1回戦で敗れた今、埼玉県にとっての今大会の「結果」は既に確定しているという点にある。山村学園（10月18日既報、1点差の接戦で敗退）、西武台（10月19日既報、大差で敗退）という2校の試合内容の違いが、来年1月頃に発表されるセンバツ選考結果にどう反映されるか、埼玉県の高校野球ファンにとって今後の注目点になる。</p>
+          </div>
+          <div class="meta"><a href="https://www.hb-nippon.com/tournaments/2031" target="_blank" rel="noopener">高校野球ドットコム</a></div>
+        </article>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var cats = ['top','social','polecon','scitech','business','startup','gadget','intl','sports','koshien'];
+  var idx = 0;
+  var track = document.getElementById('track');
+  var viewport = document.getElementById('viewport');
+  var vw = viewport.clientWidth;
+
+  function setActive(i){
+    cats.forEach(function(c, j){
+      document.getElementById('tab-' + c).classList.toggle('active', j === i);
+    });
+    var activeTab = document.getElementById('tab-' + cats[i]);
+    if (activeTab && activeTab.scrollIntoView) activeTab.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+  }
+
+  function settle(i, animate){
+    idx = Math.max(0, Math.min(cats.length - 1, i));
+    track.style.transition = animate ? 'transform .32s cubic-bezier(.22,.61,.36,1)' : 'none';
+    track.style.transform = 'translateX(' + (-idx * vw) + 'px)';
+    setActive(idx);
+  }
+
+  window.goTo = function(i){ settle(i, true); };
+
+  window.addEventListener('resize', function(){
+    vw = viewport.clientWidth;
+    settle(idx, false);
+  });
+
+  var dragging = false, decided = null, sx = 0, sy = 0, dx = 0;
+  viewport.addEventListener('touchstart', function(e){
+    dragging = true; decided = null;
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY; dx = 0;
+    track.style.transition = 'none';
+  }, { passive: true });
+
+  viewport.addEventListener('touchmove', function(e){
+    if (!dragging) return;
+    var cx = e.touches[0].clientX, cy = e.touches[0].clientY;
+    var mdx = cx - sx, mdy = cy - sy;
+    if (decided === null) {
+      if (Math.abs(mdx) > 8 || Math.abs(mdy) > 8) {
+        decided = Math.abs(mdx) > Math.abs(mdy) ? 'x' : 'y';
+      }
+    }
+    if (decided === 'x') {
+      e.preventDefault();
+      dx = mdx;
+      var atStart = idx === 0 && dx > 0;
+      var atEnd = idx === cats.length - 1 && dx < 0;
+      var eased = (atStart || atEnd) ? dx * 0.35 : dx;
+      track.style.transform = 'translateX(' + (-idx * vw + eased) + 'px)';
+    }
+  }, { passive: false });
+
+  viewport.addEventListener('touchend', function(){
+    if (!dragging) return;
+    dragging = false;
+    if (decided === 'x') {
+      var threshold = vw * 0.18;
+      if (dx <= -threshold) settle(idx + 1, true);
+      else if (dx >= threshold) settle(idx - 1, true);
+      else settle(idx, true);
+    }
+    decided = null; dx = 0;
+  });
+
+  settle(0, false);
+})();
+</script>
+
+</body></html>
