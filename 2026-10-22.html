@@ -1,0 +1,610 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yoshi's News</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Zen+Old+Mincho:wght@600;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap');
+
+:root {
+  --bg: #ffffff;
+  --panel-bg: #ffffff;
+  --card: #ffffff;
+  --card-line: #eef0f3;
+  --ink: #1a1c20;
+  --ink-soft: #5b6068;
+  --ink-faint: #9aa0a8;
+  --shell: #f4f5f7;
+
+  --c-top: #ef3355;
+  --c-social: #00b3a4;
+  --c-polecon: #6d5bf0;
+  --c-scitech: #ff8a1e;
+  --c-business: #0091ff;
+  --c-sports: #26c281;
+  --c-startup: #ff4fa3;
+  --c-koshien: #c8860d;
+  --c-intl: #4b3f8f;
+  --c-gadget: #00bcd4;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101114;
+    --panel-bg: #101114;
+    --card: #1a1c20;
+    --card-line: #2a2c31;
+    --ink: #f1f2f4;
+    --ink-soft: #b7bcc4;
+    --ink-faint: #767c86;
+    --shell: #1a1c20;
+    --c-top: #ff6b85;
+    --c-social: #3fd8c9;
+    --c-polecon: #9c8fff;
+    --c-scitech: #ffab5c;
+    --c-business: #4db2ff;
+    --c-sports: #5be0a6;
+    --c-startup: #ff85c2;
+    --c-koshien: #e8b34c;
+    --c-intl: #a89cf0;
+    --c-gadget: #4dd8ea;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101114;
+  --panel-bg: #101114;
+  --card: #1a1c20;
+  --card-line: #2a2c31;
+  --ink: #f1f2f4;
+  --ink-soft: #b7bcc4;
+  --ink-faint: #767c86;
+  --shell: #1a1c20;
+  --c-top: #ff6b85;
+  --c-social: #3fd8c9;
+  --c-polecon: #9c8fff;
+  --c-scitech: #ffab5c;
+  --c-business: #4db2ff;
+  --c-sports: #5be0a6;
+  --c-startup: #ff85c2;
+  --c-koshien: #e8b34c;
+  --c-intl: #a89cf0;
+  --c-gadget: #4dd8ea;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--shell);
+  color: var(--ink);
+  font-family: "Zen Kaku Gothic New", -apple-system, "Hiragino Kaku Gothic ProN", sans-serif;
+  line-height: 1.7;
+  overscroll-behavior-y: none;
+}
+.serif { font-family: "Zen Old Mincho", "Hiragino Mincho ProN", serif; }
+
+.app {
+  max-width: 680px;
+  margin: 0 auto;
+  background: var(--bg);
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ---- Header ---- */
+.topbar { padding: 20px 20px 0; flex-shrink: 0; }
+.title-line { display: flex; align-items: center; gap: 8px; }
+.mascot { height: 50px; width: auto; flex-shrink: 0; border-radius: 8px; }
+.title-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  margin-bottom: 14px;
+}
+.title-row h1 {
+  font-family: "Baloo 2", "Zen Kaku Gothic New", sans-serif;
+  font-size: 48px; font-weight: 800; margin: 0; letter-spacing: 0.01em; line-height: 1;
+  -webkit-text-stroke: 2.4px #2b2013;
+  filter: drop-shadow(2px 3px 0 rgba(30,22,12,0.18));
+  background-image:
+    radial-gradient(circle at 22% 30%, #211709 0 7px, transparent 8px),
+    radial-gradient(circle at 68% 65%, #3a2b16 0 9px, transparent 10px),
+    radial-gradient(circle at 45% 88%, #241a0c 0 5px, transparent 6px),
+    radial-gradient(circle at 85% 20%, #2e2211 0 6px, transparent 7px),
+    linear-gradient(135deg, #b8a06e, #967c4c 50%, #6f5a35);
+  background-size: 30px 30px, 41px 41px, 23px 23px, 35px 35px, 100% 100%;
+  background-repeat: repeat, repeat, repeat, repeat, no-repeat;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.title-row .date { font-size: 11.5px; color: var(--ink-faint); white-space: nowrap; font-weight: 500; margin-top: 2px; }
+
+.tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px 3px; }
+.tab {
+  appearance: none; border: none; background: none;
+  font-family: inherit; font-size: 10.5px; font-weight: 700;
+  color: var(--ink-faint);
+  padding: 7px 4px 9px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+  cursor: pointer;
+  border-radius: 10px 10px 0 0;
+  transition: color .2s ease, background .2s ease;
+}
+.tab .dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  margin-right: 5px; background: currentColor; opacity: 0.45; vertical-align: middle;
+}
+.tab::after {
+  content: ""; position: absolute; left: 10px; right: 10px; bottom: 0;
+  height: 3px; border-radius: 3px 3px 0 0; background: transparent; transition: background .2s ease;
+}
+.tab.active { color: var(--tab-color); background: color-mix(in srgb, var(--tab-color) 10%, transparent); }
+.tab.active .dot { opacity: 1; }
+.tab.active::after { background: var(--tab-color); }
+
+/* ---- Swipe viewport ---- */
+.viewport { flex: 1; overflow: hidden; position: relative; touch-action: pan-y; }
+.track {
+  display: flex;
+  height: 100%;
+  width: 1000%;
+  transition: transform .32s cubic-bezier(.22,.61,.36,1);
+  will-change: transform;
+}
+.panel {
+  width: 10%;
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 20px 56px;
+}
+
+.panel-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.panel-head .chip { width: 8px; height: 26px; border-radius: 4px; background: var(--cat-color); flex-shrink: 0; }
+.panel-head h2 { font-size: 20px; font-weight: 700; margin: 0; letter-spacing: 0.02em; color: var(--cat-color); }
+.panel-sub { font-size: 12px; color: var(--ink-faint); margin: 0 0 18px 18px; }
+
+.story {
+  background: var(--card);
+  border: 1px solid var(--card-line);
+  border-left: 4px solid var(--cat-color);
+  border-radius: 12px;
+  padding: 18px 18px 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(20,20,30,0.05);
+}
+.story .kicker {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: "Zen Old Mincho", serif; font-size: 11.5px; font-weight: 700;
+  color: var(--cat-color); margin-bottom: 9px;
+}
+.story h3 { font-size: 16px; font-weight: 700; line-height: 1.55; margin: 0 0 10px; }
+.story .lead { font-size: 14px; color: var(--ink); margin: 0 0 14px; line-height: 1.85; }
+
+.context {
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 10px;
+  padding: 13px 15px;
+  margin: 0 0 12px;
+}
+.context-label {
+  display: block; font-size: 10.5px; font-weight: 700;
+  color: var(--cat-color); letter-spacing: 0.04em; margin-bottom: 6px;
+}
+.context p { font-size: 13px; color: var(--ink-soft); margin: 0; line-height: 1.8; }
+
+.note { font-size: 11.5px; color: var(--ink-faint); font-weight: 500; }
+
+.term-link {
+  color: var(--cat-color);
+  text-decoration: none;
+  border-bottom: 1px dotted color-mix(in srgb, var(--cat-color) 55%, transparent);
+  font-weight: 700;
+}
+
+.meta { font-size: 11px; color: var(--ink-faint); }
+.meta a { color: var(--cat-color); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--cat-color) 40%, transparent); font-weight: 700; }
+
+.closing {
+  margin: 6px 0 0; padding: 16px 18px;
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 12px; font-size: 13px; color: var(--ink-soft); text-align: center;
+}
+.closing .label {
+  display: block; font-family: "Zen Old Mincho", serif; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.2em; color: var(--cat-color); margin-bottom: 8px;
+}
+.colophon { margin: 14px 0 8px; font-size: 10.5px; color: var(--ink-faint); line-height: 1.9; text-align: center; }
+
+@media (max-width: 420px) {
+  .topbar { padding: 16px 14px 0; }
+  .panel { padding: 16px 14px 48px; }
+  .title-row h1 { font-size: 38px; }
+  .mascot { height: 40px; }
+}
+</style>
+</head><body>
+
+
+<div class="app" id="app">
+
+  <div class="topbar">
+    <div class="title-row">
+      <div class="title-line">
+        <img class="mascot" src="mascot.jpg" alt="オオサンショウウオのマスコット">
+        <h1>Yoshi's News</h1>
+      </div>
+      <span class="date">2026年10月22日（木）・第49号</span>
+    </div>
+    <div class="tabs" id="tabs">
+      <button class="tab" id="tab-top" style="--tab-color:var(--c-top)" onclick="goTo(0)"><span class="dot"></span>トップ</button>
+      <button class="tab" id="tab-social" style="--tab-color:var(--c-social)" onclick="goTo(1)"><span class="dot"></span>社会</button>
+      <button class="tab" id="tab-polecon" style="--tab-color:var(--c-polecon)" onclick="goTo(2)"><span class="dot"></span>政治/経済</button>
+      <button class="tab" id="tab-scitech" style="--tab-color:var(--c-scitech)" onclick="goTo(3)"><span class="dot"></span>科学/テック</button>
+      <button class="tab" id="tab-business" style="--tab-color:var(--c-business)" onclick="goTo(4)"><span class="dot"></span>ビジネス</button>
+      <button class="tab" id="tab-startup" style="--tab-color:var(--c-startup)" onclick="goTo(5)"><span class="dot"></span>スタートアップ</button>
+      <button class="tab" id="tab-gadget" style="--tab-color:var(--c-gadget)" onclick="goTo(6)"><span class="dot"></span>ガジェット</button>
+      <button class="tab" id="tab-intl" style="--tab-color:var(--c-intl)" onclick="goTo(7)"><span class="dot"></span>海外</button>
+      <button class="tab" id="tab-sports" style="--tab-color:var(--c-sports)" onclick="goTo(8)"><span class="dot"></span>芸能/スポーツ</button>
+      <button class="tab" id="tab-koshien" style="--tab-color:var(--c-koshien)" onclick="goTo(9)"><span class="dot"></span>高校野球【埼玉】</button>
+    </div>
+  </div>
+
+  <div class="viewport" id="viewport">
+    <div class="track" id="track">
+
+      <section class="panel" id="panel-top" style="--cat-color:var(--c-top)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">トップニュース</h2></div>
+        <p class="panel-sub">今日いちばん知っておきたい2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ テック</span>
+          <h3>Apple、新型ホームハブ「HomeView」正式発表——顔認識・新Siri搭載、米で11月13日発売</h3>
+          <p class="lead">アップルは10月13日、新型スマートホームディスプレイ「HomeView」（10月21日既報のリーク情報どおり）を正式発表した。7インチの正方形タッチスクリーンにA18チップを搭載し、最大6人の顔を認識して利用者ごとにホーム画面を切り替えられる。新しい「Siri AI」も搭載。米国価格は299ドルで、11月13日発売。日本での発売日・価格は現時点で未発表。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、本日既報のとおりこれが「リーク情報」から「公式発表」の段階に進んだという点にある。顔認識<span class="note">（＝カメラで人の顔を識別し、誰が画面の前にいるかを判断する技術のこと。家族で1台の端末を共有する場合でも、使う人ごとに表示内容を自動で切り替えられる）</span>による個人化は、家庭での共有端末という「HomeView」の使い方に合わせた工夫。欧州は当初の販売対象外とされており、地域によって展開に差が出ている。</p>
+          </div>
+          <div class="meta"><a href="https://www.dexerto.com/entertainment/apple-reveals-homeview-smart-home-display-with-facial-recognition-and-major-siri-upgrade-3418528/" target="_blank" rel="noopener">Dexerto</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 海外</span>
+          <h3>ロシア拘束の記者、実名「今井悠貴」氏と判明——日本ペンクラブが釈放要求声明</h3>
+          <p class="lead">ロシア外務省は、サハリン州でスパイ容疑で拘束された北海道新聞記者を今井悠貴氏と明らかにした。日本ペンクラブ（桐野夏生会長）は16日、「拘束された記者の安全と健康が確保され、ただちに釈放されることを強く求めます」として、釈放を求める緊急声明を発表した。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、日本ペンクラブ<span class="note">（＝作家・ジャーナリストなど言論に関わる人々が参加する、表現の自由を守ることを目的とした団体のこと。国際組織「国際ペン」の日本支部にあたる）</span>のような民間団体が、政府の外交努力とは別のルートで国際的な声を上げている点にある。同団体は過去にもミャンマーで拘束されたジャーナリストの釈放を求めた実績があり、今回も同様に、国際社会の関心を集めるための行動と位置づけられる。</p>
+          </div>
+          <div class="meta"><a href="https://kumanichi.com/articles/2047198" target="_blank" rel="noopener">熊本日日新聞（共同通信）</a></div>
+        </article>
+
+        <div class="closing">
+          <span class="label serif">編集後記</span>
+          アップルの新型ホームハブはリークどおりの内容で正式発表されました。ロシア拘束の記者は実名が判明し、日本ペンクラブも釈放を求めています。日本シリーズ開幕まであと2日、横浜は関東大会準決勝に駒を進めました。タブまたはスワイプで10のジャンルを読み進められます。良い一日を。
+        </div>
+        <div class="colophon">AIが検索結果をもとに要約・編集しています。詳細は各記事の出典リンクでご確認ください。<br>毎朝5時発行・次号は明日<br><a href="archive.html" style="color:inherit">過去の紙面はこちら</a></div>
+      </section>
+
+      <section class="panel" id="panel-social" style="--cat-color:var(--c-social)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">社会</h2></div>
+        <p class="panel-sub">くらしに関わるニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>日本ペンクラブ、記者の釈放を求める緊急声明——「安全と健康の確保」訴え</h3>
+          <p class="lead">本日既報のとおり、日本ペンクラブは「どの国・地域でもジャーナリストの取材活動と安全は保障されるべきだ」と強調し、ロシアに拘束された今井悠貴記者の早期釈放を求めた。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「取材活動と安全の保障」という考え方が、国境を越えた普遍的な原則として主張されている点にある。ジャーナリストの取材の安全<span class="note">（＝記者が事実を調べ、報道するために行う取材活動が、身体的な危険や不当な拘束から守られるべきだという考え方。多くの国際的な報道・表現の自由の団体が共有する基本原則）</span>が守られなければ、報道そのものが成立しなくなるという危機感が、声明の背景にある。</p>
+          </div>
+          <div class="meta"><a href="https://kumanichi.com/articles/2047198" target="_blank" rel="noopener">熊本日日新聞（共同通信）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>AI需要でメモリー価格上昇、2028年まで改善見込めず——専門家予測</h3>
+          <p class="lead">金融大手Jefferiesの予測によると、半導体メモリーの価格は2026年7〜9月期に40〜50%上昇し、その後も上昇傾向が続き、2028年まで改善は見込めないとされている。アップルは6月25日にMacやiPadなどを値上げしている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、メモリー各社が増産投資を急いでいても、その効果が現れるのは早くても2027年後半だという「時間差」にある。半導体工場<span class="note">（＝半導体を製造する工場のこと。新しい工場を建設し、実際に量産を始めるまでには、通常2〜3年程度の長い期間が必要とされる）</span>の建設には長い時間がかかるため、需要が急増しても供給がすぐには追いつかない。この時間差が、当面の価格上昇が避けられない主な理由となっている。</p>
+          </div>
+          <div class="meta"><a href="https://www.businessinsider.jp/article/2610-semiconductor-memory-price-surge-and-production/" target="_blank" rel="noopener">Business Insider Japan</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-polecon" style="--cat-color:var(--c-polecon)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">政治／経済</h2></div>
+        <p class="panel-sub">政治・経済の動き2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 政治</span>
+          <h3>臨時国会、消費税減税法案の審議続く——与党は衆院で可決の見通し強いが野党対立続く</h3>
+          <p class="lead">臨時国会（10月21日既報）で審議中の消費税・支援金法案は、与党が衆院で7割を超える議席を持つため、採決に至れば可決の見通しは立てやすい状況にある。ただ、財源論（本日既報）を巡る野党との対立は続いている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「数の上では成立しやすい」ことと、「対立なく進む」ことが別問題だという点にある。与党が議席数で優位にあっても、野党が反対姿勢を崩さない限り、審議そのものは時間がかかる。国会審議<span class="note">（＝法案の内容を議員どうしで議論し、問題点を指摘したり、修正を求めたりする過程のこと。最終的に採決で可否が決まるが、審議の過程そのものにも、国民に論点を知らせる役割がある）</span>の長さは、必ずしも法案の運命を左右しないが、国民の理解を深める上では重要な意味を持つ。</p>
+          </div>
+          <div class="meta"><a href="https://www.nippon.com/ja/news/yjj2026092900123/" target="_blank" rel="noopener">nippon.com（時事通信）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 経済</span>
+          <h3>Appleの値上げに続き、スマホ・PC出荷に影響——部品コスト上昇が重荷</h3>
+          <p class="lead">本日既報のメモリー価格上昇を受け、2026年の世界スマホ出荷は前年比2.1%減少する見通しとされている。特に低価格帯のスマホへの影響が大きいという。PCの出荷も、最も悪い想定では前年比9%減少すると予測されている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、部品コストの上昇が、高価格帯より低価格帯の製品に大きな打撃を与えるという点にある。低価格帯のスマホ<span class="note">（＝性能を抑えて価格を安くした、予算を重視する層向けのスマートフォンのこと。元々の利益率が薄いため、部品コストが上がると、価格に反映するか、利益を削るかの難しい判断を迫られる）</span>は、もともと利益の余地が小さいため、メモリーなど部品価格の上昇分を吸収しきれず、販売価格の上昇や、販売自体の縮小につながりやすい。</p>
+          </div>
+          <div class="meta"><a href="https://www.gizmodo.jp/2025/12/smartphone-shipment-forecasts-2026.html" target="_blank" rel="noopener">Gizmodo Japan</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-scitech" style="--cat-color:var(--c-scitech)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">科学／テック</h2></div>
+        <p class="panel-sub">研究・技術のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>Apple「HomeView」、7インチ画面に顔認識機能——最大6人を識別しホーム画面切り替え</h3>
+          <p class="lead">本日既報の「HomeView」は、7インチの正方形タッチスクリーンと、据え置き型・壁掛け型の2種類を用意。周囲の明るさに合わせて画面の明るさを自動調整する機能も備える。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「正方形」という画面の形にある。一般的なスマートフォンやタブレットは縦長・横長の長方形が多いが、正方形は壁掛け・据え置きどちらの向きでも同じように使いやすいという利点がある。家庭内の様々な場所（キッチン、リビングなど）に設置することを想定した、実用性重視の設計と考えられる。</p>
+          </div>
+          <div class="meta"><a href="https://www.dexerto.com/entertainment/apple-reveals-homeview-smart-home-display-with-facial-recognition-and-major-siri-upgrade-3418528/" target="_blank" rel="noopener">Dexerto</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>メモリー不足はなぜ起きているのか——AIサーバー優先で民生品が「後回し」に</h3>
+          <p class="lead">本日既報のメモリー価格上昇の背景には、メモリーメーカーが、利益率の高いAIサーバー向け生産を優先する動きがあるとされる。この結果、スマートフォンやパソコンなど一般消費者向け（民生品）の生産が、相対的に後回しになりやすい構造が生まれている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、同じ工場・同じ生産ラインでも、「誰に売るか」によってメーカーの優先順位が変わるという点にある。AIサーバー向けメモリー<span class="note">（＝AIの学習・推論処理を行う大規模サーバーに使われる、高性能・高価格のメモリーのこと。一般的なパソコン向けメモリーより利益率が高いとされる）</span>は、スマホ・パソコン向けより高い価格で売れるため、メーカーは限られた生産能力をそちらに優先的に振り向けやすい。結果として、私たちが日常的に使う製品の価格や供給に影響が及んでいる。</p>
+          </div>
+          <div class="meta"><a href="https://www.businessinsider.jp/article/2610-semiconductor-memory-and-smartphone-price-surge/" target="_blank" rel="noopener">Business Insider Japan</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-business" style="--cat-color:var(--c-business)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ビジネス</h2></div>
+        <p class="panel-sub">企業・産業のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>Apple、LG・Schneider Electricと「Home Collection」——スマートホーム機器との連携強化</h3>
+          <p class="lead">本日既報の「HomeView」発表に合わせ、アップルはLG ElectronicsやSchneider Electricと共同開発した「Home Collection」も紹介した。他社のスマートホーム機器との連携を強化する取り組みとみられる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、アップルが自社製品だけでなく、他社メーカーとの協業を通じてスマートホーム分野に参入している点にある。家庭にある家電<span class="note">（＝照明・エアコン・洗濯機など、家庭内で使われる電化製品全般のこと。メーカーごとに規格が異なることが多く、異なるメーカーの製品を1つのシステムでまとめて操作するには、企業間の連携・協業が欠かせない）</span>は様々なメーカーの製品が混在することが多く、アップル単独では全てをカバーしきれない。他社との協業は、HomeViewの実用性を高めるための現実的な戦略と言える。</p>
+          </div>
+          <div class="meta"><a href="https://www.macotakara.jp/etc/HomePod/entry-52036.html" target="_blank" rel="noopener">マコタカラ</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>2026年の世界スマホ出荷、2.1%減の見通し——部品コスト上昇が響く</h3>
+          <p class="lead">本日既報のメモリー価格上昇を受け、調査会社Counterpointは、2026年の世界スマホ出荷が前年比2.1%減少するとの見通しを示している。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「2.1%減」という数字が、スマホ市場全体にとって小さくない後退だという点にある。世界のスマホ出荷<span class="note">（＝メーカーが販売店などに実際に送り出したスマートフォンの台数のこと。市場全体の需要の強さを示す代表的な指標とされる）</span>は、コロナ禍の買い替え需要が落ち着いた後も、ある程度の成長が期待されていた分野だったため、部品コストの上昇が市場の成長シナリオそのものに影響を及ぼしている。</p>
+          </div>
+          <div class="meta"><a href="https://www.gizmodo.jp/2025/12/smartphone-shipment-forecasts-2026.html" target="_blank" rel="noopener">Gizmodo Japan</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-startup" style="--cat-color:var(--c-startup)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">スタートアップ</h2></div>
+        <p class="panel-sub">資金調達・注目トピック2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>国内スタートアップ、資金調達環境は数年前より悪化——それでも大型調達に成功する企業も</h3>
+          <p class="lead">東洋経済オンラインの指摘によると、国内スタートアップの資金調達環境は、数年前と比べて悪化しているとされる一方、多額の調達に成功するスタートアップも少なくないという。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「環境は悪化」と「成功する企業もある」が同時に成り立つという、本日既報までにも繰り返し出てきた構図にある。資金調達環境<span class="note">（＝スタートアップが投資家からお金を集めやすいかどうかの、市場全体の雰囲気・状況のこと。投資家の警戒感が強まると「環境が悪化した」と表現される）</span>全体が厳しくなる中でも、実力や成長性を示せる企業には、依然として大きな資金が集まるという「選別」が強まっていることを示している。</p>
+          </div>
+          <div class="meta"><a href="https://toyokeizai.net/articles/-/940919" target="_blank" rel="noopener">東洋経済オンライン</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>THE BRIDGE、週次の資金調達まとめ「Weekly HOT100」を継続配信</h3>
+          <p class="lead">スタートアップ専門メディアのTHE BRIDGEは、1週間ごとの資金調達状況をまとめる連載「Weekly HOT100」を継続的に配信している。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、本日既報のケップルと同様、複数の専門メディアがそれぞれ独自に資金調達情報を追いかけている点にある。1つのメディアだけでは全ての資金調達を網羅するのは難しく、複数の媒体が並行して情報発信することで、業界全体の透明性が高まっている。</p>
+          </div>
+          <div class="meta"><a href="https://thebridge.jp/2024/11/weekly-hot100-2024-11-13" target="_blank" rel="noopener">THE BRIDGE</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-gadget" style="--cat-color:var(--c-gadget)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ガジェット</h2></div>
+        <p class="panel-sub">新製品2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>Apple「HomeView」、据え置き型・壁掛け型の2種類——価格299ドルから</h3>
+          <p class="lead">本日既報の「HomeView」は、据え置き型（シルバー・スターライト・ローズピンク・スペースグレイの4色）と壁掛け型（シルバー・スペースグレイの2色）の2種類が用意される。米国価格はいずれも299ドルで、11月13日発売。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、設置方法によって選べる色の数が違う点にある。据え置き型<span class="note">（＝机や台の上に置いて使うタイプの端末のこと。壁掛け型と違い、設置場所を自由に変えられる利点がある）</span>の方が色の選択肢が多いのは、持ち運びや目に見える場所に置かれることが多く、インテリアとしての見え方がより重視されるためと考えられる。</p>
+          </div>
+          <div class="meta"><a href="https://iphone-mania.jp/?p=607357" target="_blank" rel="noopener">iPhone Mania</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>Apple、煙・一酸化炭素の警報音を検知する新機能——スマートホームの安全機能強化</h3>
+          <p class="lead">本日既報の「HomeView」には、煙や一酸化炭素の警報音を検知し、接続済みのアップルデバイスに通知する機能が搭載される。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、スマートホーム端末が「便利さ」だけでなく「安全性」の役割も担うようになっている点にある。一酸化炭素<span class="note">（＝無色・無臭で、吸い込むと中毒を起こす危険なガスのこと。ガス機器の不完全燃焼などで発生し、人が気づかないうちに被害が広がる危険性がある）</span>は人間の感覚では気づきにくいため、専用の警報器の音をHomeViewが「聞き取り」、外出中でもスマートフォンに通知できる仕組みは、留守中の安全確認に役立つ実用的な機能と言える。</p>
+          </div>
+          <div class="meta"><a href="https://iphone-mania.jp/?p=607420" target="_blank" rel="noopener">iPhone Mania</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-intl" style="--cat-color:var(--c-intl)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">海外</h2></div>
+        <p class="panel-sub">国際ニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>茂木外相、ロシアに人道的配慮を要請——領事面会はなお実現せず</h3>
+          <p class="lead">本日既報の記者拘束問題について、茂木外相は在モスクワ大使館と在ユジノサハリンスク総領事館を通じ、ロシア当局に速やかな情報提供と人道的配慮、公正公平な扱いを求めている。拘束から1週間以上経過した現在も、領事面会は実現していない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、複数の外交ルート（大使館・総領事館）を使って、同時に申し入れを行っているという点にある。在ユジノサハリンスク総領事館<span class="note">（＝サハリン州の中心都市ユジノサハリンスクにある日本の領事館のこと。拘束場所に最も近い日本の公的機関として、現地での対応を担う）</span>は、拘束現場に最も近い日本の公的機関であり、現地での迅速な対応が期待される一方、ロシア側の協力が得られなければ、実際の面会にはつながらないという限界もある。</p>
+          </div>
+          <div class="meta"><a href="https://kuwaittimes.com/article/51581/world/japan-urges-impartial-treatment-of-journalist-arrested-in-russia/" target="_blank" rel="noopener">Kuwait Times</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>Apple「HomeView」、欧州は販売対象外——地域によって展開に差</h3>
+          <p class="lead">本日既報の「HomeView」は、欧州の購入者は当初の対象外とされている。カナダのフランス語対応は、ソフトウエア更新で後日対応予定という。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、新製品の発売が、全世界で同時に行われるわけではないという点にある。欧州<span class="note">（＝EU（欧州連合）加盟国を中心とする地域のこと。個人情報保護やAI規制など、他地域より厳しい法規制を設けていることが多く、新しいAI機能を搭載した製品の発売が遅れる一因になることがある）</span>は、顔認識やAI機能に関する規制が他地域より厳しいとされ、こうした規制対応に時間がかかることが、販売対象外となった背景にある可能性がある。</p>
+          </div>
+          <div class="meta"><a href="https://selectra.jp/telecom/news/apple-home-products-october-2026" target="_blank" rel="noopener">Selectra</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-sports" style="--cat-color:var(--c-sports)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">芸能／スポーツ</h2></div>
+        <p class="panel-sub">厳選2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>日本シリーズ開幕まで2日——DeNA対ソフトバンク、2024年以来の再戦</h3>
+          <p class="lead">プロ野球日本シリーズ（10月21日既報）は、24日に横浜スタジアムで開幕する。DeNA対ソフトバンクの組み合わせは、2024年の日本シリーズと同じ顔合わせになる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、同じ2球団による「再戦」という、ファンにとって分かりやすい見どころがある点にある。前回対戦（2024年）の結果や、そこで活躍した選手が今回も重要な役割を担うかどうかが、観戦の楽しみの一つになる。開幕まで残り2日、両チームの最終調整が続いている。</p>
+          </div>
+          <div class="meta"><a href="https://www.nikkei.com/article/DGXZQODH171ZR0X11C26A0000000/" target="_blank" rel="noopener">日本経済新聞</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>横浜、関東大会準決勝へ——センバツ確実に、決勝は25日</h3>
+          <p class="lead">秋季関東大会（10月21日既報）で樹徳を破った横浜は、準決勝に進んだ。3年連続のセンバツ出場をほぼ確実にしており、決勝は25日に上毛新聞敷島球場で行われる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、横浜がここまで2試合連続でコールド勝ちという、圧倒的な強さを維持している点にある。準決勝・決勝でも同様の強さを見せられるかが、今大会での横浜の評価をさらに高めることになる。</p>
+          </div>
+          <div class="meta"><a href="https://www.hb-nippon.com/tournaments/2031" target="_blank" rel="noopener">高校野球ドットコム</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-koshien" style="--cat-color:var(--c-koshien)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">高校野球【埼玉】</h2></div>
+        <p class="panel-sub">秋季大会2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>関東大会、残りは準決勝・決勝のみ——埼玉県勢の今秋は既に終了</h3>
+          <p class="lead">秋季関東大会（本日既報）は、準決勝・決勝が25日に行われるのみとなった。埼玉県勢の西武台・山村学園はいずれも1回戦で敗れており（10月19日・10月20日既報）、今秋の対外試合はすでに終了している。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、埼玉県勢にとって「大会はまだ続いているが、自分たちの出番は終わっている」という状況にある。関東大会<span class="note">（＝埼玉を含む関東地区の各県代表校が出場する、秋の地区大会のこと。優勝校は明治神宮大会への出場権も得られる）</span>そのものは25日の決勝まで続くが、埼玉県勢にとっての今秋のシーズンは、1回戦敗退をもって事実上終了した形になる。</p>
+          </div>
+          <div class="meta"><a href="https://www.hb-nippon.com/tournaments/2031" target="_blank" rel="noopener">高校野球ドットコム</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>来春センバツ選考はいつ発表される?——埼玉県勢2校の今後の注目点</h3>
+          <p class="lead">来春のセンバツ甲子園出場校選考は、例年1月下旬頃に発表される見通し。山村学園（1点差の接戦で敗退、10月18日既報）、西武台（大差で敗退、10月19日既報）の2校が、埼玉県の代表としてどう評価されるかが注目される。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、選考結果が出るまでにまだ数カ月の時間が残っているという点にある。選考委員会<span class="note">（＝日本高校野球連盟と毎日新聞社が共同で組織する、センバツ出場校を決める委員会のこと。各地区の秋季大会の結果・試合内容を踏まえて、出場32校前後を選ぶ）</span>は、今大会（横浜の圧勝ぶりなど、本日既報）を含めた関東地区全体の実力や、埼玉県勢の試合内容を踏まえて、総合的に判断するとみられる。</p>
+          </div>
+          <div class="meta"><a href="https://www.hb-nippon.com/tournaments/2031" target="_blank" rel="noopener">高校野球ドットコム</a></div>
+        </article>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var cats = ['top','social','polecon','scitech','business','startup','gadget','intl','sports','koshien'];
+  var idx = 0;
+  var track = document.getElementById('track');
+  var viewport = document.getElementById('viewport');
+  var vw = viewport.clientWidth;
+
+  function setActive(i){
+    cats.forEach(function(c, j){
+      document.getElementById('tab-' + c).classList.toggle('active', j === i);
+    });
+    var activeTab = document.getElementById('tab-' + cats[i]);
+    if (activeTab && activeTab.scrollIntoView) activeTab.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+  }
+
+  function settle(i, animate){
+    idx = Math.max(0, Math.min(cats.length - 1, i));
+    track.style.transition = animate ? 'transform .32s cubic-bezier(.22,.61,.36,1)' : 'none';
+    track.style.transform = 'translateX(' + (-idx * vw) + 'px)';
+    setActive(idx);
+  }
+
+  window.goTo = function(i){ settle(i, true); };
+
+  window.addEventListener('resize', function(){
+    vw = viewport.clientWidth;
+    settle(idx, false);
+  });
+
+  var dragging = false, decided = null, sx = 0, sy = 0, dx = 0;
+  viewport.addEventListener('touchstart', function(e){
+    dragging = true; decided = null;
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY; dx = 0;
+    track.style.transition = 'none';
+  }, { passive: true });
+
+  viewport.addEventListener('touchmove', function(e){
+    if (!dragging) return;
+    var cx = e.touches[0].clientX, cy = e.touches[0].clientY;
+    var mdx = cx - sx, mdy = cy - sy;
+    if (decided === null) {
+      if (Math.abs(mdx) > 8 || Math.abs(mdy) > 8) {
+        decided = Math.abs(mdx) > Math.abs(mdy) ? 'x' : 'y';
+      }
+    }
+    if (decided === 'x') {
+      e.preventDefault();
+      dx = mdx;
+      var atStart = idx === 0 && dx > 0;
+      var atEnd = idx === cats.length - 1 && dx < 0;
+      var eased = (atStart || atEnd) ? dx * 0.35 : dx;
+      track.style.transform = 'translateX(' + (-idx * vw + eased) + 'px)';
+    }
+  }, { passive: false });
+
+  viewport.addEventListener('touchend', function(){
+    if (!dragging) return;
+    dragging = false;
+    if (decided === 'x') {
+      var threshold = vw * 0.18;
+      if (dx <= -threshold) settle(idx + 1, true);
+      else if (dx >= threshold) settle(idx - 1, true);
+      else settle(idx, true);
+    }
+    decided = null; dx = 0;
+  });
+
+  settle(0, false);
+})();
+</script>
+
+</body></html>
