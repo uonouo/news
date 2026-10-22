@@ -1,0 +1,610 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yoshi's News</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Zen+Old+Mincho:wght@600;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap');
+
+:root {
+  --bg: #ffffff;
+  --panel-bg: #ffffff;
+  --card: #ffffff;
+  --card-line: #eef0f3;
+  --ink: #1a1c20;
+  --ink-soft: #5b6068;
+  --ink-faint: #9aa0a8;
+  --shell: #f4f5f7;
+
+  --c-top: #ef3355;
+  --c-social: #00b3a4;
+  --c-polecon: #6d5bf0;
+  --c-scitech: #ff8a1e;
+  --c-business: #0091ff;
+  --c-sports: #26c281;
+  --c-startup: #ff4fa3;
+  --c-koshien: #c8860d;
+  --c-intl: #4b3f8f;
+  --c-gadget: #00bcd4;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101114;
+    --panel-bg: #101114;
+    --card: #1a1c20;
+    --card-line: #2a2c31;
+    --ink: #f1f2f4;
+    --ink-soft: #b7bcc4;
+    --ink-faint: #767c86;
+    --shell: #1a1c20;
+    --c-top: #ff6b85;
+    --c-social: #3fd8c9;
+    --c-polecon: #9c8fff;
+    --c-scitech: #ffab5c;
+    --c-business: #4db2ff;
+    --c-sports: #5be0a6;
+    --c-startup: #ff85c2;
+    --c-koshien: #e8b34c;
+    --c-intl: #a89cf0;
+    --c-gadget: #4dd8ea;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101114;
+  --panel-bg: #101114;
+  --card: #1a1c20;
+  --card-line: #2a2c31;
+  --ink: #f1f2f4;
+  --ink-soft: #b7bcc4;
+  --ink-faint: #767c86;
+  --shell: #1a1c20;
+  --c-top: #ff6b85;
+  --c-social: #3fd8c9;
+  --c-polecon: #9c8fff;
+  --c-scitech: #ffab5c;
+  --c-business: #4db2ff;
+  --c-sports: #5be0a6;
+  --c-startup: #ff85c2;
+  --c-koshien: #e8b34c;
+  --c-intl: #a89cf0;
+  --c-gadget: #4dd8ea;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--shell);
+  color: var(--ink);
+  font-family: "Zen Kaku Gothic New", -apple-system, "Hiragino Kaku Gothic ProN", sans-serif;
+  line-height: 1.7;
+  overscroll-behavior-y: none;
+}
+.serif { font-family: "Zen Old Mincho", "Hiragino Mincho ProN", serif; }
+
+.app {
+  max-width: 680px;
+  margin: 0 auto;
+  background: var(--bg);
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ---- Header ---- */
+.topbar { padding: 20px 20px 0; flex-shrink: 0; }
+.title-line { display: flex; align-items: center; gap: 8px; }
+.mascot { height: 50px; width: auto; flex-shrink: 0; border-radius: 8px; }
+.title-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  margin-bottom: 14px;
+}
+.title-row h1 {
+  font-family: "Baloo 2", "Zen Kaku Gothic New", sans-serif;
+  font-size: 48px; font-weight: 800; margin: 0; letter-spacing: 0.01em; line-height: 1;
+  -webkit-text-stroke: 2.4px #2b2013;
+  filter: drop-shadow(2px 3px 0 rgba(30,22,12,0.18));
+  background-image:
+    radial-gradient(circle at 22% 30%, #211709 0 7px, transparent 8px),
+    radial-gradient(circle at 68% 65%, #3a2b16 0 9px, transparent 10px),
+    radial-gradient(circle at 45% 88%, #241a0c 0 5px, transparent 6px),
+    radial-gradient(circle at 85% 20%, #2e2211 0 6px, transparent 7px),
+    linear-gradient(135deg, #b8a06e, #967c4c 50%, #6f5a35);
+  background-size: 30px 30px, 41px 41px, 23px 23px, 35px 35px, 100% 100%;
+  background-repeat: repeat, repeat, repeat, repeat, no-repeat;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.title-row .date { font-size: 11.5px; color: var(--ink-faint); white-space: nowrap; font-weight: 500; margin-top: 2px; }
+
+.tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px 3px; }
+.tab {
+  appearance: none; border: none; background: none;
+  font-family: inherit; font-size: 10.5px; font-weight: 700;
+  color: var(--ink-faint);
+  padding: 7px 4px 9px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+  cursor: pointer;
+  border-radius: 10px 10px 0 0;
+  transition: color .2s ease, background .2s ease;
+}
+.tab .dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  margin-right: 5px; background: currentColor; opacity: 0.45; vertical-align: middle;
+}
+.tab::after {
+  content: ""; position: absolute; left: 10px; right: 10px; bottom: 0;
+  height: 3px; border-radius: 3px 3px 0 0; background: transparent; transition: background .2s ease;
+}
+.tab.active { color: var(--tab-color); background: color-mix(in srgb, var(--tab-color) 10%, transparent); }
+.tab.active .dot { opacity: 1; }
+.tab.active::after { background: var(--tab-color); }
+
+/* ---- Swipe viewport ---- */
+.viewport { flex: 1; overflow: hidden; position: relative; touch-action: pan-y; }
+.track {
+  display: flex;
+  height: 100%;
+  width: 1000%;
+  transition: transform .32s cubic-bezier(.22,.61,.36,1);
+  will-change: transform;
+}
+.panel {
+  width: 10%;
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 20px 56px;
+}
+
+.panel-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.panel-head .chip { width: 8px; height: 26px; border-radius: 4px; background: var(--cat-color); flex-shrink: 0; }
+.panel-head h2 { font-size: 20px; font-weight: 700; margin: 0; letter-spacing: 0.02em; color: var(--cat-color); }
+.panel-sub { font-size: 12px; color: var(--ink-faint); margin: 0 0 18px 18px; }
+
+.story {
+  background: var(--card);
+  border: 1px solid var(--card-line);
+  border-left: 4px solid var(--cat-color);
+  border-radius: 12px;
+  padding: 18px 18px 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(20,20,30,0.05);
+}
+.story .kicker {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: "Zen Old Mincho", serif; font-size: 11.5px; font-weight: 700;
+  color: var(--cat-color); margin-bottom: 9px;
+}
+.story h3 { font-size: 16px; font-weight: 700; line-height: 1.55; margin: 0 0 10px; }
+.story .lead { font-size: 14px; color: var(--ink); margin: 0 0 14px; line-height: 1.85; }
+
+.context {
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 10px;
+  padding: 13px 15px;
+  margin: 0 0 12px;
+}
+.context-label {
+  display: block; font-size: 10.5px; font-weight: 700;
+  color: var(--cat-color); letter-spacing: 0.04em; margin-bottom: 6px;
+}
+.context p { font-size: 13px; color: var(--ink-soft); margin: 0; line-height: 1.8; }
+
+.note { font-size: 11.5px; color: var(--ink-faint); font-weight: 500; }
+
+.term-link {
+  color: var(--cat-color);
+  text-decoration: none;
+  border-bottom: 1px dotted color-mix(in srgb, var(--cat-color) 55%, transparent);
+  font-weight: 700;
+}
+
+.meta { font-size: 11px; color: var(--ink-faint); }
+.meta a { color: var(--cat-color); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--cat-color) 40%, transparent); font-weight: 700; }
+
+.closing {
+  margin: 6px 0 0; padding: 16px 18px;
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 12px; font-size: 13px; color: var(--ink-soft); text-align: center;
+}
+.closing .label {
+  display: block; font-family: "Zen Old Mincho", serif; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.2em; color: var(--cat-color); margin-bottom: 8px;
+}
+.colophon { margin: 14px 0 8px; font-size: 10.5px; color: var(--ink-faint); line-height: 1.9; text-align: center; }
+
+@media (max-width: 420px) {
+  .topbar { padding: 16px 14px 0; }
+  .panel { padding: 16px 14px 48px; }
+  .title-row h1 { font-size: 38px; }
+  .mascot { height: 40px; }
+}
+</style>
+</head><body>
+
+
+<div class="app" id="app">
+
+  <div class="topbar">
+    <div class="title-row">
+      <div class="title-line">
+        <img class="mascot" src="mascot.jpg" alt="オオサンショウウオのマスコット">
+        <h1>Yoshi's News</h1>
+      </div>
+      <span class="date">2026年10月23日（金）・第50号</span>
+    </div>
+    <div class="tabs" id="tabs">
+      <button class="tab" id="tab-top" style="--tab-color:var(--c-top)" onclick="goTo(0)"><span class="dot"></span>トップ</button>
+      <button class="tab" id="tab-social" style="--tab-color:var(--c-social)" onclick="goTo(1)"><span class="dot"></span>社会</button>
+      <button class="tab" id="tab-polecon" style="--tab-color:var(--c-polecon)" onclick="goTo(2)"><span class="dot"></span>政治/経済</button>
+      <button class="tab" id="tab-scitech" style="--tab-color:var(--c-scitech)" onclick="goTo(3)"><span class="dot"></span>科学/テック</button>
+      <button class="tab" id="tab-business" style="--tab-color:var(--c-business)" onclick="goTo(4)"><span class="dot"></span>ビジネス</button>
+      <button class="tab" id="tab-startup" style="--tab-color:var(--c-startup)" onclick="goTo(5)"><span class="dot"></span>スタートアップ</button>
+      <button class="tab" id="tab-gadget" style="--tab-color:var(--c-gadget)" onclick="goTo(6)"><span class="dot"></span>ガジェット</button>
+      <button class="tab" id="tab-intl" style="--tab-color:var(--c-intl)" onclick="goTo(7)"><span class="dot"></span>海外</button>
+      <button class="tab" id="tab-sports" style="--tab-color:var(--c-sports)" onclick="goTo(8)"><span class="dot"></span>芸能/スポーツ</button>
+      <button class="tab" id="tab-koshien" style="--tab-color:var(--c-koshien)" onclick="goTo(9)"><span class="dot"></span>高校野球【埼玉】</button>
+    </div>
+  </div>
+
+  <div class="viewport" id="viewport">
+    <div class="track" id="track">
+
+      <section class="panel" id="panel-top" style="--cat-color:var(--c-top)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">トップニュース</h2></div>
+        <p class="panel-sub">今日いちばん知っておきたい2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ ガジェット</span>
+          <h3>iPhone Duo、本日23日発売——「並外れた需要」で出荷は来年1月まで遅れ</h3>
+          <p class="lead">アップル初の折りたたみスマートフォン「iPhone Duo」（10月16日既報）が、本日23日に発売される。予約（10月16日午後9時開始）が殺到し、アップルはこの需要を「並外れたもの」と表現。公式サイトで予約した場合、最も安い構成でも出荷予定は2027年1月下旬以降にずれ込んでいる。発売日の店頭では、予約なしで購入できる在庫がほぼない見込みとされている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、本日既報の科学・テック面で紹介する生産上の制約（歩留まりの低さ）が、この品薄の一因になっているという点にある。需要<span class="note">（＝ある商品をどれだけの人が欲しがっているかを示す言葉。需要が供給（作れる量）を上回ると、品薄や価格上昇が起きやすい）</span>が供給を大きく上回っている状態で、転売目的の購入も増え、高額での取引も報じられている。アップルにとって、初めての折りたたみ製品が異例の人気を見せたことは朗報だが、生産体制の強化が今後の課題になる。</p>
+          </div>
+          <div class="meta"><a href="https://www.smartwatchlife.jp/84119/" target="_blank" rel="noopener">スマートウォッチライフ</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 海外</span>
+          <h3>ロシア拘束の記者、勾留は2カ月間——領事面会はなお実現せず</h3>
+          <p class="lead">北海道新聞記者・今井悠貴氏の拘束問題（10月22日既報）で、ロシア側は記者を2カ月間勾留する方針としていることが分かった。拘束から10日以上が経過したが、日本政府とロシア側との領事面会はいまだ実現していない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「2カ月間」という勾留期間の長さにある。勾留<span class="note">（＝裁判が確定する前に、逃亡や証拠隠滅を防ぐ目的で、被疑者・被告人の身体を拘束しておくこと。日本の刑事手続きにも同様の制度があるが、ロシアでの運用は国際的な人権基準との整合性がしばしば問題視される）</span>が2カ月間続くとされたことで、事態の長期化が確定的になった。この間、日本政府は領事面会の実現に向けた外交努力を続けることになる。</p>
+          </div>
+          <div class="meta"><a href="https://kumanichi.com/articles/2047197" target="_blank" rel="noopener">熊本日日新聞（共同通信）</a></div>
+        </article>
+
+        <div class="closing">
+          <span class="label serif">編集後記</span>
+          iPhone Duoは異例の人気で出荷が来年1月までずれ込む事態に。ロシア拘束の記者は勾留2カ月間と、長期化が避けられない状況です。日本シリーズは本日開幕、横浜スタジアムが熱気に包まれます。タブまたはスワイプで10のジャンルを読み進められます。良い週末を。
+        </div>
+        <div class="colophon">AIが検索結果をもとに要約・編集しています。詳細は各記事の出典リンクでご確認ください。<br>毎朝5時発行・次号は明日<br><a href="archive.html" style="color:inherit">過去の紙面はこちら</a></div>
+      </section>
+
+      <section class="panel" id="panel-social" style="--cat-color:var(--c-social)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">社会</h2></div>
+        <p class="panel-sub">くらしに関わるニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>iPhone Duo、転売目的の購入で高額取引も——需要に供給が追いつかず</h3>
+          <p class="lead">本日既報のとおり品薄が見込まれるiPhone Duoでは、転売目的の購入により、定価を上回る高額での取引も報じられている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、人気の新製品が発売されるたびに繰り返される「転売」の構図にある。転売<span class="note">（＝正規の販売価格で購入した商品を、品薄の状況を利用して、より高い価格で他の人に売ること。買いたい人が買えず、転売する人だけが得をする状態が問題視されている）</span>は、本当に製品を使いたい人が正規価格で手に入れにくくなるという問題を生む。メーカー側も抽選販売や購入制限などの対策を取ることがあるが、完全に防ぐのは難しいのが実情。</p>
+          </div>
+          <div class="meta"><a href="https://www.techno-edge.net/article/2026/10/18/5603.html" target="_blank" rel="noopener">テクノエッジ</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>記者拘束から10日以上、日本国内で懸念の声広がる</h3>
+          <p class="lead">本日既報の記者拘束問題について、日本ペンクラブ（10月22日既報）に続き、事態の長期化を懸念する声が国内で広がっている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、時間の経過とともに、1つの事件への関心が、個別の団体の声明から、より広い社会的な懸念へと広がっていく過程にある。こうした懸念の広がりは、政府に対して外交的な取り組みを続ける圧力にもなり得る一方、事態の解決そのものは、最終的にロシア側の対応に左右されるという構造的な限界も抱えている。</p>
+          </div>
+          <div class="meta"><a href="https://kumanichi.com/articles/2047198" target="_blank" rel="noopener">熊本日日新聞（共同通信）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-polecon" style="--cat-color:var(--c-polecon)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">政治／経済</h2></div>
+        <p class="panel-sub">政治・経済の動き2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 経済</span>
+          <h3>キオクシア・サンディスク、2032年までに5兆円投資——政府支援を前提に</h3>
+          <p class="lead">キオクシアと米サンディスクは8月27日、政府からの支援を前提に、2032年までに総額約5兆円（310億ドル超）を投資する計画を発表した。四日市工場・北上工場の設備・インフラ強化が対象で、本日既報のメモリー需給の引き締まりにも関わる投資となる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「政府支援を前提」という条件付きの発表である点にある。半導体工場への投資は数千億円〜兆円単位の巨額になることが多く、民間企業だけではリスクを取りきれない場合、政府の補助金<span class="note">（＝国が企業の特定の事業活動を支援するために提供する資金のこと。半導体のような国の経済安全保障に関わる分野では、政府が大規模な補助を行うことがある）</span>が実質的な「後押し」となって初めて、投資の決断が可能になるという構図がある。</p>
+          </div>
+          <div class="meta"><a href="https://monoist.itmedia.co.jp/mn/spv/2608/29/news012.html" target="_blank" rel="noopener">MONOist</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 経済</span>
+          <h3>政府、AI・半導体へ官民で101.6兆円目標——2040年度までに</h3>
+          <p class="lead">日本政府の成長戦略では、AI・半導体分野への官民投資額を、2040年度までに101.6兆円規模とする目標を掲げている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「官民投資」<span class="note">（＝「官」（政府・公的機関）と「民」（民間企業）が、それぞれお金を出し合って行う投資のこと。政府単独では出せない規模の資金を、民間の投資も合わせることで実現しようとする手法）</span>という言葉が示す、政府と企業の協調にある。本日既報のキオクシア・サンディスクの5兆円投資のような個別の企業の動きが、この101.6兆円という大きな国家目標の一部を構成していく形になる。14年という長期の目標年限は、半導体産業への投資が一朝一夕では実現しない、長期的な国家戦略であることを示している。</p>
+          </div>
+          <div class="meta"><a href="https://monoist.itmedia.co.jp/mn/spv/2608/29/news012.html" target="_blank" rel="noopener">MONOist</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-scitech" style="--cat-color:var(--c-scitech)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">科学／テック</h2></div>
+        <p class="panel-sub">研究・技術のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>iPhone Duoの生産、歩留まりは60%台——Foxconnの苦心</h3>
+          <p class="lead">中国メディアの報道によると、iPhone Duoを組み立てる台湾Foxconn（鴻海精密工業）の歩留まり（不良品を出さずに作れる割合）は60%台にとどまっているとされる。歩留まりが安定するまでには、半年から1年かかる可能性があるという。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「60%台」という歩留まりの低さが、本日既報の出荷の遅れに直結しているという点にある。歩留まりが60%台ということは、作った製品のうち4割近くが不良品として作り直しになるということで、工場の生産効率としては決して高くない。折りたたみ機構<span class="note">（＝画面を折り曲げられるようにする、ヒンジ（蝶番）とディスプレイの組み合わせのこと。精密な部品を組み合わせる必要があり、通常のスマートフォンより製造の難易度が高い）</span>という新しい技術ゆえの難しさが、この数字に表れている。</p>
+          </div>
+          <div class="meta"><a href="https://iphone-mania.jp/?p=606517" target="_blank" rel="noopener">iPhone Mania</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>半導体の「歩留まり」とは——なぜ最先端ほど難しいのか</h3>
+          <p class="lead">本日既報のiPhone Duoの事例のように、新しい技術を使った製品ほど、歩留まり（良品率）を高めるのが難しいとされる。これは半導体の最先端分野（10月21日既報のラピダスの2ナノ半導体）でも共通する課題。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「新しい技術」と「安定した量産」が、常にトレードオフの関係にあるという点にある。量産<span class="note">（＝同じ製品を大量に、かつ安定した品質で作り続けること。新しい技術を使った製品は、最初は歩留まりが低くても、生産の経験を積むことで徐々に改善していくのが一般的なパターン）</span>の経験を積むほど、どこで不良が発生しやすいかが分かってきて、対策を打てるようになる。iPhone Duoも、時間が経つほど歩留まりが改善していくとみられている。</p>
+          </div>
+          <div class="meta"><a href="https://iphone-mania.jp/?p=606517" target="_blank" rel="noopener">iPhone Mania</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-business" style="--cat-color:var(--c-business)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ビジネス</h2></div>
+        <p class="panel-sub">企業・産業のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>iPhone Duo、出荷は2027年1月下旬以降に——予約時点で確認</h3>
+          <p class="lead">本日既報のとおり、iPhone Duoの予約が殺到し、アップル公式サイトでの出荷予定日は、最も安い構成でも2027年1月下旬以降と表示されている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「発売日」と「実際に手元に届く日」が、人気製品では大きくずれることがあるという点にある。出荷予定日<span class="note">（＝注文した商品が、実際に発送される見込みの日のこと。人気の高い製品では、注文が集中すると、生産・発送のペースが追いつかず、予定日が後ろにずれていく）</span>が3カ月以上先になるというのは、アップル製品としても異例の遅れであり、本日既報の歩留まりの低さと合わせて、供給体制の厳しさを物語っている。</p>
+          </div>
+          <div class="meta"><a href="https://www.smartwatchlife.jp/84119/" target="_blank" rel="noopener">スマートウォッチライフ</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>キオクシア・サンディスク、四日市・北上工場を強化——メモリー需給にも影響か</h3>
+          <p class="lead">本日既報の5兆円投資は、四日市工場・北上工場の設備・インフラ強化に充てられる。本日既報のメモリー不足（AI向け需要優先）が続く中、この投資がどの程度、一般消費者向け製品の供給改善につながるかが注目される。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「投資の発表」と「実際の供給増加」の間に、数年単位の時間差があるという点にある。工場の設備増強には計画・建設・試運転といった段階が必要で、2032年という目標年限が示すとおり、効果が本格的に現れるのは数年後になる。目先のメモリー価格上昇（本日既報）の解決には、即効性のある対策ではないことに留意する必要がある。</p>
+          </div>
+          <div class="meta"><a href="https://monoist.itmedia.co.jp/mn/spv/2608/29/news012.html" target="_blank" rel="noopener">MONOist</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-startup" style="--cat-color:var(--c-startup)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">スタートアップ</h2></div>
+        <p class="panel-sub">資金調達・注目トピック2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>スタートアップの資金調達、非開示の動きが拡大——全体像の把握が難しく</h3>
+          <p class="lead">Speedaのアナリストの指摘によると、国内スタートアップの資金調達やファンド設立に関する情報の非開示傾向が強まっており、公開情報のみで業界全体の状況を正確に捉えることが難しくなっているという。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「発表されない資金調達」が増えているという、見えにくい変化にある。非開示<span class="note">（＝資金調達の事実や金額を、プレスリリースなどで公表しないこと。競合に手の内を見せたくない、契約上の制約がある、など様々な理由で選ばれる）</span>が増えると、本日既報までに繰り返し紹介してきたような「調達額・社数」の統計も、実態より少なく見えている可能性がある。業界の実像をつかむことが、年々難しくなっていることを示す指摘。</p>
+          </div>
+          <div class="meta"><a href="https://webtan.impress.co.jp/r/prtimes/items/000000281.000010548" target="_blank" rel="noopener">Web担当者Forum（PR TIMES）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>2025年の国内調達総額は7613億円——前年とほぼ横ばい</h3>
+          <p class="lead">Speedaのレポートによると、2025年の日本のスタートアップ資金調達総額（デット除く）は7613億円となり、前年同時期の集計額からほぼ横ばいを維持したとされている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「横ばい」という結果が、本日既報の非開示傾向の拡大を踏まえると、実態としては増加している可能性もあるという点にある。デット<span class="note">（＝借り入れ（融資）による資金調達のこと。株式を発行するエクイティ調達とは異なり、返済の義務がある）</span>を除いた数字という点も、全体像を見る上で注意すべきポイント。公開されている統計の見え方と、実際の業界の体温には、ずれがあるかもしれないということを念頭に置く必要がある。</p>
+          </div>
+          <div class="meta"><a href="https://webtan.impress.co.jp/r/prtimes/items/000000281.000010548" target="_blank" rel="noopener">Web担当者Forum（PR TIMES）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-gadget" style="--cat-color:var(--c-gadget)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ガジェット</h2></div>
+        <p class="panel-sub">新製品2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>iPhone Duo、発売日は店頭でほぼ入手困難の見込み——予約なし来店は控えるよう指示</h3>
+          <p class="lead">本日既報のとおり発売されるiPhone Duoについて、海外報道では、店員に対して予約なしの来店を控えるよう案内する指示が出ていると伝えられている。店頭受け取りも10月24日に再確認が必要とされている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「発売日に行けば買えるだろう」という従来の新製品購入の常識が、今回は通用しないという点にある。店頭受け取り<span class="note">（＝オンラインで予約・注文した商品を、実際の店舗で受け取る販売方式のこと。発送を待たずに早く手に入れられる利点があるが、在庫や準備状況によって受け取り可能な日時が変動することがある）</span>の日程調整が必要になるほどの品薄は、本日既報の歩留まりの低さと需要の高さが、生産現場にどれほどの負荷をかけているかを物語っている。</p>
+          </div>
+          <div class="meta"><a href="https://www.smartwatchlife.jp/84133/" target="_blank" rel="noopener">スマートウォッチライフ</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>キャリア各社、iPhone Duoの予約手順を案内——ソフトバンク・au・ドコモ</h3>
+          <p class="lead">本日既報のiPhone Duoの発売に合わせ、ソフトバンク・au（KDDI）など通信各社は、10月16日午後9時の予約開始に向けた手順を案内していた。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、人気の新製品の予約では、通信キャリア各社も事前の準備案内に力を入れるという点にある。予約開始<span class="note">（＝新製品の注文受付が始まる、特定の日時のこと。人気製品では開始直後にアクセスが集中し、手続きがスムーズに進まないことがあるため、事前の準備が推奨される）</span>の瞬間にアクセスが集中しやすいため、事前にアカウント情報や支払い方法を準備しておくことが、スムーズな予約のポイントとして案内されていた。</p>
+          </div>
+          <div class="meta"><a href="https://iphone-mania.jp/iphone18-606612/amp/" target="_blank" rel="noopener">iPhone Mania</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-intl" style="--cat-color:var(--c-intl)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">海外</h2></div>
+        <p class="panel-sub">国際ニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>iPhone Duo、海外でも「並外れた需要」と報道——世界的な注目度の高さ</h3>
+          <p class="lead">本日既報のiPhone Duoの需要の高さは、海外メディアでも大きく報じられている。MacRumorsなど海外の専門メディアも、発売日の店頭での入手の難しさを伝えている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、1つの新製品のニュースが、国境を越えて同時に大きな関心を集めている点にある。アップル製品<span class="note">（＝世界中に多くのファンを持つブランドの製品。新製品の発表・発売は、国や地域を問わず、同時に大きなニュースとして扱われることが多い）</span>の発売は、グローバルなニュースサイクルの中でも特に注目度が高いイベントの一つであることを、今回の報道の広がりが改めて示している。</p>
+          </div>
+          <div class="meta"><a href="https://www.techno-edge.net/article/2026/10/18/5603.html" target="_blank" rel="noopener">テクノエッジ</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>ロシア、記者の勾留を2カ月間と決定——今後の司法手続きの見通し</h3>
+          <p class="lead">本日既報のとおり、ロシア側は北海道新聞記者の勾留を2カ月間とする方針を示している。この期間中に、スパイ容疑（10月20日既報）に関する捜査・司法手続きが進められるとみられる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、2カ月間という期間が、ロシアの刑事手続き上の一つの区切りだという点にある。この間に起訴されるか、釈放されるかが決まる可能性があり、日本政府にとっては、領事面会の実現とともに、この司法手続きの行方を注視する必要がある重要な期間になる。</p>
+          </div>
+          <div class="meta"><a href="https://kumanichi.com/articles/2047197" target="_blank" rel="noopener">熊本日日新聞（共同通信）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-sports" style="--cat-color:var(--c-sports)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">芸能／スポーツ</h2></div>
+        <p class="panel-sub">厳選2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>日本シリーズ、本日24日開幕——横浜スタジアムでDeNA対ソフトバンク</h3>
+          <p class="lead">プロ野球日本シリーズ（10月22日既報）は、本日24日に横浜スタジアムで開幕する。DeNA対ソフトバンクの対戦は、2024年の日本シリーズと同じ顔合わせとなる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、本日がまさに開幕日だという点にある。7戦4勝制の長丁場が始まり、両チームにとっては、ここからの数週間が今シーズンの全てを懸けた戦いになる。先発投手の起用やベンチの采配が、連日のように注目を集める時期に入る。</p>
+          </div>
+          <div class="meta"><a href="https://www.nikkei.com/article/DGXZQODH171ZR0X11C26A0000000/" target="_blank" rel="noopener">日本経済新聞</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>横浜高校、関東大会準決勝へ——センバツ確実な戦いぶり続く</h3>
+          <p class="lead">秋季関東大会（10月22日既報）で樹徳を破った横浜高校は、準決勝に進んでいる。本日既報の日本シリーズ開幕地「横浜」との地名の重なりが、この時期の野球ニュースをにぎわせている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、高校野球の「横浜高校」と、プロ野球の本拠地「横浜スタジアム」が、同じ地名を冠しながら全く別の存在だという点にある。横浜高校はDeNAの本拠地のある横浜市に位置する高校で、直接の関係はないが、同じ時期に同じ地名がニュースに頻出するのは、野球ファンにとって興味深い巡り合わせ。</p>
+          </div>
+          <div class="meta"><a href="https://www.hb-nippon.com/tournaments/2031" target="_blank" rel="noopener">高校野球ドットコム</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-koshien" style="--cat-color:var(--c-koshien)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">高校野球【埼玉】</h2></div>
+        <p class="panel-sub">秋季大会2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>関東大会、準決勝・決勝は25日に——横浜の強さが埼玉県勢にも教訓</h3>
+          <p class="lead">秋季関東大会（本日既報）は、準決勝・決勝が明日25日に行われる。西武台・山村学園を退けてきた横浜の強さ（10月19日・10月21日既報）は、埼玉県勢にとって、来年に向けた目標の高さを改めて示す結果となった。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、今大会の結果が、埼玉県の高校野球にとって「終わり」ではなく「来年への教訓」として位置づけられる点にある。関東大会<span class="note">（＝埼玉を含む関東地区の代表校が出場する秋の地区大会のこと。優勝した横浜のような強豪の戦いぶりは、他県の高校にとっても目指すべき基準になる）</span>で圧倒的な強さを見せた横浜のような相手に、来年どう対抗していくかが、埼玉県の各校にとっての次の課題になる。</p>
+          </div>
+          <div class="meta"><a href="https://www.hb-nippon.com/tournaments/2031" target="_blank" rel="noopener">高校野球ドットコム</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>山村学園・西武台、来春へ向けた強化はこれから——オフシーズンの取り組みに注目</h3>
+          <p class="lead">関東大会で敗れた山村学園（10月18日既報）・西武台（10月19日既報）の両校にとって、今後はオフシーズンの練習・強化が、来年の夏に向けた重要な期間になる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、高校野球が「秋の大会で終わり」ではなく、「冬の鍛錬を経て、来夏につながっていく」という、1年を通じたサイクルの中にあるという点にある。オフシーズン<span class="note">（＝公式戦が行われない、主に冬の期間のこと。この間に基礎体力づくりや技術の見直しを行い、次のシーズンに備える）</span>の過ごし方が、来年のチームの土台を作る。関東大会での悔しい結果は、むしろ冬の練習に向けた良い材料になるとも言える。</p>
+          </div>
+          <div class="meta"><a href="https://www.hb-nippon.com/tournaments/2031" target="_blank" rel="noopener">高校野球ドットコム</a></div>
+        </article>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var cats = ['top','social','polecon','scitech','business','startup','gadget','intl','sports','koshien'];
+  var idx = 0;
+  var track = document.getElementById('track');
+  var viewport = document.getElementById('viewport');
+  var vw = viewport.clientWidth;
+
+  function setActive(i){
+    cats.forEach(function(c, j){
+      document.getElementById('tab-' + c).classList.toggle('active', j === i);
+    });
+    var activeTab = document.getElementById('tab-' + cats[i]);
+    if (activeTab && activeTab.scrollIntoView) activeTab.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+  }
+
+  function settle(i, animate){
+    idx = Math.max(0, Math.min(cats.length - 1, i));
+    track.style.transition = animate ? 'transform .32s cubic-bezier(.22,.61,.36,1)' : 'none';
+    track.style.transform = 'translateX(' + (-idx * vw) + 'px)';
+    setActive(idx);
+  }
+
+  window.goTo = function(i){ settle(i, true); };
+
+  window.addEventListener('resize', function(){
+    vw = viewport.clientWidth;
+    settle(idx, false);
+  });
+
+  var dragging = false, decided = null, sx = 0, sy = 0, dx = 0;
+  viewport.addEventListener('touchstart', function(e){
+    dragging = true; decided = null;
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY; dx = 0;
+    track.style.transition = 'none';
+  }, { passive: true });
+
+  viewport.addEventListener('touchmove', function(e){
+    if (!dragging) return;
+    var cx = e.touches[0].clientX, cy = e.touches[0].clientY;
+    var mdx = cx - sx, mdy = cy - sy;
+    if (decided === null) {
+      if (Math.abs(mdx) > 8 || Math.abs(mdy) > 8) {
+        decided = Math.abs(mdx) > Math.abs(mdy) ? 'x' : 'y';
+      }
+    }
+    if (decided === 'x') {
+      e.preventDefault();
+      dx = mdx;
+      var atStart = idx === 0 && dx > 0;
+      var atEnd = idx === cats.length - 1 && dx < 0;
+      var eased = (atStart || atEnd) ? dx * 0.35 : dx;
+      track.style.transform = 'translateX(' + (-idx * vw + eased) + 'px)';
+    }
+  }, { passive: false });
+
+  viewport.addEventListener('touchend', function(){
+    if (!dragging) return;
+    dragging = false;
+    if (decided === 'x') {
+      var threshold = vw * 0.18;
+      if (dx <= -threshold) settle(idx + 1, true);
+      else if (dx >= threshold) settle(idx - 1, true);
+      else settle(idx, true);
+    }
+    decided = null; dx = 0;
+  });
+
+  settle(0, false);
+})();
+</script>
+
+</body></html>
