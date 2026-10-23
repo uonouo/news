@@ -1,0 +1,610 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yoshi's News</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Zen+Old+Mincho:wght@600;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap');
+
+:root {
+  --bg: #ffffff;
+  --panel-bg: #ffffff;
+  --card: #ffffff;
+  --card-line: #eef0f3;
+  --ink: #1a1c20;
+  --ink-soft: #5b6068;
+  --ink-faint: #9aa0a8;
+  --shell: #f4f5f7;
+
+  --c-top: #ef3355;
+  --c-social: #00b3a4;
+  --c-polecon: #6d5bf0;
+  --c-scitech: #ff8a1e;
+  --c-business: #0091ff;
+  --c-sports: #26c281;
+  --c-startup: #ff4fa3;
+  --c-koshien: #c8860d;
+  --c-intl: #4b3f8f;
+  --c-gadget: #00bcd4;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101114;
+    --panel-bg: #101114;
+    --card: #1a1c20;
+    --card-line: #2a2c31;
+    --ink: #f1f2f4;
+    --ink-soft: #b7bcc4;
+    --ink-faint: #767c86;
+    --shell: #1a1c20;
+    --c-top: #ff6b85;
+    --c-social: #3fd8c9;
+    --c-polecon: #9c8fff;
+    --c-scitech: #ffab5c;
+    --c-business: #4db2ff;
+    --c-sports: #5be0a6;
+    --c-startup: #ff85c2;
+    --c-koshien: #e8b34c;
+    --c-intl: #a89cf0;
+    --c-gadget: #4dd8ea;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101114;
+  --panel-bg: #101114;
+  --card: #1a1c20;
+  --card-line: #2a2c31;
+  --ink: #f1f2f4;
+  --ink-soft: #b7bcc4;
+  --ink-faint: #767c86;
+  --shell: #1a1c20;
+  --c-top: #ff6b85;
+  --c-social: #3fd8c9;
+  --c-polecon: #9c8fff;
+  --c-scitech: #ffab5c;
+  --c-business: #4db2ff;
+  --c-sports: #5be0a6;
+  --c-startup: #ff85c2;
+  --c-koshien: #e8b34c;
+  --c-intl: #a89cf0;
+  --c-gadget: #4dd8ea;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--shell);
+  color: var(--ink);
+  font-family: "Zen Kaku Gothic New", -apple-system, "Hiragino Kaku Gothic ProN", sans-serif;
+  line-height: 1.7;
+  overscroll-behavior-y: none;
+}
+.serif { font-family: "Zen Old Mincho", "Hiragino Mincho ProN", serif; }
+
+.app {
+  max-width: 680px;
+  margin: 0 auto;
+  background: var(--bg);
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ---- Header ---- */
+.topbar { padding: 20px 20px 0; flex-shrink: 0; }
+.title-line { display: flex; align-items: center; gap: 8px; }
+.mascot { height: 50px; width: auto; flex-shrink: 0; border-radius: 8px; }
+.title-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  margin-bottom: 14px;
+}
+.title-row h1 {
+  font-family: "Baloo 2", "Zen Kaku Gothic New", sans-serif;
+  font-size: 48px; font-weight: 800; margin: 0; letter-spacing: 0.01em; line-height: 1;
+  -webkit-text-stroke: 2.4px #2b2013;
+  filter: drop-shadow(2px 3px 0 rgba(30,22,12,0.18));
+  background-image:
+    radial-gradient(circle at 22% 30%, #211709 0 7px, transparent 8px),
+    radial-gradient(circle at 68% 65%, #3a2b16 0 9px, transparent 10px),
+    radial-gradient(circle at 45% 88%, #241a0c 0 5px, transparent 6px),
+    radial-gradient(circle at 85% 20%, #2e2211 0 6px, transparent 7px),
+    linear-gradient(135deg, #b8a06e, #967c4c 50%, #6f5a35);
+  background-size: 30px 30px, 41px 41px, 23px 23px, 35px 35px, 100% 100%;
+  background-repeat: repeat, repeat, repeat, repeat, no-repeat;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.title-row .date { font-size: 11.5px; color: var(--ink-faint); white-space: nowrap; font-weight: 500; margin-top: 2px; }
+
+.tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px 3px; }
+.tab {
+  appearance: none; border: none; background: none;
+  font-family: inherit; font-size: 10.5px; font-weight: 700;
+  color: var(--ink-faint);
+  padding: 7px 4px 9px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+  cursor: pointer;
+  border-radius: 10px 10px 0 0;
+  transition: color .2s ease, background .2s ease;
+}
+.tab .dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  margin-right: 5px; background: currentColor; opacity: 0.45; vertical-align: middle;
+}
+.tab::after {
+  content: ""; position: absolute; left: 10px; right: 10px; bottom: 0;
+  height: 3px; border-radius: 3px 3px 0 0; background: transparent; transition: background .2s ease;
+}
+.tab.active { color: var(--tab-color); background: color-mix(in srgb, var(--tab-color) 10%, transparent); }
+.tab.active .dot { opacity: 1; }
+.tab.active::after { background: var(--tab-color); }
+
+/* ---- Swipe viewport ---- */
+.viewport { flex: 1; overflow: hidden; position: relative; touch-action: pan-y; }
+.track {
+  display: flex;
+  height: 100%;
+  width: 1000%;
+  transition: transform .32s cubic-bezier(.22,.61,.36,1);
+  will-change: transform;
+}
+.panel {
+  width: 10%;
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 20px 56px;
+}
+
+.panel-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.panel-head .chip { width: 8px; height: 26px; border-radius: 4px; background: var(--cat-color); flex-shrink: 0; }
+.panel-head h2 { font-size: 20px; font-weight: 700; margin: 0; letter-spacing: 0.02em; color: var(--cat-color); }
+.panel-sub { font-size: 12px; color: var(--ink-faint); margin: 0 0 18px 18px; }
+
+.story {
+  background: var(--card);
+  border: 1px solid var(--card-line);
+  border-left: 4px solid var(--cat-color);
+  border-radius: 12px;
+  padding: 18px 18px 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(20,20,30,0.05);
+}
+.story .kicker {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: "Zen Old Mincho", serif; font-size: 11.5px; font-weight: 700;
+  color: var(--cat-color); margin-bottom: 9px;
+}
+.story h3 { font-size: 16px; font-weight: 700; line-height: 1.55; margin: 0 0 10px; }
+.story .lead { font-size: 14px; color: var(--ink); margin: 0 0 14px; line-height: 1.85; }
+
+.context {
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 10px;
+  padding: 13px 15px;
+  margin: 0 0 12px;
+}
+.context-label {
+  display: block; font-size: 10.5px; font-weight: 700;
+  color: var(--cat-color); letter-spacing: 0.04em; margin-bottom: 6px;
+}
+.context p { font-size: 13px; color: var(--ink-soft); margin: 0; line-height: 1.8; }
+
+.note { font-size: 11.5px; color: var(--ink-faint); font-weight: 500; }
+
+.term-link {
+  color: var(--cat-color);
+  text-decoration: none;
+  border-bottom: 1px dotted color-mix(in srgb, var(--cat-color) 55%, transparent);
+  font-weight: 700;
+}
+
+.meta { font-size: 11px; color: var(--ink-faint); }
+.meta a { color: var(--cat-color); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--cat-color) 40%, transparent); font-weight: 700; }
+
+.closing {
+  margin: 6px 0 0; padding: 16px 18px;
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 12px; font-size: 13px; color: var(--ink-soft); text-align: center;
+}
+.closing .label {
+  display: block; font-family: "Zen Old Mincho", serif; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.2em; color: var(--cat-color); margin-bottom: 8px;
+}
+.colophon { margin: 14px 0 8px; font-size: 10.5px; color: var(--ink-faint); line-height: 1.9; text-align: center; }
+
+@media (max-width: 420px) {
+  .topbar { padding: 16px 14px 0; }
+  .panel { padding: 16px 14px 48px; }
+  .title-row h1 { font-size: 38px; }
+  .mascot { height: 40px; }
+}
+</style>
+</head><body>
+
+
+<div class="app" id="app">
+
+  <div class="topbar">
+    <div class="title-row">
+      <div class="title-line">
+        <img class="mascot" src="mascot.jpg" alt="オオサンショウウオのマスコット">
+        <h1>Yoshi's News</h1>
+      </div>
+      <span class="date">2026年10月24日（土）・第51号</span>
+    </div>
+    <div class="tabs" id="tabs">
+      <button class="tab" id="tab-top" style="--tab-color:var(--c-top)" onclick="goTo(0)"><span class="dot"></span>トップ</button>
+      <button class="tab" id="tab-social" style="--tab-color:var(--c-social)" onclick="goTo(1)"><span class="dot"></span>社会</button>
+      <button class="tab" id="tab-polecon" style="--tab-color:var(--c-polecon)" onclick="goTo(2)"><span class="dot"></span>政治/経済</button>
+      <button class="tab" id="tab-scitech" style="--tab-color:var(--c-scitech)" onclick="goTo(3)"><span class="dot"></span>科学/テック</button>
+      <button class="tab" id="tab-business" style="--tab-color:var(--c-business)" onclick="goTo(4)"><span class="dot"></span>ビジネス</button>
+      <button class="tab" id="tab-startup" style="--tab-color:var(--c-startup)" onclick="goTo(5)"><span class="dot"></span>スタートアップ</button>
+      <button class="tab" id="tab-gadget" style="--tab-color:var(--c-gadget)" onclick="goTo(6)"><span class="dot"></span>ガジェット</button>
+      <button class="tab" id="tab-intl" style="--tab-color:var(--c-intl)" onclick="goTo(7)"><span class="dot"></span>海外</button>
+      <button class="tab" id="tab-sports" style="--tab-color:var(--c-sports)" onclick="goTo(8)"><span class="dot"></span>芸能/スポーツ</button>
+      <button class="tab" id="tab-koshien" style="--tab-color:var(--c-koshien)" onclick="goTo(9)"><span class="dot"></span>高校野球【埼玉】</button>
+    </div>
+  </div>
+
+  <div class="viewport" id="viewport">
+    <div class="track" id="track">
+
+      <section class="panel" id="panel-top" style="--cat-color:var(--c-top)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">トップニュース</h2></div>
+        <p class="panel-sub">今日いちばん知っておきたい2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 芸能・スポーツ</span>
+          <h3>日本シリーズ、本日24日開幕——横浜スタジアムでDeNA対ソフトバンク</h3>
+          <p class="lead">プロ野球「SMBC日本シリーズ2026」（10月22日既報）が、本日24日に横浜スタジアムで開幕する。DeNA・相川亮二監督とソフトバンク・小久保裕紀監督の対戦となり、7戦4勝制の頂点決定戦が始まる。両リーグの優勝チームが激突する、1年で最も注目度の高いシリーズの開幕戦となる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、本日がまさに開幕日だという点にある。日本シリーズ<span class="note">（＝セ・リーグとパ・リーグ、それぞれの優勝チームが対戦する、プロ野球シーズン最後の頂点決定戦のこと。7試合のうち先に4勝したチームが日本一になる）</span>は、ペナントレース（通常の公式戦）やクライマックスシリーズ（10月既報のリーグ内順位決定戦）を勝ち抜いた2チームだけが進める、最終ステージ。横浜スタジアムという地名が、本日既報の高校野球「横浜高校」とも重なり、この時期の野球ニュースをにぎわせている。</p>
+          </div>
+          <div class="meta"><a href="https://www.baseballchannel.jp/npb/296096/" target="_blank" rel="noopener">Baseball Channel</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 社会</span>
+          <h3>木原官房長官「極めて遺憾」——記者拘束から10日超、領事面会なお実現せず</h3>
+          <p class="lead">ロシアに拘束された北海道新聞記者・今井悠貴氏の問題（10月22日既報）で、木原稔官房長官は10月20日の記者会見で、領事面会がいまだ実現していないことについて「極めて遺憾だ」と述べ、早期の面会実現と即時解放をロシア側に強く求めた。日露の条約では拘束から4日以内の領事面会を定めているが、ロシア側は明確な理由を示さないまま応じていない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「条約上の期限」をロシアが守っていないという点にある。領事面会<span class="note">（＝外国で拘束された自国民に対し、その国にある自国の大使館・領事館の職員が面会し、状況確認や支援を行う権利のこと。多くの国同士がこの権利を条約で保障し合っている）</span>は本来、拘束から4日以内という比較的短い期限が定められている。それが10日以上守られていないことは、単なる手続きの遅れではなく、ロシア側の対応そのものに外交上の問題があることを示している。</p>
+          </div>
+          <div class="meta"><a href="https://www.hokkaido-np.co.jp/article/1393275/" target="_blank" rel="noopener">北海道新聞</a></div>
+        </article>
+
+        <div class="closing">
+          <span class="label serif">編集後記</span>
+          日本シリーズが本日、横浜スタジアムで開幕。記者拘束問題は10日超えで「極めて遺憾」と、外交上の異例さが強まっています。半導体では日米連携のGlobalFoundries新工場、スタートアップでは資金調達の「大型化」がキーワードに。タブまたはスワイプで10のジャンルを読み進められます。良い週末を。
+        </div>
+        <div class="colophon">AIが検索結果をもとに要約・編集しています。詳細は各記事の出典リンクでご確認ください。<br>毎朝5時発行・次号は明日<br><a href="archive.html" style="color:inherit">過去の紙面はこちら</a></div>
+      </section>
+
+      <section class="panel" id="panel-social" style="--cat-color:var(--c-social)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">社会</h2></div>
+        <p class="panel-sub">くらしに関わるニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>米国務省、記者拘束で改めてロシア非難——日本の立場を擁護</h3>
+          <p class="lead">米国務省の報道担当者は10月19日、本日既報の記者拘束問題について、ジャーナリストや独立した意見を持つ人々への「威嚇・嫌がらせ・処罰のいかなる試みも非難する」と表明した。あわせて、スパイ行為を否定する日本側の立場を擁護する見解も示されている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、2国間（日露）の問題に、第三国である米国が公に見解を示した点にある。表現の自由<span class="note">（＝誰もが自分の意見や取材内容を、政府の検閲を受けずに発表できる権利のこと。多くの民主主義国家で基本的人権の一つとされている）</span>を基本的権利とする立場から、米国はロシアによる政府の検閲的な対応を問題視した。日本一国だけでなく、国際社会の懸念として扱われていることが分かる。</p>
+          </div>
+          <div class="meta"><a href="https://kumanichi.com/articles/2048458" target="_blank" rel="noopener">熊本日日新聞（共同通信）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>米政府、ロシアによる報道への「萎縮」試みを非難</h3>
+          <p class="lead">本日既報の記者拘束問題をめぐり、米政府は、独立した報道活動を威嚇し口封じしようとする試みだとして、ロシアを非難する姿勢を強めている。領事面会を拒んでいることについても、批判の対象となっている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「萎縮」という言葉が指す狙いにある。萎縮効果<span class="note">（＝ある行為（この場合は記者の拘束）が、同じような取材・報道をしようとする他の人たちを怖がらせ、自主的に行動を控えさせてしまう効果のこと。直接の当事者以外にも影響が及ぶのが特徴）</span>は、1人の記者への拘束が、より広い報道の自由全体への圧力として機能しうるという懸念を指している。だからこそ、米国を含む国際社会が早い段階で声を上げている。</p>
+          </div>
+          <div class="meta"><a href="https://www.afpbb.com/articles/-/3408576" target="_blank" rel="noopener">AFPBB News</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-polecon" style="--cat-color:var(--c-polecon)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">政治／経済</h2></div>
+        <p class="panel-sub">政治・経済の動き2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 政治</span>
+          <h3>日露外務省、局長級協議続く——中村欧州局長、即時解放など改めて要求</h3>
+          <p class="lead">本日既報の記者拘束問題で、外務省の中村欧州局長は10月21日にモスクワでロシア外務省と会談し、領事面会の早期実現と記者の即時解放を改めて求めた。木原官房長官は、ロシア側の反応について詳細を差し控えている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「詳細を差し控える」という木原氏の対応そのものが、交渉の状況を物語っている点にある。局長級協議<span class="note">（＝外務省の中でも、各地域・分野を担当する「局長」クラスの高官同士が行う協議のこと。外相同士の会談より一段下の実務レベルだが、具体的な要求や情報のやり取りを行う重要な場になる）</span>の内容が明らかにされないのは、交渉が難航している、あるいは機微な段階にあることを示唆している可能性がある。</p>
+          </div>
+          <div class="meta"><a href="https://www.newsweekjapan.jp/articles/-/337555" target="_blank" rel="noopener">Newsweek日本版</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 経済</span>
+          <h3>GlobalFoundries新工場、日米投資枠組みで——半導体の経済安保協力が前進</h3>
+          <p class="lead">米半導体企業GlobalFoundriesは10月14日、日米の貿易・投資イニシアチブの下、米ニューヨーク州マルタの拠点に新設する2つの300mm半導体工場の技術提供者・運営者に選ばれたと発表した。投資額は最大210億ドルで、このうち日本側が最初の工場向けに約100億ドルを投資するとされている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「日本が米国内の工場に投資する」という、一見意外な構図にある。経済安全保障<span class="note">（＝半導体のように、国の安全や経済の基盤に欠かせない重要な物資・技術について、特定の国への依存を減らし、同盟国などと協力して安定供給を確保しようとする考え方）</span>の観点から、日米両国は互いの半導体生産能力を高め合う協力関係を強めている。日本企業ルネサスも、この工場の拡張を自社の生産拠点の延長として検討しているという。</p>
+          </div>
+          <div class="meta"><a href="https://www.manufacturingdive.com/news/globalfoundries-us-japan-trade-deal-chips-malta-new-york-fabs/832953/" target="_blank" rel="noopener">Manufacturing Dive</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-scitech" style="--cat-color:var(--c-scitech)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">科学／テック</h2></div>
+        <p class="panel-sub">研究・技術のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>GlobalFoundries、米マルタに300mm工場2棟——2029年の稼働目指す</h3>
+          <p class="lead">本日既報のGlobalFoundriesの新工場計画について、同社は今年中に1号機の着工を予定し、2029年の稼働開始を目指すとしている。完成後は、工場1棟あたり年間約90万枚のウエハー（300mm）生産能力を米国に追加する見込みで、建設・計画で約2万7000人、製造で1000人超の雇用が生まれるとされる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「着工から稼働まで約3年」という半導体工場建設の時間軸にある。300mmウエハー<span class="note">（＝半導体チップを切り出す元になる円形の薄い板（シリコンウエハー）のうち、直径が300ミリメートルのもの。現在、最先端の半導体工場で主流のサイズで、1枚から多数のチップを同時に作れる）</span>工場は、設計・建設・設備導入・試運転と段階を踏む必要があり、発表から実際の量産開始までには数年を要する。本日既報の投資発表は、あくまで「始まり」の段階にあたる。</p>
+          </div>
+          <div class="meta"><a href="https://supplychaindive.com/news/globalfoundries-building-21b-new-york-fabs-under-us-japan-trade-deal/832995" target="_blank" rel="noopener">Supply Chain Dive</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>SEMI、米州の300mm工場向け装置売上高が2026〜29年で2倍以上に——AI・メモリ需要が牽引</h3>
+          <p class="lead">半導体業界団体SEMIの最新予測（SEMICON West 2026発表）によると、米州における300mm工場向け半導体製造装置の売上高は、2026年の181億ドルから2029年には406億ドルへと、3年でほぼ倍増する見通し。世界全体でも2026年の1490億ドルから2029年には2270億ドルに達すると見込まれ、AI向け先端半導体とメモリの需要が成長を牽引するとされている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、この予測が本日既報のGlobalFoundriesのような米国内への工場新設の動きと符合している点にある。製造装置<span class="note">（＝半導体工場の中で、ウエハーに回路を描いたり、検査したりするための大型の専用機械のこと。1台で数十億円から数百億円することもあり、工場の新設・増設にはこの装置への投資が欠かせない）</span>への投資額が増えるのは、各国・各企業が新たな工場を建設・拡張している証拠でもある。「米国の製造回帰」が数字として裏付けられた格好だ。</p>
+          </div>
+          <div class="meta"><a href="https://eetimes.itmedia.co.jp/ee/articles/2610/17/news011.html" target="_blank" rel="noopener">EE Times Japan</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-business" style="--cat-color:var(--c-business)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ビジネス</h2></div>
+        <p class="panel-sub">企業・産業のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>ラピダス、IPAから追加150億円出資——資本金・準備金は累計4249億円に</h3>
+          <p class="lead">次世代半導体メーカー・ラピダスは、経産省所管のIPA（情報処理推進機構）から1500億円の追加出資を受けたことを明らかにした。今年度予算の成立を踏まえ、6月5日に実行されたもので、2月の1000億円（民間からも約1676億円）に続く支援となり、これにより資本金・資本準備金は合計4249億5000万円に達した。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、ラピダスへの支援が、1回限りではなく段階的に繰り返されているという点にある。IPA<span class="note">（＝独立行政法人情報処理推進機構。経済産業省が所管する公的機関で、半導体やIT分野の産業政策に基づき、企業への出資や支援を行う役割を担う）</span>を通じた政府出資は、民間だけではまだ利益が見えない最先端半導体の量産化を、国として後押しする狙いがある。経産省は2026年度にさらに約6300億円の追加支援も計画しているとされる。</p>
+          </div>
+          <div class="meta"><a href="https://www.design-reuse.com/news/202530620-rapidus-completes-150-billion-yen-funding-round-from-japan-government/" target="_blank" rel="noopener">Design&Reuse</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>国内スタートアップ、上半期調達額3779億円で12%増——大型案件が支える構図</h3>
+          <p class="lead">Speedaの速報レポート『Japan Startup Finance 2026 上半期』によると、2026年上半期の国内スタートアップ資金調達額は3779億円で、前年同期比12%増となった。ただし、50億円以上を調達した大型案件が4社から9社へ倍増した一方、50億円未満の案件数は1%減少しており、大型案件に支えられた増加だという。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「12%増」という数字の裏にある内訳の偏りにある。資金調達<span class="note">（＝企業が事業を進めるために、投資家などから必要なお金を集めること。スタートアップの場合、株式を発行して出資を受ける「エクイティ調達」が中心になることが多い）</span>全体が伸びていても、大型案件を除いた中小規模の調達は実は縮小傾向にある。業界全体の体温を測るには、総額だけでなく、この内訳を見る必要があることを示す指摘だ。</p>
+          </div>
+          <div class="meta"><a href="https://webtan.impress.co.jp/r/prtimes/items/000000281.000010548" target="_blank" rel="noopener">Web担当者Forum（PR TIMES）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-startup" style="--cat-color:var(--c-startup)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">スタートアップ</h2></div>
+        <p class="panel-sub">資金調達・注目トピック2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>50億円以上の大型調達、4社から9社に倍増——Sakana AI除くと市場の伸びは2%のみ</h3>
+          <p class="lead">本日既報のSpeedaレポートによれば、50億円以上を調達した企業は2025年上半期の4社から2026年上半期には9社へと倍増した。一方、話題のAI企業Sakana AIを除いて計算すると、市場全体の伸びはわずか2%にとどまるとされ、シリーズC以降、設立から年数を経た企業への資金が縮小しているとも指摘されている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「特定の1社を除くと数字が大きく変わる」という、統計のクセにある。シリーズC<span class="note">（＝スタートアップが受ける出資のうち、事業がある程度確立した後の、比較的後期のラウンドのこと。アルファベット順にシリーズA→B→C…と進むにつれ、投資額は大きくなる傾向がある）</span>への資金が細っているのは、育ってきた企業が次の成長資金を確保しにくくなっている可能性を示し、業界の持続的な成長力という観点では、楽観しにくい材料と言える。</p>
+          </div>
+          <div class="meta"><a href="https://webtan.impress.co.jp/r/prtimes/items/000000281.000010548" target="_blank" rel="noopener">Web担当者Forum（PR TIMES）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>STARTUP DB集計は5033億円で4%増——調達社数は1061社で35%減、集計方法の違いに注意</h3>
+          <p class="lead">別の調査機関STARTUP DBによる2026年上半期の集計では、資金調達金額は速報値で5033億円（前年同期比4%増）、調達社数は1061社（前年同期比35%減）とされている。本日既報のSpeedaの3779億円という数字とは大きく異なり、調査対象や集計方法の違いが背景にあるとみられる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「同じ上半期」でも調査機関によって数字が大きく異なるという事実そのものにある。本日既報でも触れた非開示案件の増加に加え、集計対象とする資金調達の種類（エクイティのみか、デットも含むか等）や、集計の締め切り時点の違いが、こうした差を生む。1つの統計だけで業界の実態を判断するのは危ういということを、この数字の食い違いが物語っている。</p>
+          </div>
+          <div class="meta"><a href="https://webtan.impress.co.jp/r/prtimes/items/000000464.000032589" target="_blank" rel="noopener">Web担当者Forum（PR TIMES）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-gadget" style="--cat-color:var(--c-gadget)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ガジェット</h2></div>
+        <p class="panel-sub">新製品2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>iPhone Duo、画面サイズは内側7.6インチ・外側5.4インチで一致——「7.8インチ」との情報は確認できず</h3>
+          <p class="lead">発売中のiPhone Duo（10月16日既報）について、複数の国内外メディアを確認したところ、画面サイズは折りたたんだ状態で外側5.4インチ、開いた状態で内側7.6インチという数字で一致していることが分かった。一部で「7.8インチ」という情報も見られたが、今回確認した範囲の主要メディアの報道では裏付けが取れなかった。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、新製品の発売直後には、不正確な情報も出回りやすいという点にある。インチ<span class="note">（＝画面の大きさを表す単位の一つ。画面の対角線（斜めの端から端まで）の長さをインチで表す。同じインチ数でも、縦横比が違うと実際の使い勝手は変わる）</span>という数字だけで比較すると誤解しやすく、縦横比による使い勝手の違いにも注意が必要だとされている。気になる場合は、購入前に実機を確認するのが確実だ。</p>
+          </div>
+          <div class="meta"><a href="https://thebridge.jp/2026/09/iphone-duo-specs-japan-price-release" target="_blank" rel="noopener">THE BRIDGE</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>iPhone Duo、日本発売価格は36万4800円から——米国の1999ドル表示との差に注意</h3>
+          <p class="lead">本日既報のiPhone Duoについて、日本国内の販売価格は36万4800円からと報じられている。米国発表時の「1999ドルから」という表示（約30万円）と比べると、日本価格は円換算よりも高めに設定されており、報道機関によっても表記額に差がみられる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、海外発表の「ドル価格」と、実際の「国内販売価格」が単純な円換算では一致しないという点にある。内外価格差<span class="note">（＝同じ製品でも、販売する国・地域によって価格が異なること。関税、消費税、流通コスト、為替変動へのメーカーの価格設定方針などが理由になる）</span>は、スマートフォンのような輸入製品では珍しくない現象。発表時の「〇〇ドルから」という数字だけを見て、国内価格を単純計算すると、実際の支払額とずれることがある。</p>
+          </div>
+          <div class="meta"><a href="https://kumanichi.com/articles/2034324" target="_blank" rel="noopener">熊本日日新聞（共同通信）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-intl" style="--cat-color:var(--c-intl)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">海外</h2></div>
+        <p class="panel-sub">国際ニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>米国務省、ロシアによる記者拘束を非難——日本の立場を擁護</h3>
+          <p class="lead">本日既報のとおり、米国務省はロシアによる北海道新聞記者の拘束について、報道の自由を侵害する行為として非難する姿勢を明確にしている。スパイ行為を否定する日本政府の立場についても、支持する見解を示した。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、日露2国間の問題が、日米同盟の文脈でも扱われているという点にある。同盟国<span class="note">（＝互いに協力し合う約束（条約）を結んでいる国同士のこと。一方の国が困難な状況に置かれたとき、外交的な支援を行うことも、その協力関係の一部とされる）</span>である米国が、日本の主張を公然と支持することは、日本にとって外交的な後押しになる一方、ロシアとの関係にも影響を与える可能性がある。</p>
+          </div>
+          <div class="meta"><a href="https://kumanichi.com/articles/2048458" target="_blank" rel="noopener">熊本日日新聞（共同通信）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>GlobalFoundries新工場、米ニューヨーク州マルタに——日米貿易・投資協定の枠組みで</h3>
+          <p class="lead">本日既報のGlobalFoundriesの新工場計画は、米ニューヨーク州マルタという、同社が既に拠点を持つ土地で進められる。現地メディアは、建設・計画で約2万7000人、製造で1000人超の雇用創出が見込まれると報じ、地元経済への影響の大きさを伝えている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、既存の工場がある土地に「増設」する形を取っている点にある。マルタ<span class="note">（＝米ニューヨーク州北部にある町の名前。地中海の島国マルタとは無関係で、GlobalFoundriesの大規模な半導体工場がすでに立地していることで知られる）</span>は、もともと半導体産業が集積している地域であり、ゼロから新しい土地に工場を作るより、人材や協力企業網を活用しやすいという利点がある。</p>
+          </div>
+          <div class="meta"><a href="https://spectrumlocalnews.com/nys/central-ny/news/2026/10/14/japan-taps-globalfoundries-to-build-2-chip-fabs-in-malta-in--21-billion-project-" target="_blank" rel="noopener">Spectrum News</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-sports" style="--cat-color:var(--c-sports)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">芸能／スポーツ</h2></div>
+        <p class="panel-sub">厳選2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>日本シリーズ第1戦、本日18時30分プレイボール——横浜スタジアム</h3>
+          <p class="lead">本日既報の日本シリーズ第1戦は、横浜スタジアムで18時30分に開始される予定。DeNAとソフトバンクの対戦は、両チームのファンにとって1年を締めくくる大一番となる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「本拠地」のアドバンテージにある。第1戦・第2戦<span class="note">（＝日本シリーズは、両チームの本拠地球場を交互に使う形式で行われる。今シリーズはDeNAが日本シリーズ進出を決めたため、第1戦・第2戦はDeNAの本拠地・横浜スタジアムで開催される）</span>をホームで戦えることは、地の利を生かせるという意味で、やや有利とされる。初戦の結果が、その後のシリーズ全体の流れを左右することも多い。</p>
+          </div>
+          <div class="meta"><a href="https://www.baseballchannel.jp/npb/296096/" target="_blank" rel="noopener">Baseball Channel</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>横浜高校、本日準決勝で帝京三と対戦——センバツ出場へ王手</h3>
+          <p class="lead">秋季関東大会（本日既報）で勝ち進んできた横浜高校は、本日24日の準決勝で帝京三（山梨2位）と対戦する。会場は上毛新聞敷島球場で、決勝進出を果たせば、来春のセンバツ出場へ大きく前進する。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「関東大会の成績がセンバツ出場に直結する」という仕組みにある。センバツ<span class="note">（＝春に行われる全国高校野球選抜大会の通称。夏の甲子園とは別に、前年秋の地区大会の成績を中心に、選考委員会が出場校を選ぶ大会）</span>は、秋の大会の成績が重視される大会であり、関東大会で上位に進出した学校ほど、有力な出場候補として注目される。横浜高校はその最有力候補の一つとみられている。</p>
+          </div>
+          <div class="meta"><a href="https://www.hb-nippon.com/tournaments/2031" target="_blank" rel="noopener">高校野球ドットコム</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-koshien" style="--cat-color:var(--c-koshien)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">高校野球【埼玉】</h2></div>
+        <p class="panel-sub">秋季大会2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>秋季関東大会、本日24日が準決勝——横浜vs帝京三、慶応vs健大高崎</h3>
+          <p class="lead">秋季関東大会（10月23日既報）は、本日24日に準決勝2試合が行われる。横浜（神奈川）対帝京三（山梨2位）、慶応（神奈川2位）対健大高崎（群馬1位）の組み合わせで、ともに上毛新聞敷島球場で実施される。埼玉県勢の西武台・山村学園はすでに敗退しているが、この先の戦いぶりが来季の目標設定の参考になる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、関東大会が「地区の代表決定戦」であると同時に、「来年への教科書」でもあるという点にある。関東大会<span class="note">（＝埼玉を含む関東地区の代表校が出場する秋の地区大会のこと。上位進出校はセンバツ出場の有力候補になるほか、強豪校の戦いぶりが他県の高校にとって目指すべき基準にもなる）</span>で勝ち進む横浜や慶応のような強豪のプレーを、埼玉県勢がどう分析し、来年の強化に生かすかが問われる。</p>
+          </div>
+          <div class="meta"><a href="https://www.hb-nippon.com/tournaments/2031" target="_blank" rel="noopener">高校野球ドットコム</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>決勝は明日25日10時——埼玉県勢、来季へ向けた強化はこれから</h3>
+          <p class="lead">本日既報の準決勝を経て、秋季関東大会の決勝は明日25日10時に行われる。関東大会を終えた埼玉県勢の山村学園・西武台（10月18日・19日既報）にとっては、ここからのオフシーズンの練習が、来年の夏に向けた重要な期間になる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、高校野球が「秋の大会で終わり」ではなく、「冬の鍛錬を経て、来夏につながっていく」という、1年を通じたサイクルの中にあるという点にある。オフシーズン<span class="note">（＝公式戦が行われない、主に冬の期間のこと。この間に基礎体力づくりや技術の見直しを行い、次のシーズンに備える）</span>の過ごし方が、来年のチームの土台を作る。関東大会での結果は、むしろ冬の練習に向けた良い材料になるとも言える。</p>
+          </div>
+          <div class="meta"><a href="https://www.hb-nippon.com/tournaments/2031" target="_blank" rel="noopener">高校野球ドットコム</a></div>
+        </article>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var cats = ['top','social','polecon','scitech','business','startup','gadget','intl','sports','koshien'];
+  var idx = 0;
+  var track = document.getElementById('track');
+  var viewport = document.getElementById('viewport');
+  var vw = viewport.clientWidth;
+
+  function setActive(i){
+    cats.forEach(function(c, j){
+      document.getElementById('tab-' + c).classList.toggle('active', j === i);
+    });
+    var activeTab = document.getElementById('tab-' + cats[i]);
+    if (activeTab && activeTab.scrollIntoView) activeTab.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+  }
+
+  function settle(i, animate){
+    idx = Math.max(0, Math.min(cats.length - 1, i));
+    track.style.transition = animate ? 'transform .32s cubic-bezier(.22,.61,.36,1)' : 'none';
+    track.style.transform = 'translateX(' + (-idx * vw) + 'px)';
+    setActive(idx);
+  }
+
+  window.goTo = function(i){ settle(i, true); };
+
+  window.addEventListener('resize', function(){
+    vw = viewport.clientWidth;
+    settle(idx, false);
+  });
+
+  var dragging = false, decided = null, sx = 0, sy = 0, dx = 0;
+  viewport.addEventListener('touchstart', function(e){
+    dragging = true; decided = null;
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY; dx = 0;
+    track.style.transition = 'none';
+  }, { passive: true });
+
+  viewport.addEventListener('touchmove', function(e){
+    if (!dragging) return;
+    var cx = e.touches[0].clientX, cy = e.touches[0].clientY;
+    var mdx = cx - sx, mdy = cy - sy;
+    if (decided === null) {
+      if (Math.abs(mdx) > 8 || Math.abs(mdy) > 8) {
+        decided = Math.abs(mdx) > Math.abs(mdy) ? 'x' : 'y';
+      }
+    }
+    if (decided === 'x') {
+      e.preventDefault();
+      dx = mdx;
+      var atStart = idx === 0 && dx > 0;
+      var atEnd = idx === cats.length - 1 && dx < 0;
+      var eased = (atStart || atEnd) ? dx * 0.35 : dx;
+      track.style.transform = 'translateX(' + (-idx * vw + eased) + 'px)';
+    }
+  }, { passive: false });
+
+  viewport.addEventListener('touchend', function(){
+    if (!dragging) return;
+    dragging = false;
+    if (decided === 'x') {
+      var threshold = vw * 0.18;
+      if (dx <= -threshold) settle(idx + 1, true);
+      else if (dx >= threshold) settle(idx - 1, true);
+      else settle(idx, true);
+    }
+    decided = null; dx = 0;
+  });
+
+  settle(0, false);
+})();
+</script>
+
+</body></html>
