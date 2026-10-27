@@ -1,0 +1,610 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yoshi's News</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Zen+Old+Mincho:wght@600;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap');
+
+:root {
+  --bg: #ffffff;
+  --panel-bg: #ffffff;
+  --card: #ffffff;
+  --card-line: #eef0f3;
+  --ink: #1a1c20;
+  --ink-soft: #5b6068;
+  --ink-faint: #9aa0a8;
+  --shell: #f4f5f7;
+
+  --c-top: #ef3355;
+  --c-social: #00b3a4;
+  --c-polecon: #6d5bf0;
+  --c-scitech: #ff8a1e;
+  --c-business: #0091ff;
+  --c-sports: #26c281;
+  --c-startup: #ff4fa3;
+  --c-koshien: #c8860d;
+  --c-intl: #4b3f8f;
+  --c-gadget: #00bcd4;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101114;
+    --panel-bg: #101114;
+    --card: #1a1c20;
+    --card-line: #2a2c31;
+    --ink: #f1f2f4;
+    --ink-soft: #b7bcc4;
+    --ink-faint: #767c86;
+    --shell: #1a1c20;
+    --c-top: #ff6b85;
+    --c-social: #3fd8c9;
+    --c-polecon: #9c8fff;
+    --c-scitech: #ffab5c;
+    --c-business: #4db2ff;
+    --c-sports: #5be0a6;
+    --c-startup: #ff85c2;
+    --c-koshien: #e8b34c;
+    --c-intl: #a89cf0;
+    --c-gadget: #4dd8ea;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101114;
+  --panel-bg: #101114;
+  --card: #1a1c20;
+  --card-line: #2a2c31;
+  --ink: #f1f2f4;
+  --ink-soft: #b7bcc4;
+  --ink-faint: #767c86;
+  --shell: #1a1c20;
+  --c-top: #ff6b85;
+  --c-social: #3fd8c9;
+  --c-polecon: #9c8fff;
+  --c-scitech: #ffab5c;
+  --c-business: #4db2ff;
+  --c-sports: #5be0a6;
+  --c-startup: #ff85c2;
+  --c-koshien: #e8b34c;
+  --c-intl: #a89cf0;
+  --c-gadget: #4dd8ea;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--shell);
+  color: var(--ink);
+  font-family: "Zen Kaku Gothic New", -apple-system, "Hiragino Kaku Gothic ProN", sans-serif;
+  line-height: 1.7;
+  overscroll-behavior-y: none;
+}
+.serif { font-family: "Zen Old Mincho", "Hiragino Mincho ProN", serif; }
+
+.app {
+  max-width: 680px;
+  margin: 0 auto;
+  background: var(--bg);
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ---- Header ---- */
+.topbar { padding: 20px 20px 0; flex-shrink: 0; }
+.title-line { display: flex; align-items: center; gap: 8px; }
+.mascot { height: 50px; width: auto; flex-shrink: 0; border-radius: 8px; }
+.title-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  margin-bottom: 14px;
+}
+.title-row h1 {
+  font-family: "Baloo 2", "Zen Kaku Gothic New", sans-serif;
+  font-size: 48px; font-weight: 800; margin: 0; letter-spacing: 0.01em; line-height: 1;
+  -webkit-text-stroke: 2.4px #2b2013;
+  filter: drop-shadow(2px 3px 0 rgba(30,22,12,0.18));
+  background-image:
+    radial-gradient(circle at 22% 30%, #211709 0 7px, transparent 8px),
+    radial-gradient(circle at 68% 65%, #3a2b16 0 9px, transparent 10px),
+    radial-gradient(circle at 45% 88%, #241a0c 0 5px, transparent 6px),
+    radial-gradient(circle at 85% 20%, #2e2211 0 6px, transparent 7px),
+    linear-gradient(135deg, #b8a06e, #967c4c 50%, #6f5a35);
+  background-size: 30px 30px, 41px 41px, 23px 23px, 35px 35px, 100% 100%;
+  background-repeat: repeat, repeat, repeat, repeat, no-repeat;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.title-row .date { font-size: 11.5px; color: var(--ink-faint); white-space: nowrap; font-weight: 500; margin-top: 2px; }
+
+.tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px 3px; }
+.tab {
+  appearance: none; border: none; background: none;
+  font-family: inherit; font-size: 10.5px; font-weight: 700;
+  color: var(--ink-faint);
+  padding: 7px 4px 9px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+  cursor: pointer;
+  border-radius: 10px 10px 0 0;
+  transition: color .2s ease, background .2s ease;
+}
+.tab .dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  margin-right: 5px; background: currentColor; opacity: 0.45; vertical-align: middle;
+}
+.tab::after {
+  content: ""; position: absolute; left: 10px; right: 10px; bottom: 0;
+  height: 3px; border-radius: 3px 3px 0 0; background: transparent; transition: background .2s ease;
+}
+.tab.active { color: var(--tab-color); background: color-mix(in srgb, var(--tab-color) 10%, transparent); }
+.tab.active .dot { opacity: 1; }
+.tab.active::after { background: var(--tab-color); }
+
+/* ---- Swipe viewport ---- */
+.viewport { flex: 1; overflow: hidden; position: relative; touch-action: pan-y; }
+.track {
+  display: flex;
+  height: 100%;
+  width: 1000%;
+  transition: transform .32s cubic-bezier(.22,.61,.36,1);
+  will-change: transform;
+}
+.panel {
+  width: 10%;
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 20px 56px;
+}
+
+.panel-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.panel-head .chip { width: 8px; height: 26px; border-radius: 4px; background: var(--cat-color); flex-shrink: 0; }
+.panel-head h2 { font-size: 20px; font-weight: 700; margin: 0; letter-spacing: 0.02em; color: var(--cat-color); }
+.panel-sub { font-size: 12px; color: var(--ink-faint); margin: 0 0 18px 18px; }
+
+.story {
+  background: var(--card);
+  border: 1px solid var(--card-line);
+  border-left: 4px solid var(--cat-color);
+  border-radius: 12px;
+  padding: 18px 18px 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(20,20,30,0.05);
+}
+.story .kicker {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: "Zen Old Mincho", serif; font-size: 11.5px; font-weight: 700;
+  color: var(--cat-color); margin-bottom: 9px;
+}
+.story h3 { font-size: 16px; font-weight: 700; line-height: 1.55; margin: 0 0 10px; }
+.story .lead { font-size: 14px; color: var(--ink); margin: 0 0 14px; line-height: 1.85; }
+
+.context {
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 10px;
+  padding: 13px 15px;
+  margin: 0 0 12px;
+}
+.context-label {
+  display: block; font-size: 10.5px; font-weight: 700;
+  color: var(--cat-color); letter-spacing: 0.04em; margin-bottom: 6px;
+}
+.context p { font-size: 13px; color: var(--ink-soft); margin: 0; line-height: 1.8; }
+
+.note { font-size: 11.5px; color: var(--ink-faint); font-weight: 500; }
+
+.term-link {
+  color: var(--cat-color);
+  text-decoration: none;
+  border-bottom: 1px dotted color-mix(in srgb, var(--cat-color) 55%, transparent);
+  font-weight: 700;
+}
+
+.meta { font-size: 11px; color: var(--ink-faint); }
+.meta a { color: var(--cat-color); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--cat-color) 40%, transparent); font-weight: 700; }
+
+.closing {
+  margin: 6px 0 0; padding: 16px 18px;
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 12px; font-size: 13px; color: var(--ink-soft); text-align: center;
+}
+.closing .label {
+  display: block; font-family: "Zen Old Mincho", serif; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.2em; color: var(--cat-color); margin-bottom: 8px;
+}
+.colophon { margin: 14px 0 8px; font-size: 10.5px; color: var(--ink-faint); line-height: 1.9; text-align: center; }
+
+@media (max-width: 420px) {
+  .topbar { padding: 16px 14px 0; }
+  .panel { padding: 16px 14px 48px; }
+  .title-row h1 { font-size: 38px; }
+  .mascot { height: 40px; }
+}
+</style>
+</head><body>
+
+
+<div class="app" id="app">
+
+  <div class="topbar">
+    <div class="title-row">
+      <div class="title-line">
+        <img class="mascot" src="mascot.jpg" alt="オオサンショウウオのマスコット">
+        <h1>Yoshi's News</h1>
+      </div>
+      <span class="date">2026年10月28日（水）・第55号</span>
+    </div>
+    <div class="tabs" id="tabs">
+      <button class="tab" id="tab-top" style="--tab-color:var(--c-top)" onclick="goTo(0)"><span class="dot"></span>トップ</button>
+      <button class="tab" id="tab-social" style="--tab-color:var(--c-social)" onclick="goTo(1)"><span class="dot"></span>社会</button>
+      <button class="tab" id="tab-polecon" style="--tab-color:var(--c-polecon)" onclick="goTo(2)"><span class="dot"></span>政治/経済</button>
+      <button class="tab" id="tab-scitech" style="--tab-color:var(--c-scitech)" onclick="goTo(3)"><span class="dot"></span>科学/テック</button>
+      <button class="tab" id="tab-business" style="--tab-color:var(--c-business)" onclick="goTo(4)"><span class="dot"></span>ビジネス</button>
+      <button class="tab" id="tab-startup" style="--tab-color:var(--c-startup)" onclick="goTo(5)"><span class="dot"></span>スタートアップ</button>
+      <button class="tab" id="tab-gadget" style="--tab-color:var(--c-gadget)" onclick="goTo(6)"><span class="dot"></span>ガジェット</button>
+      <button class="tab" id="tab-intl" style="--tab-color:var(--c-intl)" onclick="goTo(7)"><span class="dot"></span>海外</button>
+      <button class="tab" id="tab-sports" style="--tab-color:var(--c-sports)" onclick="goTo(8)"><span class="dot"></span>芸能/スポーツ</button>
+      <button class="tab" id="tab-koshien" style="--tab-color:var(--c-koshien)" onclick="goTo(9)"><span class="dot"></span>高校野球【埼玉】</button>
+    </div>
+  </div>
+
+  <div class="viewport" id="viewport">
+    <div class="track" id="track">
+
+      <section class="panel" id="panel-top" style="--cat-color:var(--c-top)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">トップニュース</h2></div>
+        <p class="panel-sub">今日いちばん知っておきたい2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 芸能・スポーツ</span>
+          <h3>日本シリーズ、本日28日も福岡で第4戦——第3戦の結果は確認できず</h3>
+          <p class="lead">プロ野球「SMBC日本シリーズ2026」は、27日に福岡・みずほPayPayドームで第3戦が行われた（10月27日既報）が、本稿の時点では結果を確認できていない。本日28日18時からは同じ球場で第4戦が行われる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、福岡での3連戦（10月27日既報）がシリーズの行方を左右する重要な区間だという点にある。第3〜5戦<span class="note">（＝日本シリーズでパ・リーグ側チームの本拠地で行われる最大3連戦のこと。ここで一方のチームが4勝目を挙げればシリーズが終了するため、優勝が決まる可能性が最も高い区間でもある）</span>のうち、まず初戦（第3戦）を取ったチームが、本日の第4戦でどう戦うかが注目される。</p>
+          </div>
+          <div class="meta"><a href="https://www.ticket.co.jp/sys/d/2847.htm?ki=251570" target="_blank" rel="noopener">チケット販売情報</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 政治</span>
+          <h3>高市首相、政権発足1年——物価高対策のさらなる強化を表明</h3>
+          <p class="lead">高市首相は10月21日、政権発足1年を迎えたのを受けて記者団の取材に応じ、公約を一つずつ実現することが自身の使命だと強調した。2年目に入り、物価高対策のさらなる強化が当面の最重要政策になると述べている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「1年」という節目に、首相自身が実績と反省点の両方を語っている点にある。物価高対策<span class="note">（＝ガソリン税の暫定税率廃止や、電気・ガス料金の補助など、生活費の負担を軽くするために政府が行う一連の政策のこと。消費税・支援金一体法案（10月24日既報）も、この物価高対策の一環として位置づけられる）</span>は、高市政権にとって発足当初から中心的な政策課題であり、1年経ってもなお「最重要」と位置づけられていることは、問題の根深さを示している。</p>
+          </div>
+          <div class="meta"><a href="https://kumanichi.com/articles/2049024" target="_blank" rel="noopener">熊本日日新聞（共同通信）</a></div>
+        </article>
+
+        <div class="closing">
+          <span class="label serif">編集後記</span>
+          日本シリーズは本日も福岡で第4戦。高市首相は政権発足1年を迎え、物価高対策の強化を改めて表明しました。記者拘束問題は依然解決に至らず、日銀会合はあさって29日・30日に迫っています。タブまたはスワイプで10のジャンルを読み進められます。今日も良い一日を。
+        </div>
+        <div class="colophon">AIが検索結果をもとに要約・編集しています。詳細は各記事の出典リンクでご確認ください。<br>毎朝5時発行・次号は明日<br><a href="archive.html" style="color:inherit">過去の紙面はこちら</a></div>
+      </section>
+
+      <section class="panel" id="panel-social" style="--cat-color:var(--c-social)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">社会</h2></div>
+        <p class="panel-sub">くらしに関わるニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>記者拘束、拘束から2週間超——解決に至らぬまま長期化</h3>
+          <p class="lead">ロシアに拘束された北海道新聞記者の問題（10月27日既報）は、本稿の時点で拘束から2週間以上が経過しているが、解決を示す報道は確認できていない。裁判所は2カ月間の勾留を認めているとされ、長期化の様相を見せている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「2カ月間の勾留」という裁判所の判断が、今後の見通しの基準になっている点にある。勾留期間<span class="note">（＝裁判が確定する前に、逃亡や証拠隠滅を防ぐ目的で被疑者の身体を拘束しておける期間のこと。ロシアの裁判所が認めた期間が過ぎるまでに、起訴されるか釈放されるかの判断が下される見通しとなる）</span>が尽きるまでにどのような進展があるかが、今後数週間の焦点になる。</p>
+          </div>
+          <div class="meta"><a href="https://www.hokkaido-np.co.jp/article/1393275/" target="_blank" rel="noopener">北海道新聞</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>高市首相、物価高対策の「発信不足」を反省——国民への説明強化を課題に</h3>
+          <p class="lead">本日既報の政権発足1年の会見で、高市首相は物価高対策の効果を十分に伝えきれなかったことを反省点として挙げ、政府広報の強化を今後の課題とした。一方、政治評論家の一部からは対策そのものが「付け焼き刃」との批判も出ている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「対策をやっていること」と「国民に伝わっていること」が、必ずしも一致しないという点にある。政府広報<span class="note">（＝政府が、自らの政策や取り組みを国民に説明・周知するための活動のこと。テレビCMや記者会見、SNSでの発信などさまざまな手段がある。効果的な政策でも、国民に伝わらなければ評価につながりにくい）</span>の強化を課題とした首相の発言は、実際の政策効果と、国民が実感する「物価高対策をしてくれている」という感覚にギャップがあることを認めたものとも読める。</p>
+          </div>
+          <div class="meta"><a href="https://kumanichi.com/articles/2049024" target="_blank" rel="noopener">熊本日日新聞（共同通信）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-polecon" style="--cat-color:var(--c-polecon)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">政治／経済</h2></div>
+        <p class="panel-sub">政治・経済の動き2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 政治</span>
+          <h3>高市政権2年目、物価高対策が最重要政策——ガソリン税・電気ガス代支援の実績強調</h3>
+          <p class="lead">本日既報の会見で、高市首相はガソリン税の暫定税率廃止や、電気・ガス料金の補助などを「切れ目ない」物価高対策の実績として挙げた。本日既報の消費税・支援金一体法案も、この路線の延長線上にある政策と位置づけられる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、1年前からの政策が、今も形を変えて続いているという継続性にある。暫定税率<span class="note">（＝本来の税率に、特定の目的のために一時的に上乗せされている税率のこと。ガソリン税の場合、長年「暫定」のまま上乗せが続いてきたが、廃止されることで実質的な価格引き下げ効果がある）</span>の廃止は即効性のある対策とされる一方、本日既報の支援金のような新しい制度は、対象や財源の詳細がまだ固まっていない。</p>
+          </div>
+          <div class="meta"><a href="https://kumanichi.com/articles/2049024" target="_blank" rel="noopener">熊本日日新聞（共同通信）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 経済</span>
+          <h3>日銀会合はあさって29日・30日——市場の関心高まる</h3>
+          <p class="lead">日本銀行の金融政策決定会合（10月27日既報）は、あさって29日・30日に開かれる。物価上昇率2%の目標達成を判断する見通しで、政策金利は現在の1.25%程度での据え置きが有力とみられている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、会合が2日後に迫り、市場の関心が高まる時期に入っているという点にある。展望レポート<span class="note">（＝日本銀行が金融政策決定会合にあわせて年4回公表する、今後の経済・物価の見通しをまとめた報告書のこと。今回の会合では展望レポートも公表される予定で、日銀の物価判断の根拠がより詳しく説明される見通し）</span>も公表される回にあたるため、通常の会合よりも市場の注目度が高い。</p>
+          </div>
+          <div class="meta"><a href="https://kumanichi.com/articles/2048946" target="_blank" rel="noopener">熊本日日新聞（共同通信）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-scitech" style="--cat-color:var(--c-scitech)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">科学／テック</h2></div>
+        <p class="panel-sub">研究・技術のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>三菱電機の好決算が示す、AI投資ブームの広がり——半導体から工作機械まで</h3>
+          <p class="lead">三菱電機の通期上方修正（10月27日既報）は、半導体部門の増収増益と、工作機械向けのFAシステム事業の拡大という、2つの異なる事業がどちらもAI・半導体ブームの恩恵を受けていることを示している。1つの企業の中で、複数の事業が同じ需要の波に乗っている状態だ。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、AIブームが「半導体を作る会社」だけでなく、「半導体工場を支える会社」にも及んでいる点にある。裾野<span class="note">（＝ある産業の中心的な事業から広がって、関連する様々な事業・企業に影響が及ぶ範囲のこと。半導体のように巨大な設備投資を伴う産業では、工場建設・設備・部品など、裾野の広さが特に大きくなる）</span>の広さは、AI・半導体ブームが一時的な特需ではなく、産業構造全体を動かす規模の変化であることを示している。</p>
+          </div>
+          <div class="meta"><a href="https://eetimes.itmedia.co.jp/ee/articles/2608/04/news064.html" target="_blank" rel="noopener">EE Times Japan</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>GlobalFoundries新工場、年内着工へ——日米半導体協力の次の段階</h3>
+          <p class="lead">米ニューヨーク州マルタに新設されるGlobalFoundriesの新工場（10月26日既報）は、1号機が今年中に着工される見通しとなっている。日本が約100億ドルを投資するこの計画は、発表から着工という、次の具体的な段階に移ろうとしている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、年末が近づく中で、この投資計画の「次の節目」が見えてきたという点にある。着工<span class="note">（＝本日既報のとおり、実際に建物の建設工事を始めること。投資の発表から着工までには準備期間が必要で、着工が近づくことは計画が実際に動き出す段階に入ったことを意味する）</span>が年内に実現すれば、2029年の稼働開始という目標に向けた、最初の具体的な一歩になる。</p>
+          </div>
+          <div class="meta"><a href="https://www.manufacturingdive.com/news/globalfoundries-us-japan-trade-deal-chips-malta-new-york-fabs/832953/" target="_blank" rel="noopener">Manufacturing Dive</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-business" style="--cat-color:var(--c-business)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ビジネス</h2></div>
+        <p class="panel-sub">企業・産業のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>メモリー半導体の需給ひっ迫、株式市場にも波及——キオクシア株の値動きが象徴</h3>
+          <p class="lead">AIデータセンター向けの需要拡大（10月26日既報）を背景に、メモリー半導体の需給ひっ迫が続いている。提携関係にあるキオクシアと米サンディスクは、四日市工場での合弁契約を2034年末まで延長するなど、長期的な協業体制を強化している。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、メモリー不足という「生産の問題」が、株式市場という「投資の世界」にも直接影響しているという点にある。合弁契約<span class="note">（＝複数の企業が共同で出資し、1つの事業を運営するための契約のこと。キオクシアとサンディスクは、四日市工場を共同で運営する体制を長期にわたって維持することで合意している）</span>の長期延長は、両社がこの事業を安定した収益源として重視していることを示す。</p>
+          </div>
+          <div class="meta"><a href="https://media.paypay-sec.co.jp/cat2/mj251024_1" target="_blank" rel="noopener">PayPay証券メディア</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>中国の対米輸出依存度低下、日本企業のサプライチェーンにも影響</h3>
+          <p class="lead">中国の対米輸出依存度が10年で約半分に低下した構造変化（10月27日既報）は、中国に生産拠点を持つ日本企業の輸出戦略にも影響を与えているとみられる。米中どちらの市場にも過度に依存しない、分散型のサプライチェーン構築が、日本企業にとっても課題になっている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、米中の構造変化が、日本企業にとっても「対岸の火事」ではないという点にある。サプライチェーン<span class="note">（＝本日既報のとおり、原材料の調達から製品の完成までをつなぐ一連の流れのこと。米中どちらかの国に生産・販売が偏っていると、両国間の関係悪化の影響を直接受けやすくなる）</span>の分散は、コストはかかるものの、地政学的なリスクを減らす上で重要な経営判断とされている。</p>
+          </div>
+          <div class="meta"><a href="https://www.dir.co.jp/report/research/economics/china/20261002_026105.pdf" target="_blank" rel="noopener">大和総研</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-startup" style="--cat-color:var(--c-startup)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">スタートアップ</h2></div>
+        <p class="panel-sub">資金調達・注目トピック2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>国内スタートアップ、大型化と選別が続く——2025年調達の実態</h3>
+          <p class="lead">2025年の国内スタートアップ資金調達の中央値が前年比2割減となった傾向（10月25日既報）は、2026年に入っても続いているとみられる。総額が横ばいでも、実際に資金を得られる企業の数が絞られていく構図が定着しつつある。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「一時的な傾向」ではなく「定着しつつある構図」として捉える必要がある点にある。選別<span class="note">（＝本日既報のとおり、投資家が実績や成長性を見極めた上で、一部の有望な企業に重点的に投資する姿勢のこと。一度この傾向が定着すると、資金を得られない企業と得られる企業の差がさらに広がりやすくなる）</span>が続くことで、スタートアップ経営者にとっては、投資家に選ばれるための実績づくりがこれまで以上に重要になっている。</p>
+          </div>
+          <div class="meta"><a href="https://toyokeizai.net/articles/-/901502?display=b" target="_blank" rel="noopener">東洋経済オンライン</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>世界のAI企業への資金集中、国内にも波及——戦略の分かれ目</h3>
+          <p class="lead">OpenAI・Anthropicのような海外AI企業への記録的な資金集中（10月26日既報）は、国内のスタートアップ業界にも影響を与えている。資金規模で競えない国内企業は、特定分野への特化（10月27日既報のニッチ戦略）で対抗する動きがみられる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「同じ土俵で戦わない」という選択が、必ずしも弱さの表れではないという点にある。差別化<span class="note">（＝競合する他社と同じ戦い方をするのではなく、自社だけが持つ強み・特徴を前面に出して勝負すること。資金力で劣る企業ほど、この差別化戦略の重要性が高まる）</span>戦略を取ることで、巨大資金を持つ海外企業とは違う形で存在価値を示せる可能性がある。</p>
+          </div>
+          <div class="meta"><a href="https://toyokeizai.net/articles/-/931242" target="_blank" rel="noopener">東洋経済オンライン</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-gadget" style="--cat-color:var(--c-gadget)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ガジェット</h2></div>
+        <p class="panel-sub">新製品2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>iPhone Duo、品薄は年明けまで続く可能性——歩留まり改善が鍵</h3>
+          <p class="lead">発売から5日が経過したiPhone Duo（10月27日既報）について、組み立てを担うFoxconnの歩留まりが安定するまでには半年から1年かかる可能性があるとされ、品薄状態が年明けまで続く可能性が指摘されている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「発売から時間が経てば解消する」とは限らない品薄の性質にある。生産の立ち上げ<span class="note">（＝新しい製品の量産を始めてから、安定して効率よく作れるようになるまでの期間のこと。新技術を使った製品ほど、この立ち上げに時間がかかる傾向がある）</span>には一定の時間が必要で、本日既報のような長期的な品薄は、新技術を使った製品ではある程度避けられない現象だとも言える。</p>
+          </div>
+          <div class="meta"><a href="https://iphone-mania.jp/?p=606517" target="_blank" rel="noopener">iPhone Mania</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>iPhone Duo、国内価格36万4800円——高価格帯が示す「先行者コスト」</h3>
+          <p class="lead">本日既報のとおり品薄が続くiPhone Duoの国内価格は、最安構成（256GB）でも36万4800円（10月26日既報）。新しい技術をいち早く採用した製品ならではの高価格が、依然として話題になっている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「高くても欲しい人が多い」という需要の強さと、本日既報の品薄が同時に起きている点にある。先行者コスト<span class="note">（＝新しい技術をいち早く採用した製品を買う際に、通常より高い価格を支払うこと。量産が進んで技術が成熟するにつれて、同種の製品の価格は徐々に下がっていく傾向がある）</span>を払ってでも手に入れたいと考える人が多いことが、本日既報の品薄の一因にもなっている。</p>
+          </div>
+          <div class="meta"><a href="https://forbesjapan.com/articles/detail/105166" target="_blank" rel="noopener">Forbes JAPAN</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-intl" style="--cat-color:var(--c-intl)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">海外</h2></div>
+        <p class="panel-sub">国際ニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>記者拘束問題、CPJなど国際団体の関与続く——日本政府の対応が注視される</h3>
+          <p class="lead">本日既報の記者拘束問題で、米国のジャーナリスト保護団体CPJ（10月26日既報）をはじめとする国際団体は、記者の即時解放を求める姿勢を変えていない。解決までの道筋が見えない中、日本政府が今後どのように対応を続けるかが、国際社会からも注視されている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、時間が経つほど、国際社会からの「注目」が「評価」に変わっていくという点にある。説明責任<span class="note">（＝ある立場にある者が、自らの行動や判断について、関係者に対して納得のいく説明を行う義務のこと。国際的な関心が高まるほど、当事国の政府にはより丁寧な説明責任が求められるようになる）</span>が強まる中、日本政府の今後の対応ぶりそのものが、国際的な評価の対象になりつつある。</p>
+          </div>
+          <div class="meta"><a href="https://kumanichi.com/articles/2046684" target="_blank" rel="noopener">熊本日日新聞（共同通信）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>米中関税緩和の流れ、実施時期は未定——駆け引きは今後も続く</h3>
+          <p class="lead">9月の米中首脳会談を機に始まった関税引き下げの流れ（10月27日既報）は、具体的な実施時期が決まらないまま続いている。両国間の駆け引きは、今後も局面ごとに緩和と緊張を繰り返すとみられる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「合意した」ことと「実行された」ことの間に、まだ距離があるという点にある。実施時期<span class="note">（＝合意した政策を、実際にいつから適用するかという具体的な日付のこと。大枠で合意しても、細部の調整に時間がかかり、実施が遅れることは国際交渉ではよくある）</span>が決まらないうちは、いつでも交渉が巻き戻る可能性が残る。両国関係の行方は、まだ予断を許さない状況が続いている。</p>
+          </div>
+          <div class="meta"><a href="https://www.dir.co.jp/report/research/economics/china/20261002_026105.pdf" target="_blank" rel="noopener">大和総研</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-sports" style="--cat-color:var(--c-sports)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">芸能／スポーツ</h2></div>
+        <p class="panel-sub">厳選2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>日本シリーズ、本日28日18時——みずほPayPayドームで第4戦</h3>
+          <p class="lead">本日既報のとおり、日本シリーズは本日28日18時から、みずほPayPayドーム福岡で第4戦が行われる。地上波は日本テレビ、配信はHuluでの中継が予定されている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、福岡での3連戦（第3〜5戦）のうち、2戦目を迎える意味にある。連戦<span class="note">（＝休みを挟まずに続けて試合を行うこと。選手の疲労が蓄積しやすい一方、勢いに乗ったチームがそのまま連勝を重ねやすいという側面もある）</span>が続く中、ここまでの戦いぶりの勢いをどちらが引き継げるかが、本日の見どころになる。</p>
+          </div>
+          <div class="meta"><a href="https://www.ticket.co.jp/sys/d/2847.htm?ki=251570" target="_blank" rel="noopener">チケット販売情報</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>秋季関東大会、結果確認中——センバツ選考は来年1月末</h3>
+          <p class="lead">25日に決勝が行われた秋季関東地区高校野球大会（10月27日既報）について、本稿の時点でも結果を確認できていない。来春のセンバツ出場校を決める選考委員会は、来年1月末に開かれる見通しのままだ。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、大会の「結果」とセンバツ「出場決定」の間に、2カ月以上の時間差があるという点にある。推薦校<span class="note">（＝本日既報のとおり、センバツの出場校を決める2段階のプロセスのうち、最初の段階で各地区の大会連盟が候補として選ぶ学校のこと。12月中旬に決まり、1月末の選考委員会で最終的な出場校が発表される）</span>の発表まで、関東大会を終えた学校も、正式な出場決定を待つ期間が続く。</p>
+          </div>
+          <div class="meta"><a href="https://www.hb-nippon.com/tournaments/1072" target="_blank" rel="noopener">高校野球ドットコム</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-koshien" style="--cat-color:var(--c-koshien)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">高校野球【埼玉】</h2></div>
+        <p class="panel-sub">秋季大会2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>埼玉県勢、冬の鍛錬が本格化——来夏の甲子園へ向けて</h3>
+          <p class="lead">秋季大会をすべて終えた埼玉県勢（10月27日既報）は、本格的な冬のオフシーズンに入っている。西武台・山村学園（10月18日・19日既報）はいずれも関東大会の準々決勝で敗れており、来年夏の甲子園予選に向けたチームづくりが、各校で進められている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、高校野球が「秋の大会で終わり」ではなく、「冬の鍛錬を経て、来夏につながっていく」という、1年を通じたサイクルの中にあるという点にある。オフシーズン<span class="note">（＝公式戦が行われない、主に冬の期間のこと。この間に基礎体力づくりや技術の見直しを行い、次のシーズンに備える）</span>の過ごし方が、来年のチームの土台を作る。関東大会での結果は、むしろ冬の練習に向けた良い材料になるとも言える。</p>
+          </div>
+          <div class="meta"><a href="https://www.hb-nippon.com/tournaments/1072" target="_blank" rel="noopener">高校野球ドットコム</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>センバツ選考プロセス、12月12日の推薦校決定が次の節目</h3>
+          <p class="lead">本日既報のとおり、来春のセンバツ出場校を決める2段階のプロセスでは、まず12月12日に関東地区の推薦校が決まり、その後1月末の選考委員会で最終的な出場校が発表される。埼玉県勢にとっては、この12月の推薦校発表が次の注目ポイントになる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「次に何が起きるか」が、はっきりと日程で示されている点にある。推薦校<span class="note">（＝本日既報のとおり、センバツ出場校選考の最初の段階で、各地区の大会連盟が候補として選ぶ学校のこと。関東大会で上位に進出した学校が中心になるとみられ、準々決勝で敗れた埼玉県勢がこの推薦に食い込むのは難しい状況とされる）</span>に選ばれるのは、関東大会で上位に進出した学校が中心になるとみられている。</p>
+          </div>
+          <div class="meta"><a href="https://www.hb-nippon.com/tournaments/1072" target="_blank" rel="noopener">高校野球ドットコム</a></div>
+        </article>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var cats = ['top','social','polecon','scitech','business','startup','gadget','intl','sports','koshien'];
+  var idx = 0;
+  var track = document.getElementById('track');
+  var viewport = document.getElementById('viewport');
+  var vw = viewport.clientWidth;
+
+  function setActive(i){
+    cats.forEach(function(c, j){
+      document.getElementById('tab-' + c).classList.toggle('active', j === i);
+    });
+    var activeTab = document.getElementById('tab-' + cats[i]);
+    if (activeTab && activeTab.scrollIntoView) activeTab.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+  }
+
+  function settle(i, animate){
+    idx = Math.max(0, Math.min(cats.length - 1, i));
+    track.style.transition = animate ? 'transform .32s cubic-bezier(.22,.61,.36,1)' : 'none';
+    track.style.transform = 'translateX(' + (-idx * vw) + 'px)';
+    setActive(idx);
+  }
+
+  window.goTo = function(i){ settle(i, true); };
+
+  window.addEventListener('resize', function(){
+    vw = viewport.clientWidth;
+    settle(idx, false);
+  });
+
+  var dragging = false, decided = null, sx = 0, sy = 0, dx = 0;
+  viewport.addEventListener('touchstart', function(e){
+    dragging = true; decided = null;
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY; dx = 0;
+    track.style.transition = 'none';
+  }, { passive: true });
+
+  viewport.addEventListener('touchmove', function(e){
+    if (!dragging) return;
+    var cx = e.touches[0].clientX, cy = e.touches[0].clientY;
+    var mdx = cx - sx, mdy = cy - sy;
+    if (decided === null) {
+      if (Math.abs(mdx) > 8 || Math.abs(mdy) > 8) {
+        decided = Math.abs(mdx) > Math.abs(mdy) ? 'x' : 'y';
+      }
+    }
+    if (decided === 'x') {
+      e.preventDefault();
+      dx = mdx;
+      var atStart = idx === 0 && dx > 0;
+      var atEnd = idx === cats.length - 1 && dx < 0;
+      var eased = (atStart || atEnd) ? dx * 0.35 : dx;
+      track.style.transform = 'translateX(' + (-idx * vw + eased) + 'px)';
+    }
+  }, { passive: false });
+
+  viewport.addEventListener('touchend', function(){
+    if (!dragging) return;
+    dragging = false;
+    if (decided === 'x') {
+      var threshold = vw * 0.18;
+      if (dx <= -threshold) settle(idx + 1, true);
+      else if (dx >= threshold) settle(idx - 1, true);
+      else settle(idx, true);
+    }
+    decided = null; dx = 0;
+  });
+
+  settle(0, false);
+})();
+</script>
+
+</body></html>
