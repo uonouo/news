@@ -1,0 +1,610 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yoshi's News</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Zen+Old+Mincho:wght@600;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap');
+
+:root {
+  --bg: #ffffff;
+  --panel-bg: #ffffff;
+  --card: #ffffff;
+  --card-line: #eef0f3;
+  --ink: #1a1c20;
+  --ink-soft: #5b6068;
+  --ink-faint: #9aa0a8;
+  --shell: #f4f5f7;
+
+  --c-top: #ef3355;
+  --c-social: #00b3a4;
+  --c-polecon: #6d5bf0;
+  --c-scitech: #ff8a1e;
+  --c-business: #0091ff;
+  --c-sports: #26c281;
+  --c-startup: #ff4fa3;
+  --c-koshien: #c8860d;
+  --c-intl: #4b3f8f;
+  --c-gadget: #00bcd4;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101114;
+    --panel-bg: #101114;
+    --card: #1a1c20;
+    --card-line: #2a2c31;
+    --ink: #f1f2f4;
+    --ink-soft: #b7bcc4;
+    --ink-faint: #767c86;
+    --shell: #1a1c20;
+    --c-top: #ff6b85;
+    --c-social: #3fd8c9;
+    --c-polecon: #9c8fff;
+    --c-scitech: #ffab5c;
+    --c-business: #4db2ff;
+    --c-sports: #5be0a6;
+    --c-startup: #ff85c2;
+    --c-koshien: #e8b34c;
+    --c-intl: #a89cf0;
+    --c-gadget: #4dd8ea;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101114;
+  --panel-bg: #101114;
+  --card: #1a1c20;
+  --card-line: #2a2c31;
+  --ink: #f1f2f4;
+  --ink-soft: #b7bcc4;
+  --ink-faint: #767c86;
+  --shell: #1a1c20;
+  --c-top: #ff6b85;
+  --c-social: #3fd8c9;
+  --c-polecon: #9c8fff;
+  --c-scitech: #ffab5c;
+  --c-business: #4db2ff;
+  --c-sports: #5be0a6;
+  --c-startup: #ff85c2;
+  --c-koshien: #e8b34c;
+  --c-intl: #a89cf0;
+  --c-gadget: #4dd8ea;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--shell);
+  color: var(--ink);
+  font-family: "Zen Kaku Gothic New", -apple-system, "Hiragino Kaku Gothic ProN", sans-serif;
+  line-height: 1.7;
+  overscroll-behavior-y: none;
+}
+.serif { font-family: "Zen Old Mincho", "Hiragino Mincho ProN", serif; }
+
+.app {
+  max-width: 680px;
+  margin: 0 auto;
+  background: var(--bg);
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ---- Header ---- */
+.topbar { padding: 20px 20px 0; flex-shrink: 0; }
+.title-line { display: flex; align-items: center; gap: 8px; }
+.mascot { height: 50px; width: auto; flex-shrink: 0; border-radius: 8px; }
+.title-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  margin-bottom: 14px;
+}
+.title-row h1 {
+  font-family: "Baloo 2", "Zen Kaku Gothic New", sans-serif;
+  font-size: 48px; font-weight: 800; margin: 0; letter-spacing: 0.01em; line-height: 1;
+  -webkit-text-stroke: 2.4px #2b2013;
+  filter: drop-shadow(2px 3px 0 rgba(30,22,12,0.18));
+  background-image:
+    radial-gradient(circle at 22% 30%, #211709 0 7px, transparent 8px),
+    radial-gradient(circle at 68% 65%, #3a2b16 0 9px, transparent 10px),
+    radial-gradient(circle at 45% 88%, #241a0c 0 5px, transparent 6px),
+    radial-gradient(circle at 85% 20%, #2e2211 0 6px, transparent 7px),
+    linear-gradient(135deg, #b8a06e, #967c4c 50%, #6f5a35);
+  background-size: 30px 30px, 41px 41px, 23px 23px, 35px 35px, 100% 100%;
+  background-repeat: repeat, repeat, repeat, repeat, no-repeat;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.title-row .date { font-size: 11.5px; color: var(--ink-faint); white-space: nowrap; font-weight: 500; margin-top: 2px; }
+
+.tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px 3px; }
+.tab {
+  appearance: none; border: none; background: none;
+  font-family: inherit; font-size: 10.5px; font-weight: 700;
+  color: var(--ink-faint);
+  padding: 7px 4px 9px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+  cursor: pointer;
+  border-radius: 10px 10px 0 0;
+  transition: color .2s ease, background .2s ease;
+}
+.tab .dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  margin-right: 5px; background: currentColor; opacity: 0.45; vertical-align: middle;
+}
+.tab::after {
+  content: ""; position: absolute; left: 10px; right: 10px; bottom: 0;
+  height: 3px; border-radius: 3px 3px 0 0; background: transparent; transition: background .2s ease;
+}
+.tab.active { color: var(--tab-color); background: color-mix(in srgb, var(--tab-color) 10%, transparent); }
+.tab.active .dot { opacity: 1; }
+.tab.active::after { background: var(--tab-color); }
+
+/* ---- Swipe viewport ---- */
+.viewport { flex: 1; overflow: hidden; position: relative; touch-action: pan-y; }
+.track {
+  display: flex;
+  height: 100%;
+  width: 1000%;
+  transition: transform .32s cubic-bezier(.22,.61,.36,1);
+  will-change: transform;
+}
+.panel {
+  width: 10%;
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 20px 56px;
+}
+
+.panel-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.panel-head .chip { width: 8px; height: 26px; border-radius: 4px; background: var(--cat-color); flex-shrink: 0; }
+.panel-head h2 { font-size: 20px; font-weight: 700; margin: 0; letter-spacing: 0.02em; color: var(--cat-color); }
+.panel-sub { font-size: 12px; color: var(--ink-faint); margin: 0 0 18px 18px; }
+
+.story {
+  background: var(--card);
+  border: 1px solid var(--card-line);
+  border-left: 4px solid var(--cat-color);
+  border-radius: 12px;
+  padding: 18px 18px 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(20,20,30,0.05);
+}
+.story .kicker {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: "Zen Old Mincho", serif; font-size: 11.5px; font-weight: 700;
+  color: var(--cat-color); margin-bottom: 9px;
+}
+.story h3 { font-size: 16px; font-weight: 700; line-height: 1.55; margin: 0 0 10px; }
+.story .lead { font-size: 14px; color: var(--ink); margin: 0 0 14px; line-height: 1.85; }
+
+.context {
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 10px;
+  padding: 13px 15px;
+  margin: 0 0 12px;
+}
+.context-label {
+  display: block; font-size: 10.5px; font-weight: 700;
+  color: var(--cat-color); letter-spacing: 0.04em; margin-bottom: 6px;
+}
+.context p { font-size: 13px; color: var(--ink-soft); margin: 0; line-height: 1.8; }
+
+.note { font-size: 11.5px; color: var(--ink-faint); font-weight: 500; }
+
+.term-link {
+  color: var(--cat-color);
+  text-decoration: none;
+  border-bottom: 1px dotted color-mix(in srgb, var(--cat-color) 55%, transparent);
+  font-weight: 700;
+}
+
+.meta { font-size: 11px; color: var(--ink-faint); }
+.meta a { color: var(--cat-color); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--cat-color) 40%, transparent); font-weight: 700; }
+
+.closing {
+  margin: 6px 0 0; padding: 16px 18px;
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 12px; font-size: 13px; color: var(--ink-soft); text-align: center;
+}
+.closing .label {
+  display: block; font-family: "Zen Old Mincho", serif; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.2em; color: var(--cat-color); margin-bottom: 8px;
+}
+.colophon { margin: 14px 0 8px; font-size: 10.5px; color: var(--ink-faint); line-height: 1.9; text-align: center; }
+
+@media (max-width: 420px) {
+  .topbar { padding: 16px 14px 0; }
+  .panel { padding: 16px 14px 48px; }
+  .title-row h1 { font-size: 38px; }
+  .mascot { height: 40px; }
+}
+</style>
+</head><body>
+
+
+<div class="app" id="app">
+
+  <div class="topbar">
+    <div class="title-row">
+      <div class="title-line">
+        <img class="mascot" src="mascot.jpg" alt="オオサンショウウオのマスコット">
+        <h1>Yoshi's News</h1>
+      </div>
+      <span class="date">2026年10月31日（土）・第58号</span>
+    </div>
+    <div class="tabs" id="tabs">
+      <button class="tab" id="tab-top" style="--tab-color:var(--c-top)" onclick="goTo(0)"><span class="dot"></span>トップ</button>
+      <button class="tab" id="tab-social" style="--tab-color:var(--c-social)" onclick="goTo(1)"><span class="dot"></span>社会</button>
+      <button class="tab" id="tab-polecon" style="--tab-color:var(--c-polecon)" onclick="goTo(2)"><span class="dot"></span>政治/経済</button>
+      <button class="tab" id="tab-scitech" style="--tab-color:var(--c-scitech)" onclick="goTo(3)"><span class="dot"></span>科学/テック</button>
+      <button class="tab" id="tab-business" style="--tab-color:var(--c-business)" onclick="goTo(4)"><span class="dot"></span>ビジネス</button>
+      <button class="tab" id="tab-startup" style="--tab-color:var(--c-startup)" onclick="goTo(5)"><span class="dot"></span>スタートアップ</button>
+      <button class="tab" id="tab-gadget" style="--tab-color:var(--c-gadget)" onclick="goTo(6)"><span class="dot"></span>ガジェット</button>
+      <button class="tab" id="tab-intl" style="--tab-color:var(--c-intl)" onclick="goTo(7)"><span class="dot"></span>海外</button>
+      <button class="tab" id="tab-sports" style="--tab-color:var(--c-sports)" onclick="goTo(8)"><span class="dot"></span>芸能/スポーツ</button>
+      <button class="tab" id="tab-koshien" style="--tab-color:var(--c-koshien)" onclick="goTo(9)"><span class="dot"></span>高校野球【埼玉】</button>
+    </div>
+  </div>
+
+  <div class="viewport" id="viewport">
+    <div class="track" id="track">
+
+      <section class="panel" id="panel-top" style="--cat-color:var(--c-top)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">トップニュース</h2></div>
+        <p class="panel-sub">今日いちばん知っておきたい2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 芸能・スポーツ</span>
+          <h3>ソフトバンク、2年連続13度目の日本一——DeNAに4連勝、第4戦は4-2で逆転</h3>
+          <p class="lead">プロ野球日本シリーズ（10月30日既報）は、ソフトバンクがDeNAに4連勝し、2年連続13度目の日本一に輝いた。10月28日の第4戦（福岡）では、初回にDeNA・佐野恵太の2ランで先制されたが、4回に山本祐大の適時三塁打などで逆転し、4-2で勝利。3試合連続の逆転勝ちでシリーズを制した。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、2024年の悔しさをばねにした雪辱劇だという点にある。雪辱<span class="note">（＝以前の対戦で負けた相手に、次の対戦で勝って不名誉を返すこと。2024年の日本シリーズでは、ソフトバンクが開幕2連勝からDeNAに4連敗し、日本一を逃した経緯があった）</span>という言葉がぴったりの結果で、今回は逆に開幕から4連勝でDeNAを下した。MVPには一番打者の正木智也が選ばれている。</p>
+          </div>
+          <div class="meta"><a href="https://www.daily.co.jp/baseball/2024/10/27/0018276229.shtml" target="_blank" rel="noopener">デイリースポーツ</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 経済</span>
+          <h3>日銀会合、30日に終了——正式な決定内容は確認中</h3>
+          <p class="lead">日本銀行の金融政策決定会合（10月30日既報）は、30日に結果が公表されたはずだが、本稿の時点では正式な決定内容（政策金利の水準、物価目標2%への到達判断）を確認できていない。会合前には、政策金利1.25%程度での据え置きが有力とされていた。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「確認できていない」という状態そのものが、情報の反映にはタイムラグがあることを示している点にある。植田総裁<span class="note">（＝日本銀行の総裁。会合前の10月16日には、これ以上の物価上昇は容認できない旨の発言をしていたとされ、物価の上振れリスクへの警戒感をにじませていた）</span>の発言内容を含む正式な結果は、後日の報道で確認する必要がある。</p>
+          </div>
+          <div class="meta"><a href="https://www.smd-am.co.jp/market/ichikawa/2026/10/irepo261022/" target="_blank" rel="noopener">三井住友DSアセットマネジメント</a></div>
+        </article>
+
+        <div class="closing">
+          <span class="label serif">編集後記</span>
+          ソフトバンクがDeNAに4連勝し、2年連続13度目の日本一に。3試合連続の逆転勝ちという劇的な幕切れでした。日銀会合は30日に終了していますが、正式な結果はまだ確認できていません。本日はハロウィン、各地でイベントが開催されています。タブまたはスワイプで10のジャンルを読み進められます。良い週末を。
+        </div>
+        <div class="colophon">AIが検索結果をもとに要約・編集しています。詳細は各記事の出典リンクでご確認ください。<br>毎朝5時発行・次号は明日<br><a href="archive.html" style="color:inherit">過去の紙面はこちら</a></div>
+      </section>
+
+      <section class="panel" id="panel-social" style="--cat-color:var(--c-social)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">社会</h2></div>
+        <p class="panel-sub">くらしに関わるニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>本日はハロウィン——USJ・レゴランドなどイベント開催中</h3>
+          <p class="lead">本日10月31日はハロウィン当日。USJでは「ハロウィーン・ホラー・ナイト2026」が9月11日から11月8日まで、レゴランド・ジャパン（愛知）では10月2日から11月3日までハロウィンイベントが開催されている。東京ディズニーの両パークでも関連イベントが行われている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「ハロウィン当日」と「ハロウィンイベント期間」が必ずしも一致しないという点にある。ハロウィン<span class="note">（＝もともとは古代ケルトの収穫祭に由来する、10月31日に行われる行事のこと。日本ではここ十数年で、仮装やテーマパークのイベントとして定着し、当日だけでなく1カ月前後にわたって関連イベントが開催されることが多い）</span>のイベントは当日だけでなく、1カ月近く続くことが一般的で、本日は多くのイベントの「最終盤」に差し掛かっている時期にもあたる。</p>
+          </div>
+          <div class="meta"><a href="https://tabiiro.jp/higaeri/article/halloween/" target="_blank" rel="noopener">たびいろ</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>記者拘束、解決確認できず——領事面会「第一歩」から続報なし</h3>
+          <p class="lead">ロシアに拘束された北海道新聞記者の問題（10月30日既報）について、本稿の時点では、10月26日の領事面会以降の新たな進展を確認できていない。茂木外相が「第一歩」と評価した状況から、事態が大きく動いた形跡は見られない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「続報がない」ことが、必ずしも悪い知らせではないが、良い知らせでもないという点にある。外交交渉の停滞<span class="note">（＝交渉が一時的に進展しない状態が続くこと。悪化しているわけではないが、解決に向けた新たな動きも見えない、いわば「静かな時間」のこと）</span>が続く中、日本政府は引き続き外交ルートでの働きかけを続けているとみられる。</p>
+          </div>
+          <div class="meta"><a href="https://www.hokkaido-np.co.jp/article/1397580/" target="_blank" rel="noopener">北海道新聞</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-polecon" style="--cat-color:var(--c-polecon)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">政治／経済</h2></div>
+        <p class="panel-sub">政治・経済の動き2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 経済</span>
+          <h3>日銀会合前の市場予想、物価目標2%到達の判断が最大の焦点だった</h3>
+          <p class="lead">本日既報の日銀会合について、会合前の市場予想では、政策金利は据え置きとしつつ、物価上昇率2%の目標に到達したと判断するかどうかが最大の焦点とされていた。到達が宣言されれば、長期にわたる異例の金融緩和政策の歴史的な転換点になるとみられていた。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「到達の判断」が、金利を変えるかどうかとは別の、もう一つの重要な決定だという点にある。物価目標2%<span class="note">（＝本日既報のとおり、日本銀行が2013年から掲げてきた、消費者物価の前年比上昇率を安定的に2%にするという目標のこと。到達したと判断されれば、金融政策の枠組みそのものを見直す議論につながる可能性がある）</span>の到達判断は、金利の上げ下げよりも、むしろ日本経済の長期的な評価に関わる重みを持つ。</p>
+          </div>
+          <div class="meta"><a href="https://www.smd-am.co.jp/market/ichikawa/2026/10/irepo261022/" target="_blank" rel="noopener">三井住友DSアセットマネジメント</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 政治</span>
+          <h3>消費税・支援金一体法案、与党は会期内成立目指す——審議続く</h3>
+          <p class="lead">消費税・支援金一体法案（10月26日既報）は、与党が11月上旬の衆院通過、12月12日の会期末までの成立を目指す方針を維持している。本稿の時点で、審議の大きな進展や採決の動きは確認できていない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、11月上旬という目標が近づいているという点にある。会期<span class="note">（＝本日既報のとおり、国会が法律などを審議できる期間のこと。会期が終わると、その時点で成立していない法案は原則廃案になるため、与党は会期内の成立を急ぐことになる）</span>内成立を目指す与党にとって、ここからの国会日程の使い方が重要になる時期に入っている。</p>
+          </div>
+          <div class="meta"><a href="https://www.jcp.or.jp/akahata/aik26/2026-10-21/2026102102_01_0.php" target="_blank" rel="noopener">しんぶん赤旗</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-scitech" style="--cat-color:var(--c-scitech)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">科学／テック</h2></div>
+        <p class="panel-sub">研究・技術のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>三菱電機の好決算が示すAI投資ブームの広がり、続報——日銀の判断との関連は引き続き注目</h3>
+          <p class="lead">三菱電機の通期上方修正（10月30日既報）のようなAI・半導体関連需要の強さは、本日既報の日銀の物価判断にも関係する要素とされている。日銀会合の正式な結果が確認できれば、この好循環がどう評価されたかも明らかになるとみられる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「個別企業の決算」と「中央銀行の政策判断」が、同じ経済の実態を別の角度から映している点にある。好循環<span class="note">（＝本日既報のとおり、企業業績の改善が賃金上昇、消費拡大、物価上昇へとつながっていく経済の連鎖のこと。日銀はこの好循環が続いているかどうかを、物価判断の重要な材料にしている）</span>が実際に続いているかどうかは、今後の決算シーズンでも確認していく必要がある。</p>
+          </div>
+          <div class="meta"><a href="https://eetimes.itmedia.co.jp/ee/articles/2608/04/news064.html" target="_blank" rel="noopener">EE Times Japan</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>GlobalFoundries新工場、年内着工へ準備進む——日米半導体協力の次の段階、続報</h3>
+          <p class="lead">米ニューヨーク州マルタに新設されるGlobalFoundriesの新工場（10月30日既報）は、年内着工に向けた準備が続いている。日本が約100億ドルを投資するこの計画は、2029年の稼働開始を目指している。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、この計画が長期にわたる段階的なプロジェクトだという点にある。半導体工場の建設<span class="note">（＝本日既報のとおり、計画発表から着工、設備導入、試運転を経て、実際の量産開始までに数年単位の時間がかかる、大規模な事業のこと。各段階ごとに新たな節目があり、ニュースとして継続的に報じられることが多い）</span>は、年単位で進む長期プロジェクトであり、今後も段階ごとの進展が注目される。</p>
+          </div>
+          <div class="meta"><a href="https://www.manufacturingdive.com/news/globalfoundries-us-japan-trade-deal-chips-malta-new-york-fabs/832953/" target="_blank" rel="noopener">Manufacturing Dive</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-business" style="--cat-color:var(--c-business)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ビジネス</h2></div>
+        <p class="panel-sub">企業・産業のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>電通グループ、海外事業売却検討の続報——判断は依然「検討中」</h3>
+          <p class="lead">広告大手の電通グループの海外事業売却検討（10月30日既報）について、同社の立場は「決定した事実はない」から変わっていない。2025年12月期の3276億円の赤字という業績の重さを背景に、今後の判断が注目される。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「検討中」という状態が、いつまで続くのかという点にある。経営判断の先送り<span class="note">（＝本日既報のとおり、重大な決定を、すぐには下さずに時間をかけて検討し続けること。慎重な判断のための時間である場合もあれば、決断そのものの難しさを示している場合もある）</span>が長引くほど、投資家や従業員にとっては不確実性が続くことになる。</p>
+          </div>
+          <div class="meta"><a href="https://www.oanda.jp/lab-education/?p=94787" target="_blank" rel="noopener">OANDA証券</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>プロ野球日本一の経済効果——優勝セールやグッズ需要に期待</h3>
+          <p class="lead">本日既報のソフトバンクの日本一決定を受け、福岡を中心に優勝セールやグッズ販売の活性化が期待される。プロ野球の優勝は、地元経済にも一定の消費押し上げ効果をもたらすとされている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、スポーツの勝敗が、実際の経済活動にも結びつくという点にある。優勝セール<span class="note">（＝プロ野球チームが優勝した際に、その本拠地の地元商店街やデパートなどが行う、記念価格での販売イベントのこと。ファンの購買意欲が高まるタイミングを捉えた、地域経済の活性化策の一つ）</span>は、毎年の優勝チームの本拠地で恒例となっている取り組みで、本日既報の日本一決定を受けて、同様の動きが見られる可能性がある。</p>
+          </div>
+          <div class="meta"><a href="https://www.daily.co.jp/baseball/2024/10/27/0018273536.shtml" target="_blank" rel="noopener">デイリースポーツ</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-startup" style="--cat-color:var(--c-startup)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">スタートアップ</h2></div>
+        <p class="panel-sub">資金調達・注目トピック2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>国内スタートアップ、選別と大型化の構図が定着——続報</h3>
+          <p class="lead">2025年の国内スタートアップ資金調達の中央値が前年比2割減となった傾向（10月30日既報）は、本日既報の日銀会合の結果が確認されれば、今後の資金調達環境への影響もより明確になるとみられる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、日銀の金融政策が、スタートアップの世界にも間接的に関係しているという点にある。ベンチャーキャピタル<span class="note">（＝本日既報のとおり、成長が期待される未上場のスタートアップに出資する投資会社のこと。金利が上がると、より安全な投資先の魅力が増し、リスクの高いスタートアップへの投資が相対的に減りやすくなるとされる）</span>の投資判断は、金利動向を含むマクロ経済環境にも左右される。</p>
+          </div>
+          <div class="meta"><a href="https://toyokeizai.net/articles/-/901502?display=b" target="_blank" rel="noopener">東洋経済オンライン</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>海外AI企業への資金集中、国内への影響続く——差別化戦略の重要性、続報</h3>
+          <p class="lead">OpenAI・Anthropicのような海外AI企業への記録的な資金集中（10月30日既報）は、国内スタートアップ業界の資金調達環境にも影響を与え続けている。資金規模で競えない国内企業にとっては、特定分野への特化という差別化戦略の重要性が、改めて指摘されている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、海外の巨大資金の動きが、間接的に国内の投資家の判断にも影響するという点にある。グローバルな資金の流れ<span class="note">（＝本日既報のとおり、世界中の投資資金が、どの国・どの分野に向かうかという大きな流れのこと。海外でAI関連への投資が過熱すると、国内の投資家も同様の分野を重視しやすくなり、それ以外の分野への投資が相対的に減ることがある）</span>は、国内スタートアップにとって、無視できない外部環境の一つになっている。</p>
+          </div>
+          <div class="meta"><a href="https://toyokeizai.net/articles/-/931242" target="_blank" rel="noopener">東洋経済オンライン</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-gadget" style="--cat-color:var(--c-gadget)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ガジェット</h2></div>
+        <p class="panel-sub">新製品2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>iPhone Duo、品薄は年明けまで続く可能性——続報</h3>
+          <p class="lead">発売から1週間超が経過したiPhone Duo（10月30日既報）の品薄状態について、Foxconnの歩留まり改善には半年から1年かかる可能性があるとの見方が続いている。年明けまで入手が難しい状況が続くとみられる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、発売から10日近くが経っても、状況が大きく変わっていないという点にある。品薄の長期化<span class="note">（＝本日既報のとおり、ある製品の供給不足が、短期間で解消せず、数カ月単位で続くこと。生産体制の立ち上げに時間がかかる新技術の製品では、特に起こりやすい）</span>は、新しい技術を使った製品ではある程度避けられない現象であり、購入を急がず長期戦を覚悟する必要がある。</p>
+          </div>
+          <div class="meta"><a href="https://iphone-mania.jp/?p=606517" target="_blank" rel="noopener">iPhone Mania</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>iPhone Duo、国内価格36万4800円——高価格帯のまま、続報</h3>
+          <p class="lead">本日既報のとおり品薄が続くiPhone Duoの国内価格（10月30日既報）は、最安構成（256GB）でも36万4800円のまま変わっていない。発売から1週間超が経っても、値下げの動きは見られない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、品薄が続いているうちは値下げの動機がメーカー側にないという点にある。価格戦略<span class="note">（＝本日既報のとおり、企業が自社製品の価格をどう設定・調整するかという方針のこと。需要が供給を上回っている（品薄の）状態では、値下げをしなくても売れるため、メーカーは価格を維持する傾向がある）</span>として、品薄が解消されるまで現在の高価格が続くとみられる。</p>
+          </div>
+          <div class="meta"><a href="https://forbesjapan.com/articles/detail/105166" target="_blank" rel="noopener">Forbes JAPAN</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-intl" style="--cat-color:var(--c-intl)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">海外</h2></div>
+        <p class="panel-sub">国際ニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>記者拘束問題、国際団体の関与続く——続報は確認できず</h3>
+          <p class="lead">本日既報の記者拘束問題について、米国のジャーナリスト保護団体CPJなどの関与（10月29日既報）は続いているとみられるが、本稿の時点では新たな続報を確認できていない。各国大使館の連帯表明（10月30日既報）から、事態が大きく動いた形跡は見られない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、国際的な関心が持続しているかどうかが、今後の交渉にも影響するという点にある。関心の持続<span class="note">（＝ある問題について、国際社会やメディアの注目が、時間が経っても薄れずに続くこと。関心が薄れると、当事国への外交的な圧力も弱まりやすくなるため、持続すること自体が重要とされる）</span>が続く限り、ロシア側への圧力も一定程度維持されると考えられる。</p>
+          </div>
+          <div class="meta"><a href="https://www.hokkaido-np.co.jp/article/1397580/" target="_blank" rel="noopener">北海道新聞</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>ハロウィン、海外発祥の行事が日本で独自に発展——USJなど大型イベントに</h3>
+          <p class="lead">本日既報のハロウィンは、もともと海外（ケルト文化圏）発祥の行事だが、日本では仮装文化やテーマパークのイベントと結びつき、独自の盛り上がりを見せるようになっている。USJの「ハロウィーン・ホラー・ナイト」のような大型イベントは、海外のハロウィン文化とは異なる、日本独自のエンターテインメント形態として定着している。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「輸入された行事」が、その国独自の形に変化していく過程にある。文化の現地化<span class="note">（＝ある国・地域で生まれた文化・行事が、別の国に伝わる際に、その国の社会や産業と結びついて、元とは異なる独自の形に変化すること。日本のハロウィンは、仮装・テーマパーク・コンビニスイーツなど、商業的な要素と強く結びついて発展してきた）</span>の代表的な例として、日本のハロウィンはしばしば取り上げられる。</p>
+          </div>
+          <div class="meta"><a href="https://tabiiro.jp/higaeri/article/halloween/" target="_blank" rel="noopener">たびいろ</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-sports" style="--cat-color:var(--c-sports)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">芸能／スポーツ</h2></div>
+        <p class="panel-sub">厳選2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>ソフトバンク日本一、MVPは正木智也——3試合連続逆転勝ちで巻き返し</h3>
+          <p class="lead">本日既報のとおり、ソフトバンクはDeNAに4連勝して2年連続13度目の日本一を決めた。シリーズMVPには一番打者の正木智也が選ばれ、守護神・杉山一樹が最終戦の9回を三者凡退で締めくくった。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「3試合連続の逆転勝ち」という珍しい勝ち方にある。逆転勝ち<span class="note">（＝試合の途中で相手に先に点を取られながら、その後の攻撃で逆転して勝つこと。1試合だけなら珍しくないが、シリーズを通して3試合連続で逆転勝ちするのは、チームの勝負強さを示す珍しい記録とされる）</span>が続いたことは、ソフトバンクの終盤の強さを象徴する結果であり、2024年の逆の結末（開幕2連勝から4連敗）からの完全な巻き返しとなった。</p>
+          </div>
+          <div class="meta"><a href="https://www.daily.co.jp/baseball/2024/10/27/0018273536.shtml" target="_blank" rel="noopener">デイリースポーツ</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>プロ野球シーズン、事実上の終了——オフシーズンの話題に移行</h3>
+          <p class="lead">本日既報の日本一決定により、2026年のプロ野球シーズンは事実上終了した。ここからは、来季に向けたトレードや契約交渉など、オフシーズンの話題が中心になっていく。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「シーズンの終わり」が「野球ニュースの終わり」ではないという点にある。オフシーズンの話題<span class="note">（＝公式戦が行われない冬の期間に話題になる、選手の契約交渉、トレード、戦力補強などのニュースのこと。シーズン中とは違う形で、野球ファンの関心を集め続ける）</span>は、来季の戦力を左右する重要な動きとして、引き続き注目されることになる。</p>
+          </div>
+          <div class="meta"><a href="https://www.daily.co.jp/baseball/2024/10/27/0018276229.shtml" target="_blank" rel="noopener">デイリースポーツ</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-koshien" style="--cat-color:var(--c-koshien)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">高校野球【埼玉】</h2></div>
+        <p class="panel-sub">秋季大会2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>埼玉県勢、冬の鍛錬が本格化——来夏の甲子園へ向けて、続報</h3>
+          <p class="lead">秋季大会をすべて終えた埼玉県勢（10月30日既報）は、本格的な冬のオフシーズンを過ごしている。西武台・山村学園（10月18日・19日既報）はいずれも関東大会の準々決勝で敗れており、来年夏の甲子園予選に向けたチームづくりが各校で続く。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、高校野球が「秋の大会で終わり」ではなく、「冬の鍛錬を経て、来夏につながっていく」という、1年を通じたサイクルの中にあるという点にある。オフシーズン<span class="note">（＝公式戦が行われない、主に冬の期間のこと。この間に基礎体力づくりや技術の見直しを行い、次のシーズンに備える）</span>の過ごし方が、来年のチームの土台を作る。関東大会での結果は、むしろ冬の練習に向けた良い材料になるとも言える。</p>
+          </div>
+          <div class="meta"><a href="https://www.hb-nippon.com/tournaments/1072" target="_blank" rel="noopener">高校野球ドットコム</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>センバツ選考プロセス、12月12日の推薦校決定が次の節目——続報</h3>
+          <p class="lead">来春のセンバツ出場校を決める2段階のプロセス（10月30日既報）では、まず12月12日に関東地区の推薦校が決まり、その後1月末の選考委員会で最終的な出場校が発表される。埼玉県勢にとっては、この12月の推薦校発表が次の注目ポイントになる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「次に何が起きるか」が、はっきりと日程で示されている点にある。推薦校<span class="note">（＝本日既報のとおり、センバツ出場校選考の最初の段階で、各地区の大会連盟が候補として選ぶ学校のこと。関東大会で上位に進出した学校が中心になるとみられ、準々決勝で敗れた埼玉県勢がこの推薦に食い込むのは難しい状況とされる）</span>に選ばれるのは、関東大会で上位に進出した学校が中心になるとみられている。</p>
+          </div>
+          <div class="meta"><a href="https://www.hb-nippon.com/tournaments/1072" target="_blank" rel="noopener">高校野球ドットコム</a></div>
+        </article>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var cats = ['top','social','polecon','scitech','business','startup','gadget','intl','sports','koshien'];
+  var idx = 0;
+  var track = document.getElementById('track');
+  var viewport = document.getElementById('viewport');
+  var vw = viewport.clientWidth;
+
+  function setActive(i){
+    cats.forEach(function(c, j){
+      document.getElementById('tab-' + c).classList.toggle('active', j === i);
+    });
+    var activeTab = document.getElementById('tab-' + cats[i]);
+    if (activeTab && activeTab.scrollIntoView) activeTab.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+  }
+
+  function settle(i, animate){
+    idx = Math.max(0, Math.min(cats.length - 1, i));
+    track.style.transition = animate ? 'transform .32s cubic-bezier(.22,.61,.36,1)' : 'none';
+    track.style.transform = 'translateX(' + (-idx * vw) + 'px)';
+    setActive(idx);
+  }
+
+  window.goTo = function(i){ settle(i, true); };
+
+  window.addEventListener('resize', function(){
+    vw = viewport.clientWidth;
+    settle(idx, false);
+  });
+
+  var dragging = false, decided = null, sx = 0, sy = 0, dx = 0;
+  viewport.addEventListener('touchstart', function(e){
+    dragging = true; decided = null;
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY; dx = 0;
+    track.style.transition = 'none';
+  }, { passive: true });
+
+  viewport.addEventListener('touchmove', function(e){
+    if (!dragging) return;
+    var cx = e.touches[0].clientX, cy = e.touches[0].clientY;
+    var mdx = cx - sx, mdy = cy - sy;
+    if (decided === null) {
+      if (Math.abs(mdx) > 8 || Math.abs(mdy) > 8) {
+        decided = Math.abs(mdx) > Math.abs(mdy) ? 'x' : 'y';
+      }
+    }
+    if (decided === 'x') {
+      e.preventDefault();
+      dx = mdx;
+      var atStart = idx === 0 && dx > 0;
+      var atEnd = idx === cats.length - 1 && dx < 0;
+      var eased = (atStart || atEnd) ? dx * 0.35 : dx;
+      track.style.transform = 'translateX(' + (-idx * vw + eased) + 'px)';
+    }
+  }, { passive: false });
+
+  viewport.addEventListener('touchend', function(){
+    if (!dragging) return;
+    dragging = false;
+    if (decided === 'x') {
+      var threshold = vw * 0.18;
+      if (dx <= -threshold) settle(idx + 1, true);
+      else if (dx >= threshold) settle(idx - 1, true);
+      else settle(idx, true);
+    }
+    decided = null; dx = 0;
+  });
+
+  settle(0, false);
+})();
+</script>
+
+</body></html>
