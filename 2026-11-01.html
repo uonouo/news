@@ -1,0 +1,610 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yoshi's News</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Zen+Old+Mincho:wght@600;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap');
+
+:root {
+  --bg: #ffffff;
+  --panel-bg: #ffffff;
+  --card: #ffffff;
+  --card-line: #eef0f3;
+  --ink: #1a1c20;
+  --ink-soft: #5b6068;
+  --ink-faint: #9aa0a8;
+  --shell: #f4f5f7;
+
+  --c-top: #ef3355;
+  --c-social: #00b3a4;
+  --c-polecon: #6d5bf0;
+  --c-scitech: #ff8a1e;
+  --c-business: #0091ff;
+  --c-sports: #26c281;
+  --c-startup: #ff4fa3;
+  --c-koshien: #c8860d;
+  --c-intl: #4b3f8f;
+  --c-gadget: #00bcd4;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101114;
+    --panel-bg: #101114;
+    --card: #1a1c20;
+    --card-line: #2a2c31;
+    --ink: #f1f2f4;
+    --ink-soft: #b7bcc4;
+    --ink-faint: #767c86;
+    --shell: #1a1c20;
+    --c-top: #ff6b85;
+    --c-social: #3fd8c9;
+    --c-polecon: #9c8fff;
+    --c-scitech: #ffab5c;
+    --c-business: #4db2ff;
+    --c-sports: #5be0a6;
+    --c-startup: #ff85c2;
+    --c-koshien: #e8b34c;
+    --c-intl: #a89cf0;
+    --c-gadget: #4dd8ea;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101114;
+  --panel-bg: #101114;
+  --card: #1a1c20;
+  --card-line: #2a2c31;
+  --ink: #f1f2f4;
+  --ink-soft: #b7bcc4;
+  --ink-faint: #767c86;
+  --shell: #1a1c20;
+  --c-top: #ff6b85;
+  --c-social: #3fd8c9;
+  --c-polecon: #9c8fff;
+  --c-scitech: #ffab5c;
+  --c-business: #4db2ff;
+  --c-sports: #5be0a6;
+  --c-startup: #ff85c2;
+  --c-koshien: #e8b34c;
+  --c-intl: #a89cf0;
+  --c-gadget: #4dd8ea;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--shell);
+  color: var(--ink);
+  font-family: "Zen Kaku Gothic New", -apple-system, "Hiragino Kaku Gothic ProN", sans-serif;
+  line-height: 1.7;
+  overscroll-behavior-y: none;
+}
+.serif { font-family: "Zen Old Mincho", "Hiragino Mincho ProN", serif; }
+
+.app {
+  max-width: 680px;
+  margin: 0 auto;
+  background: var(--bg);
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ---- Header ---- */
+.topbar { padding: 20px 20px 0; flex-shrink: 0; }
+.title-line { display: flex; align-items: center; gap: 8px; }
+.mascot { height: 50px; width: auto; flex-shrink: 0; border-radius: 8px; }
+.title-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  margin-bottom: 14px;
+}
+.title-row h1 {
+  font-family: "Baloo 2", "Zen Kaku Gothic New", sans-serif;
+  font-size: 48px; font-weight: 800; margin: 0; letter-spacing: 0.01em; line-height: 1;
+  -webkit-text-stroke: 2.4px #2b2013;
+  filter: drop-shadow(2px 3px 0 rgba(30,22,12,0.18));
+  background-image:
+    radial-gradient(circle at 22% 30%, #211709 0 7px, transparent 8px),
+    radial-gradient(circle at 68% 65%, #3a2b16 0 9px, transparent 10px),
+    radial-gradient(circle at 45% 88%, #241a0c 0 5px, transparent 6px),
+    radial-gradient(circle at 85% 20%, #2e2211 0 6px, transparent 7px),
+    linear-gradient(135deg, #b8a06e, #967c4c 50%, #6f5a35);
+  background-size: 30px 30px, 41px 41px, 23px 23px, 35px 35px, 100% 100%;
+  background-repeat: repeat, repeat, repeat, repeat, no-repeat;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.title-row .date { font-size: 11.5px; color: var(--ink-faint); white-space: nowrap; font-weight: 500; margin-top: 2px; }
+
+.tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px 3px; }
+.tab {
+  appearance: none; border: none; background: none;
+  font-family: inherit; font-size: 10.5px; font-weight: 700;
+  color: var(--ink-faint);
+  padding: 7px 4px 9px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+  cursor: pointer;
+  border-radius: 10px 10px 0 0;
+  transition: color .2s ease, background .2s ease;
+}
+.tab .dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  margin-right: 5px; background: currentColor; opacity: 0.45; vertical-align: middle;
+}
+.tab::after {
+  content: ""; position: absolute; left: 10px; right: 10px; bottom: 0;
+  height: 3px; border-radius: 3px 3px 0 0; background: transparent; transition: background .2s ease;
+}
+.tab.active { color: var(--tab-color); background: color-mix(in srgb, var(--tab-color) 10%, transparent); }
+.tab.active .dot { opacity: 1; }
+.tab.active::after { background: var(--tab-color); }
+
+/* ---- Swipe viewport ---- */
+.viewport { flex: 1; overflow: hidden; position: relative; touch-action: pan-y; }
+.track {
+  display: flex;
+  height: 100%;
+  width: 1000%;
+  transition: transform .32s cubic-bezier(.22,.61,.36,1);
+  will-change: transform;
+}
+.panel {
+  width: 10%;
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 20px 56px;
+}
+
+.panel-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.panel-head .chip { width: 8px; height: 26px; border-radius: 4px; background: var(--cat-color); flex-shrink: 0; }
+.panel-head h2 { font-size: 20px; font-weight: 700; margin: 0; letter-spacing: 0.02em; color: var(--cat-color); }
+.panel-sub { font-size: 12px; color: var(--ink-faint); margin: 0 0 18px 18px; }
+
+.story {
+  background: var(--card);
+  border: 1px solid var(--card-line);
+  border-left: 4px solid var(--cat-color);
+  border-radius: 12px;
+  padding: 18px 18px 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(20,20,30,0.05);
+}
+.story .kicker {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: "Zen Old Mincho", serif; font-size: 11.5px; font-weight: 700;
+  color: var(--cat-color); margin-bottom: 9px;
+}
+.story h3 { font-size: 16px; font-weight: 700; line-height: 1.55; margin: 0 0 10px; }
+.story .lead { font-size: 14px; color: var(--ink); margin: 0 0 14px; line-height: 1.85; }
+
+.context {
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 10px;
+  padding: 13px 15px;
+  margin: 0 0 12px;
+}
+.context-label {
+  display: block; font-size: 10.5px; font-weight: 700;
+  color: var(--cat-color); letter-spacing: 0.04em; margin-bottom: 6px;
+}
+.context p { font-size: 13px; color: var(--ink-soft); margin: 0; line-height: 1.8; }
+
+.note { font-size: 11.5px; color: var(--ink-faint); font-weight: 500; }
+
+.term-link {
+  color: var(--cat-color);
+  text-decoration: none;
+  border-bottom: 1px dotted color-mix(in srgb, var(--cat-color) 55%, transparent);
+  font-weight: 700;
+}
+
+.meta { font-size: 11px; color: var(--ink-faint); }
+.meta a { color: var(--cat-color); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--cat-color) 40%, transparent); font-weight: 700; }
+
+.closing {
+  margin: 6px 0 0; padding: 16px 18px;
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 12px; font-size: 13px; color: var(--ink-soft); text-align: center;
+}
+.closing .label {
+  display: block; font-family: "Zen Old Mincho", serif; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.2em; color: var(--cat-color); margin-bottom: 8px;
+}
+.colophon { margin: 14px 0 8px; font-size: 10.5px; color: var(--ink-faint); line-height: 1.9; text-align: center; }
+
+@media (max-width: 420px) {
+  .topbar { padding: 16px 14px 0; }
+  .panel { padding: 16px 14px 48px; }
+  .title-row h1 { font-size: 38px; }
+  .mascot { height: 40px; }
+}
+</style>
+</head><body>
+
+
+<div class="app" id="app">
+
+  <div class="topbar">
+    <div class="title-row">
+      <div class="title-line">
+        <img class="mascot" src="mascot.jpg" alt="オオサンショウウオのマスコット">
+        <h1>Yoshi's News</h1>
+      </div>
+      <span class="date">2026年11月1日（日）・第59号</span>
+    </div>
+    <div class="tabs" id="tabs">
+      <button class="tab" id="tab-top" style="--tab-color:var(--c-top)" onclick="goTo(0)"><span class="dot"></span>トップ</button>
+      <button class="tab" id="tab-social" style="--tab-color:var(--c-social)" onclick="goTo(1)"><span class="dot"></span>社会</button>
+      <button class="tab" id="tab-polecon" style="--tab-color:var(--c-polecon)" onclick="goTo(2)"><span class="dot"></span>政治/経済</button>
+      <button class="tab" id="tab-scitech" style="--tab-color:var(--c-scitech)" onclick="goTo(3)"><span class="dot"></span>科学/テック</button>
+      <button class="tab" id="tab-business" style="--tab-color:var(--c-business)" onclick="goTo(4)"><span class="dot"></span>ビジネス</button>
+      <button class="tab" id="tab-startup" style="--tab-color:var(--c-startup)" onclick="goTo(5)"><span class="dot"></span>スタートアップ</button>
+      <button class="tab" id="tab-gadget" style="--tab-color:var(--c-gadget)" onclick="goTo(6)"><span class="dot"></span>ガジェット</button>
+      <button class="tab" id="tab-intl" style="--tab-color:var(--c-intl)" onclick="goTo(7)"><span class="dot"></span>海外</button>
+      <button class="tab" id="tab-sports" style="--tab-color:var(--c-sports)" onclick="goTo(8)"><span class="dot"></span>芸能/スポーツ</button>
+      <button class="tab" id="tab-koshien" style="--tab-color:var(--c-koshien)" onclick="goTo(9)"><span class="dot"></span>高校野球【埼玉】</button>
+    </div>
+  </div>
+
+  <div class="viewport" id="viewport">
+    <div class="track" id="track">
+
+      <section class="panel" id="panel-top" style="--cat-color:var(--c-top)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">トップニュース</h2></div>
+        <p class="panel-sub">今日いちばん知っておきたい2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 経済</span>
+          <h3>日銀、政策金利1.25%に据え置き——物価目標2%「概ね整合的な水準」に到達と表明</h3>
+          <p class="lead">日本銀行は10月30日の金融政策決定会合（10月31日既報）で、政策金利を1.25%程度に据え置くことを賛成8・反対1で決定した。あわせて、基調的な物価上昇率が2%の目標と「概ね整合的な水準」に到達したとの見解を示し、2013年以来14年越しの目標達成とする報道も出ている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「金利は上げなかったが、物価目標は達成したと認めた」という、2つの異なる決定が同時に行われた点にある。概ね整合的な水準<span class="note">（＝日銀が使う言い回しで、物価上昇率が2%の目標と「ほぼ一致している」と判断したことを示す表現のこと。「達成した」と明確に言い切るのではなく、慎重な言葉を選びつつ、実質的には目標到達に近い評価を示している）</span>という表現は、今後の金融政策の方向性を決める上で重要な節目になる。市場では12月の追加利上げがほぼ確実視されている。</p>
+          </div>
+          <div class="meta"><a href="https://news.infoseek.co.jp/article/ntv_2026103001693256/" target="_blank" rel="noopener">日本テレビ（Infoseekニュース）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 経済</span>
+          <h3>市場、12月の追加利上げを8割織り込み——14年越しの目標達成という評価も</h3>
+          <p class="lead">本日既報の日銀の決定を受け、市場では12月の金融政策決定会合での追加利上げをほぼ確実視する見方が強まっている。民間エコノミストの一部は、12月に1.5%、来年3月に1.75%へと段階的に引き上げられるとの見通しを示している。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「今回は上げなかったが、次は上げる」という市場の読みが広がっている点にある。追加利上げ<span class="note">（＝すでに行った利上げに続けて、さらに政策金利を上げること。日銀は9月会合で利上げを行ったばかりで、本日既報のとおり10月は見送ったが、物価目標への到達を認めたことで、次の利上げへの地ならしをした格好になっている）</span>の時期や回数が、今後の住宅ローンや企業の借り入れコストに直接影響するため、多くの人にとって関心の高いテーマになっている。</p>
+          </div>
+          <div class="meta"><a href="https://www.dir.co.jp/report/research/economics/japan/20261030_026168.html" target="_blank" rel="noopener">大和総研</a></div>
+        </article>
+
+        <div class="closing">
+          <span class="label serif">編集後記</span>
+          日銀は政策金利を1.25%に据え置きつつ、物価目標2%への到達を実質的に認めました。14年越しの節目に、市場は12月の追加利上げをほぼ確実と見ています。ソフトバンクの日本一の経済効果、記者拘束問題の続報もあわせてお届けします。タブまたはスワイプで10のジャンルを読み進められます。良い日曜日を。
+        </div>
+        <div class="colophon">AIが検索結果をもとに要約・編集しています。詳細は各記事の出典リンクでご確認ください。<br>毎朝5時発行・次号は明日<br><a href="archive.html" style="color:inherit">過去の紙面はこちら</a></div>
+      </section>
+
+      <section class="panel" id="panel-social" style="--cat-color:var(--c-social)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">社会</h2></div>
+        <p class="panel-sub">くらしに関わるニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>日銀の物価判断、暮らしへの影響は——「脱デフレ」はどういう意味か</h3>
+          <p class="lead">本日既報の日銀の物価判断は、長年「デフレ」に苦しんだ日本経済が、ようやく抜け出したことを示す節目とされる。ただし、物価目標への到達は、生活費がすぐに下がることを意味するわけではなく、むしろ緩やかな物価上昇が今後も続くことを前提にした判断だ。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「デフレ脱却」が必ずしも「生活が楽になる」という意味ではないという点にある。デフレ<span class="note">（＝物価が継続的に下がり続ける経済状態のこと。一見「安くなる」ので良さそうだが、企業の売り上げや賃金も下がりやすくなり、経済全体が縮小していく悪循環を招くとされる。日本は1990年代後半から長くこの状態が続いた）</span>から抜け出すこと自体は前向きな変化だが、本日既報の追加利上げが進めば、ローンの金利負担が増えるなど、新たな影響も出てくる。</p>
+          </div>
+          <div class="meta"><a href="https://news.infoseek.co.jp/article/ntv_2026103001693256/" target="_blank" rel="noopener">日本テレビ（Infoseekニュース）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>記者拘束、続報確認できず——領事面会「第一歩」から変化なし</h3>
+          <p class="lead">ロシアに拘束された北海道新聞記者の問題（10月31日既報）について、本稿の時点で新たな続報は確認できていない。10月26日の領事面会以降、茂木外相が「第一歩」と評価した状況から、事態が大きく動いた形跡は見られない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「続報がない」ことが、必ずしも悪い知らせではないが、良い知らせでもないという点にある。外交交渉の停滞<span class="note">（＝本日既報のとおり、交渉が一時的に進展しない状態が続くこと。悪化しているわけではないが、解決に向けた新たな動きも見えない、いわば「静かな時間」のこと）</span>が続く中、日本政府は引き続き外交ルートでの働きかけを続けているとみられる。</p>
+          </div>
+          <div class="meta"><a href="https://www.hokkaido-np.co.jp/article/1397580/" target="_blank" rel="noopener">北海道新聞</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-polecon" style="--cat-color:var(--c-polecon)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">政治／経済</h2></div>
+        <p class="panel-sub">政治・経済の動き2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 経済</span>
+          <h3>日銀会合、賛成8反対1で政策金利据え置き決定——1人の審議委員は追加利上げ提案</h3>
+          <p class="lead">本日既報の日銀会合の決定は、賛成8・反対1の投票結果だった。反対した審議委員1人は、政策金利を1.5%に引き上げるべきだと提案していたことが分かっている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「全員一致」ではなく、政策委員の間でも意見が分かれていたという点にある。審議委員<span class="note">（＝日本銀行の政策委員会を構成するメンバーの一部で、総裁・副総裁とともに金融政策の決定に投票権を持つ人たちのこと。経済学者や元銀行員など、さまざまな専門性を持つ人が任命される）</span>の間で意見が分かれるのは珍しくないが、今回のように「もっと早く上げるべきだ」という意見が出ることは、物価上昇への警戒感の高まりを示している。</p>
+          </div>
+          <div class="meta"><a href="https://www.dir.co.jp/report/research/economics/japan/20261030_026168.html" target="_blank" rel="noopener">大和総研</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 経済</span>
+          <h3>ETF売却ペースも拡大決定——日銀が保有資産の整理を加速</h3>
+          <p class="lead">本日既報の日銀会合では、政策金利の据え置きに加えて、日銀が保有するETF（上場投資信託）の売却ペースを拡大する決定も行われた。金融緩和政策の「正常化」が、金利面だけでなく、資産面でも進んでいることを示している。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、日銀の「正常化」が、金利政策だけでなく保有資産の整理も含む、複数の側面で進んでいるという点にある。ETF<span class="note">（＝Exchange Traded Fund（上場投資信託）の略。日本銀行は過去の金融緩和政策の一環として、大量のETFを購入し株式市場を支えてきたが、これを保有し続けることにはリスクもあるとされ、徐々に売却していく方針が取られている）</span>の売却が進むと、株式市場への影響も注視される。</p>
+          </div>
+          <div class="meta"><a href="https://www.dir.co.jp/report/research/economics/japan/20261030_026168.html" target="_blank" rel="noopener">大和総研</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-scitech" style="--cat-color:var(--c-scitech)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">科学／テック</h2></div>
+        <p class="panel-sub">研究・技術のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>三菱電機の好決算とAI投資ブーム、日銀の物価判断の背景にも——続報</h3>
+          <p class="lead">三菱電機の通期上方修正（10月31日既報）のようなAI・半導体関連需要の強さは、本日既報の日銀の物価判断の背景にある経済の好循環を支えた要素の一つとみられる。企業業績の改善が、賃上げや消費拡大を通じて物価上昇につながる流れが、実際に機能していたことが、今回の日銀の判断からもうかがえる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「個別企業の決算」と「日銀の政策判断」が、同じ経済の実態を別の角度から確認した結果だという点にある。好循環<span class="note">（＝本日既報のとおり、企業業績の改善が賃金上昇、消費拡大、物価上昇へとつながっていく経済の連鎖のこと。日銀はこの好循環が続いているかどうかを、物価判断の重要な材料にしている）</span>が本当に機能していたかどうかは、今後の企業の決算発表や賃上げ動向でも確認されていくことになる。</p>
+          </div>
+          <div class="meta"><a href="https://eetimes.itmedia.co.jp/ee/articles/2608/04/news064.html" target="_blank" rel="noopener">EE Times Japan</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>GlobalFoundries新工場、年内着工へ準備進む——日米半導体協力の次の段階、続報</h3>
+          <p class="lead">米ニューヨーク州マルタに新設されるGlobalFoundriesの新工場（10月31日既報）は、年内着工に向けた準備が続いている。日本が約100億ドルを投資するこの計画は、2029年の稼働開始を目指している。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、この計画が長期にわたる段階的なプロジェクトだという点にある。半導体工場の建設<span class="note">（＝本日既報のとおり、計画発表から着工、設備導入、試運転を経て、実際の量産開始までに数年単位の時間がかかる、大規模な事業のこと。各段階ごとに新たな節目があり、ニュースとして継続的に報じられることが多い）</span>は、年単位で進む長期プロジェクトであり、今後も段階ごとの進展が注目される。</p>
+          </div>
+          <div class="meta"><a href="https://www.manufacturingdive.com/news/globalfoundries-us-japan-trade-deal-chips-malta-new-york-fabs/832953/" target="_blank" rel="noopener">Manufacturing Dive</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-business" style="--cat-color:var(--c-business)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ビジネス</h2></div>
+        <p class="panel-sub">企業・産業のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>日銀の物価判断、企業の資金計画にも影響——借入コストの先行き</h3>
+          <p class="lead">本日既報の日銀の決定を受け、企業にとっては、本日既報の12月の追加利上げの可能性を踏まえた資金計画の見直しが必要になる。電通グループ（10月31日既報）のような大きな経営判断を控える企業にとっても、借り入れコストの先行きは重要な材料だ。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、金利が「段階的に」上がっていく局面では、企業の判断にも段階的な見直しが必要になるという点にある。借り入れコスト<span class="note">（＝本日既報のとおり、企業が銀行からお金を借りる際に支払う利息の負担のこと。政策金利が上がると、一般的に借り入れコストも上がり、企業は新たな投資や事業再編の判断に慎重になりやすくなる）</span>が今後どう変化するかは、電通グループのような大規模な事業再編を検討する企業にとっても、無視できない要素だ。</p>
+          </div>
+          <div class="meta"><a href="https://www.dir.co.jp/report/research/economics/japan/20261030_026168.html" target="_blank" rel="noopener">大和総研</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>ソフトバンク日本一の経済効果、2024年は302億〜447億円規模——続報</h3>
+          <p class="lead">本日既報のソフトバンクの日本一決定（10月31日既報）を受け、福岡を中心に優勝記念セールなどの経済効果が期待される。福岡県の資料によると、2024年の日本一の際には、302.8億円〜447.3億円規模の経済波及効果があったとされている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「優勝」という1つのスポーツの出来事が、地域経済全体に数百億円規模の影響を与えるという具体的な数字にある。経済波及効果<span class="note">（＝ある出来事（この場合はプロ野球チームの優勝）が引き起こす直接的な消費（記念グッズの購入など）だけでなく、そこから生まれる間接的な経済活動も含めて計算した、経済全体への影響の大きさのこと）</span>がこれだけの規模になるのは、記念セールやグッズ購入だけでなく、観光・飲食などへの波及も含まれているためだ。</p>
+          </div>
+          <div class="meta"><a href="https://www.pref.fukuoka.lg.jp/uploaded/attachment/231770.pdf" target="_blank" rel="noopener">福岡県</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-startup" style="--cat-color:var(--c-startup)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">スタートアップ</h2></div>
+        <p class="panel-sub">資金調達・注目トピック2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>日銀の政策判断、スタートアップの資金調達環境にも影響——続報</h3>
+          <p class="lead">本日既報の日銀の決定を受け、国内スタートアップの資金調達環境にも、今後の影響が予想される。2025年の資金調達中央値が前年比2割減となった傾向（10月31日既報）の中、本日既報の12月の追加利上げが実現すれば、ベンチャーキャピタルの投資判断にもさらなる変化が出る可能性がある。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、日銀の金融政策が、スタートアップの世界にも間接的に関係しているという点にある。ベンチャーキャピタル<span class="note">（＝本日既報のとおり、成長が期待される未上場のスタートアップに出資する投資会社のこと。金利が上がると、より安全な投資先の魅力が増し、リスクの高いスタートアップへの投資が相対的に減りやすくなるとされる）</span>の投資判断は、金利動向を含むマクロ経済環境にも左右される。</p>
+          </div>
+          <div class="meta"><a href="https://toyokeizai.net/articles/-/901502?display=b" target="_blank" rel="noopener">東洋経済オンライン</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>海外AI企業への資金集中、国内への影響続く——差別化戦略の重要性、続報</h3>
+          <p class="lead">OpenAI・Anthropicのような海外AI企業への記録的な資金集中（10月31日既報）は、国内スタートアップ業界の資金調達環境にも影響を与え続けている。資金規模で競えない国内企業にとっては、特定分野への特化という差別化戦略の重要性が、改めて指摘されている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、海外の巨大資金の動きが、間接的に国内の投資家の判断にも影響するという点にある。グローバルな資金の流れ<span class="note">（＝本日既報のとおり、世界中の投資資金が、どの国・どの分野に向かうかという大きな流れのこと。海外でAI関連への投資が過熱すると、国内の投資家も同様の分野を重視しやすくなり、それ以外の分野への投資が相対的に減ることがある）</span>は、国内スタートアップにとって、無視できない外部環境の一つになっている。</p>
+          </div>
+          <div class="meta"><a href="https://toyokeizai.net/articles/-/931242" target="_blank" rel="noopener">東洋経済オンライン</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-gadget" style="--cat-color:var(--c-gadget)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ガジェット</h2></div>
+        <p class="panel-sub">新製品2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>iPhone Duo、品薄は年明けまで続く可能性——続報</h3>
+          <p class="lead">発売から10日近くが経過したiPhone Duo（10月31日既報）の品薄状態について、Foxconnの歩留まり改善には半年から1年かかる可能性があるとの見方が続いている。年明けまで入手が難しい状況が続くとみられる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、発売から10日近くが経っても、状況が大きく変わっていないという点にある。品薄の長期化<span class="note">（＝本日既報のとおり、ある製品の供給不足が、短期間で解消せず、数カ月単位で続くこと。生産体制の立ち上げに時間がかかる新技術の製品では、特に起こりやすい）</span>は、新しい技術を使った製品ではある程度避けられない現象であり、購入を急がず長期戦を覚悟する必要がある。</p>
+          </div>
+          <div class="meta"><a href="https://iphone-mania.jp/?p=606517" target="_blank" rel="noopener">iPhone Mania</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>iPhone Duo、国内価格36万4800円——高価格帯のまま、続報</h3>
+          <p class="lead">本日既報のとおり品薄が続くiPhone Duoの国内価格（10月31日既報）は、最安構成（256GB）でも36万4800円のまま変わっていない。発売から10日近くが経っても、値下げの動きは見られない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、品薄が続いているうちは値下げの動機がメーカー側にないという点にある。価格戦略<span class="note">（＝本日既報のとおり、企業が自社製品の価格をどう設定・調整するかという方針のこと。需要が供給を上回っている（品薄の）状態では、値下げをしなくても売れるため、メーカーは価格を維持する傾向がある）</span>として、品薄が解消されるまで現在の高価格が続くとみられる。</p>
+          </div>
+          <div class="meta"><a href="https://forbesjapan.com/articles/detail/105166" target="_blank" rel="noopener">Forbes JAPAN</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-intl" style="--cat-color:var(--c-intl)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">海外</h2></div>
+        <p class="panel-sub">国際ニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>記者拘束問題、国際団体の関与続く——続報は確認できず</h3>
+          <p class="lead">本日既報の記者拘束問題について、米国のジャーナリスト保護団体CPJなどの関与（10月30日既報）は続いているとみられるが、本稿の時点では新たな続報を確認できていない。各国大使館の連帯表明（10月30日既報）から、事態が大きく動いた形跡は見られない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、国際的な関心が持続しているかどうかが、今後の交渉にも影響するという点にある。関心の持続<span class="note">（＝本日既報のとおり、ある問題について、国際社会やメディアの注目が、時間が経っても薄れずに続くこと。関心が薄れると、当事国への外交的な圧力も弱まりやすくなるため、持続すること自体が重要とされる）</span>が続く限り、ロシア側への圧力も一定程度維持されると考えられる。</p>
+          </div>
+          <div class="meta"><a href="https://www.hokkaido-np.co.jp/article/1397580/" target="_blank" rel="noopener">北海道新聞</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>日銀の判断、海外投資家も注視——日本の金融政策の「正常化」</h3>
+          <p class="lead">本日既報の日銀の決定は、海外の投資家からも注目されている。長年の超低金利政策から徐々に「正常化」へ向かう日本の金融政策の動きは、世界的な金利環境を見る上でも重要な材料とされている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、日本の金融政策が、国内だけでなく世界の金融市場にも影響を与えるという点にある。金融政策の正常化<span class="note">（＝本日既報のとおり、長く続いた異例の金融緩和（超低金利政策など）から、徐々に通常の金融政策運営に戻していくこと。日本はこの正常化のプロセスが、他の主要国に比べて大きく遅れていたとされる）</span>が進むことで、世界的な資金の流れにも変化が生じる可能性がある。</p>
+          </div>
+          <div class="meta"><a href="https://www.dir.co.jp/report/research/economics/japan/20261030_026168.html" target="_blank" rel="noopener">大和総研</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-sports" style="--cat-color:var(--c-sports)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">芸能／スポーツ</h2></div>
+        <p class="panel-sub">厳選2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>ソフトバンク日本一、続報——福岡で記念セールへの期待高まる</h3>
+          <p class="lead">本日既報のソフトバンクの日本一決定（10月31日既報）を受け、福岡市内の百貨店やスーパーでは、優勝記念セールの実施が見込まれている。過去の優勝時には、複数の商業施設が記念セールを行ってきた実績がある。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、プロ野球の優勝が、地元の商業活動とセットで語られる慣習になっているという点にある。優勝記念セール<span class="note">（＝本日既報のとおり、プロ野球チームが優勝した際に、その本拠地の地元商店街やデパートなどが行う、記念価格での販売イベントのこと。ファンの購買意欲が高まるタイミングを捉えた、地域経済の活性化策の一つ）</span>は、毎年の恒例行事として地元経済に根付いている。</p>
+          </div>
+          <div class="meta"><a href="https://www.sakigake.jp/news/article/20260918CO0053/" target="_blank" rel="noopener">さきがけ</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>プロ野球シーズン終了、オフシーズンの話題に移行——続報</h3>
+          <p class="lead">本日既報の日本一決定により、2026年のプロ野球シーズンは事実上終了した。ここからは、来季に向けたトレードや契約交渉など、オフシーズンの話題が中心になっていく。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「シーズンの終わり」が「野球ニュースの終わり」ではないという点にある。オフシーズンの話題<span class="note">（＝本日既報のとおり、公式戦が行われない冬の期間に話題になる、選手の契約交渉、トレード、戦力補強などのニュースのこと。シーズン中とは違う形で、野球ファンの関心を集め続ける）</span>は、来季の戦力を左右する重要な動きとして、引き続き注目されることになる。</p>
+          </div>
+          <div class="meta"><a href="https://www.daily.co.jp/baseball/2024/10/27/0018276229.shtml" target="_blank" rel="noopener">デイリースポーツ</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-koshien" style="--cat-color:var(--c-koshien)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">高校野球【埼玉】</h2></div>
+        <p class="panel-sub">秋季大会2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>埼玉県勢、冬の鍛錬が本格化——来夏の甲子園へ向けて、続報</h3>
+          <p class="lead">秋季大会をすべて終えた埼玉県勢（10月31日既報）は、本格的な冬のオフシーズンを過ごしている。西武台・山村学園（10月18日・19日既報）はいずれも関東大会の準々決勝で敗れており、来年夏の甲子園予選に向けたチームづくりが各校で続く。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、高校野球が「秋の大会で終わり」ではなく、「冬の鍛錬を経て、来夏につながっていく」という、1年を通じたサイクルの中にあるという点にある。オフシーズン<span class="note">（＝公式戦が行われない、主に冬の期間のこと。この間に基礎体力づくりや技術の見直しを行い、次のシーズンに備える）</span>の過ごし方が、来年のチームの土台を作る。関東大会での結果は、むしろ冬の練習に向けた良い材料になるとも言える。</p>
+          </div>
+          <div class="meta"><a href="https://www.hb-nippon.com/tournaments/1072" target="_blank" rel="noopener">高校野球ドットコム</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>センバツ選考プロセス、12月12日の推薦校決定が次の節目——続報</h3>
+          <p class="lead">来春のセンバツ出場校を決める2段階のプロセス（10月31日既報）では、まず12月12日に関東地区の推薦校が決まり、その後1月末の選考委員会で最終的な出場校が発表される。埼玉県勢にとっては、この12月の推薦校発表が次の注目ポイントになる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「次に何が起きるか」が、はっきりと日程で示されている点にある。推薦校<span class="note">（＝本日既報のとおり、センバツ出場校選考の最初の段階で、各地区の大会連盟が候補として選ぶ学校のこと。関東大会で上位に進出した学校が中心になるとみられ、準々決勝で敗れた埼玉県勢がこの推薦に食い込むのは難しい状況とされる）</span>に選ばれるのは、関東大会で上位に進出した学校が中心になるとみられている。</p>
+          </div>
+          <div class="meta"><a href="https://www.hb-nippon.com/tournaments/1072" target="_blank" rel="noopener">高校野球ドットコム</a></div>
+        </article>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var cats = ['top','social','polecon','scitech','business','startup','gadget','intl','sports','koshien'];
+  var idx = 0;
+  var track = document.getElementById('track');
+  var viewport = document.getElementById('viewport');
+  var vw = viewport.clientWidth;
+
+  function setActive(i){
+    cats.forEach(function(c, j){
+      document.getElementById('tab-' + c).classList.toggle('active', j === i);
+    });
+    var activeTab = document.getElementById('tab-' + cats[i]);
+    if (activeTab && activeTab.scrollIntoView) activeTab.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+  }
+
+  function settle(i, animate){
+    idx = Math.max(0, Math.min(cats.length - 1, i));
+    track.style.transition = animate ? 'transform .32s cubic-bezier(.22,.61,.36,1)' : 'none';
+    track.style.transform = 'translateX(' + (-idx * vw) + 'px)';
+    setActive(idx);
+  }
+
+  window.goTo = function(i){ settle(i, true); };
+
+  window.addEventListener('resize', function(){
+    vw = viewport.clientWidth;
+    settle(idx, false);
+  });
+
+  var dragging = false, decided = null, sx = 0, sy = 0, dx = 0;
+  viewport.addEventListener('touchstart', function(e){
+    dragging = true; decided = null;
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY; dx = 0;
+    track.style.transition = 'none';
+  }, { passive: true });
+
+  viewport.addEventListener('touchmove', function(e){
+    if (!dragging) return;
+    var cx = e.touches[0].clientX, cy = e.touches[0].clientY;
+    var mdx = cx - sx, mdy = cy - sy;
+    if (decided === null) {
+      if (Math.abs(mdx) > 8 || Math.abs(mdy) > 8) {
+        decided = Math.abs(mdx) > Math.abs(mdy) ? 'x' : 'y';
+      }
+    }
+    if (decided === 'x') {
+      e.preventDefault();
+      dx = mdx;
+      var atStart = idx === 0 && dx > 0;
+      var atEnd = idx === cats.length - 1 && dx < 0;
+      var eased = (atStart || atEnd) ? dx * 0.35 : dx;
+      track.style.transform = 'translateX(' + (-idx * vw + eased) + 'px)';
+    }
+  }, { passive: false });
+
+  viewport.addEventListener('touchend', function(){
+    if (!dragging) return;
+    dragging = false;
+    if (decided === 'x') {
+      var threshold = vw * 0.18;
+      if (dx <= -threshold) settle(idx + 1, true);
+      else if (dx >= threshold) settle(idx - 1, true);
+      else settle(idx, true);
+    }
+    decided = null; dx = 0;
+  });
+
+  settle(0, false);
+})();
+</script>
+
+</body></html>
