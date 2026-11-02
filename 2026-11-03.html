@@ -1,0 +1,610 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yoshi's News</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Zen+Old+Mincho:wght@600;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap');
+
+:root {
+  --bg: #ffffff;
+  --panel-bg: #ffffff;
+  --card: #ffffff;
+  --card-line: #eef0f3;
+  --ink: #1a1c20;
+  --ink-soft: #5b6068;
+  --ink-faint: #9aa0a8;
+  --shell: #f4f5f7;
+
+  --c-top: #ef3355;
+  --c-social: #00b3a4;
+  --c-polecon: #6d5bf0;
+  --c-scitech: #ff8a1e;
+  --c-business: #0091ff;
+  --c-sports: #26c281;
+  --c-startup: #ff4fa3;
+  --c-koshien: #c8860d;
+  --c-intl: #4b3f8f;
+  --c-gadget: #00bcd4;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101114;
+    --panel-bg: #101114;
+    --card: #1a1c20;
+    --card-line: #2a2c31;
+    --ink: #f1f2f4;
+    --ink-soft: #b7bcc4;
+    --ink-faint: #767c86;
+    --shell: #1a1c20;
+    --c-top: #ff6b85;
+    --c-social: #3fd8c9;
+    --c-polecon: #9c8fff;
+    --c-scitech: #ffab5c;
+    --c-business: #4db2ff;
+    --c-sports: #5be0a6;
+    --c-startup: #ff85c2;
+    --c-koshien: #e8b34c;
+    --c-intl: #a89cf0;
+    --c-gadget: #4dd8ea;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101114;
+  --panel-bg: #101114;
+  --card: #1a1c20;
+  --card-line: #2a2c31;
+  --ink: #f1f2f4;
+  --ink-soft: #b7bcc4;
+  --ink-faint: #767c86;
+  --shell: #1a1c20;
+  --c-top: #ff6b85;
+  --c-social: #3fd8c9;
+  --c-polecon: #9c8fff;
+  --c-scitech: #ffab5c;
+  --c-business: #4db2ff;
+  --c-sports: #5be0a6;
+  --c-startup: #ff85c2;
+  --c-koshien: #e8b34c;
+  --c-intl: #a89cf0;
+  --c-gadget: #4dd8ea;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--shell);
+  color: var(--ink);
+  font-family: "Zen Kaku Gothic New", -apple-system, "Hiragino Kaku Gothic ProN", sans-serif;
+  line-height: 1.7;
+  overscroll-behavior-y: none;
+}
+.serif { font-family: "Zen Old Mincho", "Hiragino Mincho ProN", serif; }
+
+.app {
+  max-width: 680px;
+  margin: 0 auto;
+  background: var(--bg);
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ---- Header ---- */
+.topbar { padding: 20px 20px 0; flex-shrink: 0; }
+.title-line { display: flex; align-items: center; gap: 8px; }
+.mascot { height: 50px; width: auto; flex-shrink: 0; border-radius: 8px; }
+.title-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  margin-bottom: 14px;
+}
+.title-row h1 {
+  font-family: "Baloo 2", "Zen Kaku Gothic New", sans-serif;
+  font-size: 48px; font-weight: 800; margin: 0; letter-spacing: 0.01em; line-height: 1;
+  -webkit-text-stroke: 2.4px #2b2013;
+  filter: drop-shadow(2px 3px 0 rgba(30,22,12,0.18));
+  background-image:
+    radial-gradient(circle at 22% 30%, #211709 0 7px, transparent 8px),
+    radial-gradient(circle at 68% 65%, #3a2b16 0 9px, transparent 10px),
+    radial-gradient(circle at 45% 88%, #241a0c 0 5px, transparent 6px),
+    radial-gradient(circle at 85% 20%, #2e2211 0 6px, transparent 7px),
+    linear-gradient(135deg, #b8a06e, #967c4c 50%, #6f5a35);
+  background-size: 30px 30px, 41px 41px, 23px 23px, 35px 35px, 100% 100%;
+  background-repeat: repeat, repeat, repeat, repeat, no-repeat;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.title-row .date { font-size: 11.5px; color: var(--ink-faint); white-space: nowrap; font-weight: 500; margin-top: 2px; }
+
+.tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px 3px; }
+.tab {
+  appearance: none; border: none; background: none;
+  font-family: inherit; font-size: 10.5px; font-weight: 700;
+  color: var(--ink-faint);
+  padding: 7px 4px 9px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+  cursor: pointer;
+  border-radius: 10px 10px 0 0;
+  transition: color .2s ease, background .2s ease;
+}
+.tab .dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  margin-right: 5px; background: currentColor; opacity: 0.45; vertical-align: middle;
+}
+.tab::after {
+  content: ""; position: absolute; left: 10px; right: 10px; bottom: 0;
+  height: 3px; border-radius: 3px 3px 0 0; background: transparent; transition: background .2s ease;
+}
+.tab.active { color: var(--tab-color); background: color-mix(in srgb, var(--tab-color) 10%, transparent); }
+.tab.active .dot { opacity: 1; }
+.tab.active::after { background: var(--tab-color); }
+
+/* ---- Swipe viewport ---- */
+.viewport { flex: 1; overflow: hidden; position: relative; touch-action: pan-y; }
+.track {
+  display: flex;
+  height: 100%;
+  width: 1000%;
+  transition: transform .32s cubic-bezier(.22,.61,.36,1);
+  will-change: transform;
+}
+.panel {
+  width: 10%;
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 20px 56px;
+}
+
+.panel-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.panel-head .chip { width: 8px; height: 26px; border-radius: 4px; background: var(--cat-color); flex-shrink: 0; }
+.panel-head h2 { font-size: 20px; font-weight: 700; margin: 0; letter-spacing: 0.02em; color: var(--cat-color); }
+.panel-sub { font-size: 12px; color: var(--ink-faint); margin: 0 0 18px 18px; }
+
+.story {
+  background: var(--card);
+  border: 1px solid var(--card-line);
+  border-left: 4px solid var(--cat-color);
+  border-radius: 12px;
+  padding: 18px 18px 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(20,20,30,0.05);
+}
+.story .kicker {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: "Zen Old Mincho", serif; font-size: 11.5px; font-weight: 700;
+  color: var(--cat-color); margin-bottom: 9px;
+}
+.story h3 { font-size: 16px; font-weight: 700; line-height: 1.55; margin: 0 0 10px; }
+.story .lead { font-size: 14px; color: var(--ink); margin: 0 0 14px; line-height: 1.85; }
+
+.context {
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 10px;
+  padding: 13px 15px;
+  margin: 0 0 12px;
+}
+.context-label {
+  display: block; font-size: 10.5px; font-weight: 700;
+  color: var(--cat-color); letter-spacing: 0.04em; margin-bottom: 6px;
+}
+.context p { font-size: 13px; color: var(--ink-soft); margin: 0; line-height: 1.8; }
+
+.note { font-size: 11.5px; color: var(--ink-faint); font-weight: 500; }
+
+.term-link {
+  color: var(--cat-color);
+  text-decoration: none;
+  border-bottom: 1px dotted color-mix(in srgb, var(--cat-color) 55%, transparent);
+  font-weight: 700;
+}
+
+.meta { font-size: 11px; color: var(--ink-faint); }
+.meta a { color: var(--cat-color); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--cat-color) 40%, transparent); font-weight: 700; }
+
+.closing {
+  margin: 6px 0 0; padding: 16px 18px;
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 12px; font-size: 13px; color: var(--ink-soft); text-align: center;
+}
+.closing .label {
+  display: block; font-family: "Zen Old Mincho", serif; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.2em; color: var(--cat-color); margin-bottom: 8px;
+}
+.colophon { margin: 14px 0 8px; font-size: 10.5px; color: var(--ink-faint); line-height: 1.9; text-align: center; }
+
+@media (max-width: 420px) {
+  .topbar { padding: 16px 14px 0; }
+  .panel { padding: 16px 14px 48px; }
+  .title-row h1 { font-size: 38px; }
+  .mascot { height: 40px; }
+}
+</style>
+</head><body>
+
+
+<div class="app" id="app">
+
+  <div class="topbar">
+    <div class="title-row">
+      <div class="title-line">
+        <img class="mascot" src="mascot.jpg" alt="オオサンショウウオのマスコット">
+        <h1>Yoshi's News</h1>
+      </div>
+      <span class="date">2026年11月3日（火・文化の日）・第61号</span>
+    </div>
+    <div class="tabs" id="tabs">
+      <button class="tab" id="tab-top" style="--tab-color:var(--c-top)" onclick="goTo(0)"><span class="dot"></span>トップ</button>
+      <button class="tab" id="tab-social" style="--tab-color:var(--c-social)" onclick="goTo(1)"><span class="dot"></span>社会</button>
+      <button class="tab" id="tab-polecon" style="--tab-color:var(--c-polecon)" onclick="goTo(2)"><span class="dot"></span>政治/経済</button>
+      <button class="tab" id="tab-scitech" style="--tab-color:var(--c-scitech)" onclick="goTo(3)"><span class="dot"></span>科学/テック</button>
+      <button class="tab" id="tab-business" style="--tab-color:var(--c-business)" onclick="goTo(4)"><span class="dot"></span>ビジネス</button>
+      <button class="tab" id="tab-startup" style="--tab-color:var(--c-startup)" onclick="goTo(5)"><span class="dot"></span>スタートアップ</button>
+      <button class="tab" id="tab-gadget" style="--tab-color:var(--c-gadget)" onclick="goTo(6)"><span class="dot"></span>ガジェット</button>
+      <button class="tab" id="tab-intl" style="--tab-color:var(--c-intl)" onclick="goTo(7)"><span class="dot"></span>海外</button>
+      <button class="tab" id="tab-sports" style="--tab-color:var(--c-sports)" onclick="goTo(8)"><span class="dot"></span>芸能/スポーツ</button>
+      <button class="tab" id="tab-koshien" style="--tab-color:var(--c-koshien)" onclick="goTo(9)"><span class="dot"></span>高校野球【埼玉】</button>
+    </div>
+  </div>
+
+  <div class="viewport" id="viewport">
+    <div class="track" id="track">
+
+      <section class="panel" id="panel-top" style="--cat-color:var(--c-top)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">トップニュース</h2></div>
+        <p class="panel-sub">今日いちばん知っておきたい2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 芸能・スポーツ</span>
+          <h3>本日は文化の日——任天堂・宮本茂氏に文化勲章、ゲーム分野で初</h3>
+          <p class="lead">政府は10月23日、令和8年度の文化勲章受章者8人を発表し、任天堂代表取締役フェローの宮本茂氏（73）が選ばれた。ゲーム分野からの受章は初めて。本日11月3日の文化の日には、皇居で天皇陛下から直接授与される親授式が行われる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「ゲーム」という比較的新しい分野が、国の最高位の文化的な栄典で認められたという点にある。文化勲章<span class="note">（＝日本の文化の発展に特に優れた功績を上げた人に贈られる、国の最高位の栄典の一つ。毎年11月3日の文化の日に、皇居で天皇陛下から直接授与される「親授式」が行われる）</span>は、これまで文学・美術・音楽・科学などの分野が中心で、ゲームという娯楽産業からの受章は、この分野が日本の文化として公的に認められたことを象徴する出来事だ。</p>
+          </div>
+          <div class="meta"><a href="https://www.toy-people.com/jp/?p=115736" target="_blank" rel="noopener">トイズマガジン</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 芸能・スポーツ</span>
+          <h3>西武、平良海馬投手のポスティング移籍を容認——最優秀防御率右腕、メジャーへ前進</h3>
+          <p class="lead">西武は10月30日、平良海馬投手がポスティングシステムを利用してメジャーリーグへの移籍を目指す意向を受諾すると発表した。平良投手は2026年、23試合・146回を投げて12勝5敗、防御率1.36で最優秀防御率のタイトルを獲得する活躍を見せており、今後は球団内で移籍に向けた手続きが始まる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「本人の希望」が「球団の決定」に変わった段階にある点にある。球団の受諾<span class="note">（＝11月2日既報のポスティングシステムで、所属選手の移籍希望を所属球団が正式に認めること。これにより、選手は実際にメジャー球団と交渉できる立場になる。西武の広池浩司球団本部長は「今度は私たちが彼の要望に応える番」と述べている）</span>により、平良投手のメジャー挑戦は、希望の表明から実現に向けた具体的な手続きの段階に進んだことになる。</p>
+          </div>
+          <div class="meta"><a href="https://www.baseballchannel.jp/npb/lions/299458/" target="_blank" rel="noopener">Baseball Channel</a></div>
+        </article>
+
+        <div class="closing">
+          <span class="label serif">編集後記</span>
+          本日は文化の日。任天堂の宮本茂氏が、ゲーム分野で初めて文化勲章を受章し、皇居での親授式に臨みます。プロ野球では西武が平良海馬投手のポスティング移籍を容認、最優秀防御率右腕のメジャー挑戦が本格的に動き出しました。記者拘束問題は依然続報が確認できていません。タブまたはスワイプで10のジャンルを読み進められます。良い祝日を。
+        </div>
+        <div class="colophon">AIが検索結果をもとに要約・編集しています。詳細は各記事の出典リンクでご確認ください。<br>毎朝5時発行・次号は明日<br><a href="archive.html" style="color:inherit">過去の紙面はこちら</a></div>
+      </section>
+
+      <section class="panel" id="panel-social" style="--cat-color:var(--c-social)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">社会</h2></div>
+        <p class="panel-sub">くらしに関わるニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>文化勲章親授式、本日皇居で——8人が受章</h3>
+          <p class="lead">本日既報の文化勲章の親授式が、本日11月3日に皇居で行われる。宮本茂氏のほか、照明デザイナーの石井幹子氏、建築家の伊東豊雄氏、生物学者の黒岩常祥氏、フランス文学者の塩川徹也氏、化学者の硤合憲三氏、作曲家の都倉俊一氏、免疫学者の長田重一氏の計8人が受章する。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、受章者の分野の幅広さにある。文化功労者<span class="note">（＝文化勲章の受章者は、原則として前年度までに「文化功労者」として選ばれた人の中から、閣議で決定される。文化功労者は文学・美術・音楽・科学技術・産業技術など、幅広い分野で功績を上げた人が対象になる）</span>という選考の仕組みにより、科学・芸術・娯楽といった多様な分野から、その年を代表する功績が選ばれる。</p>
+          </div>
+          <div class="meta"><a href="https://news.allabout.co.jp/articles/o/19223/" target="_blank" rel="noopener">All About</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>記者拘束、続報確認できず——長期化続く</h3>
+          <p class="lead">ロシアに拘束された北海道新聞記者の問題（11月2日既報）について、本稿の時点で新たな続報は確認できていない。勾留期限の12月12日まで、FSBの捜査が続く見通しのまま状況が維持されている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「大きな動きがない」ことが、むしろ長期戦の様相を強めているという点にある。長期化の定着<span class="note">（＝ある問題が、解決も悪化もせず、同じ状態のまま長く続くこと。最初は「いつ解決するか」という期待が持たれるが、時間が経つほど「長引く問題」として認識されるようになる）</span>が進む中、日本政府は引き続き外交ルートでの働きかけを続けているとみられる。</p>
+          </div>
+          <div class="meta"><a href="https://www.hokkaido-np.co.jp/article/1397580/" target="_blank" rel="noopener">北海道新聞</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-polecon" style="--cat-color:var(--c-polecon)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">政治／経済</h2></div>
+        <p class="panel-sub">政治・経済の動き2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 政治</span>
+          <h3>文化勲章の選考プロセス——どのように8人が選ばれるのか</h3>
+          <p class="lead">本日既報の文化勲章は、文部科学省が中心となって選考を進め、最終的に閣議で決定される。受章者はまず「文化功労者」として選ばれ、その中から特に優れた功績を上げた人が、翌年以降に文化勲章の受章者として選ばれる仕組みになっている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「1段階」ではなく「2段階」の選考プロセスだという点にある。閣議決定<span class="note">（＝内閣（首相と各大臣）が集まって行う会議で、政府としての方針や決定を正式に確認すること。文化勲章の受章者は、各分野の専門家による推薦・審査を経て、最終的にこの閣議で決定される）</span>という形を取ることで、文化的な功績の評価に、政府としての公式な重みが与えられている。</p>
+          </div>
+          <div class="meta"><a href="https://news.allabout.co.jp/articles/o/19223/" target="_blank" rel="noopener">All About</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 経済</span>
+          <h3>日銀短観が裏付けるAI・半導体ブーム、続報——先行きの原油高リスクに注意</h3>
+          <p class="lead">日銀短観（11月2日既報）で示された大企業製造業の景況感改善（6四半期連続）について、先行きでは中東情勢に伴う原油高がコスト圧迫要因として懸念されている状況に変わりはない。本日既報の文化的な話題とは対照的に、経済面では慎重な見方も残る。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「現在は好調」でも「先行きは楽観できない」という、企業の慎重な見方にある。原油高<span class="note">（＝本日既報のとおり、原油の国際的な価格が上昇すること。輸送用の燃料や様々な製品の原材料として使われるため、価格上昇は広い範囲の企業のコストに影響する）</span>のようなリスク要因が複数あることは、今後の企業業績の変化を注視する必要があることを示している。</p>
+          </div>
+          <div class="meta"><a href="https://www.dir.co.jp/report/research/economics/japan/20261001_026103.html" target="_blank" rel="noopener">大和総研</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-scitech" style="--cat-color:var(--c-scitech)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">科学／テック</h2></div>
+        <p class="panel-sub">研究・技術のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>宮本茂氏、ゲーム分野で初の文化勲章——「ゲームが当たり前になった」</h3>
+          <p class="lead">本日既報の文化勲章の発表前日、10月22日に京都の任天堂本社で行われた記者会見で、宮本茂氏は受章を「照れくさい」と笑いつつ語った。「ゲームが文化になった」と問われた際には、「ゲームが文化になったというのは、ゲームが当たり前になったということでしょうね」と述べている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「特別なもの」から「当たり前のもの」への変化こそが、文化として根付いた証だという宮本氏の視点にある。文化として根付く<span class="note">（＝ある表現・娯楽の形式が、特別な存在ではなく、多くの人の生活に自然に溶け込んだ状態のこと。テレビやマンガも、かつては新しい娯楽だったが、今では当たり前の存在として社会に根付いている）</span>という考え方は、ゲームという比較的新しい分野の評価を考える上で、示唆に富む発言だ。</p>
+          </div>
+          <div class="meta"><a href="https://www.toy-people.com/jp/?p=115736" target="_blank" rel="noopener">トイズマガジン</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>宮本茂氏、約50年のキャリア——「とてもラッキーな人生だった」</h3>
+          <p class="lead">本日既報の宮本茂氏は、1977年に任天堂に入社して以来、約50年にわたってゲーム開発に携わってきた。ゲームの黎明期から関わってきた自身のキャリアを振り返り、「とてもラッキーな人生だった」と語っている。功績については「ひとりで作っているものではなく、大勢の人たちと一緒に作ってきた結果。それを代表するという気持ちで受ける」とも述べた。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、宮本氏が受章を「個人の功績」ではなく「チームの代表」として受け止めている点にある。黎明期<span class="note">（＝ある分野・技術が始まったばかりの、まだ発展していない初期の時期のこと。家庭用ゲーム機が普及し始めた1980年代前半は、ゲーム産業の黎明期と言える）</span>から現在の成熟期まで、約50年という長さでゲーム産業を見てきた人物の受章は、この産業の歴史そのものを評価する意味合いも持つ。</p>
+          </div>
+          <div class="meta"><a href="https://www.toy-people.com/jp/?p=115736" target="_blank" rel="noopener">トイズマガジン</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-business" style="--cat-color:var(--c-business)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ビジネス</h2></div>
+        <p class="panel-sub">企業・産業のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>任天堂、ゲーム産業の文化的評価の節目に——企業価値への波及も</h3>
+          <p class="lead">本日既報の宮本茂氏の文化勲章受章は、任天堂という一企業にとっても、ゲーム産業全体の社会的評価を高める出来事として受け止められている。マリオやゼルダといった長年のヒット作を生んだ人物の受章は、同社の企業イメージにも良い影響を与えるとみられる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「個人の受章」が「企業の評価」にもつながるという点にある。企業イメージへの波及<span class="note">（＝ある企業の社員・関係者が受けた社会的な評価や栄誉が、間接的にその企業全体のイメージ向上につながること。長年の功績を持つ人物が高く評価されることは、その人が所属してきた企業の歴史や実績の裏付けにもなる）</span>は、直接的な業績への影響とは別に、ブランド価値を高める効果を持つ。</p>
+          </div>
+          <div class="meta"><a href="https://www.toy-people.com/jp/?p=115736" target="_blank" rel="noopener">トイズマガジン</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>佐川急便・ヤマト運輸の情報流出、続報——企業の対応が問われる</h3>
+          <p class="lead">佐川急便・ヤマト運輸の情報流出問題（11月2日既報）について、本稿の時点で両社からの新たな続報は確認できていない。サービスは既に再開しているが、今後の再発防止策の公表が待たれる状況だ。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「サービス再開」が「問題の解決」を意味するわけではないという点にある。再発防止策<span class="note">（＝本日既報のような不正アクセス・情報漏えいが二度起きないようにするための、技術的・組織的な対策のこと。原因の調査結果とあわせて公表されることが一般的で、利用者の信頼回復には不可欠とされる）</span>の公表がまだであれば、利用者の不安は完全には解消されていないと言える。</p>
+          </div>
+          <div class="meta"><a href="https://netshop.impress.co.jp/n/2026/10/26/16922" target="_blank" rel="noopener">ネットショップ担当者フォーラム</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-startup" style="--cat-color:var(--c-startup)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">スタートアップ</h2></div>
+        <p class="panel-sub">資金調達・注目トピック2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>国内スタートアップ、選別と大型化の構図が定着——続報</h3>
+          <p class="lead">2025年の国内スタートアップ資金調達の中央値が前年比2割減となった傾向（11月2日既報）について、本稿の時点で新たな統計の更新は確認できていない。大企業の業績改善（本日既報の日銀短観）と、新興企業への資金の回り方のギャップが続いているとみられる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「経済全体の改善」と「個々の企業への恩恵」が、必ずしも均等に行き渡らないという点にある。恩恵の不均衡<span class="note">（＝本日既報のとおり、経済全体の統計が改善していても、その改善の恩恵が、大企業と中小企業、あるいは成熟企業とスタートアップとの間で、均等に行き渡らないこと）</span>は、マクロ指標を見る際に気をつけるべきポイントの一つだ。</p>
+          </div>
+          <div class="meta"><a href="https://toyokeizai.net/articles/-/901502?display=b" target="_blank" rel="noopener">東洋経済オンライン</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>海外AI企業への資金集中、国内への影響続く——差別化戦略の重要性、続報</h3>
+          <p class="lead">OpenAI・Anthropicのような海外AI企業への記録的な資金集中（11月2日既報）は、国内スタートアップ業界の資金調達環境にも影響を与え続けている。資金規模で競えない国内企業にとっては、特定分野への特化という差別化戦略の重要性が、改めて指摘されている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、海外の巨大資金の動きが、間接的に国内の投資家の判断にも影響するという点にある。グローバルな資金の流れ<span class="note">（＝本日既報のとおり、世界中の投資資金が、どの国・どの分野に向かうかという大きな流れのこと。海外でAI関連への投資が過熱すると、国内の投資家も同様の分野を重視しやすくなり、それ以外の分野への投資が相対的に減ることがある）</span>は、国内スタートアップにとって、無視できない外部環境の一つになっている。</p>
+          </div>
+          <div class="meta"><a href="https://toyokeizai.net/articles/-/931242" target="_blank" rel="noopener">東洋経済オンライン</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-gadget" style="--cat-color:var(--c-gadget)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ガジェット</h2></div>
+        <p class="panel-sub">新製品2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>宮本茂氏とは——マリオ・ゼルダを生んだゲームデザイナー</h3>
+          <p class="lead">本日既報で文化勲章を受章した宮本茂氏は、任天堂の代表取締役フェローで、「スーパーマリオ」「ゼルダの伝説」など数々の人気シリーズを生み出したゲームデザイナーとして知られる。1977年に任天堂に入社して以来、約50年にわたって同社のゲーム開発を支えてきた。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、1人のクリエイターが生み出したキャラクター・作品群が、世界的な規模で親しまれているという点にある。ゲームデザイナー<span class="note">（＝ゲームの企画・設計を担う職業のこと。キャラクターの動き方や、ステージの仕組み、ゲーム全体の面白さの核となる部分を考える役割を持つ。宮本氏は、この職業の草分け的存在として知られる）</span>という職業自体の社会的な認知度を高めた人物としても、宮本氏の功績は大きい。</p>
+          </div>
+          <div class="meta"><a href="https://www.toy-people.com/jp/?p=115736" target="_blank" rel="noopener">トイズマガジン</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>iPhone Duo、品薄は年明けまで続く可能性——続報</h3>
+          <p class="lead">発売から2週間近くが経過したiPhone Duo（11月2日既報）の品薄状態について、Foxconnの歩留まり改善には半年から1年かかる可能性があるとの見方が続いている。年明けまで入手が難しい状況が続くとみられる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、発売から2週間近くが経っても、状況が大きく変わっていないという点にある。品薄の長期化<span class="note">（＝本日既報のとおり、ある製品の供給不足が、短期間で解消せず、数カ月単位で続くこと。生産体制の立ち上げに時間がかかる新技術の製品では、特に起こりやすい）</span>は、新しい技術を使った製品ではある程度避けられない現象であり、購入を急がず長期戦を覚悟する必要がある。</p>
+          </div>
+          <div class="meta"><a href="https://iphone-mania.jp/?p=606517" target="_blank" rel="noopener">iPhone Mania</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-intl" style="--cat-color:var(--c-intl)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">海外</h2></div>
+        <p class="panel-sub">国際ニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>記者拘束問題、国際団体の関与続く——続報は確認できず</h3>
+          <p class="lead">本日既報の記者拘束問題について、米国のジャーナリスト保護団体CPJなどの関与は続いているとみられるが、本稿の時点では新たな続報を確認できていない。各国大使館の連帯表明から、事態が大きく動いた形跡は見られない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、国際的な関心が持続しているかどうかが、今後の交渉にも影響するという点にある。関心の持続<span class="note">（＝本日既報のとおり、ある問題について、国際社会やメディアの注目が、時間が経っても薄れずに続くこと。関心が薄れると、当事国への外交的な圧力も弱まりやすくなるため、持続すること自体が重要とされる）</span>が続く限り、ロシア側への圧力も一定程度維持されると考えられる。</p>
+          </div>
+          <div class="meta"><a href="https://www.hokkaido-np.co.jp/article/1397580/" target="_blank" rel="noopener">北海道新聞</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>平良海馬のメジャー挑戦、米メディアも注目続く</h3>
+          <p class="lead">本日既報の平良海馬投手のポスティング移籍について、米メディアの関心は継続しているとみられる。ジャイアンツなど複数球団が投手補強を検討しているとされる中、最優秀防御率右腕の争奪戦がどう展開するか、今後の報道が注目される。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「球団が決めた」ことで、次は「どの球団が獲得するか」という新たな段階に入った点にある。争奪戦<span class="note">（＝複数の球団が、同じ1人の選手の獲得を目指して競争すること。評価の高い選手ほど、より多くの球団が興味を示し、契約条件も選手側に有利になりやすい）</span>の行方は、本日既報の本人の希望（先発としての移籍）がどこまで実現するかにも関わってくる。</p>
+          </div>
+          <div class="meta"><a href="https://www.baseballchannel.jp/npb/lions/299458/" target="_blank" rel="noopener">Baseball Channel</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-sports" style="--cat-color:var(--c-sports)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">芸能／スポーツ</h2></div>
+        <p class="panel-sub">厳選2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>平良海馬、今季12勝5敗・防御率1.36で最優秀防御率——交渉はこれから</h3>
+          <p class="lead">本日既報のとおりポスティング移籍が容認された平良海馬投手は、2026年シーズン、先発に戻って23試合・146回を投げ、12勝5敗、防御率1.36という好成績で最優秀防御率のタイトルを獲得した。今後は代理人を通じて、メジャー球団との交渉が本格化する。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「好成績があったからこそ」球団が移籍を容認したという関係性にある。最優秀防御率<span class="note">（＝1シーズンを通じて、最も失点を抑えた投手に贈られるタイトルのこと。防御率1.36という数字は、9イニングあたり平均1.36点しか失点していないことを示し、投手として非常に優れた成績とされる）</span>というタイトルは、本日既報のメジャー球団からの高い評価の裏付けにもなっている。</p>
+          </div>
+          <div class="meta"><a href="https://www.baseballchannel.jp/npb/lions/299458/" target="_blank" rel="noopener">Baseball Channel</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>文化勲章親授式、本日皇居で——宮本茂氏ら8人が受章</h3>
+          <p class="lead">本日既報のとおり、文化勲章の親授式が本日11月3日、皇居で行われる。任天堂の宮本茂氏をはじめとする8人が、天皇陛下から直接勲章を授与される。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「文化の日」という祝日そのものの意味にある。文化の日<span class="note">（＝11月3日の国民の祝日。1946年に日本国憲法が公布された日を記念して定められた。「自由と平和を愛し、文化をすすめる」ことを趣旨とし、この日に文化勲章の親授式が行われることが、長年の恒例になっている）</span>に合わせて、その年を代表する文化的功績が表彰される仕組みは、戦後日本の文化政策の一つの伝統として続いている。</p>
+          </div>
+          <div class="meta"><a href="https://news.allabout.co.jp/articles/o/19223/" target="_blank" rel="noopener">All About</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-koshien" style="--cat-color:var(--c-koshien)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">高校野球【埼玉】</h2></div>
+        <p class="panel-sub">秋季大会2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>埼玉県勢、冬の鍛錬が本格化——来夏の甲子園へ向けて、続報</h3>
+          <p class="lead">秋季大会をすべて終えた埼玉県勢（11月2日既報）は、本格的な冬のオフシーズンを過ごしている。西武台・山村学園（10月18日・19日既報）はいずれも関東大会の準々決勝で敗れており、来年夏の甲子園予選に向けたチームづくりが各校で続く。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、高校野球が「秋の大会で終わり」ではなく、「冬の鍛錬を経て、来夏につながっていく」という、1年を通じたサイクルの中にあるという点にある。オフシーズン<span class="note">（＝公式戦が行われない、主に冬の期間のこと。この間に基礎体力づくりや技術の見直しを行い、次のシーズンに備える）</span>の過ごし方が、来年のチームの土台を作る。関東大会での結果は、むしろ冬の練習に向けた良い材料になるとも言える。</p>
+          </div>
+          <div class="meta"><a href="https://www.hb-nippon.com/tournaments/1072" target="_blank" rel="noopener">高校野球ドットコム</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>センバツ選考プロセス、12月12日の推薦校決定が次の節目——続報</h3>
+          <p class="lead">来春のセンバツ出場校を決める2段階のプロセス（11月2日既報）では、まず12月12日に関東地区の推薦校が決まり、その後1月末の選考委員会で最終的な出場校が発表される。埼玉県勢にとっては、この12月の推薦校発表が次の注目ポイントになる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「次に何が起きるか」が、はっきりと日程で示されている点にある。推薦校<span class="note">（＝本日既報のとおり、センバツ出場校選考の最初の段階で、各地区の大会連盟が候補として選ぶ学校のこと。関東大会で上位に進出した学校が中心になるとみられ、準々決勝で敗れた埼玉県勢がこの推薦に食い込むのは難しい状況とされる）</span>に選ばれるのは、関東大会で上位に進出した学校が中心になるとみられている。</p>
+          </div>
+          <div class="meta"><a href="https://www.hb-nippon.com/tournaments/1072" target="_blank" rel="noopener">高校野球ドットコム</a></div>
+        </article>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var cats = ['top','social','polecon','scitech','business','startup','gadget','intl','sports','koshien'];
+  var idx = 0;
+  var track = document.getElementById('track');
+  var viewport = document.getElementById('viewport');
+  var vw = viewport.clientWidth;
+
+  function setActive(i){
+    cats.forEach(function(c, j){
+      document.getElementById('tab-' + c).classList.toggle('active', j === i);
+    });
+    var activeTab = document.getElementById('tab-' + cats[i]);
+    if (activeTab && activeTab.scrollIntoView) activeTab.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+  }
+
+  function settle(i, animate){
+    idx = Math.max(0, Math.min(cats.length - 1, i));
+    track.style.transition = animate ? 'transform .32s cubic-bezier(.22,.61,.36,1)' : 'none';
+    track.style.transform = 'translateX(' + (-idx * vw) + 'px)';
+    setActive(idx);
+  }
+
+  window.goTo = function(i){ settle(i, true); };
+
+  window.addEventListener('resize', function(){
+    vw = viewport.clientWidth;
+    settle(idx, false);
+  });
+
+  var dragging = false, decided = null, sx = 0, sy = 0, dx = 0;
+  viewport.addEventListener('touchstart', function(e){
+    dragging = true; decided = null;
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY; dx = 0;
+    track.style.transition = 'none';
+  }, { passive: true });
+
+  viewport.addEventListener('touchmove', function(e){
+    if (!dragging) return;
+    var cx = e.touches[0].clientX, cy = e.touches[0].clientY;
+    var mdx = cx - sx, mdy = cy - sy;
+    if (decided === null) {
+      if (Math.abs(mdx) > 8 || Math.abs(mdy) > 8) {
+        decided = Math.abs(mdx) > Math.abs(mdy) ? 'x' : 'y';
+      }
+    }
+    if (decided === 'x') {
+      e.preventDefault();
+      dx = mdx;
+      var atStart = idx === 0 && dx > 0;
+      var atEnd = idx === cats.length - 1 && dx < 0;
+      var eased = (atStart || atEnd) ? dx * 0.35 : dx;
+      track.style.transform = 'translateX(' + (-idx * vw + eased) + 'px)';
+    }
+  }, { passive: false });
+
+  viewport.addEventListener('touchend', function(){
+    if (!dragging) return;
+    dragging = false;
+    if (decided === 'x') {
+      var threshold = vw * 0.18;
+      if (dx <= -threshold) settle(idx + 1, true);
+      else if (dx >= threshold) settle(idx - 1, true);
+      else settle(idx, true);
+    }
+    decided = null; dx = 0;
+  });
+
+  settle(0, false);
+})();
+</script>
+
+</body></html>
