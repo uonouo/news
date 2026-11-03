@@ -1,0 +1,610 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yoshi's News</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Zen+Old+Mincho:wght@600;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap');
+
+:root {
+  --bg: #ffffff;
+  --panel-bg: #ffffff;
+  --card: #ffffff;
+  --card-line: #eef0f3;
+  --ink: #1a1c20;
+  --ink-soft: #5b6068;
+  --ink-faint: #9aa0a8;
+  --shell: #f4f5f7;
+
+  --c-top: #ef3355;
+  --c-social: #00b3a4;
+  --c-polecon: #6d5bf0;
+  --c-scitech: #ff8a1e;
+  --c-business: #0091ff;
+  --c-sports: #26c281;
+  --c-startup: #ff4fa3;
+  --c-koshien: #c8860d;
+  --c-intl: #4b3f8f;
+  --c-gadget: #00bcd4;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101114;
+    --panel-bg: #101114;
+    --card: #1a1c20;
+    --card-line: #2a2c31;
+    --ink: #f1f2f4;
+    --ink-soft: #b7bcc4;
+    --ink-faint: #767c86;
+    --shell: #1a1c20;
+    --c-top: #ff6b85;
+    --c-social: #3fd8c9;
+    --c-polecon: #9c8fff;
+    --c-scitech: #ffab5c;
+    --c-business: #4db2ff;
+    --c-sports: #5be0a6;
+    --c-startup: #ff85c2;
+    --c-koshien: #e8b34c;
+    --c-intl: #a89cf0;
+    --c-gadget: #4dd8ea;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101114;
+  --panel-bg: #101114;
+  --card: #1a1c20;
+  --card-line: #2a2c31;
+  --ink: #f1f2f4;
+  --ink-soft: #b7bcc4;
+  --ink-faint: #767c86;
+  --shell: #1a1c20;
+  --c-top: #ff6b85;
+  --c-social: #3fd8c9;
+  --c-polecon: #9c8fff;
+  --c-scitech: #ffab5c;
+  --c-business: #4db2ff;
+  --c-sports: #5be0a6;
+  --c-startup: #ff85c2;
+  --c-koshien: #e8b34c;
+  --c-intl: #a89cf0;
+  --c-gadget: #4dd8ea;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--shell);
+  color: var(--ink);
+  font-family: "Zen Kaku Gothic New", -apple-system, "Hiragino Kaku Gothic ProN", sans-serif;
+  line-height: 1.7;
+  overscroll-behavior-y: none;
+}
+.serif { font-family: "Zen Old Mincho", "Hiragino Mincho ProN", serif; }
+
+.app {
+  max-width: 680px;
+  margin: 0 auto;
+  background: var(--bg);
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ---- Header ---- */
+.topbar { padding: 20px 20px 0; flex-shrink: 0; }
+.title-line { display: flex; align-items: center; gap: 8px; }
+.mascot { height: 50px; width: auto; flex-shrink: 0; border-radius: 8px; }
+.title-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  margin-bottom: 14px;
+}
+.title-row h1 {
+  font-family: "Baloo 2", "Zen Kaku Gothic New", sans-serif;
+  font-size: 48px; font-weight: 800; margin: 0; letter-spacing: 0.01em; line-height: 1;
+  -webkit-text-stroke: 2.4px #2b2013;
+  filter: drop-shadow(2px 3px 0 rgba(30,22,12,0.18));
+  background-image:
+    radial-gradient(circle at 22% 30%, #211709 0 7px, transparent 8px),
+    radial-gradient(circle at 68% 65%, #3a2b16 0 9px, transparent 10px),
+    radial-gradient(circle at 45% 88%, #241a0c 0 5px, transparent 6px),
+    radial-gradient(circle at 85% 20%, #2e2211 0 6px, transparent 7px),
+    linear-gradient(135deg, #b8a06e, #967c4c 50%, #6f5a35);
+  background-size: 30px 30px, 41px 41px, 23px 23px, 35px 35px, 100% 100%;
+  background-repeat: repeat, repeat, repeat, repeat, no-repeat;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.title-row .date { font-size: 11.5px; color: var(--ink-faint); white-space: nowrap; font-weight: 500; margin-top: 2px; }
+
+.tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px 3px; }
+.tab {
+  appearance: none; border: none; background: none;
+  font-family: inherit; font-size: 10.5px; font-weight: 700;
+  color: var(--ink-faint);
+  padding: 7px 4px 9px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+  cursor: pointer;
+  border-radius: 10px 10px 0 0;
+  transition: color .2s ease, background .2s ease;
+}
+.tab .dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  margin-right: 5px; background: currentColor; opacity: 0.45; vertical-align: middle;
+}
+.tab::after {
+  content: ""; position: absolute; left: 10px; right: 10px; bottom: 0;
+  height: 3px; border-radius: 3px 3px 0 0; background: transparent; transition: background .2s ease;
+}
+.tab.active { color: var(--tab-color); background: color-mix(in srgb, var(--tab-color) 10%, transparent); }
+.tab.active .dot { opacity: 1; }
+.tab.active::after { background: var(--tab-color); }
+
+/* ---- Swipe viewport ---- */
+.viewport { flex: 1; overflow: hidden; position: relative; touch-action: pan-y; }
+.track {
+  display: flex;
+  height: 100%;
+  width: 1000%;
+  transition: transform .32s cubic-bezier(.22,.61,.36,1);
+  will-change: transform;
+}
+.panel {
+  width: 10%;
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 20px 56px;
+}
+
+.panel-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.panel-head .chip { width: 8px; height: 26px; border-radius: 4px; background: var(--cat-color); flex-shrink: 0; }
+.panel-head h2 { font-size: 20px; font-weight: 700; margin: 0; letter-spacing: 0.02em; color: var(--cat-color); }
+.panel-sub { font-size: 12px; color: var(--ink-faint); margin: 0 0 18px 18px; }
+
+.story {
+  background: var(--card);
+  border: 1px solid var(--card-line);
+  border-left: 4px solid var(--cat-color);
+  border-radius: 12px;
+  padding: 18px 18px 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(20,20,30,0.05);
+}
+.story .kicker {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: "Zen Old Mincho", serif; font-size: 11.5px; font-weight: 700;
+  color: var(--cat-color); margin-bottom: 9px;
+}
+.story h3 { font-size: 16px; font-weight: 700; line-height: 1.55; margin: 0 0 10px; }
+.story .lead { font-size: 14px; color: var(--ink); margin: 0 0 14px; line-height: 1.85; }
+
+.context {
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 10px;
+  padding: 13px 15px;
+  margin: 0 0 12px;
+}
+.context-label {
+  display: block; font-size: 10.5px; font-weight: 700;
+  color: var(--cat-color); letter-spacing: 0.04em; margin-bottom: 6px;
+}
+.context p { font-size: 13px; color: var(--ink-soft); margin: 0; line-height: 1.8; }
+
+.note { font-size: 11.5px; color: var(--ink-faint); font-weight: 500; }
+
+.term-link {
+  color: var(--cat-color);
+  text-decoration: none;
+  border-bottom: 1px dotted color-mix(in srgb, var(--cat-color) 55%, transparent);
+  font-weight: 700;
+}
+
+.meta { font-size: 11px; color: var(--ink-faint); }
+.meta a { color: var(--cat-color); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--cat-color) 40%, transparent); font-weight: 700; }
+
+.closing {
+  margin: 6px 0 0; padding: 16px 18px;
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 12px; font-size: 13px; color: var(--ink-soft); text-align: center;
+}
+.closing .label {
+  display: block; font-family: "Zen Old Mincho", serif; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.2em; color: var(--cat-color); margin-bottom: 8px;
+}
+.colophon { margin: 14px 0 8px; font-size: 10.5px; color: var(--ink-faint); line-height: 1.9; text-align: center; }
+
+@media (max-width: 420px) {
+  .topbar { padding: 16px 14px 0; }
+  .panel { padding: 16px 14px 48px; }
+  .title-row h1 { font-size: 38px; }
+  .mascot { height: 40px; }
+}
+</style>
+</head><body>
+
+
+<div class="app" id="app">
+
+  <div class="topbar">
+    <div class="title-row">
+      <div class="title-line">
+        <img class="mascot" src="mascot.jpg" alt="オオサンショウウオのマスコット">
+        <h1>Yoshi's News</h1>
+      </div>
+      <span class="date">2026年11月4日（水）・第62号</span>
+    </div>
+    <div class="tabs" id="tabs">
+      <button class="tab" id="tab-top" style="--tab-color:var(--c-top)" onclick="goTo(0)"><span class="dot"></span>トップ</button>
+      <button class="tab" id="tab-social" style="--tab-color:var(--c-social)" onclick="goTo(1)"><span class="dot"></span>社会</button>
+      <button class="tab" id="tab-polecon" style="--tab-color:var(--c-polecon)" onclick="goTo(2)"><span class="dot"></span>政治/経済</button>
+      <button class="tab" id="tab-scitech" style="--tab-color:var(--c-scitech)" onclick="goTo(3)"><span class="dot"></span>科学/テック</button>
+      <button class="tab" id="tab-business" style="--tab-color:var(--c-business)" onclick="goTo(4)"><span class="dot"></span>ビジネス</button>
+      <button class="tab" id="tab-startup" style="--tab-color:var(--c-startup)" onclick="goTo(5)"><span class="dot"></span>スタートアップ</button>
+      <button class="tab" id="tab-gadget" style="--tab-color:var(--c-gadget)" onclick="goTo(6)"><span class="dot"></span>ガジェット</button>
+      <button class="tab" id="tab-intl" style="--tab-color:var(--c-intl)" onclick="goTo(7)"><span class="dot"></span>海外</button>
+      <button class="tab" id="tab-sports" style="--tab-color:var(--c-sports)" onclick="goTo(8)"><span class="dot"></span>芸能/スポーツ</button>
+      <button class="tab" id="tab-koshien" style="--tab-color:var(--c-koshien)" onclick="goTo(9)"><span class="dot"></span>高校野球【埼玉】</button>
+    </div>
+  </div>
+
+  <div class="viewport" id="viewport">
+    <div class="track" id="track">
+
+      <section class="panel" id="panel-top" style="--cat-color:var(--c-top)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">トップニュース</h2></div>
+        <p class="panel-sub">今日いちばん知っておきたい2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 経済</span>
+          <h3>TSMC、9月売上高は前年同月比54.6%増——AI向け需要が記録的水準に</h3>
+          <p class="lead">台湾の半導体大手TSMCは10月8日、9月の売上高が5118億台湾ドルで、前年同月比54.6%増だったと発表した。7〜9月期の合計は1兆4942億台湾ドルで前年同期比50.9%増、1〜9月の累計は3兆8987億台湾ドルで前年同期比41.1%増となり、AI向けチップの受注拡大が記録的な業績を支えている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「月単位」「四半期単位」「累計」の3つの数字が、いずれも大幅な増収を示している点にある。受託製造<span class="note">（＝ファウンドリとも呼ばれる、他社から注文を受けて半導体を製造する事業形態のこと。TSMCは世界最大のファウンドリで、NVIDIAやAppleなど多くの企業の最先端チップを製造している）</span>最大手のこれだけの伸びは、AI関連の半導体需要が、特定の分野にとどまらない広がりを見せていることの証拠と言える。</p>
+          </div>
+          <div class="meta"><a href="https://www.digitaltoday.co.kr/jp/view/112554/tsmc-sets-another-record-third-quarter-revenue-on-surge-in-ai-chip-orders" target="_blank" rel="noopener">Digital Today</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 科学・テック</span>
+          <h3>Intel CEO来日、日本法人50周年——次世代パッケージング技術で協業重視</h3>
+          <p class="lead">米Intelのリップブー・タンCEOは10月7日、日本法人設立50周年の行事で来日し、日本の有機基板技術が先端パッケージング技術を支えていると評価した。基板ベンダーなどのパートナーと協力し、次世代パッケージング技術「EMIB-T」を構築していると述べている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「チップを作る技術」だけでなく「チップをつなぐ技術」も重要だという点にある。パッケージング技術<span class="note">（＝複数の半導体チップを一つの部品として組み合わせ、接続する技術のこと。性能を高めるには、チップ単体の微細化だけでなく、複数のチップを効率よく組み合わせる技術も欠かせない）</span>の分野で日本の基板技術が重視されているのは、半導体産業における日本の役割が、最先端の製造だけでなく、こうした周辺技術にも及んでいることを示している。</p>
+          </div>
+          <div class="meta"><a href="https://eetimes.itmedia.co.jp/ee/articles/2610/08/news067.html" target="_blank" rel="noopener">EE Times Japan</a></div>
+        </article>
+
+        <div class="closing">
+          <span class="label serif">編集後記</span>
+          TSMCの9月売上高は前年同月比54.6%増と記録的な伸び。Samsungも第3四半期の営業利益が100兆ウォン超えの見通しで、AI向け半導体需要の強さが改めて裏付けられました。Intel CEOは来日し、日本の基板技術を評価しつつ次世代パッケージングでの協業を重視する姿勢を示しています。プロ野球オフシーズンでは平良海馬投手のメジャー挑戦が続報です。タブまたはスワイプで10のジャンルを読み進められます。良い1日を。
+        </div>
+        <div class="colophon">AIが検索結果をもとに要約・編集しています。詳細は各記事の出典リンクでご確認ください。<br>毎朝5時発行・次号は明日<br><a href="archive.html" style="color:inherit">過去の紙面はこちら</a></div>
+      </section>
+
+      <section class="panel" id="panel-social" style="--cat-color:var(--c-social)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">社会</h2></div>
+        <p class="panel-sub">くらしに関わるニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>SNS型投資詐欺への注意、各県警が呼びかけ——「必ずもうかる」は危険信号</h3>
+          <p class="lead">埼玉県警をはじめ各都道府県警は、SNS上で著名人を名乗る投資グループに招待され、指定口座への送金を求められるタイプの詐欺への注意を呼びかけている。偽の利益表示で信用させた後、出金時に手数料や保証金の名目で追加送金を求める手口が典型とされる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「必ずもうかる」という言葉自体が、詐欺を疑うべき信号だという点にある。SNS型投資詐欺<span class="note">（＝SNS上の広告やグループチャットを通じて、架空の投資話に勧誘し、お金をだまし取る詐欺の手口のこと。著名人や有名企業の名前を無断で使い、偽のアプリやサイトで「利益が出ている」ように見せかけるのが典型的な特徴）</span>は全国的に被害が急増しており、1件あたりの被害額が1000万円を超えることも珍しくないとされる。</p>
+          </div>
+          <div class="meta"><a href="https://www.police.pref.saitama.lg.jp/documents/27153/sns-sagi1.pdf" target="_blank" rel="noopener">埼玉県警察</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>記者拘束、続報確認できず——長期化続く</h3>
+          <p class="lead">ロシアに拘束された北海道新聞記者の問題（11月3日既報）について、本稿の時点で新たな続報は確認できていない。勾留期限の12月12日まで、FSBの捜査が続く見通しのまま状況が維持されている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「大きな動きがない」ことが、むしろ長期戦の様相を強めているという点にある。長期化の定着<span class="note">（＝本日既報のとおり、ある問題が、解決も悪化もせず、同じ状態のまま長く続くこと。時間が経つほど「長引く問題」として認識されるようになる）</span>が進む中、日本政府は引き続き外交ルートでの働きかけを続けているとみられる。</p>
+          </div>
+          <div class="meta"><a href="https://www.hokkaido-np.co.jp/article/1397580/" target="_blank" rel="noopener">北海道新聞</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-polecon" style="--cat-color:var(--c-polecon)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">政治／経済</h2></div>
+        <p class="panel-sub">政治・経済の動き2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 経済</span>
+          <h3>経産省、Intel・日本企業の共同研究を支援——先端半導体分野で協力</h3>
+          <p class="lead">本日既報のIntel CEOの来日にあわせ、経済産業省の門松貴氏は、Intelと日本企業による先端半導体分野での共同研究を支援していく考えを示した。日米の半導体協力（GlobalFoundries新工場など、過去既報）に続き、Intelとの連携も政府が後押しする形になっている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、政府の支援が複数の海外企業との協力に及んでいる点にある。経済安全保障<span class="note">（＝半導体のように、国の安全や経済の基盤に欠かせない重要な物資・技術について、特定の国への依存を減らし、同盟国などと協力して安定供給を確保しようとする考え方）</span>の観点から、日本政府は米国企業との半導体協力を、GlobalFoundriesやIntelなど複数のルートで進めている。</p>
+          </div>
+          <div class="meta"><a href="https://eetimes.itmedia.co.jp/ee/articles/2610/08/news067.html" target="_blank" rel="noopener">EE Times Japan</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 経済</span>
+          <h3>Samsung、第3四半期営業利益は100兆ウォン超え見通し——AI向けメモリー需要</h3>
+          <p class="lead">韓国Samsung Electronicsは10月8日、2026年第3四半期（7〜9月）の暫定業績を発表し、営業利益が100兆ウォンを超える見通しを示した。AI向け半導体の需要拡大でメモリー販売が好調で、前年同期の9倍近くになると見込まれている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「9倍近く」という伸びの大きさにある。暫定業績<span class="note">（＝正式な決算発表の前に、企業が速報として発表する、確定前の業績の見通しのこと。後日の正式発表で、数字が多少修正されることがある）</span>の段階でこれだけ大きな伸びが示されるのは、メモリー半導体の需給ひっ迫（過去既報）が、業績にも明確に反映されていることを示している。</p>
+          </div>
+          <div class="meta"><a href="https://www.digitaltoday.co.kr/jp/view/112554/tsmc-sets-another-record-third-quarter-revenue-on-surge-in-ai-chip-orders" target="_blank" rel="noopener">Digital Today</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-scitech" style="--cat-color:var(--c-scitech)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">科学／テック</h2></div>
+        <p class="panel-sub">研究・技術のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>Intel、次世代パッケージング「EMIB-T」——日本の基板技術がカギ</h3>
+          <p class="lead">本日既報のIntelの次世代パッケージング技術「EMIB-T」は、標準的なEMIB技術（2017年から量産中）の進化版で、外部顧客の設計が実際の量産に入るのは今後1〜2年と見込まれている。HBM4（次世代高帯域メモリー）や、UCIe（チップ間を接続する業界標準規格）の帯域幅拡大に対応するための技術とされる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「まだ商用製品として出荷されていない」という、開発段階の技術であることにある。HBM4<span class="note">（＝High Bandwidth Memory（高帯域メモリー）の第4世代のこと。AIの計算処理では、膨大なデータを高速にやり取りする必要があり、こうした高性能メモリーの需要が急増している）</span>のような次世代技術への対応を見据えて、Intelは早い段階から基板の確保に動いている。</p>
+          </div>
+          <div class="meta"><a href="https://www.tomshardware.com/pc-components/cpus/intel-details-new-advanced-packaging-breakthroughs-emib-t-paves-the-way-for-hbm4-and-increased-ucie-bandwidth" target="_blank" rel="noopener">Tom's Hardware</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>基板供給はひっ迫——台湾4社・日本2社に前払いで確保要請</h3>
+          <p class="lead">本日既報のIntelのEMIB-Tについて、複数の顧客が強い関心を示していることから、同社は台湾と日本のサプライヤーに前払いして基板の生産能力を確保する用意があるとされる。台湾の4社と日本の2社が、前払いによる確約を求められている状況だという。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「お金を先に払ってでも確保したい」という、供給不足の深刻さにある。前払いによる生産能力の確保<span class="note">（＝将来必要になる部品を確実に手に入れるため、まだ製造されていない段階で代金の一部または全部を先払いし、生産ラインの優先的な割り当てを受けること。供給が需要に追いつかないほど逼迫している場合に行われる）</span>は、本日既報のメモリー・基板など、半導体関連の様々な部材で供給制約が広がっていることを示す一例だ。</p>
+          </div>
+          <div class="meta"><a href="https://xenospectrum.com/intel-emib-t-packaging-revenue-forecast/" target="_blank" rel="noopener">XenoSpectrum</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-business" style="--cat-color:var(--c-business)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ビジネス</h2></div>
+        <p class="panel-sub">企業・産業のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>TSMC・Samsung好調、AI投資ブームの勢い続く——続報</h3>
+          <p class="lead">本日既報のTSMC・Samsungの好決算は、本日既報の日銀短観（大企業製造業の景況感6四半期連続改善、過去既報）が示す国内企業の好調さとも符合する。半導体サプライチェーン全体が、AI投資ブームの恩恵を受けている構図が、国内外で確認できる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「海外の大手」と「国内企業」が、同じ需要の波に乗っているという点にある。半導体サプライチェーン<span class="note">（＝半導体の材料調達から設計、製造、組み立てまでをつなぐ、国境を越えた一連の企業のネットワークのこと。台湾のTSMC、韓国のSamsung、日本の部材メーカーなど、各国の企業が役割を分担している）</span>の好調は、1カ国だけの現象ではなく、世界的に連動していることを示している。</p>
+          </div>
+          <div class="meta"><a href="https://www.digitaltoday.co.kr/jp/view/112554/tsmc-sets-another-record-third-quarter-revenue-on-surge-in-ai-chip-orders" target="_blank" rel="noopener">Digital Today</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>佐川急便・ヤマト運輸の情報流出、続報——企業の対応が問われる</h3>
+          <p class="lead">佐川急便・ヤマト運輸の情報流出問題（11月3日既報）について、本稿の時点で両社からの新たな続報は確認できていない。サービスは既に再開しているが、今後の再発防止策の公表が待たれる状況だ。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「サービス再開」が「問題の解決」を意味するわけではないという点にある。再発防止策<span class="note">（＝本日既報のような不正アクセス・情報漏えいが二度起きないようにするための、技術的・組織的な対策のこと。原因の調査結果とあわせて公表されることが一般的で、利用者の信頼回復には不可欠とされる）</span>の公表がまだであれば、利用者の不安は完全には解消されていないと言える。</p>
+          </div>
+          <div class="meta"><a href="https://netshop.impress.co.jp/n/2026/10/26/16922" target="_blank" rel="noopener">ネットショップ担当者フォーラム</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-startup" style="--cat-color:var(--c-startup)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">スタートアップ</h2></div>
+        <p class="panel-sub">資金調達・注目トピック2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>国内スタートアップ、選別と大型化の構図が定着——続報</h3>
+          <p class="lead">2025年の国内スタートアップ資金調達の中央値が前年比2割減となった傾向（11月3日既報）について、本稿の時点で新たな統計の更新は確認できていない。本日既報のTSMC・Samsungのような大手の好調と、新興企業への資金の回り方のギャップが続いているとみられる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「経済全体の改善」と「個々の企業への恩恵」が、必ずしも均等に行き渡らないという点にある。恩恵の不均衡<span class="note">（＝本日既報のとおり、経済全体の統計が改善していても、その改善の恩恵が、大企業と中小企業、あるいは成熟企業とスタートアップとの間で、均等に行き渡らないこと）</span>は、マクロ指標を見る際に気をつけるべきポイントの一つだ。</p>
+          </div>
+          <div class="meta"><a href="https://toyokeizai.net/articles/-/901502?display=b" target="_blank" rel="noopener">東洋経済オンライン</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>海外AI企業への資金集中、国内への影響続く——差別化戦略の重要性、続報</h3>
+          <p class="lead">OpenAI・Anthropicのような海外AI企業への記録的な資金集中（11月3日既報）は、国内スタートアップ業界の資金調達環境にも影響を与え続けている。資金規模で競えない国内企業にとっては、特定分野への特化という差別化戦略の重要性が、改めて指摘されている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、海外の巨大資金の動きが、間接的に国内の投資家の判断にも影響するという点にある。グローバルな資金の流れ<span class="note">（＝本日既報のとおり、世界中の投資資金が、どの国・どの分野に向かうかという大きな流れのこと。海外でAI関連への投資が過熱すると、国内の投資家も同様の分野を重視しやすくなり、それ以外の分野への投資が相対的に減ることがある）</span>は、国内スタートアップにとって、無視できない外部環境の一つになっている。</p>
+          </div>
+          <div class="meta"><a href="https://toyokeizai.net/articles/-/931242" target="_blank" rel="noopener">東洋経済オンライン</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-gadget" style="--cat-color:var(--c-gadget)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ガジェット</h2></div>
+        <p class="panel-sub">新製品2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>あなたのスマホの中にも——AI向け半導体ブームが身近な製品に及ぶ理由</h3>
+          <p class="lead">本日既報のTSMC・Samsung・Intelの好調は、AIデータセンター向けだけでなく、スマートフォンやパソコンに使われる一般的な半導体の供給・価格にも影響する。半導体工場が特定の高需要分野に生産を優先させると、他の製品向けの供給が圧迫されることがある。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「AIの話」が、意外と身近な製品の値段にもつながっているという点にある。生産の優先配分<span class="note">（＝工場の生産能力は無限ではないため、需要が特に高い分野（この場合はAI向け半導体）に優先的に生産を割り当てると、他の分野向けの生産量が相対的に減ってしまうこと。結果として、一般消費者向け製品の部品調達や価格に影響することがある）</span>が進むと、スマホやパソコンの価格にも間接的な影響が及ぶ可能性がある。</p>
+          </div>
+          <div class="meta"><a href="https://www.digitaltoday.co.kr/jp/view/112554/tsmc-sets-another-record-third-quarter-revenue-on-surge-in-ai-chip-orders" target="_blank" rel="noopener">Digital Today</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>iPhone Duo、品薄は年明けまで続く可能性——続報</h3>
+          <p class="lead">発売から2週間が経過したiPhone Duo（11月3日既報）の品薄状態について、Foxconnの歩留まり改善には半年から1年かかる可能性があるとの見方が続いている。年明けまで入手が難しい状況が続くとみられる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、発売から2週間が経っても、状況が大きく変わっていないという点にある。品薄の長期化<span class="note">（＝本日既報のとおり、ある製品の供給不足が、短期間で解消せず、数カ月単位で続くこと。生産体制の立ち上げに時間がかかる新技術の製品では、特に起こりやすい）</span>は、新しい技術を使った製品ではある程度避けられない現象であり、購入を急がず長期戦を覚悟する必要がある。</p>
+          </div>
+          <div class="meta"><a href="https://iphone-mania.jp/?p=606517" target="_blank" rel="noopener">iPhone Mania</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-intl" style="--cat-color:var(--c-intl)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">海外</h2></div>
+        <p class="panel-sub">国際ニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>台湾TSMC・韓国Samsung、揃って記録的な好決算——東アジア半導体勢力図</h3>
+          <p class="lead">本日既報のとおり、台湾のTSMCと韓国のSamsungが、ともに2026年7〜9月期に記録的な業績を発表した。AI向け半導体をめぐる東アジアの両大国の企業が、世界の需要を分け合う形で成長を続けている構図が改めて浮かび上がっている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、台湾・韓国という2つの国・地域が、世界の半導体産業で異なる強みを持っている点にある。製造とメモリーの分業<span class="note">（＝TSMCは他社の設計に基づいて先端ロジック半導体を製造する「受託製造」に強く、Samsungはメモリー半導体の生産で世界的な存在感を持つという、両社の異なる得意分野のこと）</span>により、AI関連の需要拡大が、異なる形で両社の業績を押し上げている。</p>
+          </div>
+          <div class="meta"><a href="https://www.digitaltoday.co.kr/jp/view/112554/tsmc-sets-another-record-third-quarter-revenue-on-surge-in-ai-chip-orders" target="_blank" rel="noopener">Digital Today</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>記者拘束問題、国際団体の関与続く——続報は確認できず</h3>
+          <p class="lead">本日既報の記者拘束問題について、米国のジャーナリスト保護団体CPJなどの関与は続いているとみられるが、本稿の時点では新たな続報を確認できていない。各国大使館の連帯表明から、事態が大きく動いた形跡は見られない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、国際的な関心が持続しているかどうかが、今後の交渉にも影響するという点にある。関心の持続<span class="note">（＝本日既報のとおり、ある問題について、国際社会やメディアの注目が、時間が経っても薄れずに続くこと。関心が薄れると、当事国への外交的な圧力も弱まりやすくなるため、持続すること自体が重要とされる）</span>が続く限り、ロシア側への圧力も一定程度維持されると考えられる。</p>
+          </div>
+          <div class="meta"><a href="https://www.hokkaido-np.co.jp/article/1397580/" target="_blank" rel="noopener">北海道新聞</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-sports" style="--cat-color:var(--c-sports)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">芸能／スポーツ</h2></div>
+        <p class="panel-sub">厳選2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>平良海馬、メジャー挑戦の手続きへ——球団容認後の動き、続報</h3>
+          <p class="lead">西武がポスティング移籍を容認した平良海馬投手（11月3日既報）について、本稿の時点で正式なポスティング申請などの新たな手続きの進展は確認できていない。今後、球団内での手続きが進むとみられる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「容認」から「正式な手続き」までにも、一定の段取りが必要だという点にある。ポスティング申請<span class="note">（＝本日既報のとおり、所属球団がNPB（日本野球機構）を通じてメジャーリーグ機構に選手の移籍を申請する、正式な手続きのこと。この申請が受理されると、メジャー球団との交渉期間が始まる）</span>の具体的なタイミングは、今後の球団の動きを追う必要がある。</p>
+          </div>
+          <div class="meta"><a href="https://www.baseballchannel.jp/npb/lions/299458/" target="_blank" rel="noopener">Baseball Channel</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>宮本茂氏の文化勲章、国内外で反響続く——続報</h3>
+          <p class="lead">任天堂の宮本茂氏の文化勲章受章（11月3日既報）について、国内のゲーム業界関係者からの反響が続いているとみられる。ゲーム分野からの初めての受章は、業界内でも大きな話題として受け止められている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、1人の受章が、業界全体の自己認識にも影響を与えるという点にある。業界の自己認識<span class="note">（＝ある業界に関わる人たちが、自分たちの仕事や産業全体を、社会の中でどのように位置づけて捉えているかという意識のこと。外部からの高い評価（この場合は文化勲章）は、業界関係者自身の自己認識を高める効果を持つことがある）</span>の変化は、今後のゲーム業界の発展にも、長期的な影響を与える可能性がある。</p>
+          </div>
+          <div class="meta"><a href="https://www.toy-people.com/jp/?p=115736" target="_blank" rel="noopener">トイズマガジン</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-koshien" style="--cat-color:var(--c-koshien)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">高校野球【埼玉】</h2></div>
+        <p class="panel-sub">秋季大会2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>埼玉県勢、冬の鍛錬が本格化——来夏の甲子園へ向けて、続報</h3>
+          <p class="lead">秋季大会をすべて終えた埼玉県勢（11月3日既報）は、本格的な冬のオフシーズンを過ごしている。西武台・山村学園（10月18日・19日既報）はいずれも関東大会の準々決勝で敗れており、来年夏の甲子園予選に向けたチームづくりが各校で続く。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、高校野球が「秋の大会で終わり」ではなく、「冬の鍛錬を経て、来夏につながっていく」という、1年を通じたサイクルの中にあるという点にある。オフシーズン<span class="note">（＝公式戦が行われない、主に冬の期間のこと。この間に基礎体力づくりや技術の見直しを行い、次のシーズンに備える）</span>の過ごし方が、来年のチームの土台を作る。関東大会での結果は、むしろ冬の練習に向けた良い材料になるとも言える。</p>
+          </div>
+          <div class="meta"><a href="https://www.hb-nippon.com/tournaments/1072" target="_blank" rel="noopener">高校野球ドットコム</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>センバツ選考プロセス、12月12日の推薦校決定が次の節目——続報</h3>
+          <p class="lead">来春のセンバツ出場校を決める2段階のプロセス（11月3日既報）では、まず12月12日に関東地区の推薦校が決まり、その後1月末の選考委員会で最終的な出場校が発表される。埼玉県勢にとっては、この12月の推薦校発表が次の注目ポイントになる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「次に何が起きるか」が、はっきりと日程で示されている点にある。推薦校<span class="note">（＝本日既報のとおり、センバツ出場校選考の最初の段階で、各地区の大会連盟が候補として選ぶ学校のこと。関東大会で上位に進出した学校が中心になるとみられ、準々決勝で敗れた埼玉県勢がこの推薦に食い込むのは難しい状況とされる）</span>に選ばれるのは、関東大会で上位に進出した学校が中心になるとみられている。</p>
+          </div>
+          <div class="meta"><a href="https://www.hb-nippon.com/tournaments/1072" target="_blank" rel="noopener">高校野球ドットコム</a></div>
+        </article>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var cats = ['top','social','polecon','scitech','business','startup','gadget','intl','sports','koshien'];
+  var idx = 0;
+  var track = document.getElementById('track');
+  var viewport = document.getElementById('viewport');
+  var vw = viewport.clientWidth;
+
+  function setActive(i){
+    cats.forEach(function(c, j){
+      document.getElementById('tab-' + c).classList.toggle('active', j === i);
+    });
+    var activeTab = document.getElementById('tab-' + cats[i]);
+    if (activeTab && activeTab.scrollIntoView) activeTab.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+  }
+
+  function settle(i, animate){
+    idx = Math.max(0, Math.min(cats.length - 1, i));
+    track.style.transition = animate ? 'transform .32s cubic-bezier(.22,.61,.36,1)' : 'none';
+    track.style.transform = 'translateX(' + (-idx * vw) + 'px)';
+    setActive(idx);
+  }
+
+  window.goTo = function(i){ settle(i, true); };
+
+  window.addEventListener('resize', function(){
+    vw = viewport.clientWidth;
+    settle(idx, false);
+  });
+
+  var dragging = false, decided = null, sx = 0, sy = 0, dx = 0;
+  viewport.addEventListener('touchstart', function(e){
+    dragging = true; decided = null;
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY; dx = 0;
+    track.style.transition = 'none';
+  }, { passive: true });
+
+  viewport.addEventListener('touchmove', function(e){
+    if (!dragging) return;
+    var cx = e.touches[0].clientX, cy = e.touches[0].clientY;
+    var mdx = cx - sx, mdy = cy - sy;
+    if (decided === null) {
+      if (Math.abs(mdx) > 8 || Math.abs(mdy) > 8) {
+        decided = Math.abs(mdx) > Math.abs(mdy) ? 'x' : 'y';
+      }
+    }
+    if (decided === 'x') {
+      e.preventDefault();
+      dx = mdx;
+      var atStart = idx === 0 && dx > 0;
+      var atEnd = idx === cats.length - 1 && dx < 0;
+      var eased = (atStart || atEnd) ? dx * 0.35 : dx;
+      track.style.transform = 'translateX(' + (-idx * vw + eased) + 'px)';
+    }
+  }, { passive: false });
+
+  viewport.addEventListener('touchend', function(){
+    if (!dragging) return;
+    dragging = false;
+    if (decided === 'x') {
+      var threshold = vw * 0.18;
+      if (dx <= -threshold) settle(idx + 1, true);
+      else if (dx >= threshold) settle(idx - 1, true);
+      else settle(idx, true);
+    }
+    decided = null; dx = 0;
+  });
+
+  settle(0, false);
+})();
+</script>
+
+</body></html>
