@@ -1,0 +1,610 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yoshi's News</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Zen+Old+Mincho:wght@600;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap');
+
+:root {
+  --bg: #ffffff;
+  --panel-bg: #ffffff;
+  --card: #ffffff;
+  --card-line: #eef0f3;
+  --ink: #1a1c20;
+  --ink-soft: #5b6068;
+  --ink-faint: #9aa0a8;
+  --shell: #f4f5f7;
+
+  --c-top: #ef3355;
+  --c-social: #00b3a4;
+  --c-polecon: #6d5bf0;
+  --c-scitech: #ff8a1e;
+  --c-business: #0091ff;
+  --c-sports: #26c281;
+  --c-startup: #ff4fa3;
+  --c-koshien: #c8860d;
+  --c-intl: #4b3f8f;
+  --c-gadget: #00bcd4;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101114;
+    --panel-bg: #101114;
+    --card: #1a1c20;
+    --card-line: #2a2c31;
+    --ink: #f1f2f4;
+    --ink-soft: #b7bcc4;
+    --ink-faint: #767c86;
+    --shell: #1a1c20;
+    --c-top: #ff6b85;
+    --c-social: #3fd8c9;
+    --c-polecon: #9c8fff;
+    --c-scitech: #ffab5c;
+    --c-business: #4db2ff;
+    --c-sports: #5be0a6;
+    --c-startup: #ff85c2;
+    --c-koshien: #e8b34c;
+    --c-intl: #a89cf0;
+    --c-gadget: #4dd8ea;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101114;
+  --panel-bg: #101114;
+  --card: #1a1c20;
+  --card-line: #2a2c31;
+  --ink: #f1f2f4;
+  --ink-soft: #b7bcc4;
+  --ink-faint: #767c86;
+  --shell: #1a1c20;
+  --c-top: #ff6b85;
+  --c-social: #3fd8c9;
+  --c-polecon: #9c8fff;
+  --c-scitech: #ffab5c;
+  --c-business: #4db2ff;
+  --c-sports: #5be0a6;
+  --c-startup: #ff85c2;
+  --c-koshien: #e8b34c;
+  --c-intl: #a89cf0;
+  --c-gadget: #4dd8ea;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--shell);
+  color: var(--ink);
+  font-family: "Zen Kaku Gothic New", -apple-system, "Hiragino Kaku Gothic ProN", sans-serif;
+  line-height: 1.7;
+  overscroll-behavior-y: none;
+}
+.serif { font-family: "Zen Old Mincho", "Hiragino Mincho ProN", serif; }
+
+.app {
+  max-width: 680px;
+  margin: 0 auto;
+  background: var(--bg);
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ---- Header ---- */
+.topbar { padding: 20px 20px 0; flex-shrink: 0; }
+.title-line { display: flex; align-items: center; gap: 8px; }
+.mascot { height: 50px; width: auto; flex-shrink: 0; border-radius: 8px; }
+.title-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  margin-bottom: 14px;
+}
+.title-row h1 {
+  font-family: "Baloo 2", "Zen Kaku Gothic New", sans-serif;
+  font-size: 48px; font-weight: 800; margin: 0; letter-spacing: 0.01em; line-height: 1;
+  -webkit-text-stroke: 2.4px #2b2013;
+  filter: drop-shadow(2px 3px 0 rgba(30,22,12,0.18));
+  background-image:
+    radial-gradient(circle at 22% 30%, #211709 0 7px, transparent 8px),
+    radial-gradient(circle at 68% 65%, #3a2b16 0 9px, transparent 10px),
+    radial-gradient(circle at 45% 88%, #241a0c 0 5px, transparent 6px),
+    radial-gradient(circle at 85% 20%, #2e2211 0 6px, transparent 7px),
+    linear-gradient(135deg, #b8a06e, #967c4c 50%, #6f5a35);
+  background-size: 30px 30px, 41px 41px, 23px 23px, 35px 35px, 100% 100%;
+  background-repeat: repeat, repeat, repeat, repeat, no-repeat;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.title-row .date { font-size: 11.5px; color: var(--ink-faint); white-space: nowrap; font-weight: 500; margin-top: 2px; }
+
+.tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px 3px; }
+.tab {
+  appearance: none; border: none; background: none;
+  font-family: inherit; font-size: 10.5px; font-weight: 700;
+  color: var(--ink-faint);
+  padding: 7px 4px 9px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+  cursor: pointer;
+  border-radius: 10px 10px 0 0;
+  transition: color .2s ease, background .2s ease;
+}
+.tab .dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  margin-right: 5px; background: currentColor; opacity: 0.45; vertical-align: middle;
+}
+.tab::after {
+  content: ""; position: absolute; left: 10px; right: 10px; bottom: 0;
+  height: 3px; border-radius: 3px 3px 0 0; background: transparent; transition: background .2s ease;
+}
+.tab.active { color: var(--tab-color); background: color-mix(in srgb, var(--tab-color) 10%, transparent); }
+.tab.active .dot { opacity: 1; }
+.tab.active::after { background: var(--tab-color); }
+
+/* ---- Swipe viewport ---- */
+.viewport { flex: 1; overflow: hidden; position: relative; touch-action: pan-y; }
+.track {
+  display: flex;
+  height: 100%;
+  width: 1000%;
+  transition: transform .32s cubic-bezier(.22,.61,.36,1);
+  will-change: transform;
+}
+.panel {
+  width: 10%;
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 20px 56px;
+}
+
+.panel-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.panel-head .chip { width: 8px; height: 26px; border-radius: 4px; background: var(--cat-color); flex-shrink: 0; }
+.panel-head h2 { font-size: 20px; font-weight: 700; margin: 0; letter-spacing: 0.02em; color: var(--cat-color); }
+.panel-sub { font-size: 12px; color: var(--ink-faint); margin: 0 0 18px 18px; }
+
+.story {
+  background: var(--card);
+  border: 1px solid var(--card-line);
+  border-left: 4px solid var(--cat-color);
+  border-radius: 12px;
+  padding: 18px 18px 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(20,20,30,0.05);
+}
+.story .kicker {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: "Zen Old Mincho", serif; font-size: 11.5px; font-weight: 700;
+  color: var(--cat-color); margin-bottom: 9px;
+}
+.story h3 { font-size: 16px; font-weight: 700; line-height: 1.55; margin: 0 0 10px; }
+.story .lead { font-size: 14px; color: var(--ink); margin: 0 0 14px; line-height: 1.85; }
+
+.context {
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 10px;
+  padding: 13px 15px;
+  margin: 0 0 12px;
+}
+.context-label {
+  display: block; font-size: 10.5px; font-weight: 700;
+  color: var(--cat-color); letter-spacing: 0.04em; margin-bottom: 6px;
+}
+.context p { font-size: 13px; color: var(--ink-soft); margin: 0; line-height: 1.8; }
+
+.note { font-size: 11.5px; color: var(--ink-faint); font-weight: 500; }
+
+.term-link {
+  color: var(--cat-color);
+  text-decoration: none;
+  border-bottom: 1px dotted color-mix(in srgb, var(--cat-color) 55%, transparent);
+  font-weight: 700;
+}
+
+.meta { font-size: 11px; color: var(--ink-faint); }
+.meta a { color: var(--cat-color); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--cat-color) 40%, transparent); font-weight: 700; }
+
+.closing {
+  margin: 6px 0 0; padding: 16px 18px;
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 12px; font-size: 13px; color: var(--ink-soft); text-align: center;
+}
+.closing .label {
+  display: block; font-family: "Zen Old Mincho", serif; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.2em; color: var(--cat-color); margin-bottom: 8px;
+}
+.colophon { margin: 14px 0 8px; font-size: 10.5px; color: var(--ink-faint); line-height: 1.9; text-align: center; }
+
+@media (max-width: 420px) {
+  .topbar { padding: 16px 14px 0; }
+  .panel { padding: 16px 14px 48px; }
+  .title-row h1 { font-size: 38px; }
+  .mascot { height: 40px; }
+}
+</style>
+</head><body>
+
+
+<div class="app" id="app">
+
+  <div class="topbar">
+    <div class="title-row">
+      <div class="title-line">
+        <img class="mascot" src="mascot.jpg" alt="オオサンショウウオのマスコット">
+        <h1>Yoshi's News</h1>
+      </div>
+      <span class="date">2026年11月6日（金）・第64号</span>
+    </div>
+    <div class="tabs" id="tabs">
+      <button class="tab" id="tab-top" style="--tab-color:var(--c-top)" onclick="goTo(0)"><span class="dot"></span>トップ</button>
+      <button class="tab" id="tab-social" style="--tab-color:var(--c-social)" onclick="goTo(1)"><span class="dot"></span>社会</button>
+      <button class="tab" id="tab-polecon" style="--tab-color:var(--c-polecon)" onclick="goTo(2)"><span class="dot"></span>政治/経済</button>
+      <button class="tab" id="tab-scitech" style="--tab-color:var(--c-scitech)" onclick="goTo(3)"><span class="dot"></span>科学/テック</button>
+      <button class="tab" id="tab-business" style="--tab-color:var(--c-business)" onclick="goTo(4)"><span class="dot"></span>ビジネス</button>
+      <button class="tab" id="tab-startup" style="--tab-color:var(--c-startup)" onclick="goTo(5)"><span class="dot"></span>スタートアップ</button>
+      <button class="tab" id="tab-gadget" style="--tab-color:var(--c-gadget)" onclick="goTo(6)"><span class="dot"></span>ガジェット</button>
+      <button class="tab" id="tab-intl" style="--tab-color:var(--c-intl)" onclick="goTo(7)"><span class="dot"></span>海外</button>
+      <button class="tab" id="tab-sports" style="--tab-color:var(--c-sports)" onclick="goTo(8)"><span class="dot"></span>芸能/スポーツ</button>
+      <button class="tab" id="tab-koshien" style="--tab-color:var(--c-koshien)" onclick="goTo(9)"><span class="dot"></span>高校野球【埼玉】</button>
+    </div>
+  </div>
+
+  <div class="viewport" id="viewport">
+    <div class="track" id="track">
+
+      <section class="panel" id="panel-top" style="--cat-color:var(--c-top)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">トップニュース</h2></div>
+        <p class="panel-sub">今日いちばん知っておきたい2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 海外</span>
+          <h3>米中間選挙、民主党が上下両院の多数派を奪還——下院は過半数218を大きく上回る</h3>
+          <p class="lead">11月3日に投開票された米国の中間選挙で、野党・民主党が下院の多数派を奪還したと、米CBSニュースなど複数のメディアが報じた。CBSは民主党の下院議席を251〜268と予測し、Yahooの集計では米東部時間5日午後1時時点で民主党247、共和党153（未確定35）と、過半数の218を大きく上回っている。上院でも民主党が少なくとも54議席を得たとCBSは伝えている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、中間選挙が「大統領を選ぶ選挙ではないのに、大統領への通信簿になる」という点にある。中間選挙<span class="note">（＝4年ごとの大統領選挙の、ちょうど中間の年に行われる米国の議会選挙のこと。下院の全435議席と上院の約3分の1が改選される）</span>で大統領と反対の党が議会を握ると、大統領が進めたい法律や予算が通りにくくなる。第2次トランプ政権にとっては、残り2年の政策運営が大きく制約される結果になった。議席数は開票途中の予測で、報道によって数字が異なる点には注意が必要だ。</p>
+          </div>
+          <div class="meta"><a href="https://www.cbsnews.com/live-updates/house-election-results-2026/" target="_blank" rel="noopener">CBS News</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 経済</span>
+          <h3>日経平均、2日で2000円超下落——米選挙受けAI・半導体株に売り</h3>
+          <p class="lead">5日の東京株式市場で日経平均株価は前日比1110円73銭（1.79%）安の6万1077円90銭で取引を終えた。日本経済新聞によると、米国でAI規制が強まることへの警戒から、日本のAI・半導体関連株に売りが広がった。4日も893円23銭（1.42%）安で、取引中には一時3000円以上値下がりする場面があったと報じられている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、ここ数週間お伝えしてきた「AI・半導体ブーム」（TSMC・Samsungの好決算、11月4日既報）が、日本株を押し上げてきた主役でもあるという点にある。日経平均株価<span class="note">（＝東京証券取引所に上場する代表的な225社の株価をもとに計算する指数のこと。日本の株式市場全体の調子を表す目安として使われる）</span>の上昇をけん引してきた分野ほど、米国の政策が変わりそうだという材料に敏感に反応する。業績が良くても、政策の先行きが読めなくなると株価は下がりうる。</p>
+          </div>
+          <div class="meta"><a href="https://www.nikkei.com/article/DGXZQOUB050H0TV01C26A1000000/" target="_blank" rel="noopener">日本経済新聞</a></div>
+        </article>
+
+        <div class="closing">
+          <span class="label serif">編集後記</span>
+          米中間選挙は民主党が上下両院を奪還し、トランプ政権は議会の「ねじれ」の中で残り2年を迎えます。東京市場ではAI・半導体株を中心に2日で2000円を超える下げに。プロ野球では西武・平良海馬投手のポスティングが公示され、メジャー30球団との交渉が始まりました。タブまたはスワイプで10のジャンルを読み進められます。良い週末を。
+        </div>
+        <div class="colophon">AIが検索結果をもとに要約・編集しています。詳細は各記事の出典リンクでご確認ください。<br>毎朝5時発行・次号は明日<br><a href="archive.html" style="color:inherit">過去の紙面はこちら</a></div>
+      </section>
+
+      <section class="panel" id="panel-social" style="--cat-color:var(--c-social)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">社会</h2></div>
+        <p class="panel-sub">くらしに関わるニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>出口調査でトランプ大統領の支持率38%——「有権者が拒絶」と米メディア</h3>
+          <p class="lead">本日既報の中間選挙について、CBSニュースは「有権者はトランプ大統領と共和党の支配を拒絶した」と報じ、出口調査ではトランプ氏の支持率が38%だったとしている。選挙の結果は、政権発足から約2年間の政策運営に対する有権者の評価を映したものと受け止められている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「出口調査」が開票結果とは別の、有権者の気持ちを知るための調査だという点にある。出口調査<span class="note">（＝投票を終えて投票所から出てきた人に、誰に投票したか、何を重視したかなどを聞き取る調査のこと。開票より早く傾向がつかめる一方、あくまで一部の人への聞き取りなので誤差がある）</span>で支持率が4割を下回ったことは、政権に対する不満の広がりを示す数字として注目されている。</p>
+          </div>
+          <div class="meta"><a href="https://www.cbsnews.com/live-updates/midterm-election-results-2026-democrats-house-senate-trump/" target="_blank" rel="noopener">CBS News</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>記者拘束、続報確認できず——勾留期限は12月12日</h3>
+          <p class="lead">ロシアに拘束された北海道新聞記者の問題（11月5日既報）について、本稿の時点で新たな続報は確認できていない。10月26日の領事面会では健康状態に問題がなく、食事もとれていることが確認されている。勾留期限の12月12日まで、FSBの捜査が続く見通しだ。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、次の大きな節目が「12月12日」とはっきりしている点にある。勾留期限<span class="note">（＝裁判所が認めた、容疑者を拘束しておける期間の終わりの日のこと。この日までに、起訴するか、勾留を延長するか、釈放するかが判断される）</span>までは、外交ルートでの働きかけが続く「静かな時間」が続くとみられる。</p>
+          </div>
+          <div class="meta"><a href="https://www.hokkaido-np.co.jp/article/1397580/" target="_blank" rel="noopener">北海道新聞</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-polecon" style="--cat-color:var(--c-polecon)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">政治／経済</h2></div>
+        <p class="panel-sub">政治・経済の動き2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 政治</span>
+          <h3>上院も民主党が54議席以上——テキサス・カンザス・サウスカロライナで番狂わせ</h3>
+          <p class="lead">本日既報の中間選挙で、CBSニュースは民主党が上院で少なくとも54議席を獲得したと報じた。共和党が強いとされてきたテキサス州・カンザス州・サウスカロライナ州などで民主党候補が勝利する番狂わせが起きた。アラスカ州とミシシッピ州の上院選は、本稿の時点でまだ決着していない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、上院と下院では「握ったときの意味」が違うという点にある。上院<span class="note">（＝米議会の2つの院のうち、各州2人ずつ計100人の議員で構成される院のこと。法律の可決に加えて、閣僚や裁判官の人事の承認、外国との条約の承認という大きな権限を持つ）</span>を野党が握ると、大統領が選んだ閣僚や裁判官が承認されにくくなる。テキサスなどの「共和党の地盤」での敗北は、選挙前の予測（上院は共和党優勢との見方もあった）を上回る民主党の勢いを示している。</p>
+          </div>
+          <div class="meta"><a href="https://www.cbsnews.com/live-updates/midterm-election-results-2026-democrats-house-senate-trump/" target="_blank" rel="noopener">CBS News</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 経済</span>
+          <h3>市場は「民主勝利」を事前に織り込み——焦点は選挙後の政権の動き</h3>
+          <p class="lead">本日既報の日経平均の下落について、市場では、選挙前の時点で民主党の勝利がある程度予想され、相場に織り込まれていたとの見方がある。投開票前の4日には、ドル円相場が下げた後に買い戻しが入り、下げ幅を縮めたと報じられている。今後は、議会のねじれの中でトランプ政権がどう動くかが警戒材料になっている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「織り込み」という市場の言葉にある。織り込み<span class="note">（＝ある出来事が起きる前に、それが起きる可能性を予想して、あらかじめ株価や為替に反映させておくこと。予想どおりの結果が出ると、発表の瞬間には大きく動かないことが多い）</span>が進んでいたとすれば、今後の値動きは「選挙の結果そのもの」より、議会と大統領が対立したときに予算や関税などの政策がどうなるかで決まっていくことになる。</p>
+          </div>
+          <div class="meta"><a href="https://www.pictet.co.jp/investment-information/market/today/20261105.html" target="_blank" rel="noopener">ピクテ・ジャパン</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-scitech" style="--cat-color:var(--c-scitech)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">科学／テック</h2></div>
+        <p class="panel-sub">研究・技術のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>米国のAI規制強化への警戒、日本の半導体株に波及</h3>
+          <p class="lead">本日既報の日経平均の下落は、米議会の構成が変わることで、米国でAIへの規制が強まるのではないかという警戒が引き金になったと報じられている。AIの普及を支える半導体の関連企業は、米国のAI投資の勢いに業績が大きく左右されるため、規制の先行きに敏感に反応した。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「AI規制」がAIを作る会社だけでなく、その部品を作る会社にも影響する点にある。AI規制<span class="note">（＝AIの開発や利用について、安全性の確認、情報公開、使い道の制限などのルールを法律で定めること。規制が強まると、AI開発への投資のスピードが落ちる可能性があると市場では受け止められやすい）</span>の議論が進むと、データセンター向けの半導体の需要見通しにも影響しうる。ただし、実際にどのような法律ができるかは、現時点では決まっていない。</p>
+          </div>
+          <div class="meta"><a href="https://www.nikkei.com/article/DGXZQOUB050H0TV01C26A1000000/" target="_blank" rel="noopener">日本経済新聞</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>好決算でも株は下がる——「業績」と「政策リスク」は別のもの</h3>
+          <p class="lead">TSMCの9月売上高が前年同月比54.6%増、Samsungの7〜9月期営業利益が100兆ウォン超の見通し（いずれも11月4日既報）と、半導体業界の業績は記録的な水準にある。それでも本日既報のとおり関連株が大きく売られたのは、株価がこれまでの実績よりも「これから先」の見通しで動くためだ。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、株価が「過去の成績表」ではなく「将来への期待」を映すという点にある。政策リスク<span class="note">（＝政府や議会の方針が変わることで、企業の事業環境や利益が悪くなるおそれのこと。規制の強化、関税の変更、補助金の打ち切りなどが代表例）</span>が高まると、足元の業績がどれだけ良くても、投資家は先行きを慎重に見て株を手放すことがある。</p>
+          </div>
+          <div class="meta"><a href="https://www.digitaltoday.co.kr/jp/view/112554/tsmc-sets-another-record-third-quarter-revenue-on-surge-in-ai-chip-orders" target="_blank" rel="noopener">Digital Today</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-business" style="--cat-color:var(--c-business)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ビジネス</h2></div>
+        <p class="panel-sub">企業・産業のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>米国株は上昇、ダウ3%高・原油は急落——日米で逆の反応</h3>
+          <p class="lead">本日既報の中間選挙の結果を受け、米国の株式市場ではダウ平均が3.03%上昇し、原油価格は急落したと報じられている。日本株が下げたのとは対照的な動きとなった。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、同じ出来事でも、国や業種によって受け止め方が違うという点にある。ダウ平均<span class="note">（＝ダウ工業株30種平均のこと。米国を代表する30社の株価から計算する指数で、米国株全体の調子を表す目安として使われる。日本の日経平均にあたる）</span>には幅広い業種の大企業が含まれる一方、日本株の上昇はAI・半導体関連に偏っていた。原油の値下がりは、10月の日銀短観で企業が心配していた「原油高によるコスト上昇」（11月2日既報）を和らげる材料にもなりうる。</p>
+          </div>
+          <div class="meta"><a href="https://www.oanda.jp/lab-education/market_news/20261105_us_midterm_result/" target="_blank" rel="noopener">OANDA証券</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>JDI茂原工場の譲渡、続報——新光電気は2028年度稼働へ</h3>
+          <p class="lead">JDIが茂原工場を新光電気工業に譲渡する件（11月5日既報）について、本稿の時点で新たな続報は確認できていない。物件の引き渡しは2027年3月31日、新光電気による先端半導体パッケージ工場としての稼働は2028年度の予定だ。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、工場の「引き渡し」と「稼働」の間に、さらに1年以上の準備期間がある点にある。設備の入れ替え<span class="note">（＝液晶パネル用の製造装置を撤去し、半導体パッケージ用の装置を新たに据え付けて調整すること。建物を使い回せても、中身の設備は全く別物になるため、一定の期間がかかる）</span>を経て、ようやく新しい用途での生産が始まる。本日既報の株安のように市況が揺れる中でも、計画どおり進むかが注目される。</p>
+          </div>
+          <div class="meta"><a href="https://eetimes.itmedia.co.jp/ee/articles/2609/30/news105.html" target="_blank" rel="noopener">EE Times Japan</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-startup" style="--cat-color:var(--c-startup)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">スタートアップ</h2></div>
+        <p class="panel-sub">資金調達・注目トピック2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>AI関連株の下落、スタートアップの資金調達にも影を落とす可能性</h3>
+          <p class="lead">本日既報のAI・半導体株の下落は、上場企業だけの話にとどまらない可能性がある。スタートアップへの投資は、上場企業の株価や市場の空気に左右されやすく、2025年の調達額の中央値が前年比2割減となるなど（10月25日既報）資金の選別が進む中、投資家がさらに慎重になることも考えられる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、未上場のスタートアップの価値が、上場している同じ分野の企業の株価を「ものさし」にして決められることが多いという点にある。企業価値の評価<span class="note">（＝その会社が全体でいくらの価値があるかを見積もること。未上場企業には株価がないため、似た事業をしている上場企業の株価などを参考に算出されることが多い）</span>の基準になる上場企業の株価が下がると、スタートアップの資金調達の条件も厳しくなりやすい。</p>
+          </div>
+          <div class="meta"><a href="https://toyokeizai.net/articles/-/901502?display=b" target="_blank" rel="noopener">東洋経済オンライン</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>海外AI企業への資金集中、国内への影響続く——続報</h3>
+          <p class="lead">OpenAI・Anthropicのような海外AI企業への記録的な資金集中（11月5日既報）は、国内スタートアップ業界の資金調達環境にも影響を与え続けている。本日既報の米国のAI規制をめぐる議論の行方は、こうした海外の大手AI企業の今後の資金調達にも関わってくる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、AI業界の資金の流れが、米国の政治の動きと結びついている点にある。規制の不確実性<span class="note">（＝今後どのようなルールが作られるかがはっきりしない状態のこと。ルールが厳しくなるか緩くなるかが分からないと、投資家は大きな金額を出しにくくなる）</span>が高まる局面では、資金規模で競えない国内企業にとって、特定分野への特化という差別化戦略の重要性が増すとの見方もある。</p>
+          </div>
+          <div class="meta"><a href="https://toyokeizai.net/articles/-/931242" target="_blank" rel="noopener">東洋経済オンライン</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-gadget" style="--cat-color:var(--c-gadget)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ガジェット</h2></div>
+        <p class="panel-sub">新製品2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>iPhone Duo、品薄は年明けまで続く可能性——続報</h3>
+          <p class="lead">発売から2週間が経過したiPhone Duo（11月5日既報）の品薄状態について、Foxconnの歩留まり改善には半年から1年かかる可能性があるとの見方が続いている。年明けまで入手が難しい状況が続くとみられる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、発売から2週間たっても状況が大きく変わっていないという点にある。歩留まり<span class="note">（＝工場で作った製品のうち、不良品にならずに出荷できる良品の割合のこと。新しい技術を使った製品ほど最初は低く、生産の経験を積むことで少しずつ改善していく）</span>の改善には時間がかかるため、購入を急がず長期戦を覚悟する必要がある。</p>
+          </div>
+          <div class="meta"><a href="https://iphone-mania.jp/?p=606517" target="_blank" rel="noopener">iPhone Mania</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>iPhone Duo、国内価格は36万4800円から——値下げの動きなし</h3>
+          <p class="lead">品薄が続くiPhone Duoの国内価格は、最も安い256GBモデルでも36万4800円のままで、発売から2週間たっても値下げの動きは見られない。需要が供給を上回る状態が続いているためとみられる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、品薄が続くうちはメーカーに値下げする理由がないという点にある。需要と供給<span class="note">（＝「欲しい人の量」と「売れる商品の量」の関係のこと。欲しい人のほうが多ければ値段は下がりにくく、商品が余れば値下げが起きやすい）</span>のバランスが変わるまで、今の価格が続くとみられる。</p>
+          </div>
+          <div class="meta"><a href="https://forbesjapan.com/articles/detail/105166" target="_blank" rel="noopener">Forbes JAPAN</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-intl" style="--cat-color:var(--c-intl)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">海外</h2></div>
+        <p class="panel-sub">国際ニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>開票はなお続く——下院35議席、上院アラスカ・ミシシッピが未確定</h3>
+          <p class="lead">本日既報の中間選挙は、民主党の多数派奪還が確実になった一方で、開票作業はまだ続いている。Yahooの集計では米東部時間5日午後1時時点で下院の35議席が未確定で、上院ではアラスカ州とミシシッピ州の選挙が決着していない。ミシシッピ州の上院選は大接戦となっている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、米国の選挙では「勝敗の大勢」と「最終的な議席数」が決まるタイミングがずれるという点にある。郵便投票<span class="note">（＝投票所に行かずに、郵送で投票する方法のこと。米国では広く使われており、投票日以降に届いた票も一定の期限まで数える州があるため、集計に日数がかかる）</span>の集計や接戦区の再集計で、最終的な議席数が固まるまでには数日から数週間かかることもある。</p>
+          </div>
+          <div class="meta"><a href="https://www.yahoo.com/news/politics/live/midterms-2026-live-updates-election-day-voters-head-to-the-polls-as-democrats-look-to-flip-gop-control-of-the-house-and-senate-110000715.html" target="_blank" rel="noopener">Yahoo News</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>トランプ政権、残り2年は「ねじれ議会」に——日米関係への影響は</h3>
+          <p class="lead">本日既報のとおり上下両院を民主党が握ったことで、トランプ大統領は任期の残り2年を、議会の多数派が野党という状態で迎える。関税や予算をめぐる政策がどう変わるかは、日本にとっても大きな関心事だ。日本政府の公式な反応は、本稿の時点では確認できていない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、米国では大統領だけで決められることと、議会の承認が要ることが分かれている点にある。ねじれ議会<span class="note">（＝大統領の所属政党と、議会で多数を占める政党が異なる状態のこと。法律や予算は議会を通す必要があるため、大統領の政策が進みにくくなる。日本でも衆議院と参議院で多数派が違う状態をこう呼ぶ）</span>になっても、関税の一部のように大統領の権限で決められるものもあり、日本への影響がどこまで変わるかは今後の動きを見る必要がある。</p>
+          </div>
+          <div class="meta"><a href="https://www.cnbc.com/2026/11/03/midterm-elections-2026-live-updates.html" target="_blank" rel="noopener">CNBC</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-sports" style="--cat-color:var(--c-sports)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">芸能／スポーツ</h2></div>
+        <p class="panel-sub">厳選2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>平良海馬のポスティング公示、メジャー30球団と交渉開始——期間は45日</h3>
+          <p class="lead">西武がポスティング移籍を容認した平良海馬投手（11月5日既報）について、MLBが全30球団に「契約できる選手」として通知し、交渉が日本時間3日から始まったと東京スポーツなどが報じた。交渉できる期間は45日間とされる。平良投手は今季12勝5敗、防御率1.36で最優秀防御率に輝いている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「公示」によって交渉の時計が動き出したという点にある。ポスティング公示<span class="note">（＝日本の球団から申請を受けたMLBが、その選手と交渉できることを全30球団に知らせる手続きのこと。この日から決められた期間内に契約がまとまらなければ、選手は元の球団に残ることになる）</span>から45日以内に、どの球団とどんな条件で合意できるかが焦点になる。</p>
+          </div>
+          <div class="meta"><a href="https://www.tokyo-sports.co.jp/articles/-/408551" target="_blank" rel="noopener">東京スポーツ</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>交渉期限は12月1日に前倒しの可能性——ドジャース・ヤンキースも関心か</h3>
+          <p class="lead">本日既報の平良投手の交渉期間について、MLBと選手会の新しい労使協定が結ばれなければ、今の協定が切れる12月1日に期限が前倒しされる見通しだと報じられている。米メディアの一部はドジャースやヤンキースが獲得に動く可能性を取り上げているが、具体的な交渉状況は明らかになっていない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、選手個人の交渉が、リーグ全体のルールの更新に左右されるという点にある。労使協定<span class="note">（＝MLB（球団側）と選手会（選手側）が結ぶ、年俸の仕組みや移籍のルールなどを定めた取り決めのこと。数年ごとに更新され、切れると選手の契約手続きが止まることがある）</span>が12月1日に切れる今年は、交渉に使える時間が短くなる可能性があり、早めの決着を目指す動きが出るかもしれない。</p>
+          </div>
+          <div class="meta"><a href="https://spread-sports.jp/?p=402198" target="_blank" rel="noopener">SPREAD</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-koshien" style="--cat-color:var(--c-koshien)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">高校野球【埼玉】</h2></div>
+        <p class="panel-sub">秋季大会2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>埼玉県勢、冬の鍛錬が本格化——来夏の甲子園へ向けて、続報</h3>
+          <p class="lead">秋季大会をすべて終えた埼玉県勢（11月5日既報）は、本格的な冬のオフシーズンを過ごしている。西武台・山村学園（10月18日・19日既報）はいずれも関東大会の準々決勝で敗れており、来年夏の甲子園予選に向けたチームづくりが各校で続く。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、高校野球が「秋の大会で終わり」ではなく、「冬の鍛錬を経て、来夏につながっていく」という、1年を通じたサイクルの中にあるという点にある。オフシーズン<span class="note">（＝公式戦が行われない、主に冬の期間のこと。この間に基礎体力づくりや技術の見直しを行い、次のシーズンに備える）</span>の過ごし方が、来年のチームの土台を作る。</p>
+          </div>
+          <div class="meta"><a href="https://www.hb-nippon.com/tournaments/1072" target="_blank" rel="noopener">高校野球ドットコム</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>西武・平良投手の挑戦、埼玉の球児にも刺激に</h3>
+          <p class="lead">本日既報の平良海馬投手のメジャー挑戦は、埼玉に本拠地を置く西武の選手の話として、県内の高校球児にとっても身近な話題だ。平良投手は沖縄の八重山商工高から2017年のドラフト4位で入団し、2020年に新人王を獲得したのち、今季は最優秀防御率に輝いた。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、ドラフト上位でなくても、プロで力を伸ばして世界に挑戦する道があるという点にある。ドラフト会議<span class="note">（＝プロ野球の各球団が、入団させたい高校生・大学生・社会人の選手を指名する会議のこと。指名の順番が早いほど期待の大きい選手とされるが、4位以下の指名から大きく成長する選手も多い）</span>で4位指名だった平良投手の歩みは、来夏を目指して冬の練習に励む埼玉の球児にとっても励みになる話だ。</p>
+          </div>
+          <div class="meta"><a href="https://spread-sports.jp/?p=402198" target="_blank" rel="noopener">SPREAD</a></div>
+        </article>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var cats = ['top','social','polecon','scitech','business','startup','gadget','intl','sports','koshien'];
+  var idx = 0;
+  var track = document.getElementById('track');
+  var viewport = document.getElementById('viewport');
+  var vw = viewport.clientWidth;
+
+  function setActive(i){
+    cats.forEach(function(c, j){
+      document.getElementById('tab-' + c).classList.toggle('active', j === i);
+    });
+    var activeTab = document.getElementById('tab-' + cats[i]);
+    if (activeTab && activeTab.scrollIntoView) activeTab.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+  }
+
+  function settle(i, animate){
+    idx = Math.max(0, Math.min(cats.length - 1, i));
+    track.style.transition = animate ? 'transform .32s cubic-bezier(.22,.61,.36,1)' : 'none';
+    track.style.transform = 'translateX(' + (-idx * vw) + 'px)';
+    setActive(idx);
+  }
+
+  window.goTo = function(i){ settle(i, true); };
+
+  window.addEventListener('resize', function(){
+    vw = viewport.clientWidth;
+    settle(idx, false);
+  });
+
+  var dragging = false, decided = null, sx = 0, sy = 0, dx = 0;
+  viewport.addEventListener('touchstart', function(e){
+    dragging = true; decided = null;
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY; dx = 0;
+    track.style.transition = 'none';
+  }, { passive: true });
+
+  viewport.addEventListener('touchmove', function(e){
+    if (!dragging) return;
+    var cx = e.touches[0].clientX, cy = e.touches[0].clientY;
+    var mdx = cx - sx, mdy = cy - sy;
+    if (decided === null) {
+      if (Math.abs(mdx) > 8 || Math.abs(mdy) > 8) {
+        decided = Math.abs(mdx) > Math.abs(mdy) ? 'x' : 'y';
+      }
+    }
+    if (decided === 'x') {
+      e.preventDefault();
+      dx = mdx;
+      var atStart = idx === 0 && dx > 0;
+      var atEnd = idx === cats.length - 1 && dx < 0;
+      var eased = (atStart || atEnd) ? dx * 0.35 : dx;
+      track.style.transform = 'translateX(' + (-idx * vw + eased) + 'px)';
+    }
+  }, { passive: false });
+
+  viewport.addEventListener('touchend', function(){
+    if (!dragging) return;
+    dragging = false;
+    if (decided === 'x') {
+      var threshold = vw * 0.18;
+      if (dx <= -threshold) settle(idx + 1, true);
+      else if (dx >= threshold) settle(idx - 1, true);
+      else settle(idx, true);
+    }
+    decided = null; dx = 0;
+  });
+
+  settle(0, false);
+})();
+</script>
+
+</body></html>
