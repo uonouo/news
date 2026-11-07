@@ -1,0 +1,610 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yoshi's News</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Zen+Old+Mincho:wght@600;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap');
+
+:root {
+  --bg: #ffffff;
+  --panel-bg: #ffffff;
+  --card: #ffffff;
+  --card-line: #eef0f3;
+  --ink: #1a1c20;
+  --ink-soft: #5b6068;
+  --ink-faint: #9aa0a8;
+  --shell: #f4f5f7;
+
+  --c-top: #ef3355;
+  --c-social: #00b3a4;
+  --c-polecon: #6d5bf0;
+  --c-scitech: #ff8a1e;
+  --c-business: #0091ff;
+  --c-sports: #26c281;
+  --c-startup: #ff4fa3;
+  --c-koshien: #c8860d;
+  --c-intl: #4b3f8f;
+  --c-gadget: #00bcd4;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101114;
+    --panel-bg: #101114;
+    --card: #1a1c20;
+    --card-line: #2a2c31;
+    --ink: #f1f2f4;
+    --ink-soft: #b7bcc4;
+    --ink-faint: #767c86;
+    --shell: #1a1c20;
+    --c-top: #ff6b85;
+    --c-social: #3fd8c9;
+    --c-polecon: #9c8fff;
+    --c-scitech: #ffab5c;
+    --c-business: #4db2ff;
+    --c-sports: #5be0a6;
+    --c-startup: #ff85c2;
+    --c-koshien: #e8b34c;
+    --c-intl: #a89cf0;
+    --c-gadget: #4dd8ea;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101114;
+  --panel-bg: #101114;
+  --card: #1a1c20;
+  --card-line: #2a2c31;
+  --ink: #f1f2f4;
+  --ink-soft: #b7bcc4;
+  --ink-faint: #767c86;
+  --shell: #1a1c20;
+  --c-top: #ff6b85;
+  --c-social: #3fd8c9;
+  --c-polecon: #9c8fff;
+  --c-scitech: #ffab5c;
+  --c-business: #4db2ff;
+  --c-sports: #5be0a6;
+  --c-startup: #ff85c2;
+  --c-koshien: #e8b34c;
+  --c-intl: #a89cf0;
+  --c-gadget: #4dd8ea;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--shell);
+  color: var(--ink);
+  font-family: "Zen Kaku Gothic New", -apple-system, "Hiragino Kaku Gothic ProN", sans-serif;
+  line-height: 1.7;
+  overscroll-behavior-y: none;
+}
+.serif { font-family: "Zen Old Mincho", "Hiragino Mincho ProN", serif; }
+
+.app {
+  max-width: 680px;
+  margin: 0 auto;
+  background: var(--bg);
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ---- Header ---- */
+.topbar { padding: 20px 20px 0; flex-shrink: 0; }
+.title-line { display: flex; align-items: center; gap: 8px; }
+.mascot { height: 50px; width: auto; flex-shrink: 0; border-radius: 8px; }
+.title-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  margin-bottom: 14px;
+}
+.title-row h1 {
+  font-family: "Baloo 2", "Zen Kaku Gothic New", sans-serif;
+  font-size: 48px; font-weight: 800; margin: 0; letter-spacing: 0.01em; line-height: 1;
+  -webkit-text-stroke: 2.4px #2b2013;
+  filter: drop-shadow(2px 3px 0 rgba(30,22,12,0.18));
+  background-image:
+    radial-gradient(circle at 22% 30%, #211709 0 7px, transparent 8px),
+    radial-gradient(circle at 68% 65%, #3a2b16 0 9px, transparent 10px),
+    radial-gradient(circle at 45% 88%, #241a0c 0 5px, transparent 6px),
+    radial-gradient(circle at 85% 20%, #2e2211 0 6px, transparent 7px),
+    linear-gradient(135deg, #b8a06e, #967c4c 50%, #6f5a35);
+  background-size: 30px 30px, 41px 41px, 23px 23px, 35px 35px, 100% 100%;
+  background-repeat: repeat, repeat, repeat, repeat, no-repeat;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.title-row .date { font-size: 11.5px; color: var(--ink-faint); white-space: nowrap; font-weight: 500; margin-top: 2px; }
+
+.tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px 3px; }
+.tab {
+  appearance: none; border: none; background: none;
+  font-family: inherit; font-size: 10.5px; font-weight: 700;
+  color: var(--ink-faint);
+  padding: 7px 4px 9px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+  cursor: pointer;
+  border-radius: 10px 10px 0 0;
+  transition: color .2s ease, background .2s ease;
+}
+.tab .dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  margin-right: 5px; background: currentColor; opacity: 0.45; vertical-align: middle;
+}
+.tab::after {
+  content: ""; position: absolute; left: 10px; right: 10px; bottom: 0;
+  height: 3px; border-radius: 3px 3px 0 0; background: transparent; transition: background .2s ease;
+}
+.tab.active { color: var(--tab-color); background: color-mix(in srgb, var(--tab-color) 10%, transparent); }
+.tab.active .dot { opacity: 1; }
+.tab.active::after { background: var(--tab-color); }
+
+/* ---- Swipe viewport ---- */
+.viewport { flex: 1; overflow: hidden; position: relative; touch-action: pan-y; }
+.track {
+  display: flex;
+  height: 100%;
+  width: 1000%;
+  transition: transform .32s cubic-bezier(.22,.61,.36,1);
+  will-change: transform;
+}
+.panel {
+  width: 10%;
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 20px 56px;
+}
+
+.panel-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.panel-head .chip { width: 8px; height: 26px; border-radius: 4px; background: var(--cat-color); flex-shrink: 0; }
+.panel-head h2 { font-size: 20px; font-weight: 700; margin: 0; letter-spacing: 0.02em; color: var(--cat-color); }
+.panel-sub { font-size: 12px; color: var(--ink-faint); margin: 0 0 18px 18px; }
+
+.story {
+  background: var(--card);
+  border: 1px solid var(--card-line);
+  border-left: 4px solid var(--cat-color);
+  border-radius: 12px;
+  padding: 18px 18px 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(20,20,30,0.05);
+}
+.story .kicker {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: "Zen Old Mincho", serif; font-size: 11.5px; font-weight: 700;
+  color: var(--cat-color); margin-bottom: 9px;
+}
+.story h3 { font-size: 16px; font-weight: 700; line-height: 1.55; margin: 0 0 10px; }
+.story .lead { font-size: 14px; color: var(--ink); margin: 0 0 14px; line-height: 1.85; }
+
+.context {
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 10px;
+  padding: 13px 15px;
+  margin: 0 0 12px;
+}
+.context-label {
+  display: block; font-size: 10.5px; font-weight: 700;
+  color: var(--cat-color); letter-spacing: 0.04em; margin-bottom: 6px;
+}
+.context p { font-size: 13px; color: var(--ink-soft); margin: 0; line-height: 1.8; }
+
+.note { font-size: 11.5px; color: var(--ink-faint); font-weight: 500; }
+
+.term-link {
+  color: var(--cat-color);
+  text-decoration: none;
+  border-bottom: 1px dotted color-mix(in srgb, var(--cat-color) 55%, transparent);
+  font-weight: 700;
+}
+
+.meta { font-size: 11px; color: var(--ink-faint); }
+.meta a { color: var(--cat-color); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--cat-color) 40%, transparent); font-weight: 700; }
+
+.closing {
+  margin: 6px 0 0; padding: 16px 18px;
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 12px; font-size: 13px; color: var(--ink-soft); text-align: center;
+}
+.closing .label {
+  display: block; font-family: "Zen Old Mincho", serif; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.2em; color: var(--cat-color); margin-bottom: 8px;
+}
+.colophon { margin: 14px 0 8px; font-size: 10.5px; color: var(--ink-faint); line-height: 1.9; text-align: center; }
+
+@media (max-width: 420px) {
+  .topbar { padding: 16px 14px 0; }
+  .panel { padding: 16px 14px 48px; }
+  .title-row h1 { font-size: 38px; }
+  .mascot { height: 40px; }
+}
+</style>
+</head><body>
+
+
+<div class="app" id="app">
+
+  <div class="topbar">
+    <div class="title-row">
+      <div class="title-line">
+        <img class="mascot" src="mascot.jpg" alt="オオサンショウウオのマスコット">
+        <h1>Yoshi's News</h1>
+      </div>
+      <span class="date">2026年11月8日（日）・第66号</span>
+    </div>
+    <div class="tabs" id="tabs">
+      <button class="tab" id="tab-top" style="--tab-color:var(--c-top)" onclick="goTo(0)"><span class="dot"></span>トップ</button>
+      <button class="tab" id="tab-social" style="--tab-color:var(--c-social)" onclick="goTo(1)"><span class="dot"></span>社会</button>
+      <button class="tab" id="tab-polecon" style="--tab-color:var(--c-polecon)" onclick="goTo(2)"><span class="dot"></span>政治/経済</button>
+      <button class="tab" id="tab-scitech" style="--tab-color:var(--c-scitech)" onclick="goTo(3)"><span class="dot"></span>科学/テック</button>
+      <button class="tab" id="tab-business" style="--tab-color:var(--c-business)" onclick="goTo(4)"><span class="dot"></span>ビジネス</button>
+      <button class="tab" id="tab-startup" style="--tab-color:var(--c-startup)" onclick="goTo(5)"><span class="dot"></span>スタートアップ</button>
+      <button class="tab" id="tab-gadget" style="--tab-color:var(--c-gadget)" onclick="goTo(6)"><span class="dot"></span>ガジェット</button>
+      <button class="tab" id="tab-intl" style="--tab-color:var(--c-intl)" onclick="goTo(7)"><span class="dot"></span>海外</button>
+      <button class="tab" id="tab-sports" style="--tab-color:var(--c-sports)" onclick="goTo(8)"><span class="dot"></span>芸能/スポーツ</button>
+      <button class="tab" id="tab-koshien" style="--tab-color:var(--c-koshien)" onclick="goTo(9)"><span class="dot"></span>高校野球【埼玉】</button>
+    </div>
+  </div>
+
+  <div class="viewport" id="viewport">
+    <div class="track" id="track">
+
+      <section class="panel" id="panel-top" style="--cat-color:var(--c-top)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">トップニュース</h2></div>
+        <p class="panel-sub">今日いちばん知っておきたい2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 海外</span>
+          <h3>トランプ政権、ワイルズ首席補佐官が退任——後任に強硬派のミラー氏</h3>
+          <p class="lead">トランプ米大統領は6日、スーザン・ワイルズ首席補佐官が退任し、後任にスティーブン・ミラー次席補佐官を起用すると発表した。NHKなどによると、ミラー氏は9日付で就任する予定で、ワイルズ氏はトランプ氏の政治団体に移る。発表は、中間選挙で与党・共和党が大敗してから3日後だったが、トランプ氏は「交代は選挙のせいではない」と説明している。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、首席補佐官がホワイトハウスの「司令塔」だという点にある。首席補佐官<span class="note">（＝米大統領の側近の中で最も重要な役職のこと。大統領の日程や、誰が大統領に会えるかを管理し、政権内の調整を取り仕切る。議会の承認は要らず、大統領が自由に選べる）</span>のワイルズ氏は、女性として初めてこの役職に就いた人物だった。後任のミラー氏は、トランプ氏が2015年に初めて大統領選に出たときから仕えてきた側近で、厳しい移民政策を考えてきた中心人物として知られる。議会の上下両院を民主党が握る「ねじれ」（11月6日既報）の中で、政権がさらに強硬な路線をとるのではないかとの見方もあり、人選には批判も出ている。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261107de72003" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 社会</span>
+          <h3>32年ぶりに「台風32号」が発生——今年は1月から毎月台風が発生</h3>
+          <p class="lead">7日正午ごろ、マリアナ諸島で台風32号「チャンパカ」が発生した。日本気象協会によると、1年に32個目の台風が発生したのは1994年以来32年ぶりで、今世紀では初めて。今年は1月から11月まで毎月台風が発生している。台風32号は今後「強い」勢力に発達し、11日ごろには小笠原諸島に近づく可能性があり、ウェザーニュースは小笠原では影響に注意するよう呼びかけている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、台風の「号」が、その年に何番目に発生したかを表す番号だという点にある。台風<span class="note">（＝太平洋の北西部などで発生する熱帯低気圧のうち、中心付近の最大風速がおよそ秒速17メートル以上に強まったもののこと。日本では1月1日以降に発生した順に1号、2号と番号を付ける）</span>は平年で年に25個ほど発生する。統計のある1951年以降で最も多かったのは1967年の39個で、1994年は36個だった。「チャンパカ」のような名前は、日本を含むアジアの国々が出し合った名前のリストから順番に付けられる。11月は台風が日本に近づくことは多くないが、小笠原諸島など南の島では注意が必要だ。</p>
+          </div>
+          <div class="meta"><a href="https://tenki.jp/forecaster/deskpart/2026/11/07/41229.html" target="_blank" rel="noopener">日本気象協会 tenki.jp</a></div>
+        </article>
+
+        <div class="closing">
+          <span class="label serif">編集後記</span>
+          立冬を迎えた北海道では札幌市でも雪が積もり、一気に冬景色に。一方、はるか南の海では32年ぶりに「台風32号」が生まれました。米国ではトランプ政権の首席補佐官が交代し、ロシアではJTの現地企業への管理がさらに広がっています。今日8日からは大相撲九州場所が始まります。良い日曜日を。
+        </div>
+        <div class="colophon">AIが検索結果をもとに要約・編集しています。詳細は各記事の出典リンクでご確認ください。<br>毎朝5時発行・次号は明日<br><a href="archive.html" style="color:inherit">過去の紙面はこちら</a></div>
+      </section>
+
+      <section class="panel" id="panel-social" style="--cat-color:var(--c-social)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">社会</h2></div>
+        <p class="panel-sub">くらしに関わるニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>立冬の札幌で積雪10センチ——線路の雪を払う「ササラ電車」が今季初出動</h3>
+          <p class="lead">強い寒気の影響で（11月7日既報）、立冬の7日、北海道では札幌市など都市部でも雪が積もった。日本気象協会によると、札幌市の積雪は10センチに達し、17時の時点で空知地方の深川市では21センチの雪が積もった。HTB北海道ニュースによると、札幌では路面電車の線路の雪を払う「ササラ電車」が今シーズン初めて出動した。雪は8日の朝まで続く見込みで、交通機関の乱れや路面の凍結に注意が必要だ。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、11月上旬に札幌で10センチも雪が積もるのは早めの冬の訪れだという点にある。ササラ電車<span class="note">（＝竹を細かく割って束ねた「ササラ」を車体の前後に付け、回転させて線路の雪を払いのける札幌市電の除雪車両のこと。札幌の冬の風物詩として知られる）</span>の出動は、札幌に本格的な冬が来たことを告げる合図とも言える。路面凍結<span class="note">（＝雪や雨で濡れた道路が冷えて凍り、滑りやすくなること。見た目では分かりにくい「ブラックアイスバーン」は特に危ない）</span>は朝晩に起きやすいため、車も歩行者もいつも以上に気をつける必要がある。</p>
+          </div>
+          <div class="meta"><a href="https://tenki.jp/forecaster/deskpart/2026/11/07/41234.html" target="_blank" rel="noopener">日本気象協会 tenki.jp</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>「さわやか律子さん」中山律子さん死去、84歳——日本のボウリングブームの立役者</h3>
+          <p class="lead">1970年代に「さわやか律子さん」として親しまれた元プロボウラーの中山律子さんが亡くなった。84歳だった。日本プロボウリング協会が7日に発表した。中山さんは女子プロの1期生で、1970年8月に日本の女子選手として初めて公認のパーフェクトゲーム（300点）を達成し、日本中にボウリングブームを巻き起こした。2004年には同協会の会長に就き、2017年に日本プロボウリング殿堂入りを果たしている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、1970年前後の日本で、ボウリングが今では想像しにくいほどの大ブームだったという点にある。ボウリング場が全国に次々とでき、テレビでも試合が中継された。その人気の中心にいたのが中山さんだった。パーフェクトゲーム<span class="note">（＝ボウリングで10フレームすべてをストライク（1投目ですべてのピンを倒すこと）でそろえ、最高点の300点を出すこと。12回続けてストライクを出す必要がある）</span>を女子選手として日本で初めて達成し、テレビの収録中に記録したことでも知られる。</p>
+          </div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/articles/37c58dcb03130113f80524e83b518f6383283507" target="_blank" rel="noopener">日刊スポーツ（Yahoo!ニュース）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-polecon" style="--cat-color:var(--c-polecon)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">政治／経済</h2></div>
+        <p class="panel-sub">政治・経済の動き2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 経済</span>
+          <h3>米雇用統計、10月は16.5万人増で予想を大きく上回る——失業率は4.1%に改善</h3>
+          <p class="lead">米労働省が6日に発表した10月の雇用統計で、農業以外の分野で働く人の数は前の月より16万5000人増え、市場の予想（6万5000人増）を大きく上回った。日本経済新聞などによると、失業率は9月の4.2%から4.1%に下がった。OANDA証券によると、平均時給も前の月より0.4%上がり、予想を上回った。OANDA証券は、12月の会合での利上げの観測を後押しする内容だと分析している。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、雇用統計が「米国の景気の体温計」として世界中から注目されている点にある。雇用統計<span class="note">（＝米国で毎月発表される、働いている人の数や失業率などをまとめた統計のこと。特に「非農業部門雇用者数」の増減は、景気の強さを測る最も重要な数字の一つとされる）</span>の結果が良いと、景気が過熱して物価が上がりすぎないよう、中央銀行が金利を上げる可能性が高まる。米国の中央銀行にあたるFRBの会合をFOMC<span class="note">（＝連邦公開市場委員会のこと。米国の政策金利を上げるか下げるかを決める会議で、年8回開かれる）</span>と呼ぶ。米国の金利の動きは、ドルと円の為替相場を通じて、日本の家計や企業にも影響する。</p>
+          </div>
+          <div class="meta"><a href="https://www.nikkei.com/article/DGXZQOGN05CLA0V01C26A1000000/" target="_blank" rel="noopener">日本経済新聞</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 経済</span>
+          <h3>NY株、ダウは237ドル安も、ナスダックは反発——ハイテク株に買い戻し</h3>
+          <p class="lead">6日のニューヨーク株式市場で、ダウ平均は前日比237ドル33セント安の5万1285ドル73セントと続落した。一方、ハイテク株の多いナスダック総合指数は1.09%高の2万4579.42と反発した。前日に大きく売られたハイテク株を買い戻す動きが出たためで、時事通信によると、ナスダックは週間では3.4%下がり、4週連続の値下がりとなった。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、5日の急落（11月7日既報）の後に、少し値を戻した「一服」の動きだという点にある。買い戻し<span class="note">（＝大きく値下がりした株を「安くなったから」と買う動きや、値下がりを見込んで売っていた投資家が取引を終えるために株を買う動きのこと。急落の翌日などに起きやすい）</span>で反発しても、週全体では大きく下がっており、AI関連株への不安が消えたわけではない。週明けの東京市場が、この米国の動きをどう受け止めるかが注目される。</p>
+          </div>
+          <div class="meta"><a href="https://www.jiji.com/jc/article?k=2026110700221&amp;g=int&amp;m=rss" target="_blank" rel="noopener">時事通信</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-scitech" style="--cat-color:var(--c-scitech)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">科学／テック</h2></div>
+        <p class="panel-sub">研究・技術のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>テスラ、工場を自動運転タクシー「サイバーキャブ」の生産に振り向けへ</h3>
+          <p class="lead">米電気自動車大手テスラのイーロン・マスクCEOは6日、テキサス州の工場で作っているピックアップトラック「サイバートラック」の生産を2027年半ばごろに段階的に終え、空いた場所を「サイバーキャブ」の生産に使う考えをXに投稿した。サイバーキャブは、運転手がいなくても走る自動運転タクシー（ロボタクシー）向けの車だ。NHKやテクノエッジなどが報じている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、テスラが「車を売る会社」から「自動運転で移動サービスを提供する会社」へと重心を移そうとしている点にある。ロボタクシー<span class="note">（＝運転手が乗らず、AIなどが運転を担う自動運転のタクシーのこと。米国の一部の都市では、すでに他社による有料サービスも始まっている）</span>は、運転手の人件費がかからない分、うまくいけば大きな利益を生むとされる。一方で、事故が起きたときの責任や安全性の確認など、課題も多い。今ある車種の生産をやめてまで工場の場所を空けることから、マスク氏がこの事業にかける期待の大きさがうかがえる。</p>
+          </div>
+          <div class="meta"><a href="https://www.techno-edge.net/article/2026/11/07/5685.html" target="_blank" rel="noopener">テクノエッジ</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>ドローン配送のZipline、15億ドルを調達——企業価値は215億ドルに</h3>
+          <p class="lead">ドローン（無人の小型飛行機）で荷物を届けるサービスを手がける米Ziplineが、15億ドルの資金を調達し、調達後の企業価値は215億ドルに達したと、米Crunchbase Newsが伝えた。同社は、医薬品や日用品などを空から届けるサービスで知られる。今回の調達は、10月31日から11月6日までの1週間の世界の大型調達の中でも上位に入った。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、ドローン配送が「道路の渋滞や地形に左右されずに、早く届けられる」技術として期待されている点にある。トラックが入りにくい山間部や離島、人手不足の地域で役立つとされ、日本でも物流の担い手不足を背景に実験が進んでいる。企業価値<span class="note">（＝その会社全体がいくらの価値を持つと投資家に評価されているかを表す金額のこと。未上場の会社では、資金調達のときの条件から計算される）</span>が215億ドルというのは、上場していない企業としては非常に大きな評価だ。</p>
+          </div>
+          <div class="meta"><a href="https://news.crunchbase.com/venture/biggest-startup-rounds-ai-defense-space-tech-shield-zipline/" target="_blank" rel="noopener">Crunchbase News</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-business" style="--cat-color:var(--c-business)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ビジネス</h2></div>
+        <p class="panel-sub">企業・産業のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>ロシア、JTの現地企業をさらに3社「一時管理」——対象は計7社に</h3>
+          <p class="lead">ロシアのプーチン大統領は、日本たばこ産業（JT）グループのロシア現地企業3社を、新たに一時的な管理下に置く大統領令に署名した。NHKなどによると、5日に対象となったたばこ製造の4社（11月7日既報）に続くもので、対象は合わせて7社に広がった。今回加わったのは販売や経営管理などを担う会社で、JTは工場だけでなく、販売や経営の面でも主導権を失う見通しだ。日本政府は5日の措置に抗議し撤回を求めていたが、対象はむしろ拡大した。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「作る会社」に続いて「売る会社」まで管理下に置かれたことの重さにある。工場だけなら販売の仕組みは手元に残るが、販売会社まで押さえられると、ロシアでの事業全体の主導権を失うことになる。一時管理<span class="note">（＝所有権は元の持ち主に残したまま、その国の政府が指名した会社に経営を任せる措置のこと。ロシアは自国に敵対的とみなす国の企業を対象に、この仕組みを使っている）</span>について、ロシア政府は「敵対的な国々の行動への対応」と説明している。報道によると、ロシア事業はJTグループの営業利益の約25%を占めるとされ、会社の業績への影響は小さくない。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261107de72211" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>ナスダック、4週連続で下落——過去の例では翌月も売りが続く傾向</h3>
+          <p class="lead">本日既報のとおり、ナスダック総合指数は6日に反発したものの、週間では4週連続の下落となった。財経新聞は、ナスダックが直近の高値から10%以上下がる「調整局面」に入った過去の事例を見ると、その翌月も売りが続く傾向があると分析している。ただし、過去の傾向が今回もそのまま当てはまるとは限らない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「過去の事例」はあくまで参考であり、予言ではないという点にある。株価の分析では、似た状況のときに過去どう動いたかを調べるアノマリー<span class="note">（＝はっきりした理由は説明できないが、経験的に繰り返し見られる相場の傾向のこと。「この時期は上がりやすい」といった言い伝えも含まれる）</span>のような考え方がよく使われる。今回の下げは、中間選挙後の規制への警戒や、AI投資への疑問（11月7日既報）といった、今の時代ならではの理由が重なって起きている点も踏まえて見る必要がある。</p>
+          </div>
+          <div class="meta"><a href="https://zaikei.co.jp/article/20261107/876523.html" target="_blank" rel="noopener">財経新聞</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-startup" style="--cat-color:var(--c-startup)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">スタートアップ</h2></div>
+        <p class="panel-sub">資金調達・注目トピック2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>米防衛テックのShield AI、20億ドルを調達——この1週間で世界最大</h3>
+          <p class="lead">米Crunchbase Newsによると、10月31日から11月6日までの1週間に世界で発表されたスタートアップの資金調達で最も大きかったのは、防衛分野のAIを手がける米Shield AIだった。同社は20億ドルを株式で集めたほか、5億ドルの借り入れによる資金も確保した。本日既報のドローン配送のZiplineの15億ドルが、これに続いた。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「防衛テック」がAIと並んで、いま世界の投資家から最もお金を集めている分野の一つだという点にある。防衛テック<span class="note">（＝AIやドローン、宇宙技術などの最新技術を使って、軍事や安全保障に関わる製品を開発するスタートアップや技術のこと。ウクライナでの戦争などをきっかけに、各国の関心が高まっている）</span>の企業は、国の予算という安定した買い手が見込めるため、大きな資金が集まりやすい。株式での調達に加えて借り入れ<span class="note">（＝デットとも呼ばれ、銀行などからお金を借りること。株式と違い、会社の持ち分を渡さない代わりに、利息を付けて返す必要がある）</span>も使うのは、事業がある程度安定してきた会社に多い方法だ。</p>
+          </div>
+          <div class="meta"><a href="https://news.crunchbase.com/venture/biggest-startup-rounds-ai-defense-space-tech-shield-zipline/" target="_blank" rel="noopener">Crunchbase News</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>AIエージェントのTraversal、1億2000万ドル調達で企業価値10億ドルに</h3>
+          <p class="lead">同じくCrunchbase Newsによると、企業のシステムの安定運用をAIエージェントで支える米Traversalが、1億2000万ドルを調達し、企業価値は10億ドルに達した。著名な投資会社のKleiner Perkins、Redpoint、Khosla Venturesが共同で出資を主導した。データ分析向けのAIエージェントを手がける米Ocientも、1億ドルを調達している。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、株式市場でAI関連株が売られた週（11月7日既報）にも、未上場のAI企業には大きな資金が集まり続けているという点にある。AIエージェント<span class="note">（＝人が細かく指示しなくても、目的に向けて自分で手順を考え、ツールを使いながら作業を進めるAIのこと）</span>は、いまAI投資の中心になっている分野だ。企業価値が10億ドルを超える未上場企業はユニコーン<span class="note">（＝企業価値が10億ドル以上の未上場スタートアップのこと。めったにいない伝説の生き物にたとえた呼び名）</span>と呼ばれ、Traversalはその仲間入りをしたことになる。</p>
+          </div>
+          <div class="meta"><a href="https://news.crunchbase.com/venture/biggest-startup-rounds-ai-defense-space-tech-shield-zipline/" target="_blank" rel="noopener">Crunchbase News</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-gadget" style="--cat-color:var(--c-gadget)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ガジェット</h2></div>
+        <p class="panel-sub">新製品2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>新型iPad mini発売——有機EL・A20 Pro搭載、厚さ5.4ミリで11万9800円から</h3>
+          <p class="lead">Appleの新型「iPad mini」が6日に発売された。テクノエッジによると、8.5インチの有機ELディスプレイと、最新の「A20 Pro」チップを搭載し、本体の厚さは5.4ミリと薄くなった。価格は128GBのWi-Fiモデルが11万9800円から。一方で、画面の動きをなめらかにする「ProMotion」には対応していない。同じ日には、タッチ対応のMacBook Pro（11月7日既報）も発売されている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、iPad miniが「片手で持てる小さなiPad」として根強い人気を持つ一方、今回大きく値上がりした点にある。有機EL<span class="note">（＝画面の一つひとつの点が自分で光る方式のディスプレイのこと。黒をくっきり表示でき、液晶より薄く作りやすい）</span>の採用で画面は大きく進化したが、価格は10万円を超えた。ProMotion<span class="note">（＝画面の書き換え回数を最大で1秒間に120回まで高め、スクロールなどの動きをなめらかに見せるAppleの技術のこと）</span>が付いていないため、上位モデルのiPad Proとの違いも残されている。</p>
+          </div>
+          <div class="meta"><a href="https://www.techno-edge.net/article/2026/10/27/5633.html" target="_blank" rel="noopener">テクノエッジ</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>サイバートラック、2027年半ばに生産終了へ——発表直後に最大10%値上げも</h3>
+          <p class="lead">本日既報のとおり、テスラはテキサス州の工場での「サイバートラック」の生産を2027年半ばごろに段階的に終える。報道によると、生産ラインは設置された能力のおよそ4分の1しか動いておらず、売れ行きの不振が本当の理由ではないかとの見方もある。生産を別の工場に移すのか、完全にやめるのかはまだ明らかになっていない。テスラは発表の直後に、サイバートラックの価格を最大10%引き上げた。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、サイバートラックが「未来的なデザイン」で大きな話題を集めた車だったという点にある。ステンレスの板を折り曲げたような角ばった見た目は発表時から注目され、多くの予約を集めた。しかし、ピックアップトラック<span class="note">（＝運転席の後ろに屋根のない荷台が付いた車のこと。米国では仕事にも趣味にも使われ、非常に人気の高い車の種類）</span>の市場では、従来のメーカーとの競争が激しい。稼働率<span class="note">（＝工場が持っている生産能力のうち、実際にどれだけ使っているかの割合のこと。低いほど設備が遊んでいることになる）</span>が4分の1程度にとどまっていたことが、販売の苦戦を物語っている。</p>
+          </div>
+          <div class="meta"><a href="https://www.newsweekjapan.jp/articles/-/339336" target="_blank" rel="noopener">ニューズウィーク日本版</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-intl" style="--cat-color:var(--c-intl)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">海外</h2></div>
+        <p class="panel-sub">国際ニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>ニュージーランド総選挙、大接戦——与党連合はわずかに過半数か</h3>
+          <p class="lead">7日に投票が行われたニュージーランドの総選挙は、結果がはっきりしない大接戦となった。米CNNによると、開票速報の数字では、ラクソン首相の国民党を中心とする右派の与党連合が、全131議席のうち67議席と、過半数をわずか2議席上回る見通しだ。一方、政党の得票率では最大野党の労働党がわずかに上回っており、ラクソン首相も「接戦すぎて判断できない」と述べている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「得票率で負けても、議席で勝つ」ことがありうる選挙の仕組みにある。ニュージーランドは小選挙区比例代表併用制<span class="note">（＝選挙区で1人を選ぶ投票と、政党を選ぶ投票の2票を持つ仕組みのこと。基本は政党の得票率で各党の議席数が決まるが、選挙区で多く勝った党が議席を多く得ることもある）</span>を採っている。今回の数字は開票速報で、海外からの投票などの特別票<span class="note">（＝投票日当日に通常の方法で数えられない票のこと。海外在住者の票などが含まれ、集計に時間がかかる）</span>はまだ含まれていない。最終結果は選挙管理委員会の発表を待つ必要がある。</p>
+          </div>
+          <div class="meta"><a href="https://www.cnn.com/2026/11/07/world/new-zealand-election-result-uncertain-intl-hnk" target="_blank" rel="noopener">CNN</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>米ミシシッピ州上院選、なお決着せず——残る票の集計は10日ごろまで</h3>
+          <p class="lead">民主党のコロム氏が共和党現職をわずかにリードしているミシシッピ州の上院選（11月7日既報）について、本稿の時点で勝敗が決まったという報道は確認できていない。報道によると、一部の郡の票は10日まで集計されない予定で、結果が出るまでにはもう少し時間がかかる見通しだ。米国の選挙では、接戦の場合、すべての票を数え終えるまで勝敗の判定が出ないことも珍しくない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、この1議席が民主党の上院での優位の大きさに関わるという点にある。上院（11月6日既報）で民主党がどれだけ多くの議席を持つかは、大統領が選ぶ閣僚や裁判官の人事にどこまで「待った」をかけられるかに影響する。米国の選挙の集計<span class="note">（＝投票された票を数えること。米国では州ごとに方法が違い、郵便投票や、本人確認が必要な暫定投票などを後から数える州もあるため、日本より時間がかかることが多い）</span>は、日本のように投票日の夜にほぼ結果が出るとは限らない。</p>
+          </div>
+          <div class="meta"><a href="https://thehill.com/homenews/campaign/6196987-mississippi-senate-race-too-close-to-call-ddhq/" target="_blank" rel="noopener">The Hill</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-sports" style="--cat-color:var(--c-sports)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">芸能／スポーツ</h2></div>
+        <p class="panel-sub">厳選2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>大相撲九州場所、今日初日——横綱・大の里は2場所連続優勝なるか</h3>
+          <p class="lead">大相撲九州場所が今日8日、福岡国際センターで初日を迎える。千秋楽は22日。TNCテレビ西日本によると、横綱・大の里に2場所連続の優勝がかかる。去年の九州場所で初優勝した大関・安青錦は、番付で大関の筆頭に上がった。横綱は東が大の里、西が豊昇龍で、大関は安青錦・琴櫻・霧島の3人が務める。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、番付の「東」と「西」、「筆頭」に意味があるという点にある。番付<span class="note">（＝力士の地位や順位を一覧にしたもので、場所ごとに前の場所の成績をもとに作り直される。同じ地位なら「東」のほうが「西」より格上とされる）</span>で大関の筆頭になったということは、大関の中で最も上の位置にいることを示す。本場所<span class="note">（＝年6回開かれる大相撲の公式戦のこと。1場所は15日間で、11月の九州場所はその年の最後の本場所になる）</span>の成績は、横綱や大関への昇進、番付の上下に直結する。</p>
+          </div>
+          <div class="meta"><a href="https://news.tnc.co.jp/news/articles/NID2026102632592" target="_blank" rel="noopener">TNCテレビ西日本</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>33歳・美ノ海が新三役——沖縄県出身の力士で初めて</h3>
+          <p class="lead">今日初日を迎える九州場所で、33歳の美ノ海が小結に昇進し、初めて三役の地位に就いた。NHKによると、沖縄県出身の力士が三役に上がるのは初めて。美ノ海は「子どもたちの目指す場所になれれば」と話している。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「三役」が幕内の上位の地位で、そこに上がるのが簡単ではないという点にある。三役<span class="note">（＝大関・関脇・小結の3つの地位のこと。横綱を含めて「三役以上」と呼ぶこともある。小結はその入り口にあたる）</span>に上がれる力士は限られており、33歳での昇進は遅咲きと言える。沖縄県出身の関取は多くないため、地元の子どもたちにとって励みになる出来事だ。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261025de65392" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-koshien" style="--cat-color:var(--c-koshien)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">高校野球【埼玉】</h2></div>
+        <p class="panel-sub">2026年の埼玉を振り返る2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>振り返り・秋：西武台が県大会初優勝、関東では横浜の壁に</h3>
+          <p class="lead">今年の秋の埼玉県大会では、西武台が決勝で山村学園を7-3で破り、初優勝を果たした（10月7日既報）。準決勝では夏の甲子園に出場した花咲徳栄も破っている。県の1位・2位として秋季関東大会に進んだ両校は、いずれも1回戦で敗れ、西武台は神奈川の強豪・横浜に敗れた（10月19日既報）。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「県で一番」でも、関東の強豪とは差があるという厳しさにある。秋季大会<span class="note">（＝夏の大会の後、新しいチームで戦う秋の公式戦のこと。県大会の上位校が地区大会（埼玉なら関東大会）に進み、その結果が翌春のセンバツの選考材料になる）</span>は、3年生が引退した後の新チームにとって最初の大きな試練だ。初優勝という自信と、関東大会で味わった悔しさの両方が、冬の練習（オフシーズン）の糧になる。</p>
+          </div>
+          <div class="meta"><a href="https://saitama-baseball.com/akikentai2026/" target="_blank" rel="noopener">埼玉高校野球情報局</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>振り返り・夏：花咲徳栄が宿敵・浦和学院を下し、2年ぶりの甲子園</h3>
+          <p class="lead">今年夏の第108回全国高校野球選手権埼玉大会では、花咲徳栄が決勝で浦和学院を7-3で下し、2年ぶりに夏の甲子園への出場を決めた。高校野球ドットコムによると、春のセンバツに続いて、2度目の「春夏連続」での甲子園出場となった。県内の「2強」と呼ばれる両校のライバル対決は、来年も埼玉の高校野球の大きな見どころになりそうだ。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、埼玉の高校野球が長く「花咲徳栄と浦和学院の2強」を中心に動いてきたという点にある。両校は何度も甲子園に出場している強豪で、決勝での対戦は県内の野球ファンが最も注目するカードの一つだ。春夏連続出場<span class="note">（＝同じ年の春のセンバツと夏の甲子園の両方に出場すること。秋・春・夏と1年を通して強さを保つ必要があり、達成できる学校は限られる）</span>は、チームが1年を通して力を保ったことを示している。今秋は西武台が県の頂点に立っており、来年夏に向けて勢力図がどう変わるかも注目される。</p>
+          </div>
+          <div class="meta"><a href="https://www.hb-nippon.com/articles/15632" target="_blank" rel="noopener">高校野球ドットコム</a></div>
+        </article>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var cats = ['top','social','polecon','scitech','business','startup','gadget','intl','sports','koshien'];
+  var idx = 0;
+  var track = document.getElementById('track');
+  var viewport = document.getElementById('viewport');
+  var vw = viewport.clientWidth;
+
+  function setActive(i){
+    cats.forEach(function(c, j){
+      document.getElementById('tab-' + c).classList.toggle('active', j === i);
+    });
+    var activeTab = document.getElementById('tab-' + cats[i]);
+    if (activeTab && activeTab.scrollIntoView) activeTab.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+  }
+
+  function settle(i, animate){
+    idx = Math.max(0, Math.min(cats.length - 1, i));
+    track.style.transition = animate ? 'transform .32s cubic-bezier(.22,.61,.36,1)' : 'none';
+    track.style.transform = 'translateX(' + (-idx * vw) + 'px)';
+    setActive(idx);
+  }
+
+  window.goTo = function(i){ settle(i, true); };
+
+  window.addEventListener('resize', function(){
+    vw = viewport.clientWidth;
+    settle(idx, false);
+  });
+
+  var dragging = false, decided = null, sx = 0, sy = 0, dx = 0;
+  viewport.addEventListener('touchstart', function(e){
+    dragging = true; decided = null;
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY; dx = 0;
+    track.style.transition = 'none';
+  }, { passive: true });
+
+  viewport.addEventListener('touchmove', function(e){
+    if (!dragging) return;
+    var cx = e.touches[0].clientX, cy = e.touches[0].clientY;
+    var mdx = cx - sx, mdy = cy - sy;
+    if (decided === null) {
+      if (Math.abs(mdx) > 8 || Math.abs(mdy) > 8) {
+        decided = Math.abs(mdx) > Math.abs(mdy) ? 'x' : 'y';
+      }
+    }
+    if (decided === 'x') {
+      e.preventDefault();
+      dx = mdx;
+      var atStart = idx === 0 && dx > 0;
+      var atEnd = idx === cats.length - 1 && dx < 0;
+      var eased = (atStart || atEnd) ? dx * 0.35 : dx;
+      track.style.transform = 'translateX(' + (-idx * vw + eased) + 'px)';
+    }
+  }, { passive: false });
+
+  viewport.addEventListener('touchend', function(){
+    if (!dragging) return;
+    dragging = false;
+    if (decided === 'x') {
+      var threshold = vw * 0.18;
+      if (dx <= -threshold) settle(idx + 1, true);
+      else if (dx >= threshold) settle(idx - 1, true);
+      else settle(idx, true);
+    }
+    decided = null; dx = 0;
+  });
+
+  settle(0, false);
+})();
+</script>
+
+</body></html>
