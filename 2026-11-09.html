@@ -1,0 +1,610 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yoshi's News</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Zen+Old+Mincho:wght@600;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap');
+
+:root {
+  --bg: #ffffff;
+  --panel-bg: #ffffff;
+  --card: #ffffff;
+  --card-line: #eef0f3;
+  --ink: #1a1c20;
+  --ink-soft: #5b6068;
+  --ink-faint: #9aa0a8;
+  --shell: #f4f5f7;
+
+  --c-top: #ef3355;
+  --c-social: #00b3a4;
+  --c-polecon: #6d5bf0;
+  --c-scitech: #ff8a1e;
+  --c-business: #0091ff;
+  --c-sports: #26c281;
+  --c-startup: #ff4fa3;
+  --c-koshien: #c8860d;
+  --c-intl: #4b3f8f;
+  --c-gadget: #00bcd4;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101114;
+    --panel-bg: #101114;
+    --card: #1a1c20;
+    --card-line: #2a2c31;
+    --ink: #f1f2f4;
+    --ink-soft: #b7bcc4;
+    --ink-faint: #767c86;
+    --shell: #1a1c20;
+    --c-top: #ff6b85;
+    --c-social: #3fd8c9;
+    --c-polecon: #9c8fff;
+    --c-scitech: #ffab5c;
+    --c-business: #4db2ff;
+    --c-sports: #5be0a6;
+    --c-startup: #ff85c2;
+    --c-koshien: #e8b34c;
+    --c-intl: #a89cf0;
+    --c-gadget: #4dd8ea;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101114;
+  --panel-bg: #101114;
+  --card: #1a1c20;
+  --card-line: #2a2c31;
+  --ink: #f1f2f4;
+  --ink-soft: #b7bcc4;
+  --ink-faint: #767c86;
+  --shell: #1a1c20;
+  --c-top: #ff6b85;
+  --c-social: #3fd8c9;
+  --c-polecon: #9c8fff;
+  --c-scitech: #ffab5c;
+  --c-business: #4db2ff;
+  --c-sports: #5be0a6;
+  --c-startup: #ff85c2;
+  --c-koshien: #e8b34c;
+  --c-intl: #a89cf0;
+  --c-gadget: #4dd8ea;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--shell);
+  color: var(--ink);
+  font-family: "Zen Kaku Gothic New", -apple-system, "Hiragino Kaku Gothic ProN", sans-serif;
+  line-height: 1.7;
+  overscroll-behavior-y: none;
+}
+.serif { font-family: "Zen Old Mincho", "Hiragino Mincho ProN", serif; }
+
+.app {
+  max-width: 680px;
+  margin: 0 auto;
+  background: var(--bg);
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ---- Header ---- */
+.topbar { padding: 20px 20px 0; flex-shrink: 0; }
+.title-line { display: flex; align-items: center; gap: 8px; }
+.mascot { height: 50px; width: auto; flex-shrink: 0; border-radius: 8px; }
+.title-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  margin-bottom: 14px;
+}
+.title-row h1 {
+  font-family: "Baloo 2", "Zen Kaku Gothic New", sans-serif;
+  font-size: 48px; font-weight: 800; margin: 0; letter-spacing: 0.01em; line-height: 1;
+  -webkit-text-stroke: 2.4px #2b2013;
+  filter: drop-shadow(2px 3px 0 rgba(30,22,12,0.18));
+  background-image:
+    radial-gradient(circle at 22% 30%, #211709 0 7px, transparent 8px),
+    radial-gradient(circle at 68% 65%, #3a2b16 0 9px, transparent 10px),
+    radial-gradient(circle at 45% 88%, #241a0c 0 5px, transparent 6px),
+    radial-gradient(circle at 85% 20%, #2e2211 0 6px, transparent 7px),
+    linear-gradient(135deg, #b8a06e, #967c4c 50%, #6f5a35);
+  background-size: 30px 30px, 41px 41px, 23px 23px, 35px 35px, 100% 100%;
+  background-repeat: repeat, repeat, repeat, repeat, no-repeat;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.title-row .date { font-size: 11.5px; color: var(--ink-faint); white-space: nowrap; font-weight: 500; margin-top: 2px; }
+
+.tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px 3px; }
+.tab {
+  appearance: none; border: none; background: none;
+  font-family: inherit; font-size: 10.5px; font-weight: 700;
+  color: var(--ink-faint);
+  padding: 7px 4px 9px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+  cursor: pointer;
+  border-radius: 10px 10px 0 0;
+  transition: color .2s ease, background .2s ease;
+}
+.tab .dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  margin-right: 5px; background: currentColor; opacity: 0.45; vertical-align: middle;
+}
+.tab::after {
+  content: ""; position: absolute; left: 10px; right: 10px; bottom: 0;
+  height: 3px; border-radius: 3px 3px 0 0; background: transparent; transition: background .2s ease;
+}
+.tab.active { color: var(--tab-color); background: color-mix(in srgb, var(--tab-color) 10%, transparent); }
+.tab.active .dot { opacity: 1; }
+.tab.active::after { background: var(--tab-color); }
+
+/* ---- Swipe viewport ---- */
+.viewport { flex: 1; overflow: hidden; position: relative; touch-action: pan-y; }
+.track {
+  display: flex;
+  height: 100%;
+  width: 1000%;
+  transition: transform .32s cubic-bezier(.22,.61,.36,1);
+  will-change: transform;
+}
+.panel {
+  width: 10%;
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 20px 56px;
+}
+
+.panel-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.panel-head .chip { width: 8px; height: 26px; border-radius: 4px; background: var(--cat-color); flex-shrink: 0; }
+.panel-head h2 { font-size: 20px; font-weight: 700; margin: 0; letter-spacing: 0.02em; color: var(--cat-color); }
+.panel-sub { font-size: 12px; color: var(--ink-faint); margin: 0 0 18px 18px; }
+
+.story {
+  background: var(--card);
+  border: 1px solid var(--card-line);
+  border-left: 4px solid var(--cat-color);
+  border-radius: 12px;
+  padding: 18px 18px 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(20,20,30,0.05);
+}
+.story .kicker {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: "Zen Old Mincho", serif; font-size: 11.5px; font-weight: 700;
+  color: var(--cat-color); margin-bottom: 9px;
+}
+.story h3 { font-size: 16px; font-weight: 700; line-height: 1.55; margin: 0 0 10px; }
+.story .lead { font-size: 14px; color: var(--ink); margin: 0 0 14px; line-height: 1.85; }
+
+.context {
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 10px;
+  padding: 13px 15px;
+  margin: 0 0 12px;
+}
+.context-label {
+  display: block; font-size: 10.5px; font-weight: 700;
+  color: var(--cat-color); letter-spacing: 0.04em; margin-bottom: 6px;
+}
+.context p { font-size: 13px; color: var(--ink-soft); margin: 0; line-height: 1.8; }
+
+.note { font-size: 11.5px; color: var(--ink-faint); font-weight: 500; }
+
+.term-link {
+  color: var(--cat-color);
+  text-decoration: none;
+  border-bottom: 1px dotted color-mix(in srgb, var(--cat-color) 55%, transparent);
+  font-weight: 700;
+}
+
+.meta { font-size: 11px; color: var(--ink-faint); }
+.meta a { color: var(--cat-color); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--cat-color) 40%, transparent); font-weight: 700; }
+
+.closing {
+  margin: 6px 0 0; padding: 16px 18px;
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 12px; font-size: 13px; color: var(--ink-soft); text-align: center;
+}
+.closing .label {
+  display: block; font-family: "Zen Old Mincho", serif; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.2em; color: var(--cat-color); margin-bottom: 8px;
+}
+.colophon { margin: 14px 0 8px; font-size: 10.5px; color: var(--ink-faint); line-height: 1.9; text-align: center; }
+
+@media (max-width: 420px) {
+  .topbar { padding: 16px 14px 0; }
+  .panel { padding: 16px 14px 48px; }
+  .title-row h1 { font-size: 38px; }
+  .mascot { height: 40px; }
+}
+</style>
+</head><body>
+
+
+<div class="app" id="app">
+
+  <div class="topbar">
+    <div class="title-row">
+      <div class="title-line">
+        <img class="mascot" src="mascot.jpg" alt="オオサンショウウオのマスコット">
+        <h1>Yoshi's News</h1>
+      </div>
+      <span class="date">2026年11月9日（月）・第67号</span>
+    </div>
+    <div class="tabs" id="tabs">
+      <button class="tab" id="tab-top" style="--tab-color:var(--c-top)" onclick="goTo(0)"><span class="dot"></span>トップ</button>
+      <button class="tab" id="tab-social" style="--tab-color:var(--c-social)" onclick="goTo(1)"><span class="dot"></span>社会</button>
+      <button class="tab" id="tab-polecon" style="--tab-color:var(--c-polecon)" onclick="goTo(2)"><span class="dot"></span>政治/経済</button>
+      <button class="tab" id="tab-scitech" style="--tab-color:var(--c-scitech)" onclick="goTo(3)"><span class="dot"></span>科学/テック</button>
+      <button class="tab" id="tab-business" style="--tab-color:var(--c-business)" onclick="goTo(4)"><span class="dot"></span>ビジネス</button>
+      <button class="tab" id="tab-startup" style="--tab-color:var(--c-startup)" onclick="goTo(5)"><span class="dot"></span>スタートアップ</button>
+      <button class="tab" id="tab-gadget" style="--tab-color:var(--c-gadget)" onclick="goTo(6)"><span class="dot"></span>ガジェット</button>
+      <button class="tab" id="tab-intl" style="--tab-color:var(--c-intl)" onclick="goTo(7)"><span class="dot"></span>海外</button>
+      <button class="tab" id="tab-sports" style="--tab-color:var(--c-sports)" onclick="goTo(8)"><span class="dot"></span>芸能/スポーツ</button>
+      <button class="tab" id="tab-koshien" style="--tab-color:var(--c-koshien)" onclick="goTo(9)"><span class="dot"></span>高校野球【埼玉】</button>
+    </div>
+  </div>
+
+  <div class="viewport" id="viewport">
+    <div class="track" id="track">
+
+      <section class="panel" id="panel-top" style="--cat-color:var(--c-top)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">トップニュース</h2></div>
+        <p class="panel-sub">今日いちばん知っておきたい2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 社会</span>
+          <h3>愛知県知多市で震度5強——静岡県西部が震源のM5.7、けが人20人以上</h3>
+          <p class="lead">8日午前1時4分ごろ、静岡県西部を震源とする地震があり、愛知県知多市で震度5強の揺れを観測した。気象庁によると、震源の深さは約40キロ、地震の規模を示すマグニチュードは5.7と推定され、津波の心配はない。瀬戸市、半田市、豊田市などでも震度5弱を観測した。中日新聞によると、避難の途中に転んだり、物が落ちてきたりしてけがをした人が、愛知・静岡の両県で少なくとも22人にのぼった。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「震度」と「マグニチュード」が別のものだという点にある。マグニチュード<span class="note">（＝地震そのもののエネルギーの大きさを表す数字のこと。1増えるとエネルギーは約32倍になる）</span>が5.7でも、震源に近い場所や地盤のやわらかい場所では強く揺れる。震度5強<span class="note">（＝気象庁が定める10段階の揺れの強さのうち、上から4番目の強さのこと。物につかまらないと歩くのが難しく、固定していない家具が倒れることがある）</span>を愛知県で観測したのは、NHKによると約30年ぶり。気象庁は、今後1週間ほど、特に2〜3日は同じ程度の揺れに注意するよう呼びかけている。家具の固定や、避難の経路の確認をしておきたい。</p>
+          </div>
+          <div class="meta"><a href="https://www.chunichi.co.jp/article/1336396" target="_blank" rel="noopener">中日新聞</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 政治</span>
+          <h3>拉致被害者家族らが「国民大集会」——「親世代が存命のうちに帰国を」、高市首相も出席</h3>
+          <p class="lead">北朝鮮による拉致被害者全員の即時一括帰国を求める「国民大集会」が8日、東京都内で開かれ、高市首相を含む約800人が参加した。時事通信によると、家族会代表の横田拓也さんは、被害者の親の世代が「ぎりぎり」の状況にあると訴えた。高市首相は、帰国が実現していないことへの心苦しさを述べ、中日新聞によると日朝首脳会談への意欲を改めて示した。集会では、親世代が存命のうちに全員の帰国を求める決議が採択された。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、拉致問題が「時間との戦い」になっているという点にある。拉致問題<span class="note">（＝1970〜80年代を中心に、北朝鮮の工作員などが日本人を連れ去った事件のこと。日本政府は17人を被害者と認定し、2002年に5人が帰国したが、残る被害者の帰国は実現していない）</span>の被害者の親で、今も健在なのは横田めぐみさんの母・早紀江さん（90歳）など、ごくわずかになっている。「即時一括帰国」とは、一部の人だけでなく全員を同時に、すぐに帰国させるよう求めるもので、家族会が一貫して掲げてきた要求だ。日朝首脳会談<span class="note">（＝日本と北朝鮮のトップ同士が直接会って話し合うこと。2002年と2004年に当時の小泉首相が訪朝して開かれて以来、行われていない）</span>の実現が、解決への突破口になるとみられている。</p>
+          </div>
+          <div class="meta"><a href="https://www.jiji.com/jc/article?k=2026110800320&amp;g=pol&amp;m=rss" target="_blank" rel="noopener">時事通信</a></div>
+        </article>
+
+        <div class="closing">
+          <span class="label serif">編集後記</span>
+          未明の地震で愛知県知多市が震度5強の揺れに見舞われました。この1週間は同じ程度の揺れに注意が必要です。都内では拉致被害者の家族らが「親世代が存命のうちに」と訴えました。今週は10日に米国の物価統計やソフトバンクグループの決算が控え、株式市場が大きく動く可能性があります。新しい1週間、良いスタートを。
+        </div>
+        <div class="colophon">AIが検索結果をもとに要約・編集しています。詳細は各記事の出典リンクでご確認ください。<br>毎朝5時発行・次号は明日<br><a href="archive.html" style="color:inherit">過去の紙面はこちら</a></div>
+      </section>
+
+      <section class="panel" id="panel-social" style="--cat-color:var(--c-social)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">社会</h2></div>
+        <p class="panel-sub">くらしに関わるニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>地震のけがは「避難中の転倒」や「落下物」——夜中の揺れへの備えを</h3>
+          <p class="lead">本日既報の愛知の地震では、けがをした人の多くが軽傷で、避難の途中に転んだり、落ちてきた物に当たったりしたケースが中心だった。中日新聞によると、常滑市では避難中に転んで足首をけがした人がいた。地震が起きたのは午前1時過ぎの真夜中で、暗い中で慌てて動いたことが、けがにつながったとみられる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、地震のけがの多くが「建物が壊れること」より「身の回りの物」や「慌てた行動」から起きているという点にある。夜中の地震に備えて、枕元に懐中電灯やスリッパを置いておくと、割れたガラスなどで足をけがするのを防げる。揺れている最中は無理に動かず、頭を守ることが基本だ。気象庁が呼びかける「1週間ほどの注意」<span class="note">（＝大きな地震の後は、同じ程度かそれ以上の地震が続けて起きることがあるため、特に最初の2〜3日は警戒が必要とされていること）</span>の間に、寝室の家具の配置を見直すなどの備えをしておきたい。</p>
+          </div>
+          <div class="meta"><a href="https://www.chunichi.co.jp/article/1336396" target="_blank" rel="noopener">中日新聞</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>台風32号、10〜11日に「非常に強い」勢力で小笠原諸島に接近のおそれ</h3>
+          <p class="lead">32年ぶりに発生した台風32号「チャンパカ」（11月8日既報）は、10日から11日にかけて、「非常に強い」または「強い」勢力で小笠原諸島に近づくおそれがある。ウェザーニュースによると、台風は9日ごろまで西寄りに進んだ後、日本の南で急に向きを東へ変える予想だ。小笠原諸島は10日〜11日に暴風域に入る可能性がある。今の予報では、本州には近づかない見込みだ。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、台風の強さを表す言葉の段階にある。「強い」<span class="note">（＝中心付近の最大風速が秒速33メートル以上44メートル未満の台風のこと）</span>、「非常に強い」（同44メートル以上54メートル未満）、「猛烈な」（同54メートル以上）の順に強くなる。暴風域<span class="note">（＝台風の周りで、風速25メートル以上の風が吹いている、またはその可能性がある範囲のこと。この範囲に入ると、外を歩くのが危険になる）</span>に入ると、小笠原諸島と本土を結ぶ船の運航などにも影響が出る可能性がある。</p>
+          </div>
+          <div class="meta"><a href="https://weathernews.jp/news/202611/070221/" target="_blank" rel="noopener">ウェザーニュース</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-polecon" style="--cat-color:var(--c-polecon)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">政治／経済</h2></div>
+        <p class="panel-sub">政治・経済の動き2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 経済</span>
+          <h3>今週の焦点は10日——米国の物価統計とソフトバンクグループの決算が重なる</h3>
+          <p class="lead">今週の株式市場では、10日に大きな材料が集中する。財経新聞によると、この日は米国の10月の消費者物価指数（CPI）の発表に加え、ソフトバンクグループ、ホンダ、フジクラの決算発表が重なる。先週は日経平均が歴代3番目の下げ幅を記録しており（11月7日既報）、市場の見方の一つとして、今週の日経平均は5万6000円〜5万9500円の範囲で動くとの予想が出ている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、米国の物価と金利、そして日本株がつながっているという点にある。消費者物価指数<span class="note">（＝家計が買うモノやサービスの値段の動きをまとめた指標のこと。物価が上がるペースを測る代表的な数字で、CPIとも呼ばれる）</span>が予想より高いと、米国の中央銀行が利上げをするとの見方が強まる。先週の雇用統計が強かった（11月8日既報）こともあり、12月の利上げの可能性が意識されている。ソフトバンクグループはAI企業への巨額の投資で知られ、AI関連株が大きく揺れた後だけに、その決算は市場の空気を左右しうる。</p>
+          </div>
+          <div class="meta"><a href="https://www.zaikei.co.jp/article/20261107/876540.html" target="_blank" rel="noopener">財経新聞</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 政治</span>
+          <h3>消費税減税法案、11日に参院で審議入りへ——与党は少数、野党の出方が焦点</h3>
+          <p class="lead">衆議院を通過した食料品の消費税を1%に下げる法案（11月7日既報）は、11日に参議院で審議に入る方向だ。参院では与党が過半数に届いておらず、成立には野党の一部の賛成が必要になる。今の国会の会期末は12月12日で、本稿の時点で野党側の具体的な対応は確認できていない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、参院で否決されても法案がすぐに消えるわけではないという、国会のルールにある。衆議院の再可決<span class="note">（＝参議院で否決された法案でも、衆議院で出席議員の3分の2以上が賛成すれば、もう一度可決して成立させられる仕組みのこと。衆議院が参議院より強い権限を持つ「衆議院の優越」の一つ）</span>という道もあるが、それには衆院で3分の2の賛成が必要になる。与党がそこまでの数を持たない場合は、参院での野党との話し合いや法案の修正が、成立のカギを握る。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261106de71864" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-scitech" style="--cat-color:var(--c-scitech)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">科学／テック</h2></div>
+        <p class="panel-sub">研究・技術のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>愛知の地震は南海トラフの想定震源域内——気象庁「特段の変化を示すものではない」</h3>
+          <p class="lead">本日既報の愛知県で震度5強を観測した地震は、南海トラフ巨大地震が起きると想定されている範囲の中で発生した。ただし気象庁は、今回の地震は、プレート同士の境目の状態に特別な変化があったことを示すものではないとしている。ウェザーニュースなどが伝えている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「想定震源域の中で起きた」ことと「南海トラフ地震が近づいた」ことは別だという点にある。南海トラフ<span class="note">（＝静岡県の駿河湾から九州の日向灘沖まで続く、海底の深い溝のこと。陸のプレートの下に海のプレートが沈み込んでおり、ここを震源とするマグニチュード8〜9級の巨大地震が、今後30年以内に高い確率で起きると予測されている）</span>の想定震源域では、ふだんから小さな地震が起きている。気象庁は、一定の大きさ以上の地震が起きると、巨大地震との関係を調べる。今回はその基準に当たる変化はなかったとされるが、巨大地震への日ごろの備えが大切なことに変わりはない。</p>
+          </div>
+          <div class="meta"><a href="https://weathernews.jp/news/202611/080104quake/" target="_blank" rel="noopener">ウェザーニュース</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>国連の気候会議COP31、今日トルコで開幕——首脳会合は11〜12日</h3>
+          <p class="lead">地球温暖化対策を話し合う国連の会議「COP31」が今日9日、トルコ南部のアンタルヤで開幕する。会期は20日までで、各国の首脳が集まる会合は11日と12日に予定されている。議長国はトルコだが、交渉の取りまとめはオーストラリアの気候変動・エネルギー相が担う。各国の温暖化対策の計画が弱まりつつあることや、気候災害への備えのための資金などが主な論点になる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、COPが「世界の温暖化対策の進み具合を毎年確かめる場」だという点にある。COP<span class="note">（＝国連気候変動枠組条約の締約国会議のこと。条約に参加するほぼすべての国が毎年集まり、温室効果ガスを減らす目標や、その資金について話し合う。31は31回目という意味）</span>では、2015年のパリ協定で決めた「気温上昇を1.5度に抑える努力」に向けて、各国の取り組みが足りているかが問われる。適応<span class="note">（＝温暖化を止める「緩和」に対して、すでに起きている暑さや豪雨などの被害に備えて社会を変えていくこと。堤防の強化や、暑さに強い作物づくりなどがある）</span>のための資金を、豊かな国がどれだけ出すかも大きな争点だ。</p>
+          </div>
+          <div class="meta"><a href="https://www.climateandcapitalmedia.com/cop31-antalya-preview/" target="_blank" rel="noopener">Climate &amp; Capital Media</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-business" style="--cat-color:var(--c-business)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ビジネス</h2></div>
+        <p class="panel-sub">企業・産業のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>トヨタ、通期の営業利益予想を3.9兆円に上方修正——株価は16%超の急伸</h3>
+          <p class="lead">トヨタ自動車は5日、2026年4〜9月期の決算を発表し、本業のもうけを示す営業利益は前年同期より9.2%多い2兆1911億円だった。今年度1年間の営業利益の予想は、これまでの3兆4000億円から3兆9000億円に引き上げた。テレビ朝日系（ANN）によると、決算を受けてトヨタの株価は6日、16%を超えて急伸した。一方で、中国市場の減速などを理由に、売上高にあたる営業収益の予想は引き下げた。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「売上は減る見込みなのに、利益は増える見込み」という点にある。上方修正<span class="note">（＝会社が前に発表した業績の予想を、より良い数字に引き上げること。逆は下方修正）</span>の中身を見ると、経費の削減などのコスト低減で3650億円の増益を見込んでおり、売る台数が伸びなくても稼ぐ力を高めている。日経平均が歴代3番目の下げを記録した6日（11月7日既報）に、トヨタ株が大きく上がったのは、AI関連株とは別の理由で評価された結果と言える。</p>
+          </div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/articles/1c8f6003b1d25b326f3f4b69a3990dee419759af" target="_blank" rel="noopener">テレビ朝日系（ANN）（Yahoo!ニュース）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>ソフトバンク（通信）は今日、グループは10日に決算——混同に注意</h3>
+          <p class="lead">通信大手のソフトバンク株式会社は、今日9日の16時から2026年4〜9月期の決算説明会をライブ配信する。一方、親会社にあたるソフトバンクグループの決算発表は10日の予定だ。名前が似ているが別の会社で、株式市場で注目度が高いのは、AI企業への投資を手がけるソフトバンクグループの決算のほうだ。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「ソフトバンク」という名前の会社が2つ上場しているという点にある。携帯電話などの通信事業を手がけるのがソフトバンク株式会社で、その親会社が、世界中の企業に投資する持ち株会社<span class="note">（＝自分では主な事業を行わず、ほかの会社の株を持って、そのグループ全体を管理したり投資の利益を得たりする会社のこと）</span>のソフトバンクグループだ。ソフトバンクグループは米OpenAIなどAI企業に巨額の投資をしているため、AI関連株が大きく下がった（11月7日既報）後の決算で、投資先の評価がどう変わったかが注目される。</p>
+          </div>
+          <div class="meta"><a href="https://www.softbank.jp/sbnews/entry/20261106_01" target="_blank" rel="noopener">ソフトバンクニュース</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-startup" style="--cat-color:var(--c-startup)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">スタートアップ</h2></div>
+        <p class="panel-sub">資金調達・注目トピック2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>ロボット義足のBionicM、7.1億円を調達——2027年に米国で次世代製品</h3>
+          <p class="lead">モーターの力で歩行を助けるロボット義足を開発する東京大学発のスタートアップBionicMが、シリーズBの第1弾として総額7億1000万円を調達したと発表した。THE BRIDGEによると、B Dash Venturesと三菱UFJキャピタルなどが引き受け、出資と助成金を合わせた累計の調達額は25.8億円になった。調達した資金は、次世代製品「ASISTA」を2027年に米国で発売するための生産体制や販売体制の強化に使う。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、多くの義足が「自分の体の動きだけで動かす」ものだという点にある。BionicMの義足はモーターで膝の曲げ伸ばしを助けるため、階段を上ったり、いすから立ち上がったりする動作が楽になるとされる。主力製品は米国でFDA<span class="note">（＝米食品医薬品局のこと。薬や医療機器が安全で効果があるかを審査し、米国で売ってよいかを決める政府機関）</span>のクラスII医療機器として登録され、米国の医療保険の対象にもなっている。シリーズB<span class="note">（＝スタートアップの資金調達の段階を表す言葉で、製品が市場で売れ始め、事業を本格的に広げる段階の調達を指すことが多い）</span>の資金で、米国市場での本格展開を目指す。</p>
+          </div>
+          <div class="meta"><a href="https://thebridge.jp/2026/11/bionicm-raises-710-million-yen-series-b-first-closing" target="_blank" rel="noopener">THE BRIDGE</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>核融合のHelical Fusion、シリーズBの総額59.3億円に——富士電機などが新たに株主</h3>
+          <p class="lead">核融合発電の実現を目指すスタートアップHelical Fusionは10月、シリーズBの第2弾として32.3億円を調達し、シリーズB全体の調達額は59.3億円になった。Keppleによると、富士電機、フジクラ、東京ガスなどが新たに株主に加わり、補助金や融資を含む累計の調達額は130.5億円に達した。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、核融合が「太陽が光る仕組みを地上で再現する」発電だという点にある。核融合<span class="note">（＝水素などの軽い原子どうしを超高温でぶつけて一つにし、そのときに出る大きなエネルギーを利用すること。今の原子力発電（核分裂）と違い、燃料が海水から取れ、高レベルの放射性廃棄物がほとんど出ないとされる）</span>の実用化はまだ先だが、世界でスタートアップへの投資が増えている。社名にある「ヘリカル方式」<span class="note">（＝ねじれたらせん状のコイルで、超高温の燃料（プラズマ）を閉じ込める方式のこと。日本の研究機関が長く研究してきた技術）</span>は、日本が強みを持つ分野とされる。電機や電線の大手が株主に加わったことで、部品づくりなどでの協力も期待されている。</p>
+          </div>
+          <div class="meta"><a href="https://kepple.co.jp/articles/0lsa1jwn8tf" target="_blank" rel="noopener">Kepple</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-gadget" style="--cat-color:var(--c-gadget)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ガジェット</h2></div>
+        <p class="panel-sub">新製品2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>Google初の紛失防止タグ「Pixel Tag」、11月に発売——1個5010円、iPhoneでは使えず</h3>
+          <p class="lead">Googleが8月に発表した初めての紛失防止タグ「Pixel Tag」が、11月に発売される。米国での発売は11日と報じられている。エルミタージュ秋葉原によると、国内価格は1個5010円、4個セットが1万6940円（いずれも税込）。防水・防じん性能はIP67で、Androidスマートフォン専用のため、iPhoneでは使えない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、紛失防止タグが「周りの他人のスマホの力を借りて」場所を探す仕組みだという点にある。鍵や財布に付けておくと、近くを通った人のスマートフォンがタグの電波を受け取り、その位置を持ち主に知らせる。AppleのAirTagはiPhoneの利用者の網を使うのに対し、Pixel TagはAndroidの網を使うため、対応する機種が分かれている。UWB<span class="note">（＝超広帯域無線と呼ばれる通信方式のこと。近くにある物の方向や距離を、数センチ単位の精度で測れる）</span>にも対応し、近くまで来たときに正確な場所を探しやすい。IP67<span class="note">（＝防じん・防水の性能を表す国際規格の等級のこと。「6」は粉じんが入らない、「7」は一時的に水に沈めても大丈夫という意味）</span>なので、雨の日の持ち歩きにも向いている。</p>
+          </div>
+          <div class="meta"><a href="https://www.gdm.or.jp/pressrelease/2026/0813/647983" target="_blank" rel="noopener">エルミタージュ秋葉原</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>Roborockの新型ロボット掃除機「Saros 20 Flow」が日本上陸——吸引力は最大3万6000Pa</h3>
+          <p class="lead">中国のロボット掃除機メーカーRoborockの新型「Saros 20 Flow」が日本に上陸した。ギズモード・ジャパンによると、ゴミを吸い込む力は最大3万6000パスカル（Pa）とされる。日本での発売日や価格は、本稿の時点で確認できていない。通常モデルの「Saros 20」は6月に国内で発売され、Amazonでの通常価格は税込24万9800円だった。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、ロボット掃除機の性能を比べるときの「Pa（パスカル）」という単位にある。吸引力<span class="note">（＝ゴミを吸い込む力の強さのこと。ロボット掃除機では、空気を吸い込む圧力をパスカルという単位で表すことが多く、数字が大きいほど強い）</span>が強いほど、じゅうたんの奥のゴミも取りやすい。最近の上位モデルは、掃除機がけと水拭きを1台でこなし、汚れたモップを自動で洗う機能まで持つものが多い。20万円を超える価格帯の製品は、家事の時間を減らしたい人向けの「時間を買う家電」として売られている。</p>
+          </div>
+          <div class="meta"><a href="https://www.gizmodo.jp/article/roborock-saros-20-flow/" target="_blank" rel="noopener">ギズモード・ジャパン</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-intl" style="--cat-color:var(--c-intl)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">海外</h2></div>
+        <p class="panel-sub">国際ニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>ポーランドの古都クラクフで銃乱射、6人死亡——首相「テロ行為」、極右思想の影響か</h3>
+          <p class="lead">ポーランド南部の古都クラクフの中心部で7日、車で中央市場広場に乗り入れた男が車内から通行人に無差別に発砲し、6人が死亡、警察官2人を含む15人がけがをした。AFPBB Newsなどによると、24歳のポーランド人の男が警察官と撃ち合いになって負傷し、拘束された。男の自宅からも、家族とみられる3人の遺体が見つかった。トゥスク首相は事件を「テロ行為」と呼び、内相は男が極めて過激な思想を持っていたとの見方を示している。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、ポーランドが銃による大きな事件が少ない国だという点にある。報道によると、今回はこの数十年で最も多くの死者を出した銃撃事件とされ、国として2日間喪に服すことが決まった。中央市場広場<span class="note">（＝クラクフの旧市街の中心にある、ヨーロッパでも最大級の中世の広場のこと。旧市街は世界遺産に登録されており、多くの観光客が訪れる）</span>で起きたため、外国人の被害も出ている。在ポーランド日本大使館によると、日本人の被害は確認されていない。極右思想<span class="note">（＝民族や国家を極端に重んじ、移民や特定の集団を強く排除しようとする考え方のこと）</span>の影響は捜査中で、動機の解明が待たれる。</p>
+          </div>
+          <div class="meta"><a href="https://www.afpbb.com/articles/-/3661373" target="_blank" rel="noopener">AFPBB News</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>トランプ氏、格闘技団体UFCのダナ・ホワイト代表に大統領報道官就任を打診</h3>
+          <p class="lead">トランプ米大統領は7日、総合格闘技団体「UFC」のダナ・ホワイト代表（57）に、大統領報道官への就任を打診したとSNSで明らかにした。AFPBB Newsによると、報道官のポストは、前任者が10月に就任から1週間足らずで退任して以来、空席になっている。ホワイト氏は受けるかどうかをはっきりさせておらず、米CNNは関係者の話として、ホワイト氏が申し出を断ったと伝えている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、報道官が「政権の顔」として毎日のように記者の質問に答える役職だという点にある。大統領報道官<span class="note">（＝ホワイトハウスの記者会見で、大統領や政権の考えを説明し、記者の質問に答える担当者のこと。テレビなどに映る機会が多く、政権のイメージを大きく左右する）</span>に、政治の経験がない格闘技団体の代表を起用しようとするのは異例だ。首席補佐官の交代（11月8日既報）に続く人事の動きで、トランプ氏とホワイト氏は長年の友人として知られる。</p>
+          </div>
+          <div class="meta"><a href="https://www.afpbb.com/articles/-/3661369" target="_blank" rel="noopener">AFPBB News</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-sports" style="--cat-color:var(--c-sports)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">芸能／スポーツ</h2></div>
+        <p class="panel-sub">厳選2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>九州場所初日、横綱・大の里が黒星発進——大関の安青錦・琴櫻も敗れる波乱</h3>
+          <p class="lead">大相撲九州場所が8日に初日を迎え、2場所連続の優勝を目指す横綱・大の里は、小結・義ノ富士に土俵際の突き落としで敗れた。NHKによると、物言いがついたが、行司の判定どおり義ノ富士の勝ちとなった。大関陣では、安青錦が前頭筆頭の元大関・朝乃山に寄り倒され、琴櫻も敗れた。一方、3場所連続の休場から戻った横綱・豊昇龍は、新小結の美ノ海を押し出して白星を挙げた。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、相撲の勝ち負けが、土俵の外に出るか、足の裏以外の体の一部が先に地面に着くかで決まるという点にある。今回の大の里は、土俵際で相手よりわずかに早く手をついてしまった。物言い<span class="note">（＝行司の判定に疑問があるとき、土俵の周りにいる審判の親方が手を挙げて異議を唱え、話し合いで判定を確かめること。判定が覆ることも、取り直しになることもある）</span>がついても、結果は変わらなかった。本場所は15日間続くため、初日の1敗だけで優勝争いから外れるわけではない。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261108de72593" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>プロ野球のFA宣言、今日9日が期限——広島・床田も行使へ</h3>
+          <p class="lead">プロ野球のフリーエージェント（FA）権を行使するかどうかの申請期限が、今日9日に来る。ベースボールチャンネルなどによると、6日には広島の床田寛樹投手も行使を表明し、広島からは森下暢仁投手、坂倉将吾選手と合わせて3人となった。宣言した選手は10日に公示され、11日からすべての球団と交渉できるようになる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、1つの球団から主力が3人も同時にFA宣言するのは珍しいという点にある。FA宣言<span class="note">（＝FA権を持つ選手が「他の球団とも交渉します」と意思を表すこと。宣言した後に元の球団と再契約する「宣言残留」も認められている）</span>をしても、必ず移籍するとは限らない。広島は森下・床田という先発の柱2人と、主力の坂倉選手を抱えており、引き留めの交渉が注目される。西武の髙橋光成投手の海外FA（11月7日既報）を含め、今オフは実力者の動きが多い。</p>
+          </div>
+          <div class="meta"><a href="https://www.baseballchannel.jp/npb/300094/" target="_blank" rel="noopener">ベースボールチャンネル</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-koshien" style="--cat-color:var(--c-koshien)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">高校野球【埼玉】</h2></div>
+        <p class="panel-sub">関東大会の結果と新人戦2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>西武台を破った横浜が関東王者に——決勝で健大高崎に10-6、明治神宮大会へ</h3>
+          <p class="lead">埼玉1位の西武台を1回戦で破った横浜（神奈川）が、10月27日に行われた秋季関東大会の決勝で健大高崎（群馬）を10-6で下し、2年ぶり5度目の優勝を果たした。NHKによると、決勝は雨で1日順延されての開催だった。横浜は関東地区の代表として、11月19日に開幕する明治神宮大会に出場する。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、西武台が初戦で当たった相手が、そのまま関東の頂点に立ったという点にある。組み合わせ<span class="note">（＝大会でどのチームとどのチームが、どの順番で戦うかを抽選で決めた対戦表のこと。強豪と早い段階で当たるかどうかは運にも左右される）</span>の巡り合わせで、西武台は優勝校と最初に戦うことになった。また、横浜が明治神宮大会で優勝すれば、関東地区のセンバツ出場枠が1つ増える「神宮大会枠」（11月7日既報）が生まれる。埼玉県勢にとっても、19日からの大会の行方は気になるところだ。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261027de66386" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>知られざる「夏季新人戦」——公式戦ではないが、秋のシードがかかる大会</h3>
+          <p class="lead">埼玉の高校野球には、夏の甲子園予選が終わった後に行われる「夏季新人戦」がある。埼玉高校野球情報局によると、この大会は県高野連が主催する公式戦ではないが、秋季大会の地区予選でのシード権がかかっている。試合結果は県高野連のサイトや新聞にほとんど載らないため、情報が集めにくい大会だという。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、秋の大会の前にも、新チームが力を試す場があるという点にある。3年生が引退した直後の新チームにとって、新人戦は実戦経験を積む大切な機会だ。シード権<span class="note">（＝強いチーム同士が大会の早い段階でぶつからないよう、組み合わせで有利な位置に配置される権利のこと。1回戦が免除されることもある）</span>を得られれば、秋の地区予選を有利に戦える。今秋初優勝した西武台（10月7日既報）のような躍進も、こうした積み重ねの上にある。</p>
+          </div>
+          <div class="meta"><a href="https://saitama-baseball.com/shinjinsen2026/" target="_blank" rel="noopener">埼玉高校野球情報局</a></div>
+        </article>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var cats = ['top','social','polecon','scitech','business','startup','gadget','intl','sports','koshien'];
+  var idx = 0;
+  var track = document.getElementById('track');
+  var viewport = document.getElementById('viewport');
+  var vw = viewport.clientWidth;
+
+  function setActive(i){
+    cats.forEach(function(c, j){
+      document.getElementById('tab-' + c).classList.toggle('active', j === i);
+    });
+    var activeTab = document.getElementById('tab-' + cats[i]);
+    if (activeTab && activeTab.scrollIntoView) activeTab.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+  }
+
+  function settle(i, animate){
+    idx = Math.max(0, Math.min(cats.length - 1, i));
+    track.style.transition = animate ? 'transform .32s cubic-bezier(.22,.61,.36,1)' : 'none';
+    track.style.transform = 'translateX(' + (-idx * vw) + 'px)';
+    setActive(idx);
+  }
+
+  window.goTo = function(i){ settle(i, true); };
+
+  window.addEventListener('resize', function(){
+    vw = viewport.clientWidth;
+    settle(idx, false);
+  });
+
+  var dragging = false, decided = null, sx = 0, sy = 0, dx = 0;
+  viewport.addEventListener('touchstart', function(e){
+    dragging = true; decided = null;
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY; dx = 0;
+    track.style.transition = 'none';
+  }, { passive: true });
+
+  viewport.addEventListener('touchmove', function(e){
+    if (!dragging) return;
+    var cx = e.touches[0].clientX, cy = e.touches[0].clientY;
+    var mdx = cx - sx, mdy = cy - sy;
+    if (decided === null) {
+      if (Math.abs(mdx) > 8 || Math.abs(mdy) > 8) {
+        decided = Math.abs(mdx) > Math.abs(mdy) ? 'x' : 'y';
+      }
+    }
+    if (decided === 'x') {
+      e.preventDefault();
+      dx = mdx;
+      var atStart = idx === 0 && dx > 0;
+      var atEnd = idx === cats.length - 1 && dx < 0;
+      var eased = (atStart || atEnd) ? dx * 0.35 : dx;
+      track.style.transform = 'translateX(' + (-idx * vw + eased) + 'px)';
+    }
+  }, { passive: false });
+
+  viewport.addEventListener('touchend', function(){
+    if (!dragging) return;
+    dragging = false;
+    if (decided === 'x') {
+      var threshold = vw * 0.18;
+      if (dx <= -threshold) settle(idx + 1, true);
+      else if (dx >= threshold) settle(idx - 1, true);
+      else settle(idx, true);
+    }
+    decided = null; dx = 0;
+  });
+
+  settle(0, false);
+})();
+</script>
+
+</body></html>
