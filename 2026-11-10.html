@@ -1,0 +1,610 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yoshi's News</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Zen+Old+Mincho:wght@600;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap');
+
+:root {
+  --bg: #ffffff;
+  --panel-bg: #ffffff;
+  --card: #ffffff;
+  --card-line: #eef0f3;
+  --ink: #1a1c20;
+  --ink-soft: #5b6068;
+  --ink-faint: #9aa0a8;
+  --shell: #f4f5f7;
+
+  --c-top: #ef3355;
+  --c-social: #00b3a4;
+  --c-polecon: #6d5bf0;
+  --c-scitech: #ff8a1e;
+  --c-business: #0091ff;
+  --c-sports: #26c281;
+  --c-startup: #ff4fa3;
+  --c-koshien: #c8860d;
+  --c-intl: #4b3f8f;
+  --c-gadget: #00bcd4;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101114;
+    --panel-bg: #101114;
+    --card: #1a1c20;
+    --card-line: #2a2c31;
+    --ink: #f1f2f4;
+    --ink-soft: #b7bcc4;
+    --ink-faint: #767c86;
+    --shell: #1a1c20;
+    --c-top: #ff6b85;
+    --c-social: #3fd8c9;
+    --c-polecon: #9c8fff;
+    --c-scitech: #ffab5c;
+    --c-business: #4db2ff;
+    --c-sports: #5be0a6;
+    --c-startup: #ff85c2;
+    --c-koshien: #e8b34c;
+    --c-intl: #a89cf0;
+    --c-gadget: #4dd8ea;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101114;
+  --panel-bg: #101114;
+  --card: #1a1c20;
+  --card-line: #2a2c31;
+  --ink: #f1f2f4;
+  --ink-soft: #b7bcc4;
+  --ink-faint: #767c86;
+  --shell: #1a1c20;
+  --c-top: #ff6b85;
+  --c-social: #3fd8c9;
+  --c-polecon: #9c8fff;
+  --c-scitech: #ffab5c;
+  --c-business: #4db2ff;
+  --c-sports: #5be0a6;
+  --c-startup: #ff85c2;
+  --c-koshien: #e8b34c;
+  --c-intl: #a89cf0;
+  --c-gadget: #4dd8ea;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--shell);
+  color: var(--ink);
+  font-family: "Zen Kaku Gothic New", -apple-system, "Hiragino Kaku Gothic ProN", sans-serif;
+  line-height: 1.7;
+  overscroll-behavior-y: none;
+}
+.serif { font-family: "Zen Old Mincho", "Hiragino Mincho ProN", serif; }
+
+.app {
+  max-width: 680px;
+  margin: 0 auto;
+  background: var(--bg);
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ---- Header ---- */
+.topbar { padding: 20px 20px 0; flex-shrink: 0; }
+.title-line { display: flex; align-items: center; gap: 8px; }
+.mascot { height: 50px; width: auto; flex-shrink: 0; border-radius: 8px; }
+.title-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  margin-bottom: 14px;
+}
+.title-row h1 {
+  font-family: "Baloo 2", "Zen Kaku Gothic New", sans-serif;
+  font-size: 48px; font-weight: 800; margin: 0; letter-spacing: 0.01em; line-height: 1;
+  -webkit-text-stroke: 2.4px #2b2013;
+  filter: drop-shadow(2px 3px 0 rgba(30,22,12,0.18));
+  background-image:
+    radial-gradient(circle at 22% 30%, #211709 0 7px, transparent 8px),
+    radial-gradient(circle at 68% 65%, #3a2b16 0 9px, transparent 10px),
+    radial-gradient(circle at 45% 88%, #241a0c 0 5px, transparent 6px),
+    radial-gradient(circle at 85% 20%, #2e2211 0 6px, transparent 7px),
+    linear-gradient(135deg, #b8a06e, #967c4c 50%, #6f5a35);
+  background-size: 30px 30px, 41px 41px, 23px 23px, 35px 35px, 100% 100%;
+  background-repeat: repeat, repeat, repeat, repeat, no-repeat;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.title-row .date { font-size: 11.5px; color: var(--ink-faint); white-space: nowrap; font-weight: 500; margin-top: 2px; }
+
+.tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px 3px; }
+.tab {
+  appearance: none; border: none; background: none;
+  font-family: inherit; font-size: 10.5px; font-weight: 700;
+  color: var(--ink-faint);
+  padding: 7px 4px 9px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+  cursor: pointer;
+  border-radius: 10px 10px 0 0;
+  transition: color .2s ease, background .2s ease;
+}
+.tab .dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  margin-right: 5px; background: currentColor; opacity: 0.45; vertical-align: middle;
+}
+.tab::after {
+  content: ""; position: absolute; left: 10px; right: 10px; bottom: 0;
+  height: 3px; border-radius: 3px 3px 0 0; background: transparent; transition: background .2s ease;
+}
+.tab.active { color: var(--tab-color); background: color-mix(in srgb, var(--tab-color) 10%, transparent); }
+.tab.active .dot { opacity: 1; }
+.tab.active::after { background: var(--tab-color); }
+
+/* ---- Swipe viewport ---- */
+.viewport { flex: 1; overflow: hidden; position: relative; touch-action: pan-y; }
+.track {
+  display: flex;
+  height: 100%;
+  width: 1000%;
+  transition: transform .32s cubic-bezier(.22,.61,.36,1);
+  will-change: transform;
+}
+.panel {
+  width: 10%;
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 20px 56px;
+}
+
+.panel-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.panel-head .chip { width: 8px; height: 26px; border-radius: 4px; background: var(--cat-color); flex-shrink: 0; }
+.panel-head h2 { font-size: 20px; font-weight: 700; margin: 0; letter-spacing: 0.02em; color: var(--cat-color); }
+.panel-sub { font-size: 12px; color: var(--ink-faint); margin: 0 0 18px 18px; }
+
+.story {
+  background: var(--card);
+  border: 1px solid var(--card-line);
+  border-left: 4px solid var(--cat-color);
+  border-radius: 12px;
+  padding: 18px 18px 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(20,20,30,0.05);
+}
+.story .kicker {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: "Zen Old Mincho", serif; font-size: 11.5px; font-weight: 700;
+  color: var(--cat-color); margin-bottom: 9px;
+}
+.story h3 { font-size: 16px; font-weight: 700; line-height: 1.55; margin: 0 0 10px; }
+.story .lead { font-size: 14px; color: var(--ink); margin: 0 0 14px; line-height: 1.85; }
+
+.context {
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 10px;
+  padding: 13px 15px;
+  margin: 0 0 12px;
+}
+.context-label {
+  display: block; font-size: 10.5px; font-weight: 700;
+  color: var(--cat-color); letter-spacing: 0.04em; margin-bottom: 6px;
+}
+.context p { font-size: 13px; color: var(--ink-soft); margin: 0; line-height: 1.8; }
+
+.note { font-size: 11.5px; color: var(--ink-faint); font-weight: 500; }
+
+.term-link {
+  color: var(--cat-color);
+  text-decoration: none;
+  border-bottom: 1px dotted color-mix(in srgb, var(--cat-color) 55%, transparent);
+  font-weight: 700;
+}
+
+.meta { font-size: 11px; color: var(--ink-faint); }
+.meta a { color: var(--cat-color); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--cat-color) 40%, transparent); font-weight: 700; }
+
+.closing {
+  margin: 6px 0 0; padding: 16px 18px;
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 12px; font-size: 13px; color: var(--ink-soft); text-align: center;
+}
+.closing .label {
+  display: block; font-family: "Zen Old Mincho", serif; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.2em; color: var(--cat-color); margin-bottom: 8px;
+}
+.colophon { margin: 14px 0 8px; font-size: 10.5px; color: var(--ink-faint); line-height: 1.9; text-align: center; }
+
+@media (max-width: 420px) {
+  .topbar { padding: 16px 14px 0; }
+  .panel { padding: 16px 14px 48px; }
+  .title-row h1 { font-size: 38px; }
+  .mascot { height: 40px; }
+}
+</style>
+</head><body>
+
+
+<div class="app" id="app">
+
+  <div class="topbar">
+    <div class="title-row">
+      <div class="title-line">
+        <img class="mascot" src="mascot.jpg" alt="オオサンショウウオのマスコット">
+        <h1>Yoshi's News</h1>
+      </div>
+      <span class="date">2026年11月10日（火）・第68号</span>
+    </div>
+    <div class="tabs" id="tabs">
+      <button class="tab" id="tab-top" style="--tab-color:var(--c-top)" onclick="goTo(0)"><span class="dot"></span>トップ</button>
+      <button class="tab" id="tab-social" style="--tab-color:var(--c-social)" onclick="goTo(1)"><span class="dot"></span>社会</button>
+      <button class="tab" id="tab-polecon" style="--tab-color:var(--c-polecon)" onclick="goTo(2)"><span class="dot"></span>政治/経済</button>
+      <button class="tab" id="tab-scitech" style="--tab-color:var(--c-scitech)" onclick="goTo(3)"><span class="dot"></span>科学/テック</button>
+      <button class="tab" id="tab-business" style="--tab-color:var(--c-business)" onclick="goTo(4)"><span class="dot"></span>ビジネス</button>
+      <button class="tab" id="tab-startup" style="--tab-color:var(--c-startup)" onclick="goTo(5)"><span class="dot"></span>スタートアップ</button>
+      <button class="tab" id="tab-gadget" style="--tab-color:var(--c-gadget)" onclick="goTo(6)"><span class="dot"></span>ガジェット</button>
+      <button class="tab" id="tab-intl" style="--tab-color:var(--c-intl)" onclick="goTo(7)"><span class="dot"></span>海外</button>
+      <button class="tab" id="tab-sports" style="--tab-color:var(--c-sports)" onclick="goTo(8)"><span class="dot"></span>芸能/スポーツ</button>
+      <button class="tab" id="tab-koshien" style="--tab-color:var(--c-koshien)" onclick="goTo(9)"><span class="dot"></span>高校野球【埼玉】</button>
+    </div>
+  </div>
+
+  <div class="viewport" id="viewport">
+    <div class="track" id="track">
+
+      <section class="panel" id="panel-top" style="--cat-color:var(--c-top)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">トップニュース</h2></div>
+        <p class="panel-sub">今日いちばん知っておきたい2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 経済</span>
+          <h3>日経平均、1340円高で6日ぶり反発——米ハイテク株高を受け買い戻し</h3>
+          <p class="lead">週明け9日の東京株式市場で、日経平均株価は前週末より1340円73銭（2.33%）高い5万8775円50銭で取引を終え、6営業日ぶりに値上がりした。日本経済新聞によると、前週末に米国でハイテク株が買い戻された流れを受け、大きく下げていた銘柄を中心に買いが入った。好決算を発表した三菱重工業なども相場を支えた。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、今回の上昇が「急落の反動」という面が大きいという点にある。日経平均は6日に歴代3番目の下げ幅を記録しており（11月7日既報）、下がりすぎた株を割安とみて買う自律反発<span class="note">（＝悪い材料が解消されたわけではないのに、短い期間で下がりすぎた株価が、その反動で自然に戻ること）</span>の動きが出た。ロイターは、米国でのデータセンター規制への懸念はなお根強いと伝えている。今日10日は米国の物価統計や大手企業の決算が重なり（11月9日既報）、相場が本当に落ち着いたかどうかが試される。</p>
+          </div>
+          <div class="meta"><a href="https://www.nikkei.com/article/DGXZQOFL0909I0Z01C26A1000000/" target="_blank" rel="noopener">日本経済新聞</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 経済</span>
+          <h3>7月30日の円買い介入、1日で過去最大の7兆9756億円——財務省が公表</h3>
+          <p class="lead">財務省は9日、政府・日本銀行が7月30日に行った円買い・ドル売りの為替介入の額が7兆9756億円だったと発表した。1日の介入額としては、今年4月30日の6兆2787億円を上回り、過去最大となった。時事通信によると、7月30日から8月3日までの3日間の合計は約15兆円にのぼる。OANDA証券によると、今年の介入の合計は27兆円を超え、記録のある1991年以降で年間の最大になった。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、政府がなぜ自分のお金で「円を買う」のかという点にある。為替介入<span class="note">（＝円とドルなどの交換レートが急に動きすぎたとき、政府の判断で日本銀行が市場で通貨を売り買いし、相場の動きを抑えようとすること。円安を止めたいときは、持っているドルを売って円を買う）</span>は、急な円安で輸入品の値段が上がり、家計が苦しくなるのを防ぐために行われる。介入の日ごとの額は、すぐには公表されず、後からまとめて発表される。今年は過去にない規模の介入が続いており、それだけ円安を止める圧力が強かったことを示している。</p>
+          </div>
+          <div class="meta"><a href="https://news.infoseek.co.jp/article/jiji_2026110900207/" target="_blank" rel="noopener">時事通信（Infoseekニュース）</a></div>
+        </article>
+
+        <div class="closing">
+          <span class="label serif">編集後記</span>
+          日経平均は6日ぶりに大きく値を戻しました。財務省は、7月の円買い介入が1日で約8兆円と過去最大だったことを明らかにしています。東京は冬のような寒さに。国会では、消費税減税法案の参院での審議の進め方をめぐり、与野党の駆け引きが続いています。今日10日は、米国の物価統計とソフトバンクグループの決算が控えています。
+        </div>
+        <div class="colophon">AIが検索結果をもとに要約・編集しています。詳細は各記事の出典リンクでご確認ください。<br>毎朝5時発行・次号は明日<br><a href="archive.html" style="color:inherit">過去の紙面はこちら</a></div>
+      </section>
+
+      <section class="panel" id="panel-social" style="--cat-color:var(--c-social)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">社会</h2></div>
+        <p class="panel-sub">くらしに関わるニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>コメの値下がり予想が一服——長雨で「収穫量が減るのでは」と不安広がる</h3>
+          <p class="lead">コメの取引関係者に向こう3か月の価格の見通しを聞いた10月の指数が47となり、前の月から19ポイント上がった。共同通信によると、各地の長雨で品質の低下や収穫量の減少への不安が広がったためとみられる。指数は基準の50を13か月連続で下回っており、値下がりを予想する人のほうが多い状態は続いているが、「これから安くなる」という見方は弱まった。農林水産省の推計では、今年のコメの予想収穫量は前年より1%少ない741万トンとなっている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、この指数が「今の値段」ではなく「これからの値段の見通し」を表しているという点にある。見通し指数<span class="note">（＝取引に関わる人たちに、今後値段が上がるか下がるかを聞き、その答えを数字にまとめたもの。50を上回れば値上がり予想が多く、下回れば値下がり予想が多いことを示す）</span>が上がったことは、店頭のコメの値段がこれ以上は下がりにくくなる可能性を示している。コメの値段は昨年来大きく上がり、家計の負担となってきた。天候が収穫量を左右するため、長雨のような気象の変化が、値段の見通しに直接響く。</p>
+          </div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/articles/43b84ff250d321431dc68c16d1d0aa42eefbe019" target="_blank" rel="noopener">共同通信（Yahoo!ニュース）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>東京都心は最高気温10度の予想——冬のような寒さ、体調管理に注意</h3>
+          <p class="lead">寒気の影響で、9日の東京都心は日中の最高気温が10度と予想され、一日を通して冬のような寒さとなった。NHKは体調管理に注意するよう呼びかけている。一方、台風32号（11月9日既報）は10日から11日にかけて小笠原諸島に近づく見込みで、暴風や高波に警戒が必要だ。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、11月上旬の東京の最高気温は、ふだんなら18度前後あるという点にある。平年<span class="note">（＝過去30年間の平均の値のこと。気象庁は10年ごとに計算し直しており、その日の気温が例年と比べて高いか低いかを判断する基準になる）</span>より8度ほど低い10度という気温は、12月下旬から1月ごろの寒さに近い。急に寒くなると、体が慣れずに風邪をひきやすくなるほか、暖房の効いた部屋と寒い廊下や浴室との気温差で体に負担がかかるヒートショック<span class="note">（＝急な温度の変化で血圧が大きく上下し、心臓や血管に負担がかかること。冬の入浴時に高齢者に多い）</span>にも気をつけたい。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261109de72716" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-polecon" style="--cat-color:var(--c-polecon)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">政治／経済</h2></div>
+        <p class="panel-sub">政治・経済の動き2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 政治</span>
+          <h3>消費税減税法案、参院の野党「委員会審議は首相出席が条件」——与党は難色</h3>
+          <p class="lead">食料品の消費税を1%に下げる法案をめぐり、参議院の野党6党の国会対策委員長は9日に会談した。与党が求める13日の特別委員会での実質的な審議入りについて、高市首相が出席して質問に答えることを条件とする考えで一致した。時事通信によると、自民党の参院国対委員長は、13日の首相出席は難しいとの考えを示した。11日には、首相が出席して参院本会議で法案の説明と質疑を行うことで与野党が合意している。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、国会での法案の審議が「本会議」と「委員会」の2段階で進むという点にある。本会議<span class="note">（＝その院のすべての議員が出席して開く会議のこと。法案の説明や最終的な採決はここで行う）</span>で法案の説明を受けた後、細かな中身は委員会<span class="note">（＝分野ごとに一部の議員が集まって、法案を詳しく審議する会議のこと。今回は消費税法案のための特別委員会が舞台になる）</span>で議論する。首相が委員会に出席すれば、野党は首相に直接質問できる。与党が少数の参院では、野党が審議の日程づくりに大きな影響力を持っている。</p>
+          </div>
+          <div class="meta"><a href="https://www.jiji.com/jc/article?k=2026110900818&amp;g=pol&amp;m=rss" target="_blank" rel="noopener">時事通信</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 政治</span>
+          <h3>自民・維新、参院審議でも緊密に連携——法案成立へ多数派づくりが課題</h3>
+          <p class="lead">本日既報の消費税減税法案の成立に向けて、自民党と日本維新の会は9日、参議院での審議でも緊密に連携していく方針を確認した。NHKが伝えた。参院では与党が過半数に届いておらず、法案を成立させるには、ほかの野党の一部の賛成を取り付ける必要がある。今の国会の会期末は12月12日だ。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、与党が参院で「数が足りない」ときの進め方にある。多数派工作<span class="note">（＝法案を通すのに必要な賛成の数を集めるため、ほかの党や議員に協力を呼びかけたり、法案の一部を修正したりして、味方を増やすこと）</span>がうまくいくかどうかが、法案の行方を決める。衆院では野党がそろって反対したが（11月7日既報）、参院では、法案の修正などを条件に賛成に回る党が出るかどうかが焦点になる。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261109de72949" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-scitech" style="--cat-color:var(--c-scitech)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">科学／テック</h2></div>
+        <p class="panel-sub">研究・技術のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>Google、AI向け半導体TPUに新型2種——データを暗号化したまま計算する「8tx」も</h3>
+          <p class="lead">Googleは、自社開発のAI向け半導体「TPU」の第8世代に、新たに2つの種類を加えると発表した。MarkTechPostなどによると、「TPU 8tx」は、データを暗号化したまま計算できる「機密コンピューティング」に対応し、「TPU 8i Max」は2つのチップを1つにまとめて、計算能力や記憶の速さを2倍に高めた。長い文章を一度に読み込むAIの処理などに向けたもので、Nvidiaへの対抗を強める狙いがあるとみられている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、AIの計算に使う半導体の多くをNvidia1社が握っている中で、Googleが自前の半導体で別の道を進んでいるという点にある。TPU<span class="note">（＝Googleが自社のAI向けに独自に設計した専用の半導体のこと。Nvidiaが作るGPUと同じく、AIの学習や計算を高速に行う）</span>を自社で作れば、Nvidiaから高い半導体を買う必要が減る。機密コンピューティング<span class="note">（＝ふつうは計算の途中でいったん暗号を解く必要があるデータを、暗号化したまま処理する技術のこと。医療や金融など、秘密にしたいデータをAIで扱うときに役立つ）</span>への対応は、企業が安心して自社の大切なデータをAIに使えるようにするためのものだ。</p>
+          </div>
+          <div class="meta"><a href="https://www.marktechpost.com/2026/11/09/google-tpu-8i-max-tpu-8tx/" target="_blank" rel="noopener">MarkTechPost</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>COP31がトルコで開幕——米国不在の中、約6万8500人が登録</h3>
+          <p class="lead">国連の気候変動会議COP31（11月9日既報）が9日、トルコ南部のアンタルヤで開幕した。米公共放送PBSなどによると、異常気象の被害が相次いだ1年の後の開催で、参加登録は約6万8500人にのぼった。初日のテーマは食料・農業・健康で、気候変動ニュースサイトのClimate Home Newsによると、開会の会合では議題をめぐる対立は避けられた。一方、米国の不在が会議の大きなテーマとして報じられている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、世界で2番目に多く温室効果ガスを出している米国が、話し合いの場にいないことの重さにある。トランプ政権はパリ協定<span class="note">（＝2015年に結ばれた、地球の気温上昇を産業革命前から2度より十分低く、できれば1.5度に抑えることを目指す国際的な約束のこと。ほぼすべての国が参加している）</span>からの離脱を表明している。最大級の排出国が加わらないまま、ほかの国々がどこまで対策を強められるかが問われている。11日と12日には各国の首脳が集まる会合が開かれる。</p>
+          </div>
+          <div class="meta"><a href="https://www.pbs.org/newshour/science/cop31-climate-summit-begins-after-disastrous-year-of-extreme-weather" target="_blank" rel="noopener">PBS NewsHour</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-business" style="--cat-color:var(--c-business)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ビジネス</h2></div>
+        <p class="panel-sub">企業・産業のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>ソフトバンク、上期の営業利益・純利益が過去最高——通期予想も上方修正</h3>
+          <p class="lead">通信大手のソフトバンクは9日、2026年4〜9月期の決算を発表した。ケータイWatchによると、売上高は前年同期比11.7%増の3兆7987億円、本業のもうけを示す営業利益は2.1%増の6421億円で、営業利益と純利益はいずれも上期として過去最高だった。1年間の業績予想も引き上げ、純利益の目標を2年前倒しで達成する見通しを示した。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、今回決算を発表したのが、携帯電話などを手がける「ソフトバンク」で、AI投資で知られる親会社の「ソフトバンクグループ」とは別の会社だという点にある（11月9日既報）。ソフトバンクは、毎月の通信料金のように安定して入ってくる収入が大きく、景気や株価の動きに左右されにくい。純利益<span class="note">（＝売上から、すべての費用や税金を差し引いた後に、最終的に会社に残るもうけのこと）</span>の目標を前倒しで達成できる見込みになったのは、通信以外の法人向けサービスやAI関連の事業も伸びているためとみられる。親会社のソフトバンクグループは、今日10日に決算を発表する。</p>
+          </div>
+          <div class="meta"><a href="https://k-tai.watch.impress.co.jp/docs/news/2154963.html" target="_blank" rel="noopener">ケータイWatch</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>三菱重工、今期の最終利益予想を16%上方修正——最高益の見通しを上乗せ</h3>
+          <p class="lead">三菱重工業は6日、今年度の最終利益の予想を4400億円に16%引き上げた。株探によると、4〜9月期の売上収益は前年同期比19.4%増の2兆5230億円、純利益は76.9%増の2032億円と大きく伸びた。週明け9日の東京市場では、日本経済新聞が三菱重工を日経平均の反発を支えた銘柄の一つとして取り上げている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、三菱重工がいま、複数の成長分野を同時に抱えている点にある。各国が防衛予算を増やしていることによる防衛関連の受注や、データセンターなどで電力の需要が増えることによる発電用ガスタービン、原子力発電の関連事業などが、成長の柱として期待されている。最高益<span class="note">（＝その会社がこれまでに記録した中で最も多い利益のこと）</span>の見通しをさらに引き上げたことで、AI関連の半導体株とは違う理由で買われる銘柄として注目を集めている。</p>
+          </div>
+          <div class="meta"><a href="https://kabutan.jp/news/?b=k202611060047" target="_blank" rel="noopener">株探</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-startup" style="--cat-color:var(--c-startup)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">スタートアップ</h2></div>
+        <p class="panel-sub">資金調達・注目トピック2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>サステナ情報管理のBooost、シリーズCで17.5億円調達——累計52億円に</h3>
+          <p class="lead">企業のサステナビリティ（持続可能性）に関する情報の管理を支援するBooostは9日、シリーズCで合計17億5000万円の資金調達を終えたと発表した。PR TIMESに掲載した発表によると、スパークス・アセット・マネジメントが運用する未来創生3号ファンドやOne Capital、プロネクサス、AGキャピタルが引き受け、これまでの累計の調達額は52億円になった。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、大企業が二酸化炭素の排出量などの情報を、決められたルールで公開しなければならない時代が近づいているという点にある。サステナビリティ情報<span class="note">（＝企業が環境や社会にどんな影響を与えているかを示す情報のこと。二酸化炭素の排出量、人材の多様性、取引先での人権への配慮などが含まれる）</span>は、これまで各社がばらばらの形で開示してきた。グループ会社や工場ごとに散らばったデータを集めて正確にまとめるのは手間がかかるため、それを支えるクラウドサービスの需要が高まっている。</p>
+          </div>
+          <div class="meta"><a href="https://prtimes.jp/main/html/rd/p/000000292.000056793.html" target="_blank" rel="noopener">PR TIMES</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>サステナ開示の義務化、2027年3月期から——時価総額3兆円以上のプライム企業が対象</h3>
+          <p class="lead">本日既報のBooostのような企業に追い風となっているのが、日本で始まるサステナビリティ情報の開示の義務化だ。東京海上ディーアールなどによると、平均時価総額3兆円以上のプライム市場の上場企業は2027年3月期から、日本の基準に沿った開示が求められる。1兆円以上3兆円未満の企業は2028年3月期、5000億円以上1兆円未満は2029年3月期が目安とされ、対象は段階的に広がる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、これまで「自主的な取り組み」だったサステナ情報の開示が、法律にもとづく「義務」に変わるという点にある。SSBJ基準<span class="note">（＝日本のサステナビリティ基準委員会（SSBJ）が作った、サステナビリティ情報の開示のルールのこと。国際的な基準と整合するように作られている）</span>に沿った情報を、有価証券報告書<span class="note">（＝上場企業が毎年、金融庁に提出する決算や事業の状況をまとめた公式の書類のこと。投資家が会社を判断する最も重要な資料の一つ）</span>に載せることになる。開示の翌年からは、第三者のチェック（保証）も求められる見込みで、準備の負担は大きい。</p>
+          </div>
+          <div class="meta"><a href="https://www.tokio-dr.jp/publication/column/122.html" target="_blank" rel="noopener">東京海上ディーアール</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-gadget" style="--cat-color:var(--c-gadget)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ガジェット</h2></div>
+        <p class="panel-sub">新製品2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>新型Apple TV 4K、13日発売——4万9800円、HomePod 4台でサラウンドも</h3>
+          <p class="lead">Appleが10月に発表した新型「Apple TV 4K」が、13日に発売される。gori.meなどによると、価格は4万9800円（税込）で、新しい「A19」チップを搭載し、前の世代よりCPUが最大50%速くなった。HomePod mini 2などのスピーカーを4台組み合わせると、音に包まれるようなサラウンド環境を作れる。一方で、新しいAI機能の「Siri AI」は、発売時点では日本が対象国に含まれていない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、Apple TVが「テレビにつなぐ小さな箱」だという点にある。テレビにつなぐと、動画配信サービスやゲーム、写真などを大きな画面で楽しめるようになる。CPU<span class="note">（＝機器の頭脳にあたる部品のこと。処理が速いほど、アプリの起動や画面の切り替えがなめらかになる）</span>の性能が上がると、操作の快適さが増す。サラウンド<span class="note">（＝前だけでなく、横や後ろなど複数の方向から音を出し、映画館のように音に包まれる感覚を作る仕組みのこと）</span>を手軽に作れる点も特徴で、家で映画を楽しみたい人向けの製品と言える。</p>
+          </div>
+          <div class="meta"><a href="https://gori.me/?p=171213" target="_blank" rel="noopener">gori.me</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>背面にも画面を持つ「Xiaomi 18 Pro」シリーズ、日本で27日発売へ</h3>
+          <p class="lead">中国のXiaomi（シャオミ）は、最新の上位スマートフォン「Xiaomi 18 Pro」と「Xiaomi 18 Pro Max」を、日本で11月27日に発売すると、S-MAXが伝えた。20日から23日には東京・表参道で記念イベントも開く。両機種は9月に中国で発表されたモデルで、2億画素のライカ製カメラを2つ搭載するほか、本体の背面にも小さなディスプレイを備えている。日本での価格は、本稿の時点で確認できていない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、Xiaomiが「高性能なのに比較的安い」スマホで世界的に存在感を高めてきた中国メーカーだという点にある。日本でも近年、上位モデルの投入を増やしている。2億画素<span class="note">（＝写真を構成する点（画素）が2億個あるという意味。数が多いほど細かいところまで写せ、写真の一部を切り取って拡大しても粗くなりにくい）</span>のカメラを2つ載せるのは、スマホのカメラ競争がそれだけ激しくなっている表れだ。背面の小さな画面は、通知の確認や、背面カメラでの自撮りの構図確認などに使える。</p>
+          </div>
+          <div class="meta"><a href="https://s-max.jp/archives/1801010.html" target="_blank" rel="noopener">S-MAX</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-intl" style="--cat-color:var(--c-intl)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">海外</h2></div>
+        <p class="panel-sub">国際ニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>イスラエル大統領、野党のアイゼンコット氏に組閣を指名——ネタニヤフ氏に痛手</h3>
+          <p class="lead">イスラエルのヘルツォグ大統領は、10月27日の総選挙（10月13日既報）を受けて、野党のガディ・アイゼンコット氏に新しい政権づくりを任せると決めた。米公共ラジオNPRなどによると、国会120議席のうち67議席分の会派がアイゼンコット氏を推薦し、ネタニヤフ首相を推したのは46議席分にとどまった。アイゼンコット氏には原則28日間、延長すれば最大でさらに14日間の期限が与えられる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、イスラエルでは選挙で1つの党が過半数を取ることがほとんどなく、複数の党が手を組んで政権を作るという点にある。組閣<span class="note">（＝首相となる人が、大臣を選んで内閣（政権）を作ること。イスラエルでは、大統領が「政権を作れそうな人」を指名し、その人が期限内に国会の過半数の支持を集める必要がある）</span>の指名は、政権づくりの「最初の権利」を得たことを意味する。アイゼンコット氏は軍の元参謀総長で、長く政権を率いてきたネタニヤフ氏にとっては大きな痛手となる。期限内に連立がまとまらなければ、別の議員が指名されるか、再び選挙になる可能性もある。</p>
+          </div>
+          <div class="meta"><a href="https://www.stlpr.org/npr/2026-11-07/israels-president-taps-opposition-candidate-eisenkot-to-form-a-government-in-setback-for-netanyahu" target="_blank" rel="noopener">NPR（St. Louis Public Radio）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>ネタニヤフ氏は「挙国一致内閣」を呼びかけ——連立づくりは難航も</h3>
+          <p class="lead">本日既報のアイゼンコット氏への組閣の指名に対し、ネタニヤフ首相は与野党が幅広く手を組む「挙国一致内閣」を呼びかけている。イスラエルのニュース局i24NEWSなどによると、ネタニヤフ氏の与党リクードの幹部は「最大の党の党首であるネタニヤフ氏に組閣の権利がある」と主張している。最初の期限は12月6日で、延長すれば12月20日となる見通しだ。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「推薦された数」と「実際に連立を組めるか」は別の問題だという点にある。アイゼンコット氏を推薦した会派の中には、考え方が大きく違う党も含まれており、全員を一つの政権にまとめるのは簡単ではない。挙国一致内閣<span class="note">（＝ふだんは対立する与党と野党が、国の危機などを理由に一緒になって作る政権のこと）</span>の呼びかけは、ネタニヤフ氏が政権の中に残る道を探る動きとも受け止められている。</p>
+          </div>
+          <div class="meta"><a href="https://www.i24news.tv/en/news/israel/politics/artc-netanyahu-calls-for-unity-government-as-eisenkot-nears-coalition-mandate" target="_blank" rel="noopener">i24NEWS</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-sports" style="--cat-color:var(--c-sports)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">芸能／スポーツ</h2></div>
+        <p class="panel-sub">厳選2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>九州場所2日目、大の里が初白星——横綱・大関陣がそろって勝ち、豊昇龍は2連勝</h3>
+          <p class="lead">大相撲九州場所2日目の9日、初日に敗れた横綱・大の里は藤凌駕を寄り切り、初白星を挙げた。東京新聞によると、3場所連続の休場から戻った横綱・豊昇龍は朝乃山を下して2連勝。大関陣も、安青錦が小結・義ノ富士を、琴櫻が新小結・美ノ海を破って初白星を挙げ、霧島は2連勝とした。横綱・大関がそろって白星を挙げ、上位陣は安泰の一日となった。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、初日の波乱（11月9日既報）から、上位陣がそろって立て直したという点にある。安泰<span class="note">（＝相撲で、横綱や大関などの上位の力士が全員勝ち、波乱がなかったこと）</span>の日は、上位陣の力が下位を上回っていることを示す。ただし、デイリースポーツなどによると、大の里の取り口については、引いて相手の頭を押さえつけにいった点を問題視する親方の声も出ており、内容にはまだ課題が残る。</p>
+          </div>
+          <div class="meta"><a href="https://www.tokyo-np.co.jp/article/527015" target="_blank" rel="noopener">東京新聞</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>幕内に戻った玉鷲が通算715勝——元横綱・稀勢の里を超える</h3>
+          <p class="lead">九州場所2日目、幕内に復帰したベテランの玉鷲が勝ち、通算の勝ち星を715勝として、元横綱・稀勢の里の記録を上回った。東京新聞が伝えた。玉鷲は長く幕内で戦い続けてきた力士で、ベテランになっても土俵に立ち続ける姿が多くのファンに支持されている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「通算勝利数」が力士の強さだけでなく、長く現役を続けてきた証でもあるという点にある。通算勝利<span class="note">（＝初めて土俵に上がってから、これまでに挙げたすべての勝ち星を合計した数のこと）</span>を積み重ねるには、けがをせずに毎場所出場し続ける必要がある。横綱だった稀勢の里は、けがの影響もあって比較的早く引退した。玉鷲は休場の少ない「鉄人」として知られ、その積み重ねが今回の記録につながった。</p>
+          </div>
+          <div class="meta"><a href="https://www.tokyo-np.co.jp/article/527025" target="_blank" rel="noopener">東京新聞</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-koshien" style="--cat-color:var(--c-koshien)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">高校野球【埼玉】</h2></div>
+        <p class="panel-sub">明治神宮大会の組み合わせ2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>明治神宮大会の組み合わせ決定——関東王者・横浜は21日、仙台育英と鹿児島城西の勝者と対戦</h3>
+          <p class="lead">19日に開幕する明治神宮大会（高校の部）の組み合わせが決まった。MBSニュースなどによると、関東大会で優勝した横浜（神奈川）は、19日の仙台育英（東北）と鹿児島城西（九州）の試合の勝者と、21日に対戦する。東京大会を制した二松学舎大付は、四国大会で優勝した明徳義塾と戦う。高校野球ドットコムは、甲子園で優勝した経験のある学校が5校そろう「超豪華な組み合わせ」と伝えている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、横浜が、埼玉1位の西武台を関東大会の1回戦で破った学校だという点にある（11月9日既報）。明治神宮大会<span class="note">（＝秋の各地区大会で優勝した高校が集まり、秋の日本一を決める全国大会のこと。東京の明治神宮野球場で開かれる）</span>で横浜が優勝すれば、関東地区のセンバツ出場校が1校増える「神宮大会枠」が生まれる（11月7日既報）。埼玉県勢は出場しないが、関東の代表校の戦いぶりは、来春のセンバツの選考にも関わってくる。</p>
+          </div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/articles/4aed169affa577d167beb1f523b63185635f78d3" target="_blank" rel="noopener">MBSニュース（Yahoo!ニュース）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>センバツ選考の流れ——12月12日に地区推薦校、1月末に出場校決定</h3>
+          <p class="lead">来春のセンバツの出場校は、秋の大会の結果をもとに選ばれる。関東地区では12月12日に推薦校が決まり、その後1月末の選考委員会で最終的な出場校が発表される見通しだ（10月26日既報）。明治神宮大会の結果は、関東・東京の出場校の数に影響する可能性がある。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、センバツの出場校が「試合の勝ち負けだけ」では決まらないという点にある。選考委員会<span class="note">（＝センバツを主催する日本高野連と毎日新聞社が開く、出場校を選ぶための会議のこと。秋の大会の成績を中心に、試合の内容や地域のバランスなども考えて選ぶ）</span>は、関東大会でどこまで勝ち進んだかに加えて、試合の内容も見て判断する。関東大会の1回戦で敗れた西武台・山村学園（10月19日既報）が選ばれる可能性は低いとみられ、埼玉県勢は来夏に向けたチームづくりが中心になる。</p>
+          </div>
+          <div class="meta"><a href="https://www.hb-nippon.com/articles/18396" target="_blank" rel="noopener">高校野球ドットコム</a></div>
+        </article>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var cats = ['top','social','polecon','scitech','business','startup','gadget','intl','sports','koshien'];
+  var idx = 0;
+  var track = document.getElementById('track');
+  var viewport = document.getElementById('viewport');
+  var vw = viewport.clientWidth;
+
+  function setActive(i){
+    cats.forEach(function(c, j){
+      document.getElementById('tab-' + c).classList.toggle('active', j === i);
+    });
+    var activeTab = document.getElementById('tab-' + cats[i]);
+    if (activeTab && activeTab.scrollIntoView) activeTab.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+  }
+
+  function settle(i, animate){
+    idx = Math.max(0, Math.min(cats.length - 1, i));
+    track.style.transition = animate ? 'transform .32s cubic-bezier(.22,.61,.36,1)' : 'none';
+    track.style.transform = 'translateX(' + (-idx * vw) + 'px)';
+    setActive(idx);
+  }
+
+  window.goTo = function(i){ settle(i, true); };
+
+  window.addEventListener('resize', function(){
+    vw = viewport.clientWidth;
+    settle(idx, false);
+  });
+
+  var dragging = false, decided = null, sx = 0, sy = 0, dx = 0;
+  viewport.addEventListener('touchstart', function(e){
+    dragging = true; decided = null;
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY; dx = 0;
+    track.style.transition = 'none';
+  }, { passive: true });
+
+  viewport.addEventListener('touchmove', function(e){
+    if (!dragging) return;
+    var cx = e.touches[0].clientX, cy = e.touches[0].clientY;
+    var mdx = cx - sx, mdy = cy - sy;
+    if (decided === null) {
+      if (Math.abs(mdx) > 8 || Math.abs(mdy) > 8) {
+        decided = Math.abs(mdx) > Math.abs(mdy) ? 'x' : 'y';
+      }
+    }
+    if (decided === 'x') {
+      e.preventDefault();
+      dx = mdx;
+      var atStart = idx === 0 && dx > 0;
+      var atEnd = idx === cats.length - 1 && dx < 0;
+      var eased = (atStart || atEnd) ? dx * 0.35 : dx;
+      track.style.transform = 'translateX(' + (-idx * vw + eased) + 'px)';
+    }
+  }, { passive: false });
+
+  viewport.addEventListener('touchend', function(){
+    if (!dragging) return;
+    dragging = false;
+    if (decided === 'x') {
+      var threshold = vw * 0.18;
+      if (dx <= -threshold) settle(idx + 1, true);
+      else if (dx >= threshold) settle(idx - 1, true);
+      else settle(idx, true);
+    }
+    decided = null; dx = 0;
+  });
+
+  settle(0, false);
+})();
+</script>
+
+</body></html>
