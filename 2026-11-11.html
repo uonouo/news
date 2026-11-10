@@ -1,0 +1,610 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yoshi's News</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Zen+Old+Mincho:wght@600;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap');
+
+:root {
+  --bg: #ffffff;
+  --panel-bg: #ffffff;
+  --card: #ffffff;
+  --card-line: #eef0f3;
+  --ink: #1a1c20;
+  --ink-soft: #5b6068;
+  --ink-faint: #9aa0a8;
+  --shell: #f4f5f7;
+
+  --c-top: #ef3355;
+  --c-social: #00b3a4;
+  --c-polecon: #6d5bf0;
+  --c-scitech: #ff8a1e;
+  --c-business: #0091ff;
+  --c-sports: #26c281;
+  --c-startup: #ff4fa3;
+  --c-koshien: #c8860d;
+  --c-intl: #4b3f8f;
+  --c-gadget: #00bcd4;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101114;
+    --panel-bg: #101114;
+    --card: #1a1c20;
+    --card-line: #2a2c31;
+    --ink: #f1f2f4;
+    --ink-soft: #b7bcc4;
+    --ink-faint: #767c86;
+    --shell: #1a1c20;
+    --c-top: #ff6b85;
+    --c-social: #3fd8c9;
+    --c-polecon: #9c8fff;
+    --c-scitech: #ffab5c;
+    --c-business: #4db2ff;
+    --c-sports: #5be0a6;
+    --c-startup: #ff85c2;
+    --c-koshien: #e8b34c;
+    --c-intl: #a89cf0;
+    --c-gadget: #4dd8ea;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101114;
+  --panel-bg: #101114;
+  --card: #1a1c20;
+  --card-line: #2a2c31;
+  --ink: #f1f2f4;
+  --ink-soft: #b7bcc4;
+  --ink-faint: #767c86;
+  --shell: #1a1c20;
+  --c-top: #ff6b85;
+  --c-social: #3fd8c9;
+  --c-polecon: #9c8fff;
+  --c-scitech: #ffab5c;
+  --c-business: #4db2ff;
+  --c-sports: #5be0a6;
+  --c-startup: #ff85c2;
+  --c-koshien: #e8b34c;
+  --c-intl: #a89cf0;
+  --c-gadget: #4dd8ea;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--shell);
+  color: var(--ink);
+  font-family: "Zen Kaku Gothic New", -apple-system, "Hiragino Kaku Gothic ProN", sans-serif;
+  line-height: 1.7;
+  overscroll-behavior-y: none;
+}
+.serif { font-family: "Zen Old Mincho", "Hiragino Mincho ProN", serif; }
+
+.app {
+  max-width: 680px;
+  margin: 0 auto;
+  background: var(--bg);
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ---- Header ---- */
+.topbar { padding: 20px 20px 0; flex-shrink: 0; }
+.title-line { display: flex; align-items: center; gap: 8px; }
+.mascot { height: 50px; width: auto; flex-shrink: 0; border-radius: 8px; }
+.title-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  margin-bottom: 14px;
+}
+.title-row h1 {
+  font-family: "Baloo 2", "Zen Kaku Gothic New", sans-serif;
+  font-size: 48px; font-weight: 800; margin: 0; letter-spacing: 0.01em; line-height: 1;
+  -webkit-text-stroke: 2.4px #2b2013;
+  filter: drop-shadow(2px 3px 0 rgba(30,22,12,0.18));
+  background-image:
+    radial-gradient(circle at 22% 30%, #211709 0 7px, transparent 8px),
+    radial-gradient(circle at 68% 65%, #3a2b16 0 9px, transparent 10px),
+    radial-gradient(circle at 45% 88%, #241a0c 0 5px, transparent 6px),
+    radial-gradient(circle at 85% 20%, #2e2211 0 6px, transparent 7px),
+    linear-gradient(135deg, #b8a06e, #967c4c 50%, #6f5a35);
+  background-size: 30px 30px, 41px 41px, 23px 23px, 35px 35px, 100% 100%;
+  background-repeat: repeat, repeat, repeat, repeat, no-repeat;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.title-row .date { font-size: 11.5px; color: var(--ink-faint); white-space: nowrap; font-weight: 500; margin-top: 2px; }
+
+.tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px 3px; }
+.tab {
+  appearance: none; border: none; background: none;
+  font-family: inherit; font-size: 10.5px; font-weight: 700;
+  color: var(--ink-faint);
+  padding: 7px 4px 9px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+  cursor: pointer;
+  border-radius: 10px 10px 0 0;
+  transition: color .2s ease, background .2s ease;
+}
+.tab .dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  margin-right: 5px; background: currentColor; opacity: 0.45; vertical-align: middle;
+}
+.tab::after {
+  content: ""; position: absolute; left: 10px; right: 10px; bottom: 0;
+  height: 3px; border-radius: 3px 3px 0 0; background: transparent; transition: background .2s ease;
+}
+.tab.active { color: var(--tab-color); background: color-mix(in srgb, var(--tab-color) 10%, transparent); }
+.tab.active .dot { opacity: 1; }
+.tab.active::after { background: var(--tab-color); }
+
+/* ---- Swipe viewport ---- */
+.viewport { flex: 1; overflow: hidden; position: relative; touch-action: pan-y; }
+.track {
+  display: flex;
+  height: 100%;
+  width: 1000%;
+  transition: transform .32s cubic-bezier(.22,.61,.36,1);
+  will-change: transform;
+}
+.panel {
+  width: 10%;
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 20px 56px;
+}
+
+.panel-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.panel-head .chip { width: 8px; height: 26px; border-radius: 4px; background: var(--cat-color); flex-shrink: 0; }
+.panel-head h2 { font-size: 20px; font-weight: 700; margin: 0; letter-spacing: 0.02em; color: var(--cat-color); }
+.panel-sub { font-size: 12px; color: var(--ink-faint); margin: 0 0 18px 18px; }
+
+.story {
+  background: var(--card);
+  border: 1px solid var(--card-line);
+  border-left: 4px solid var(--cat-color);
+  border-radius: 12px;
+  padding: 18px 18px 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(20,20,30,0.05);
+}
+.story .kicker {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: "Zen Old Mincho", serif; font-size: 11.5px; font-weight: 700;
+  color: var(--cat-color); margin-bottom: 9px;
+}
+.story h3 { font-size: 16px; font-weight: 700; line-height: 1.55; margin: 0 0 10px; }
+.story .lead { font-size: 14px; color: var(--ink); margin: 0 0 14px; line-height: 1.85; }
+
+.context {
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 10px;
+  padding: 13px 15px;
+  margin: 0 0 12px;
+}
+.context-label {
+  display: block; font-size: 10.5px; font-weight: 700;
+  color: var(--cat-color); letter-spacing: 0.04em; margin-bottom: 6px;
+}
+.context p { font-size: 13px; color: var(--ink-soft); margin: 0; line-height: 1.8; }
+
+.note { font-size: 11.5px; color: var(--ink-faint); font-weight: 500; }
+
+.term-link {
+  color: var(--cat-color);
+  text-decoration: none;
+  border-bottom: 1px dotted color-mix(in srgb, var(--cat-color) 55%, transparent);
+  font-weight: 700;
+}
+
+.meta { font-size: 11px; color: var(--ink-faint); }
+.meta a { color: var(--cat-color); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--cat-color) 40%, transparent); font-weight: 700; }
+
+.closing {
+  margin: 6px 0 0; padding: 16px 18px;
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 12px; font-size: 13px; color: var(--ink-soft); text-align: center;
+}
+.closing .label {
+  display: block; font-family: "Zen Old Mincho", serif; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.2em; color: var(--cat-color); margin-bottom: 8px;
+}
+.colophon { margin: 14px 0 8px; font-size: 10.5px; color: var(--ink-faint); line-height: 1.9; text-align: center; }
+
+@media (max-width: 420px) {
+  .topbar { padding: 16px 14px 0; }
+  .panel { padding: 16px 14px 48px; }
+  .title-row h1 { font-size: 38px; }
+  .mascot { height: 40px; }
+}
+</style>
+</head><body>
+
+
+<div class="app" id="app">
+
+  <div class="topbar">
+    <div class="title-row">
+      <div class="title-line">
+        <img class="mascot" src="mascot.jpg" alt="オオサンショウウオのマスコット">
+        <h1>Yoshi's News</h1>
+      </div>
+      <span class="date">2026年11月11日（水）・第69号</span>
+    </div>
+    <div class="tabs" id="tabs">
+      <button class="tab" id="tab-top" style="--tab-color:var(--c-top)" onclick="goTo(0)"><span class="dot"></span>トップ</button>
+      <button class="tab" id="tab-social" style="--tab-color:var(--c-social)" onclick="goTo(1)"><span class="dot"></span>社会</button>
+      <button class="tab" id="tab-polecon" style="--tab-color:var(--c-polecon)" onclick="goTo(2)"><span class="dot"></span>政治/経済</button>
+      <button class="tab" id="tab-scitech" style="--tab-color:var(--c-scitech)" onclick="goTo(3)"><span class="dot"></span>科学/テック</button>
+      <button class="tab" id="tab-business" style="--tab-color:var(--c-business)" onclick="goTo(4)"><span class="dot"></span>ビジネス</button>
+      <button class="tab" id="tab-startup" style="--tab-color:var(--c-startup)" onclick="goTo(5)"><span class="dot"></span>スタートアップ</button>
+      <button class="tab" id="tab-gadget" style="--tab-color:var(--c-gadget)" onclick="goTo(6)"><span class="dot"></span>ガジェット</button>
+      <button class="tab" id="tab-intl" style="--tab-color:var(--c-intl)" onclick="goTo(7)"><span class="dot"></span>海外</button>
+      <button class="tab" id="tab-sports" style="--tab-color:var(--c-sports)" onclick="goTo(8)"><span class="dot"></span>芸能/スポーツ</button>
+      <button class="tab" id="tab-koshien" style="--tab-color:var(--c-koshien)" onclick="goTo(9)"><span class="dot"></span>高校野球【埼玉】</button>
+    </div>
+  </div>
+
+  <div class="viewport" id="viewport">
+    <div class="track" id="track">
+
+      <section class="panel" id="panel-top" style="--cat-color:var(--c-top)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">トップニュース</h2></div>
+        <p class="panel-sub">今日いちばん知っておきたい2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ テック</span>
+          <h3>米AI企業Anthropic、上場で最大644億ドル調達へ——企業価値は最大1.4兆ドル</h3>
+          <p class="lead">AIアシスタント「Claude」を開発する米Anthropicは10日、新規株式公開（IPO）の仮の価格を1株70〜78ドルとする書類を提出した。米TechCrunchによると、上場時の企業価値は最大で約1兆4040億ドルとなる。東京新聞によると、上場での調達額は最大644億ドル（約10兆2000億円）。これとは別に、GoogleとNvidiaがそれぞれ100億ドルを出す私募も予定されている。報道では、米ナスダック市場に「ANT」の銘柄コードで、19日にも取引が始まる見通しとされている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、AIブームの中心にいる未上場企業が、ついに株式市場に出てくるという点にある。新規株式公開<span class="note">（＝IPOとも呼ばれ、それまで限られた投資家しか株を持てなかった会社が、証券取引所に株を上場し、誰でも株を売り買いできるようにすること。会社はその際に大きな資金を集められる）</span>で数百億ドル規模を集めるのは、過去の最大級に迫る規模とされる。一方で、AI関連株はこのところ大きく下がっており（11月7日既報）、上場のタイミングは市場の不安と重なっている。私募<span class="note">（＝一般の投資家ではなく、特定の会社や投資家だけに株を買ってもらう方法のこと）</span>にGoogleとNvidiaが加わることは、AIの基盤を担う大手がこの会社を重視していることを示している。最終的な価格や上場日は、まだ確定していない。</p>
+          </div>
+          <div class="meta"><a href="https://techcrunch.com/2026/11/10/anthropic-sets-ipo-price-range-of-70-to-78-per-share-to-reach-an-implied-valuation-of-1-404-trillion/" target="_blank" rel="noopener">TechCrunch</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 海外</span>
+          <h3>トランプ氏「イランとの戦争は事実上終わった」——海上封鎖は維持、与党からは国防長官の弾劾案</h3>
+          <p class="lead">トランプ米大統領は9日、イランとの戦争は軍事的には「事実上終わっている」との認識を示した。時事通信によると、一方でイランへの海上封鎖は続ける方針で、必要なら攻撃を再開できるとも述べた。同じ日、与党・共和党のマシー下院議員が、議会の承認を得ないまま対イラン軍事作戦を進めているとして、ヘグセス国防長官の弾劾訴追を求める決議案を提出した。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、トランプ氏が以前から「戦争は中間選挙の直後に終わる」と言っていた（9月11日既報）点にある。中間選挙が終わり（11月6日既報）、その見通しに沿う発言をした形だが、正式な停戦の合意があったわけではない。海上封鎖<span class="note">（＝軍艦などで相手国の港や海の道をふさぎ、船の出入りを止めること。相手の貿易を断ち、経済的に追い詰める手段になる）</span>が続く限り、緊張は続く。米国では戦争を始める権限は本来議会にあるため、弾劾訴追<span class="note">（＝重大な違法行為などを理由に、議会が政府の高官をその職から辞めさせるための手続きを始めること。下院が訴追し、上院が裁判のような審理を行う）</span>の案が与党の議員から出たことは、政権内部の亀裂を示している。</p>
+          </div>
+          <div class="meta"><a href="https://www.jiji.com/jc/article?k=2026111000227&amp;g=int" target="_blank" rel="noopener">時事通信</a></div>
+        </article>
+
+        <div class="closing">
+          <span class="label serif">編集後記</span>
+          AI企業Anthropicが上場の価格を示し、企業価値は最大1.4兆ドルと、AIブームの大きな節目を迎えています。その一方で、ソフトバンクグループは上期に7680億円の最終赤字に。日経平均は3営業日ぶりに6万円台を取り戻しました。プロ野球では10人がFA宣言し、今日から交渉が解禁されます。
+        </div>
+        <div class="colophon">AIが検索結果をもとに要約・編集しています。詳細は各記事の出典リンクでご確認ください。<br>毎朝5時発行・次号は明日<br><a href="archive.html" style="color:inherit">過去の紙面はこちら</a></div>
+      </section>
+
+      <section class="panel" id="panel-social" style="--cat-color:var(--c-social)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">社会</h2></div>
+        <p class="panel-sub">くらしに関わるニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>9月の家計の消費支出、実質6.8%減——10か月連続のマイナス、予想の2倍の落ち込み</h3>
+          <p class="lead">総務省が10日に発表した9月の家計調査で、2人以上の世帯の消費支出は1世帯あたり28万9536円となり、物価の変動を除いた実質で前年同月より6.8%減った。共同通信によると、マイナスは10か月連続。民間の予測の中央値（3.1%減）を大きく下回る落ち込みだった。物価高に加え、9月の台風や雨の多い天気も影響したと報じられている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「実質」という言葉の意味にある。実質<span class="note">（＝物価の上がり下がりの影響を取り除いた数字のこと。値段が上がった分だけ支払いが増えても、買った量が減っていれば実質ではマイナスになる）</span>で6.8%減ったということは、家庭が買ったモノやサービスの「量」が大きく減ったことを示している。家計調査<span class="note">（＝総務省が毎月、全国の約9000世帯に家計簿をつけてもらい、収入や支出の動きをまとめる統計のこと）</span>は調査の対象が限られるため、月によって数字がぶれやすいとの指摘もある。それでも10か月連続の減少は、物価高で家計が節約を強いられている状況を表している。</p>
+          </div>
+          <div class="meta"><a href="https://www.chunichi.co.jp/article/1337143" target="_blank" rel="noopener">中日新聞</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>北日本・東日本で12月並みの寒さ——台風32号は小笠原に接近</h3>
+          <p class="lead">寒気の影響で、北日本や東日本では10日も12月並みの寒さとなったところがあり、NHKは体調管理に注意するよう呼びかけている。一方、台風32号（11月10日既報）は小笠原諸島に近づいており、暴風や高波への警戒が続いている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、日本列島の北と南で、まったく違う天気が同時に起きているという点にある。北からは冬の寒気が流れ込み、南の海上では季節外れの台風が勢力を保っている。12月並み<span class="note">（＝その日の気温が、平年の12月ごろの気温と同じくらいであること。11月上旬としては、1か月ほど季節が先に進んだような寒さを意味する）</span>の寒さが続くと、暖房器具の準備や、急な寒暖差による体調の変化への注意が必要になる。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261110de73237" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-polecon" style="--cat-color:var(--c-polecon)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">政治／経済</h2></div>
+        <p class="panel-sub">政治・経済の動き2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 経済</span>
+          <h3>米10月の消費者物価、前月比0.4%上昇で予想超え——前年比は異例の「公表なし」</h3>
+          <p class="lead">米労働省が日本時間10日夜に発表した10月の消費者物価指数（CPI）は、前の月より0.4%上がり、市場の予想（0.3%）を上回った。OANDA証券によると、値動きの大きい食品とエネルギーを除いた「コア」も前月比0.3%上昇と、予想（0.2%）を上回った。一方、去年の米政府機関の閉鎖で2025年10月分のデータが作られていないため、前年同月と比べた数字は公表されなかった。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、物価が予想より上がると、米国の利上げの可能性が高まるという点にある。雇用統計も強かった（11月8日既報）ことから、12月の会合での利上げの観測がさらに意識されそうだ。コアCPI<span class="note">（＝天候や国際情勢で大きく値段が動く食品とエネルギーを除いて計算した物価の指標のこと。物価の「根っこ」の動きを見るために使われる）</span>は、中央銀行が特に重視する数字の一つだ。政府機関の閉鎖<span class="note">（＝米国で議会の予算が成立しないとき、政府の一部の仕事が止まること。統計の作成も止まり、データが欠けることがある）</span>の影響が1年後にまで残るのは珍しい。</p>
+          </div>
+          <div class="meta"><a href="https://www.oanda.jp/lab-education/market_news/uscpi-oct-2026-review/" target="_blank" rel="noopener">OANDA証券</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 政治</span>
+          <h3>自民・維新、安全保障3文書の改定へ作業チームが協議開始</h3>
+          <p class="lead">自民党と日本維新の会は10日から、国の安全保障の基本方針を定めた「安全保障関連3文書」の改定に向けた作業チームでの協議を始めた。NHKによると、防衛力の強化のあり方や防衛費の規模などをめぐって意見が交わされる見通しだ。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、3文書が日本の防衛政策の「設計図」にあたるという点にある。安全保障関連3文書<span class="note">（＝外交・防衛の基本方針を示す「国家安全保障戦略」、防衛の目標や手段を定める「国家防衛戦略」、装備や予算の規模を決める「防衛力整備計画」の3つの文書のこと。2022年末に大きく改定された）</span>には、防衛費をどれだけ増やすかといった具体的な中身が盛り込まれる。防衛費の増額は財源の問題とも結びつくため、消費税減税をめぐる議論（11月10日既報）とあわせて、国のお金の使い方が大きな論点になる。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261109de73179" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-scitech" style="--cat-color:var(--c-scitech)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">科学／テック</h2></div>
+        <p class="panel-sub">研究・技術のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>G7外相会合でAIを討議——茂木外相「AIの悪用への対処で協調を」</h3>
+          <p class="lead">フランス・パリで開かれている主要7か国（G7）外相会合で、日本時間10日未明にかけて、AIについての討議が行われた。NHKによると、茂木外相は、サイバー攻撃などへのAIの悪用に対処するため、各国が協調するよう呼びかけた。世界的にAIの開発競争が進む中で、その安全な使い方が外交の主要な議題の一つになっている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、AIが「便利な道具」であると同時に、悪用されれば国の安全を脅かす技術にもなるという点にある。サイバー攻撃<span class="note">（＝インターネットなどを通じて、他人のコンピューターに不正に入り込み、情報を盗んだり、システムを壊したりすること）</span>にAIが使われると、攻撃の手口がより巧妙になり、規模も大きくなるおそれがある。G7<span class="note">（＝日本、米国、英国、フランス、ドイツ、イタリア、カナダの7か国と欧州連合（EU）でつくる枠組みのこと。経済や安全保障などの重要な課題について話し合う）</span>は、2023年の広島サミットでもAIのルールづくりを議題にしている。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261110de73225" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>世界のベンチャー投資、7〜9月期は64%がAI企業に——ほかの分野には重圧</h3>
+          <p class="lead">米調査会社クランチベースによると、7〜9月期に世界でスタートアップに投じられた資金のうち、64%がAI関連の企業に向かった。財経新聞が伝えた。資金がAIに集中する一方で、AI以外の分野のスタートアップは資金を集めにくくなっていると指摘されている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、投資のお金が「AI」という一つの分野に偏っているという点にある。ベンチャー投資<span class="note">（＝ベンチャーキャピタルなどが、成長が期待される若い会社（スタートアップ）に、株と引き換えにお金を出すこと。成功すれば大きな利益が得られるが、失敗のリスクも高い）</span>の3分の2近くがAIに流れているということは、ほかの分野にとっては競争がそれだけ厳しくなるということだ。本日既報のAnthropicの上場のような大きな話題が続くほど、資金の集中がさらに進む可能性もある。</p>
+          </div>
+          <div class="meta"><a href="https://www.zaikei.co.jp/article/20261110/876949.html" target="_blank" rel="noopener">財経新聞</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-business" style="--cat-color:var(--c-business)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ビジネス</h2></div>
+        <p class="panel-sub">企業・産業のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>ソフトバンクグループ、4〜9月期は7680億円の最終赤字——OpenAIの評価益が出ず</h3>
+          <p class="lead">ソフトバンクグループは10日、2026年4〜9月期の決算を発表し、最終的な損益は7680億円の赤字となった。株探などによると、7〜9月期だけでは1兆1153億円の赤字だった。米OpenAIの企業価値の評価が前期末から据え置かれ、評価益が出なかったことに加え、米国のAIデータセンター向けの発電設備の調達計画を見直したことで5972億円の損失が出た。年間配当は11円を維持し、1年間の業績予想は示していない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、ソフトバンクグループの利益が、投資先の「値上がり」に大きく左右されるという点にある。評価益<span class="note">（＝持っている株などを実際には売っていないが、その価値が上がった分を利益として計算したもの。逆に価値が下がれば評価損になる）</span>は、投資先の企業価値が上がれば大きな利益になるが、据え置かれたり下がったりすれば利益は出ない。同社はOpenAIにこれまで計646億ドルを投じており、AIへの期待が業績をそのまま揺らす構造になっている。決算発表前の10日の東京市場では株価が大きく上がっていたが、発表後の夜間取引では値下がりした。</p>
+          </div>
+          <div class="meta"><a href="https://s.kabutan.jp/news/n202611101178" target="_blank" rel="noopener">株探</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>日経平均、1684円高で6万円台を回復——AI・半導体株が上昇を主導</h3>
+          <p class="lead">10日の東京株式市場で日経平均株価は前日より1684円08銭高い6万459円58銭で取引を終え、3営業日ぶりに6万円台を取り戻した。連日の2%を超える上昇で、米国の半導体株が大きく上がった流れを受けて、AI関連株が上昇を引っ張った。ソフトバンクグループ株は決算の発表前に13.9%上がり、1社で日経平均を約380円押し上げた。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、日経平均が一部の大きな会社の株価に強く影響されるという点にある。日経平均は、株価の高い銘柄ほど指数への影響が大きくなる計算方法をとっている。寄与度<span class="note">（＝ある1社の株価の動きが、日経平均を何円分押し上げたか、または押し下げたかを示す数字のこと）</span>の大きいソフトバンクグループや半導体関連の株が上がると、指数全体が大きく上がる。先週の急落（11月7日既報）から、わずか2日で約3000円戻したことになり、相場の振れ幅の大きさが目立っている。</p>
+          </div>
+          <div class="meta"><a href="https://tbladvisory.com/20261110nk/" target="_blank" rel="noopener">世界一やさしい投資の学校</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-startup" style="--cat-color:var(--c-startup)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">スタートアップ</h2></div>
+        <p class="panel-sub">資金調達・注目トピック2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>Anthropic上場、目標の企業価値は年初の期待を下回る——AI株安の中での船出</h3>
+          <p class="lead">本日既報のAnthropicの上場について、米メディアのPYMNTSは、目標とする約1.4兆ドルの企業価値は、今年の初めに投資家が見込んでいた2兆ドルを下回ると伝えている。AI関連株が値下がりする中での上場となる。また、9日には調達目標を693億ドルとする書類が一時出回った後に取り下げられ、Anthropicは内容が正確でないと説明した。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、上場の値段が「会社の実力」だけでなく「その時の市場の空気」にも左右されるという点にある。仮条件<span class="note">（＝上場する株の値段を最終的に決める前に、会社が示す価格の幅のこと。今回は1株70〜78ドルで、投資家の申し込み状況を見て最終的な値段が決まる）</span>は、AI株への不安が強まった時期に設定された。スタートアップにとって上場は、初期から支えてきた投資家が株を売って利益を得られる出口<span class="note">（＝イグジットとも呼ばれ、投資家が投資した会社の株を売って、資金を回収すること。上場や他社への売却が代表的な方法）</span>でもある。この上場が順調に進むかどうかは、ほかのAIスタートアップの資金集めにも影響しそうだ。</p>
+          </div>
+          <div class="meta"><a href="https://www.pymnts.com/news/investment-tracker/ipo/2026/anthropic-aims-1-trillion-dollar-ipo-valuation/" target="_blank" rel="noopener">PYMNTS</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>ディープテックの資金調達、10月は世界で125社・約169億ドル——NEXTBLUEが月次報告</h3>
+          <p class="lead">先端技術分野のスタートアップの情報をまとめるNEXTBLUEは10日、ディープテック領域で10月に資金を調達したスタートアップは世界で125社、開示された調達額は約169億ドルだったとする月次レポートを公開した。PR TIMESに掲載した発表で、分野ごとの調達動向も「DeepTech.NEXTBLUE」で公開している。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、ディープテックが「すぐにはもうからないが、社会を大きく変えうる技術」を扱う分野だという点にある。ディープテック<span class="note">（＝核融合、量子コンピューター、新素材、宇宙、医療機器など、大学や研究機関の科学的な発見をもとにした、開発に長い時間と大きなお金がかかる技術のこと）</span>は、研究開発に何年もかかるため、継続的に資金が集まるかどうかが成否を分ける。本日既報のとおり投資がAIに偏る中で、こうした分野にもお金が向かっているかを確かめる手がかりになる。</p>
+          </div>
+          <div class="meta"><a href="https://prtimes.jp/main/html/rd/p/000000012.000130024.html" target="_blank" rel="noopener">PR TIMES</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-gadget" style="--cat-color:var(--c-gadget)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ガジェット</h2></div>
+        <p class="panel-sub">新製品2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>PlayStation初の純正スピーカー「PULSE Elevate」、発売直前に延期——製造上の問題</h3>
+          <p class="lead">ソニー・インタラクティブエンタテインメントは、12日に発売する予定だったPlayStation初の純正ワイヤレススピーカー「PULSE Elevate」の発売を延期した。品質テストで製造上の問題が見つかったためで、新しい発売日は決まっていない。価格は3万7980円で、9月から予約を受け付けていた。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、発売の直前に延期するのは、メーカーにとって大きな決断だという点にある。すでに予約した人がいて、店頭に並べる準備も進んでいる段階での延期は、売り上げや信頼への影響が大きい。それでも品質テスト<span class="note">（＝製品を大量に作る前や出荷する前に、壊れやすさや性能、安全性に問題がないかを確かめる検査のこと）</span>で問題が見つかった以上、不具合のある製品を出すより延期を選んだ形だ。純正<span class="note">（＝本体を作っているメーカー自身が作った周辺機器のこと。ほかの会社の製品より、本体との相性や連携がよいとされる）</span>のスピーカーは、ゲームの音をより楽しめる製品として期待されていた。</p>
+          </div>
+          <div class="meta"><a href="https://www.techno-edge.net/article/2026/08/19/5401.html" target="_blank" rel="noopener">テクノエッジ</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>ビクター、片耳3.9グラムの完全ワイヤレスイヤホン「HA-A30T3」——ノイズキャンセリング搭載</h3>
+          <p class="lead">JVCケンウッドは6日、ビクターブランドの完全ワイヤレスイヤホン「HA-A30T3」を発表した。エルミタージュ秋葉原によると、11月中旬の発売予定で、店頭での想定価格は1万1000円前後。片耳の重さは約3.9グラムと前のモデルの4.5グラムから軽くなり、音を出す部品（ドライバー）は6ミリから10ミリに大きくなった。新たにハイブリッド方式のノイズキャンセリング機能も搭載した。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「軽さ」と「機能」を両立させるのが小型イヤホンの難しさだという点にある。ノイズキャンセリング<span class="note">（＝周りの騒音をマイクで拾い、その音と逆の波形の音を出して打ち消すことで、静かな環境で音楽を聴けるようにする機能のこと。「ハイブリッド方式」は外側と内側の2つのマイクを使い、より効果を高める）</span>を載せると部品が増えて重くなりがちだが、今回は軽くしながら機能を加えた。1万円前後という価格帯で、長時間着けても疲れにくいイヤホンを求める人に向けた製品と言える。</p>
+          </div>
+          <div class="meta"><a href="https://www.gdm.or.jp/pressrelease/2026/1106/659392" target="_blank" rel="noopener">エルミタージュ秋葉原</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-intl" style="--cat-color:var(--c-intl)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">海外</h2></div>
+        <p class="panel-sub">国際ニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>G7外相会合がパリで開幕——台湾海峡などでの「力による現状変更」に強く反対</h3>
+          <p class="lead">主要7か国（G7）の外相会合が9日、フランス・パリで2日間の日程で開幕した。米中間選挙の後で、欧米の外交トップがそろう初めての主要な会合で、米国からはルビオ国務長官が出席した。NHKによると、各国の外相は中国を念頭に、東シナ海や南シナ海、台湾海峡などで、力や威圧によって一方的に現状を変えようとするあらゆる試みに強く反対する必要性を改めて確認した。ウクライナや中東の情勢も話し合われている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「現状変更」という外交の言葉の意味にある。力による現状変更<span class="note">（＝話し合いではなく、軍事力や威圧によって国境や海の境界などを自分に有利に変えようとすること。国際法に反するとして、日本や欧米は強く反対している）</span>への反対は、G7が繰り返し確認してきた考え方だ。NHKの世論調査では、高市政権の中国に対する姿勢を「評価する」と答えた人が52%、「評価しない」が39%だった。日本にとって、G7の場で中国への懸念を共有することは、外交の重要な柱になっている。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261110de73219" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>イラン、ホルムズ海峡の再開に条件——米国は封鎖を維持、原油は下落</h3>
+          <p class="lead">本日既報のイラン情勢をめぐり、財経新聞によると、イラン側はペルシャ湾の出口にあたるホルムズ海峡の通航の再開に条件を示した。イランのアラグチ外相は戦闘の終結に向けた案の受け入れを米国に求めているが、米国は封鎖を維持しており、双方の条件にはなお隔たりがある。こうした動きを受けて、原油の価格は下落した。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、ホルムズ海峡が世界の石油の「大動脈」だという点にある。ホルムズ海峡<span class="note">（＝イランとアラビア半島の間にある、幅の狭い海峡のこと。ペルシャ湾岸の産油国から出る原油の多くがここを通り、日本が輸入する原油の大部分もこの海峡を経由している）</span>の通航が止まると、世界の原油の値段が上がり、ガソリン代や電気代にも響く。再開の条件をめぐる交渉の行方は、日本の家計にも直接関わってくる。</p>
+          </div>
+          <div class="meta"><a href="https://www.zaikei.co.jp/article/20261110/876859.html" target="_blank" rel="noopener">財経新聞</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-sports" style="--cat-color:var(--c-sports)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">芸能／スポーツ</h2></div>
+        <p class="panel-sub">厳選2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>FA宣言は10人、今日から交渉解禁——広島は異例の3人、西武・髙橋光成は海外FA</h3>
+          <p class="lead">日本野球機構（NPB）は10日、今年FA宣言した選手を公示した。Full-Countによると、資格を持つ選手のうち10人が権利を使い、国内FAが8人、海外FAが2人だった。広島からは森下暢仁、床田寛樹、坂倉将吾の3人が宣言。海外FAは西武の髙橋光成とDeNAの戸柱恭孝。宣言した選手は今日11日から、すべての球団と交渉できる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、10人という人数が近年では多いという点にある。報道によると、宣言者が2けたになるのは2011年以来とされ、制度2年目だった1994年の16人が過去最多だ。公示<span class="note">（＝NPBが、FA宣言した選手の名前を正式に発表すること。この発表をもって、宣言が確定する）</span>された選手は、元の球団と再契約する「宣言残留」も選べる。広島は先発の柱2人と主力の坂倉選手が同時に宣言しており、引き留めの交渉が注目される（11月9日既報）。</p>
+          </div>
+          <div class="meta"><a href="https://full-count.jp/2026/11/10/post2043082/" target="_blank" rel="noopener">Full-Count</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>九州場所3日目、横綱・豊昇龍に土——平幕の藤凌駕が初金星</h3>
+          <p class="lead">大相撲九州場所3日目の10日、3場所連続の休場から戻った横綱・豊昇龍は、平幕の藤凌駕に押し倒されて初黒星を喫した。東京新聞によると、藤凌駕にとっては初めての金星となった。大関・霧島も小結・義ノ富士に敗れ、横綱・大関の全勝が早くも消えた。横綱・大の里は朝乃山を寄り倒して2勝目を挙げた。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「金星」が平幕の力士にとって特別な白星だという点にある。金星<span class="note">（＝横綱でも大関でもない、前頭（平幕）の力士が横綱に勝つこと。勝った力士には、その後の給金（報奨金）が加算される）</span>は、力士の経歴に残る大きな勲章だ。初日に大関の琴櫻も破っていた藤凌駕（11月9日既報）は、上位陣を次々と倒して場所をかき回している。</p>
+          </div>
+          <div class="meta"><a href="https://www.tokyo-np.co.jp/article/527278" target="_blank" rel="noopener">東京新聞</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-koshien" style="--cat-color:var(--c-koshien)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">高校野球【埼玉】</h2></div>
+        <p class="panel-sub">埼玉選抜と21世紀枠2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>埼玉4地区の選抜100人が決定——山村学園の大型スラッガー、浦和学院の好打者ら</h3>
+          <p class="lead">埼玉県高野連は、県内の4つの地区からそれぞれの選抜チームのメンバー計100人を選んだ。高校野球ドットコムによると、山村学園の大型スラッガーや浦和学院の打率の高い打者など、県内の実力のある選手が選ばれた。地区ごとの選抜チームは、普段は別々の学校でプレーする選手同士が一緒に戦う場になる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、選抜チームが「学校の枠を越えて刺激を受ける場」だという点にある。地区選抜<span class="note">（＝県内をいくつかの地区に分け、それぞれの地区の高校から優れた選手を選んで作るチームのこと。公式戦ではなく、交流や育成を目的とすることが多い）</span>に選ばれると、他校の実力者と同じチームで練習や試合を経験でき、自分の課題に気づくきっかけになる。秋の公式戦を終えた埼玉県勢（11月7日既報）にとって、冬の練習に向けた良い刺激になりそうだ。</p>
+          </div>
+          <div class="meta"><a href="https://www.hb-nippon.com/articles/18896" target="_blank" rel="noopener">高校野球ドットコム</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>センバツ「21世紀枠」、埼玉県の推薦校は例年11月ごろに発表</h3>
+          <p class="lead">来春のセンバツには、秋の大会の成績だけでは選ばれない「21世紀枠」がある。埼玉高校野球情報局によると、この枠への埼玉県の推薦校は、例年11月ごろに発表される。今年の推薦校は、本稿の時点では確認できていない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、21世紀枠が「強さ」以外の理由でも甲子園への道を開く制度だという点にある。21世紀枠<span class="note">（＝秋の大会で一定の成績を残したうえで、部員が少ない、練習環境が限られるといった困難を乗り越えている学校や、地域への貢献などが評価された学校を選ぶ、センバツの特別な出場枠のこと）</span>は、各都道府県が候補を推薦し、地区ごとの絞り込みを経て、1月末の選考委員会で出場校が決まる。秋の関東大会で上位に入れなかった埼玉県勢（11月7日既報）にとっては、もう一つの可能性として注目される。</p>
+          </div>
+          <div class="meta"><a href="https://saitama-baseball.com/data/suisenko/" target="_blank" rel="noopener">埼玉高校野球情報局</a></div>
+        </article>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var cats = ['top','social','polecon','scitech','business','startup','gadget','intl','sports','koshien'];
+  var idx = 0;
+  var track = document.getElementById('track');
+  var viewport = document.getElementById('viewport');
+  var vw = viewport.clientWidth;
+
+  function setActive(i){
+    cats.forEach(function(c, j){
+      document.getElementById('tab-' + c).classList.toggle('active', j === i);
+    });
+    var activeTab = document.getElementById('tab-' + cats[i]);
+    if (activeTab && activeTab.scrollIntoView) activeTab.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+  }
+
+  function settle(i, animate){
+    idx = Math.max(0, Math.min(cats.length - 1, i));
+    track.style.transition = animate ? 'transform .32s cubic-bezier(.22,.61,.36,1)' : 'none';
+    track.style.transform = 'translateX(' + (-idx * vw) + 'px)';
+    setActive(idx);
+  }
+
+  window.goTo = function(i){ settle(i, true); };
+
+  window.addEventListener('resize', function(){
+    vw = viewport.clientWidth;
+    settle(idx, false);
+  });
+
+  var dragging = false, decided = null, sx = 0, sy = 0, dx = 0;
+  viewport.addEventListener('touchstart', function(e){
+    dragging = true; decided = null;
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY; dx = 0;
+    track.style.transition = 'none';
+  }, { passive: true });
+
+  viewport.addEventListener('touchmove', function(e){
+    if (!dragging) return;
+    var cx = e.touches[0].clientX, cy = e.touches[0].clientY;
+    var mdx = cx - sx, mdy = cy - sy;
+    if (decided === null) {
+      if (Math.abs(mdx) > 8 || Math.abs(mdy) > 8) {
+        decided = Math.abs(mdx) > Math.abs(mdy) ? 'x' : 'y';
+      }
+    }
+    if (decided === 'x') {
+      e.preventDefault();
+      dx = mdx;
+      var atStart = idx === 0 && dx > 0;
+      var atEnd = idx === cats.length - 1 && dx < 0;
+      var eased = (atStart || atEnd) ? dx * 0.35 : dx;
+      track.style.transform = 'translateX(' + (-idx * vw + eased) + 'px)';
+    }
+  }, { passive: false });
+
+  viewport.addEventListener('touchend', function(){
+    if (!dragging) return;
+    dragging = false;
+    if (decided === 'x') {
+      var threshold = vw * 0.18;
+      if (dx <= -threshold) settle(idx + 1, true);
+      else if (dx >= threshold) settle(idx - 1, true);
+      else settle(idx, true);
+    }
+    decided = null; dx = 0;
+  });
+
+  settle(0, false);
+})();
+</script>
+
+</body></html>
