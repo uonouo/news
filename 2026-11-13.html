@@ -1,0 +1,610 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yoshi's News</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Zen+Old+Mincho:wght@600;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap');
+
+:root {
+  --bg: #ffffff;
+  --panel-bg: #ffffff;
+  --card: #ffffff;
+  --card-line: #eef0f3;
+  --ink: #1a1c20;
+  --ink-soft: #5b6068;
+  --ink-faint: #9aa0a8;
+  --shell: #f4f5f7;
+
+  --c-top: #ef3355;
+  --c-social: #00b3a4;
+  --c-polecon: #6d5bf0;
+  --c-scitech: #ff8a1e;
+  --c-business: #0091ff;
+  --c-sports: #26c281;
+  --c-startup: #ff4fa3;
+  --c-koshien: #c8860d;
+  --c-intl: #4b3f8f;
+  --c-gadget: #00bcd4;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101114;
+    --panel-bg: #101114;
+    --card: #1a1c20;
+    --card-line: #2a2c31;
+    --ink: #f1f2f4;
+    --ink-soft: #b7bcc4;
+    --ink-faint: #767c86;
+    --shell: #1a1c20;
+    --c-top: #ff6b85;
+    --c-social: #3fd8c9;
+    --c-polecon: #9c8fff;
+    --c-scitech: #ffab5c;
+    --c-business: #4db2ff;
+    --c-sports: #5be0a6;
+    --c-startup: #ff85c2;
+    --c-koshien: #e8b34c;
+    --c-intl: #a89cf0;
+    --c-gadget: #4dd8ea;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101114;
+  --panel-bg: #101114;
+  --card: #1a1c20;
+  --card-line: #2a2c31;
+  --ink: #f1f2f4;
+  --ink-soft: #b7bcc4;
+  --ink-faint: #767c86;
+  --shell: #1a1c20;
+  --c-top: #ff6b85;
+  --c-social: #3fd8c9;
+  --c-polecon: #9c8fff;
+  --c-scitech: #ffab5c;
+  --c-business: #4db2ff;
+  --c-sports: #5be0a6;
+  --c-startup: #ff85c2;
+  --c-koshien: #e8b34c;
+  --c-intl: #a89cf0;
+  --c-gadget: #4dd8ea;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--shell);
+  color: var(--ink);
+  font-family: "Zen Kaku Gothic New", -apple-system, "Hiragino Kaku Gothic ProN", sans-serif;
+  line-height: 1.7;
+  overscroll-behavior-y: none;
+}
+.serif { font-family: "Zen Old Mincho", "Hiragino Mincho ProN", serif; }
+
+.app {
+  max-width: 680px;
+  margin: 0 auto;
+  background: var(--bg);
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ---- Header ---- */
+.topbar { padding: 20px 20px 0; flex-shrink: 0; }
+.title-line { display: flex; align-items: center; gap: 8px; }
+.mascot { height: 50px; width: auto; flex-shrink: 0; border-radius: 8px; }
+.title-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  margin-bottom: 14px;
+}
+.title-row h1 {
+  font-family: "Baloo 2", "Zen Kaku Gothic New", sans-serif;
+  font-size: 48px; font-weight: 800; margin: 0; letter-spacing: 0.01em; line-height: 1;
+  -webkit-text-stroke: 2.4px #2b2013;
+  filter: drop-shadow(2px 3px 0 rgba(30,22,12,0.18));
+  background-image:
+    radial-gradient(circle at 22% 30%, #211709 0 7px, transparent 8px),
+    radial-gradient(circle at 68% 65%, #3a2b16 0 9px, transparent 10px),
+    radial-gradient(circle at 45% 88%, #241a0c 0 5px, transparent 6px),
+    radial-gradient(circle at 85% 20%, #2e2211 0 6px, transparent 7px),
+    linear-gradient(135deg, #b8a06e, #967c4c 50%, #6f5a35);
+  background-size: 30px 30px, 41px 41px, 23px 23px, 35px 35px, 100% 100%;
+  background-repeat: repeat, repeat, repeat, repeat, no-repeat;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.title-row .date { font-size: 11.5px; color: var(--ink-faint); white-space: nowrap; font-weight: 500; margin-top: 2px; }
+
+.tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px 3px; }
+.tab {
+  appearance: none; border: none; background: none;
+  font-family: inherit; font-size: 10.5px; font-weight: 700;
+  color: var(--ink-faint);
+  padding: 7px 4px 9px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+  cursor: pointer;
+  border-radius: 10px 10px 0 0;
+  transition: color .2s ease, background .2s ease;
+}
+.tab .dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  margin-right: 5px; background: currentColor; opacity: 0.45; vertical-align: middle;
+}
+.tab::after {
+  content: ""; position: absolute; left: 10px; right: 10px; bottom: 0;
+  height: 3px; border-radius: 3px 3px 0 0; background: transparent; transition: background .2s ease;
+}
+.tab.active { color: var(--tab-color); background: color-mix(in srgb, var(--tab-color) 10%, transparent); }
+.tab.active .dot { opacity: 1; }
+.tab.active::after { background: var(--tab-color); }
+
+/* ---- Swipe viewport ---- */
+.viewport { flex: 1; overflow: hidden; position: relative; touch-action: pan-y; }
+.track {
+  display: flex;
+  height: 100%;
+  width: 1000%;
+  transition: transform .32s cubic-bezier(.22,.61,.36,1);
+  will-change: transform;
+}
+.panel {
+  width: 10%;
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 20px 56px;
+}
+
+.panel-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.panel-head .chip { width: 8px; height: 26px; border-radius: 4px; background: var(--cat-color); flex-shrink: 0; }
+.panel-head h2 { font-size: 20px; font-weight: 700; margin: 0; letter-spacing: 0.02em; color: var(--cat-color); }
+.panel-sub { font-size: 12px; color: var(--ink-faint); margin: 0 0 18px 18px; }
+
+.story {
+  background: var(--card);
+  border: 1px solid var(--card-line);
+  border-left: 4px solid var(--cat-color);
+  border-radius: 12px;
+  padding: 18px 18px 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(20,20,30,0.05);
+}
+.story .kicker {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: "Zen Old Mincho", serif; font-size: 11.5px; font-weight: 700;
+  color: var(--cat-color); margin-bottom: 9px;
+}
+.story h3 { font-size: 16px; font-weight: 700; line-height: 1.55; margin: 0 0 10px; }
+.story .lead { font-size: 14px; color: var(--ink); margin: 0 0 14px; line-height: 1.85; }
+
+.context {
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 10px;
+  padding: 13px 15px;
+  margin: 0 0 12px;
+}
+.context-label {
+  display: block; font-size: 10.5px; font-weight: 700;
+  color: var(--cat-color); letter-spacing: 0.04em; margin-bottom: 6px;
+}
+.context p { font-size: 13px; color: var(--ink-soft); margin: 0; line-height: 1.8; }
+
+.note { font-size: 11.5px; color: var(--ink-faint); font-weight: 500; }
+
+.term-link {
+  color: var(--cat-color);
+  text-decoration: none;
+  border-bottom: 1px dotted color-mix(in srgb, var(--cat-color) 55%, transparent);
+  font-weight: 700;
+}
+
+.meta { font-size: 11px; color: var(--ink-faint); }
+.meta a { color: var(--cat-color); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--cat-color) 40%, transparent); font-weight: 700; }
+
+.closing {
+  margin: 6px 0 0; padding: 16px 18px;
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 12px; font-size: 13px; color: var(--ink-soft); text-align: center;
+}
+.closing .label {
+  display: block; font-family: "Zen Old Mincho", serif; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.2em; color: var(--cat-color); margin-bottom: 8px;
+}
+.colophon { margin: 14px 0 8px; font-size: 10.5px; color: var(--ink-faint); line-height: 1.9; text-align: center; }
+
+@media (max-width: 420px) {
+  .topbar { padding: 16px 14px 0; }
+  .panel { padding: 16px 14px 48px; }
+  .title-row h1 { font-size: 38px; }
+  .mascot { height: 40px; }
+}
+</style>
+</head><body>
+
+
+<div class="app" id="app">
+
+  <div class="topbar">
+    <div class="title-row">
+      <div class="title-line">
+        <img class="mascot" src="mascot.jpg" alt="オオサンショウウオのマスコット">
+        <h1>Yoshi's News</h1>
+      </div>
+      <span class="date">2026年11月13日（金）・第71号</span>
+    </div>
+    <div class="tabs" id="tabs">
+      <button class="tab" id="tab-top" style="--tab-color:var(--c-top)" onclick="goTo(0)"><span class="dot"></span>トップ</button>
+      <button class="tab" id="tab-social" style="--tab-color:var(--c-social)" onclick="goTo(1)"><span class="dot"></span>社会</button>
+      <button class="tab" id="tab-polecon" style="--tab-color:var(--c-polecon)" onclick="goTo(2)"><span class="dot"></span>政治/経済</button>
+      <button class="tab" id="tab-scitech" style="--tab-color:var(--c-scitech)" onclick="goTo(3)"><span class="dot"></span>科学/テック</button>
+      <button class="tab" id="tab-business" style="--tab-color:var(--c-business)" onclick="goTo(4)"><span class="dot"></span>ビジネス</button>
+      <button class="tab" id="tab-startup" style="--tab-color:var(--c-startup)" onclick="goTo(5)"><span class="dot"></span>スタートアップ</button>
+      <button class="tab" id="tab-gadget" style="--tab-color:var(--c-gadget)" onclick="goTo(6)"><span class="dot"></span>ガジェット</button>
+      <button class="tab" id="tab-intl" style="--tab-color:var(--c-intl)" onclick="goTo(7)"><span class="dot"></span>海外</button>
+      <button class="tab" id="tab-sports" style="--tab-color:var(--c-sports)" onclick="goTo(8)"><span class="dot"></span>芸能/スポーツ</button>
+      <button class="tab" id="tab-koshien" style="--tab-color:var(--c-koshien)" onclick="goTo(9)"><span class="dot"></span>高校野球【埼玉】</button>
+    </div>
+  </div>
+
+  <div class="viewport" id="viewport">
+    <div class="track" id="track">
+
+      <section class="panel" id="panel-top" style="--cat-color:var(--c-top)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">トップニュース</h2></div>
+        <p class="panel-sub">今日いちばん知っておきたい2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ テック</span>
+          <h3>エヌビディア取締役会、フアンCEOの解任を検討と報道——株価は時間外で約8%急落</h3>
+          <p class="lead">米エヌビディアの取締役会が、ジェンスン・フアンCEOを解任するかどうかを話し合っていると、米メディアが相次いで報じた。CNNなどによると、米紙ウォール・ストリート・ジャーナルは取締役会が解任に向けて準備を進めていると伝え、ニューヨーク・タイムズは、フアン氏が社内の副社長とも不倫関係にあったと報じた。報道を受けて、エヌビディアの株価は時間外の取引で約8%下がった。同社は、本稿の時点でコメントを出していない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、フアン氏が単なる経営者ではなく、エヌビディアを創業から30年以上率いてきた「顔」だという点にある。中国の情報活動の協力者と疑われる女性との関係が報じられ（11月12日既報）、問題は会社の統治そのものに広がった。解任<span class="note">（＝本人の意思に関係なく、取締役会の決定によってCEOなどの役職から外すこと。本人が自分から辞める「辞任」とは違う）</span>となれば、AI業界でも最大級の出来事になる。報道では、後を継ぐ明確な「ナンバー2」がいないことも指摘されている。エヌビディアはAI関連株の値動きの中心にいるため、日本の半導体株にも影響が及んでいる。</p>
+          </div>
+          <div class="meta"><a href="https://www.cnn.co.jp/tech/35254746.html" target="_blank" rel="noopener">CNN.co.jp</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 社会</span>
+          <h3>無印良品の良品計画、カード番号109万件が流出の可能性——「破棄すべき情報が残っていた」と社長陳謝</h3>
+          <p class="lead">「無印良品」を展開する良品計画は12日、不正アクセスを受けて顧客の情報が流出した可能性があるとして会見を開き、清水智社長が陳謝した。NHKなどによると、2021年7月までに入会したMUJIカードの会員などのクレジットカード番号約109万件が流出した可能性がある。カードの有効期限やセキュリティコードは流出していないという。アプリの会員情報も最大約2726万件が流出した可能性がある。「無印良品ネットストア」は6日から休止していて、再開の見通しは立っていない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「本来は捨てているはずの情報」が流出したという点にある。良品計画は2021年7月にカード番号を保管しない運用に切り替えたが、その後も古い番号を破棄しないまま保管していた。日本経済新聞によると、社長は「カード情報を破棄すべきだった」と述べた。会社は、カードの再発行の手数料を負担し、不正に使われた場合は補償するとしている。脆弱性<span class="note">（＝システムの設計や設定の弱点のこと。攻撃者はこうした弱点を突いて、外部から不正に入り込む）</span>を突かれたとしている。MUJIカードを持っている人は、カード会社からの案内を確認し、身に覚えのない請求がないか明細を見ておきたい。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261112de74880" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+
+        <div class="closing">
+          <span class="label serif">編集後記</span>
+          エヌビディアのトップの解任が検討されていると報じられ、AI業界に大きな波紋が広がっています。国内では無印良品の運営会社が大規模な情報流出の可能性を明らかにし、京都では今季初めて養鶏場で鳥インフルエンザが確認されました。米国ではミシシッピ州の上院選で民主党の勝利が決まりました。良い週末を。
+        </div>
+        <div class="colophon">AIが検索結果をもとに要約・編集しています。詳細は各記事の出典リンクでご確認ください。<br>毎朝5時発行・次号は明日<br><a href="archive.html" style="color:inherit">過去の紙面はこちら</a></div>
+      </section>
+
+      <section class="panel" id="panel-social" style="--cat-color:var(--c-social)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">社会</h2></div>
+        <p class="panel-sub">くらしに関わるニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>京都・亀岡の養鶏場で鳥インフルエンザ——国内の農場で今季初、約20万羽を殺処分へ</h3>
+          <p class="lead">京都府は12日、亀岡市の養鶏場で見つかった鳥インフルエンザについて、遺伝子検査で陽性が確定したと発表した。京都新聞によると、国内の農場での感染の確認は今シーズン初めて。府は、この養鶏場で飼われている約20万羽の殺処分を始め、消毒などの対策を1週間ほどで終える見通しだ。府知事は、鶏肉や卵を食べることによる安全性に問題はないと呼びかけている。農林水産省も緊急の対策会議を開いた。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、鳥インフルエンザが毎年秋から冬にかけて、渡り鳥によって持ち込まれやすいという点にある。高病原性鳥インフルエンザ<span class="note">（＝鶏などの鳥に感染し、高い確率で死なせてしまう強いタイプのインフルエンザのこと。日本では人が鶏肉や卵を食べて感染した例は報告されていない）</span>が農場で見つかると、ほかの農場に広がるのを防ぐため、その農場の鳥はすべて殺処分<span class="note">（＝病気の広がりを止めるために、感染した、または感染のおそれがある家畜をすべて処分すること）</span>される。感染が広がると、卵の値段が上がることがあり、過去にも供給が減って値上がりした年がある。今後、ほかの地域に広がるかが注目される。</p>
+          </div>
+          <div class="meta"><a href="https://www.kyoto-np.co.jp/articles/-/1824637" target="_blank" rel="noopener">京都新聞</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>相次ぐ不正アクセス——「そもそも個人情報を持たない」へ見直す企業も</h3>
+          <p class="lead">本日既報の良品計画のように、企業への不正アクセスによる情報の流出が相次いでいる。NHKは12日の経済番組で、こうした被害を防ぐため、必要のない個人情報をそもそも持たないように仕組みを見直す企業が出ていると伝えた。良品計画の社長も会見で、必要のない情報を持たない仕組みづくりを進めると述べている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「守る」より「持たない」ほうが確実な場合があるという考え方にある。どれだけ守りを固めても、攻撃の手口は次々と新しくなる。最初から持っていない情報は、盗まれることもない。データの最小化<span class="note">（＝サービスに本当に必要な個人情報だけを集め、使い終わったものは早めに消すという考え方のこと。個人情報保護の基本的な原則の一つとされる）</span>は、流出したときの被害を小さくするための有効な方法だ。利用者の側も、使っていないサービスの会員登録を解約したり、パスワードを使い回さないようにしたりすることが、自分を守ることにつながる。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261112de74556" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-polecon" style="--cat-color:var(--c-polecon)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">政治／経済</h2></div>
+        <p class="panel-sub">政治・経済の動き2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 政治</span>
+          <h3>消費税減税法案、今日13日に参院特別委で実質審議入り——首相が出席し3時間の質疑</h3>
+          <p class="lead">食料品の消費税を1%に下げる法案について、参議院の与野党は11日、今日13日に特別委員会を開き、高市首相が出席して実質的な審議を始めることで合意した。時事通信などによると、首相が出席する質疑は3時間の予定だ。立憲民主党の国会対策委員長は、法案を「中身のない張りぼてだ」と批判し、13日以降も首相が何度も委員会に出席するよう求めている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、野党が「首相の出席」を審議入りの条件にしていた（11月10日既報）ことが、ひとまず実現したという点にある。特別委員会<span class="note">（＝特定の重要な法案などを集中して審議するために、国会が臨時に設ける委員会のこと）</span>では、財源や給付の具体的な仕組みなど、首相が本会議で詳しく答えなかった点（11月12日既報）が改めて問われることになる。今の国会の会期末は12月12日で、残り1か月で参院の議論をまとめられるかが焦点だ。</p>
+          </div>
+          <div class="meta"><a href="https://www.jiji.com/jc/article?k=2026111100652&amp;g=pol&amp;m=rss" target="_blank" rel="noopener">時事通信</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 経済</span>
+          <h3>日経平均、429円安で4日ぶり反落——エヌビディアの報道で半導体株に売り</h3>
+          <p class="lead">12日の東京株式市場で日経平均株価は前日より429円23銭安い6万819円36銭で取引を終え、4営業日ぶりに値下がりした。一時は6万1788円まで上がる場面もあったが、午後に売りが優勢になった。本日既報のエヌビディアのCEOの解任をめぐる報道を受けて、AIや半導体の関連株が売られたことが重しとなった。東証株価指数（TOPIX）は小幅に上がった。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、日経平均とTOPIXで動きが分かれた理由にある。日経平均<span class="note">（＝代表的な225社の株価から計算する指数のこと。株価の高い一部の銘柄の影響を強く受ける）</span>は半導体関連など株価の高い銘柄の影響が大きいため、それらが売られると下がりやすい。一方、TOPIX<span class="note">（＝東証プライム市場などに上場する幅広い企業の株価をもとに計算する指数のこと。会社の規模に応じて影響が決まるため、市場全体の動きを表しやすい）</span>は上がっており、市場全体が弱かったわけではない。米国の1社をめぐる報道が、日本の株価にまで影響する時代になっている。</p>
+          </div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/articles/bb2d14cf6895c5afcb4c9d4b62e007c496767d10" target="_blank" rel="noopener">共同通信（Yahoo!ニュース）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-scitech" style="--cat-color:var(--c-scitech)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">科学／テック</h2></div>
+        <p class="panel-sub">研究・技術のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>AMD、新設計「Zen 6」を使ったサーバー向けCPU「第6世代EPYC」の出荷を開始</h3>
+          <p class="lead">米半導体大手のAMDは、新しい設計の「Zen 6」を採用したデータセンター向けのCPU「第6世代EPYC」の出荷を始めたと発表した。GIGAZINEが伝えた。AIの普及でデータセンターの需要が高まる中、AI向けの専用半導体だけでなく、サーバー全体を動かすCPUの性能も重要になっている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、データセンターでは「AI向けの半導体」と「CPU」が役割を分けて働いているという点にある。CPU<span class="note">（＝コンピューターの頭脳にあたる部品のこと。さまざまな計算や処理の指示を出し、システム全体を動かす）</span>はサーバー全体を管理し、AIの重い計算はGPUなどの専用半導体が担う。EPYC<span class="note">（＝AMDがデータセンターやサーバー向けに作っているCPUの製品名のこと。インテルの「Xeon（ジーオン）」と市場を争っている）</span>の新製品は、AIを動かすデータセンターの性能や電力の効率を左右する。本日既報のエヌビディアをめぐる混乱の中で、ほかの半導体大手の動きにも注目が集まっている。</p>
+          </div>
+          <div class="meta"><a href="https://gigazine.net/news/20261111-zen-6-epyc" target="_blank" rel="noopener">GIGAZINE</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>長崎・五島の農場で牛の「ランピースキン病」の感染をまた確認</h3>
+          <p class="lead">長崎県は12日、五島市の農場で、牛の感染症「ランピースキン病」に感染した牛が新たに確認されたと発表した。NHKが伝えた。県は、感染の広がりを防ぐための対策を続けている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、ランピースキン病が牛だけにかかる病気で、人には感染しないという点にある。ランピースキン病<span class="note">（＝牛や水牛がかかるウイルスの病気のこと。皮膚にこぶのようなものができ、乳の量が減るなどの被害が出る。蚊やサシバエなどの虫が広げるとされ、人には感染しない）</span>は、日本では2024年に初めて確認された。牛乳や牛肉の生産に影響が出るおそれがあるため、農家にとっては深刻な問題だ。本日既報の鳥インフルエンザとあわせて、家畜の感染症への警戒が続いている。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261112de74609" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-business" style="--cat-color:var(--c-business)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ビジネス</h2></div>
+        <p class="panel-sub">企業・産業のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>Anthropicの上場、日本でも最大35億ドルを募集——楽天証券・SBI証券など6社で申し込み</h3>
+          <p class="lead">米ナスダックへの上場を予定している米AI企業Anthropic（11月11日既報）は、日本でも株式を募集する。Business Insider Japanなどによると、日本での募集額の上限は35億ドル（約5500億円）の見込みで、みずほ証券などがとりまとめにあたる。日本での申し込みは、みずほ証券、三菱UFJモルガン・スタンレー証券、楽天証券、SBI証券など6社で受け付ける見通しだ。最終的な価格は、投資家の申し込み状況を見て決まる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、海外の企業の上場に、日本の個人投資家も参加できる道が用意されるという点にある。ブックビルディング<span class="note">（＝上場する株の値段を決めるときに、投資家から「この値段ならこれだけ買いたい」という希望を集め、それをもとに最終的な価格を決める方法のこと）</span>で価格が決まるため、人気が高ければ値段は仮の価格の上限近くになる。一方で、上場直後の株価は大きく上下しやすく、リスクもある。AI関連株が揺れている時期だけに（本日既報のエヌビディアの報道など）、慎重な判断が求められる。</p>
+          </div>
+          <div class="meta"><a href="https://www.businessinsider.jp/article/2611-anthropic-ipo-guide/" target="_blank" rel="noopener">Business Insider Japan</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>良品計画、ネットストアの再開は見通し立たず——再開時は全員にパスワード再設定を求める方針</h3>
+          <p class="lead">本日既報の情報流出の問題で、良品計画の「無印良品ネットストア」は6日から休止したまま、再開の見通しが立っていない。会社は、再開するときには、すべての利用者にパスワードの再設定を求める方針だ。テレビ朝日系（ANN）によると、公表が「無印良品週間」の終わった翌日だったことを疑問視する声もあり、社長は「良品週間を意識したものではない」と説明した。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、情報流出が「謝って終わり」ではなく、売り上げや信用にまで長く影響するという点にある。ネット通販が止まると、その間の売り上げを失うだけでなく、客がほかの店に移ってしまうおそれもある。パスワードの再設定<span class="note">（＝流出したかもしれないパスワードを使えなくし、利用者に新しいパスワードを決め直してもらうこと。不正なログインを防ぐための基本的な対策）</span>を全員に求めるのは、安全のための措置だ。ほかのサービスで同じパスワードを使っている人は、そちらも変えておくと安心だ。</p>
+          </div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/articles/c1a965c8f0e0990f149342a465a6260ffb389ed1" target="_blank" rel="noopener">テレビ朝日系（ANN）（Yahoo!ニュース）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-startup" style="--cat-color:var(--c-startup)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">スタートアップ</h2></div>
+        <p class="panel-sub">資金調達・注目トピック2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>飛行船型の「空飛ぶ基地局」を開発するSkySense、1億5000万円を調達</h3>
+          <p class="lead">飛行船の形をした成層圏通信の機体を開発するスタートアップSkySenseは12日、シードラウンドで総額1億5000万円を調達したと発表した。PR TIMESに掲載した発表によると、Archetype Venturesが出資を主導した。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、空の高いところに「基地局」を浮かべるという発想にある。HAPS<span class="note">（＝高高度プラットフォームのこと。地上から約20キロの成層圏に、飛行機や飛行船のような機体を長時間とどめ、携帯電話の電波を届ける「空飛ぶ基地局」として使う技術）</span>は、山間部や離島、災害で地上の基地局が使えなくなった地域にも通信を届けられると期待されている。シードラウンド<span class="note">（＝スタートアップが事業の最初の段階で行う資金調達のこと。製品の試作や、事業の可能性を確かめるための資金に充てることが多い）</span>での調達で、まずは技術の実証を進める段階だ。</p>
+          </div>
+          <div class="meta"><a href="https://prtimes.jp/main/html/rd/p/000000002.000192173.html" target="_blank" rel="noopener">PR TIMES</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>中国の動画生成AI「Sand.ai」、約300億円を調達しユニコーン入り</h3>
+          <p class="lead">中国で動画を生成するAIを開発するSand.aiが、2億ドル（約300億円）を調達し、企業価値が10億ドルを超える「ユニコーン」の仲間入りをしたと、36Kr Japanが伝えた。発表は11月5日。動画生成AIの分野では、米国の大手に加えて中国の新興企業も存在感を高めている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、文章や画像に続いて、「動画」を作るAIの競争が激しくなっているという点にある。動画生成AI<span class="note">（＝文章で指示したり、画像を渡したりするだけで、AIが動画を自動で作る技術のこと。映像制作や広告などでの活用が期待されている）</span>は、大量の計算が必要で開発にお金がかかるため、大きな資金を集められる企業が有利になる。ユニコーン<span class="note">（＝企業価値が10億ドル以上の未上場スタートアップのこと）</span>になったことで、さらに資金を集めやすくなる。世界のベンチャー投資がAIに集中する流れ（11月11日既報）の一つの表れと言える。</p>
+          </div>
+          <div class="meta"><a href="https://36kr.jp/504245/" target="_blank" rel="noopener">36Kr Japan</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-gadget" style="--cat-color:var(--c-gadget)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ガジェット</h2></div>
+        <p class="panel-sub">新製品2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>サムスンとGoogleのAIメガネ、予約開始——価格は395ドルから、iPhoneでも使える</h3>
+          <p class="lead">サムスンが製造し、GoogleのAI「Gemini」を搭載した眼鏡型の端末（11月12日既報）の予約が、米国で12日に始まった。Android Headlinesなどによると、眼鏡ブランドのワービー・パーカーの3つのデザインは395ドルから、韓国のジェントル・モンスターのモデルは449〜489ドル。12月10日から米国と韓国で出荷を始める。1200万画素のカメラとマイク4つを備え、電池は最大9時間もつ。Galaxyだけでなく、PixelやiPhoneとも組み合わせて使える。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、値段とつながるスマホの範囲が、普及のカギを握るという点にある。先行するメタとレイバンのスマートグラスは449ドルからとされ、今回はそれを下回る価格から始まる。iPhoneでも使えるようにしたことで、Androidのスマホを持っていない人にも売れるようになる。度付きレンズ<span class="note">（＝視力を矯正するために、その人の目に合わせて作るレンズのこと。スマートグラスでも、ふだん眼鏡をかけている人が使えるように用意される）</span>にも対応するが、その分、最終的な価格は上がる。日本での発売は、本稿の時点で発表されていない。</p>
+          </div>
+          <div class="meta"><a href="https://www.androidheadlines.com/2026/11/samsungs-smart-glasses-are-here-and-theyre-taking-privacy-more-seriously-than-meta.html" target="_blank" rel="noopener">Android Headlines</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>Google初の紛失防止タグ「Pixel Tag」、国内で12日発売——1個5010円</h3>
+          <p class="lead">Googleが初めて作った紛失防止タグ「Pixel Tag」（11月9日既報）が、国内で12日に発売された。ITmedia Mobileによると、10億台を超える規模の端末が参加する「Find Hub」というネットワークを使って、なくした物の場所を探せる。近くまで来たときは、UWBという通信で正確な方向や距離を調べられる。価格は1個5010円、4個セットが1万6940円。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、紛失防止タグの性能が「どれだけ多くのスマホが探すのを手伝ってくれるか」で決まるという点にある。Find Hub<span class="note">（＝Androidのスマートフォンなどが参加する、なくした物を探すためのGoogleのネットワークのこと。近くを通った他人のスマホがタグの電波を受け取り、その位置を持ち主に知らせる仕組み）</span>に参加する端末が多いほど、遠くでなくした物も見つけやすくなる。AppleのAirTagはiPhoneの網を使うため、Pixel TagはAndroidのスマホを使っている人向けの製品になる。</p>
+          </div>
+          <div class="meta"><a href="https://itmedia.co.jp/mobile/articles/2611/11/news068.html" target="_blank" rel="noopener">ITmedia Mobile</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-intl" style="--cat-color:var(--c-intl)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">海外</h2></div>
+        <p class="panel-sub">国際ニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>ミシシッピ州上院選、民主党のコロム氏が勝利——共和党の地盤で44年ぶり、上院は民主55議席に</h3>
+          <p class="lead">米中間選挙で決着が長引いていたミシシッピ州の上院選（11月8日既報）で、民主党新人のスコット・コロム氏が共和党現職のハイドスミス氏を破り、当選を確実にした。時事通信によると、共和党の地盤である同州で民主党が上院選に勝つのは44年ぶり。これで民主党は定数100の上院で55議席を確実にした。コロム氏は、同州から選ばれる黒人の上院議員としては1881年以来になる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、この勝利が「どれだけ民主党に追い風が吹いたか」を象徴しているという点にある。ミシシッピ州は長く共和党が強い州で、民主党が勝つのは非常に難しいとされてきた。投票日から当選確実<span class="note">（＝開票の途中でも、残りの票を考えると逆転が不可能になったと報道機関が判断すること。正式な当選の確定は、州の選挙管理当局による結果の認定を待つ）</span>までに1週間以上かかったのは、それだけの大接戦だったことを示している。報道によると、上院ではアラスカ州の結果がまだ残っている。</p>
+          </div>
+          <div class="meta"><a href="https://www.jiji.com/jc/article?k=2026111200520&amp;g=int&amp;m=rss" target="_blank" rel="noopener">時事通信</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>米・ロ・ウクライナの高官協議、大規模な捕虜交換で合意——領土問題は難航</h3>
+          <p class="lead">アラブ首長国連邦（UAE）のアブダビで10日と11日に開かれた米国・ロシア・ウクライナの高官による協議で、ロシアとウクライナが大規模な捕虜の交換を行うことで合意した。NHKなどによると、米国のクシュナー氏は「過去最大規模」の交換になると述べたが、人数は明らかにしていない。一方、領土の問題については、クシュナー氏が「最も難しい問題になる」と述べ、ロシア側も強い姿勢を崩していない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、捕虜交換が、戦争を終わらせるための話し合いの「入り口」になりやすいという点にある。捕虜交換<span class="note">（＝戦争で相手に捕らえられた兵士などを、お互いに解放し合うこと。人道的な目的に加え、相手との信頼関係を少しずつ築く手段にもなる）</span>は、比較的合意しやすいテーマで、ここで成果が出たことは前進と言える。ただ、ロシアが占領している地域をどうするかという領土の問題は、双方の主張が大きく食い違っており、和平への道のりはなお遠い。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261112de74517" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-sports" style="--cat-color:var(--c-sports)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">芸能／スポーツ</h2></div>
+        <p class="panel-sub">厳選2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>九州場所5日目、全勝は関脇・熱海富士ただ1人——豊昇龍は3連敗、大の里は4勝目</h3>
+          <p class="lead">大相撲九州場所5日目の12日、関脇・熱海富士は関脇同士の一番で藤ノ川を寄り倒し、ただ1人の5戦全勝とした。NHKによると、横綱・大の里は宇良をはたき込んで4勝1敗とし、1敗で熱海富士を追う11人の中にいる。休場明けの横綱・豊昇龍は前頭の藤青雲に敗れて3連敗となり、2勝3敗となった。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、序盤を終えた時点で、優勝争いの形が見え始めるという点にある。関脇<span class="note">（＝大関のすぐ下の地位のこと。小結とあわせて「三役」と呼ばれ、ここで好成績を続けると大関への昇進が見えてくる）</span>の熱海富士が全勝を続ければ、優勝だけでなく大関への昇進の話にもつながる。大の里の取り口については、引く相撲に専門家から苦言も出ている。一方、豊昇龍は序盤で3つの黒星を重ね、後半の巻き返しが求められる。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261112de74742" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>FA戦線、広島の森下に複数球団——広島は「宣言残留」を認める方針</h3>
+          <p class="lead">交渉が解禁されたFA宣言選手（11月12日既報）のうち、広島の森下暢仁投手には複数の球団が獲得に動いていると報じられている。スポーツ報知などによると、巨人、DeNA、ソフトバンクの名前が挙がっている。森下投手本人は交渉について「進展はまだない」と話している。一方、デイリースポーツによると、広島は森下、床田、坂倉の3選手について、FA宣言した上で残る「宣言残留」を認める方針を示している。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、球団によって「宣言残留」を認めるかどうかの方針が違うという点にある。宣言残留<span class="note">（＝FA権を使って他球団とも交渉した上で、最終的に元の球団と再契約して残ること）</span>を認めない球団では、宣言した時点で事実上の「お別れ」になる。広島が認めたことで、3人は他球団の条件と比べながら、残留も選べる立場になった。報道されている球団の動きは、まだ正式な発表ではない点に注意が必要だ。</p>
+          </div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/articles/d4653b36abf02af8f0fdf8563338c64f2e5b55fc" target="_blank" rel="noopener">スポーツ報知（Yahoo!ニュース）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-koshien" style="--cat-color:var(--c-koshien)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">高校野球【埼玉】</h2></div>
+        <p class="panel-sub">4地区選抜交流戦2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>埼玉4地区選抜チーム交流戦、21・22日にUDトラックス上尾スタジアムで</h3>
+          <p class="lead">埼玉県高野連によると、第5回埼玉県高校野球4地区選抜チーム交流戦が、21日（土）と22日（日）にUDトラックス上尾スタジアムで開かれる。県内を東西南北の4地区に分け、各地区25人ずつ、計100人の選手が出場する（11月11日既報）。各地区の選抜チームは、1つの学校から1人ずつ選ばれた選手で作られている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「1校から1人」という選び方にある。強い学校から何人も選ぶのではなく、各校から1人ずつ選ぶことで、ふだんは目立つ機会の少ない学校の選手にも活躍の場ができる。選抜チーム<span class="note">（＝いくつもの学校から選ばれた選手で作る、その大会のためだけのチームのこと）</span>では、他校の選手と一緒に練習し、試合をすることで、新しい技術や考え方に触れられる。12月から始まる対外試合禁止の期間（11月12日既報）を前に、今年最後の大きな舞台になる。</p>
+          </div>
+          <div class="meta"><a href="https://www.hb-nippon.com/articles/18896" target="_blank" rel="noopener">高校野球ドットコム</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>交流戦では小学生向けの野球体験も——高校生が子どもに野球の楽しさを伝える</h3>
+          <p class="lead">本日既報の4地区選抜チーム交流戦では、第1試合と第2試合の間に、小学生を対象にした野球体験が行われる。埼玉県高野連のホームページで参加者を募集していた。申し込みの期限は11月8日までとされていた。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、野球をする子どもが減っていることへの危機感にある。少子化に加えて、サッカーやバスケットボールなどほかのスポーツの人気も高まり、野球チームに入る小学生は減る傾向にあるとされる。野球人口<span class="note">（＝野球を実際にプレーしている人の数のこと。将来の高校野球やプロ野球の土台になる）</span>を守るため、高校野球の側からも子どもたちに野球の楽しさを伝える取り組みが各地で行われている。憧れの高校生と一緒に体を動かす経験は、子どもたちが野球を始めるきっかけになる。</p>
+          </div>
+          <div class="meta"><a href="http://www2.ttcn.ne.jp/sai-kouyaren/" target="_blank" rel="noopener">埼玉県高等学校野球連盟</a></div>
+        </article>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var cats = ['top','social','polecon','scitech','business','startup','gadget','intl','sports','koshien'];
+  var idx = 0;
+  var track = document.getElementById('track');
+  var viewport = document.getElementById('viewport');
+  var vw = viewport.clientWidth;
+
+  function setActive(i){
+    cats.forEach(function(c, j){
+      document.getElementById('tab-' + c).classList.toggle('active', j === i);
+    });
+    var activeTab = document.getElementById('tab-' + cats[i]);
+    if (activeTab && activeTab.scrollIntoView) activeTab.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+  }
+
+  function settle(i, animate){
+    idx = Math.max(0, Math.min(cats.length - 1, i));
+    track.style.transition = animate ? 'transform .32s cubic-bezier(.22,.61,.36,1)' : 'none';
+    track.style.transform = 'translateX(' + (-idx * vw) + 'px)';
+    setActive(idx);
+  }
+
+  window.goTo = function(i){ settle(i, true); };
+
+  window.addEventListener('resize', function(){
+    vw = viewport.clientWidth;
+    settle(idx, false);
+  });
+
+  var dragging = false, decided = null, sx = 0, sy = 0, dx = 0;
+  viewport.addEventListener('touchstart', function(e){
+    dragging = true; decided = null;
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY; dx = 0;
+    track.style.transition = 'none';
+  }, { passive: true });
+
+  viewport.addEventListener('touchmove', function(e){
+    if (!dragging) return;
+    var cx = e.touches[0].clientX, cy = e.touches[0].clientY;
+    var mdx = cx - sx, mdy = cy - sy;
+    if (decided === null) {
+      if (Math.abs(mdx) > 8 || Math.abs(mdy) > 8) {
+        decided = Math.abs(mdx) > Math.abs(mdy) ? 'x' : 'y';
+      }
+    }
+    if (decided === 'x') {
+      e.preventDefault();
+      dx = mdx;
+      var atStart = idx === 0 && dx > 0;
+      var atEnd = idx === cats.length - 1 && dx < 0;
+      var eased = (atStart || atEnd) ? dx * 0.35 : dx;
+      track.style.transform = 'translateX(' + (-idx * vw + eased) + 'px)';
+    }
+  }, { passive: false });
+
+  viewport.addEventListener('touchend', function(){
+    if (!dragging) return;
+    dragging = false;
+    if (decided === 'x') {
+      var threshold = vw * 0.18;
+      if (dx <= -threshold) settle(idx + 1, true);
+      else if (dx >= threshold) settle(idx - 1, true);
+      else settle(idx, true);
+    }
+    decided = null; dx = 0;
+  });
+
+  settle(0, false);
+})();
+</script>
+
+</body></html>
