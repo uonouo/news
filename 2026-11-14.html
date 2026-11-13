@@ -1,0 +1,610 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yoshi's News</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Zen+Old+Mincho:wght@600;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap');
+
+:root {
+  --bg: #ffffff;
+  --panel-bg: #ffffff;
+  --card: #ffffff;
+  --card-line: #eef0f3;
+  --ink: #1a1c20;
+  --ink-soft: #5b6068;
+  --ink-faint: #9aa0a8;
+  --shell: #f4f5f7;
+
+  --c-top: #ef3355;
+  --c-social: #00b3a4;
+  --c-polecon: #6d5bf0;
+  --c-scitech: #ff8a1e;
+  --c-business: #0091ff;
+  --c-sports: #26c281;
+  --c-startup: #ff4fa3;
+  --c-koshien: #c8860d;
+  --c-intl: #4b3f8f;
+  --c-gadget: #00bcd4;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101114;
+    --panel-bg: #101114;
+    --card: #1a1c20;
+    --card-line: #2a2c31;
+    --ink: #f1f2f4;
+    --ink-soft: #b7bcc4;
+    --ink-faint: #767c86;
+    --shell: #1a1c20;
+    --c-top: #ff6b85;
+    --c-social: #3fd8c9;
+    --c-polecon: #9c8fff;
+    --c-scitech: #ffab5c;
+    --c-business: #4db2ff;
+    --c-sports: #5be0a6;
+    --c-startup: #ff85c2;
+    --c-koshien: #e8b34c;
+    --c-intl: #a89cf0;
+    --c-gadget: #4dd8ea;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101114;
+  --panel-bg: #101114;
+  --card: #1a1c20;
+  --card-line: #2a2c31;
+  --ink: #f1f2f4;
+  --ink-soft: #b7bcc4;
+  --ink-faint: #767c86;
+  --shell: #1a1c20;
+  --c-top: #ff6b85;
+  --c-social: #3fd8c9;
+  --c-polecon: #9c8fff;
+  --c-scitech: #ffab5c;
+  --c-business: #4db2ff;
+  --c-sports: #5be0a6;
+  --c-startup: #ff85c2;
+  --c-koshien: #e8b34c;
+  --c-intl: #a89cf0;
+  --c-gadget: #4dd8ea;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--shell);
+  color: var(--ink);
+  font-family: "Zen Kaku Gothic New", -apple-system, "Hiragino Kaku Gothic ProN", sans-serif;
+  line-height: 1.7;
+  overscroll-behavior-y: none;
+}
+.serif { font-family: "Zen Old Mincho", "Hiragino Mincho ProN", serif; }
+
+.app {
+  max-width: 680px;
+  margin: 0 auto;
+  background: var(--bg);
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ---- Header ---- */
+.topbar { padding: 20px 20px 0; flex-shrink: 0; }
+.title-line { display: flex; align-items: center; gap: 8px; }
+.mascot { height: 50px; width: auto; flex-shrink: 0; border-radius: 8px; }
+.title-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  margin-bottom: 14px;
+}
+.title-row h1 {
+  font-family: "Baloo 2", "Zen Kaku Gothic New", sans-serif;
+  font-size: 48px; font-weight: 800; margin: 0; letter-spacing: 0.01em; line-height: 1;
+  -webkit-text-stroke: 2.4px #2b2013;
+  filter: drop-shadow(2px 3px 0 rgba(30,22,12,0.18));
+  background-image:
+    radial-gradient(circle at 22% 30%, #211709 0 7px, transparent 8px),
+    radial-gradient(circle at 68% 65%, #3a2b16 0 9px, transparent 10px),
+    radial-gradient(circle at 45% 88%, #241a0c 0 5px, transparent 6px),
+    radial-gradient(circle at 85% 20%, #2e2211 0 6px, transparent 7px),
+    linear-gradient(135deg, #b8a06e, #967c4c 50%, #6f5a35);
+  background-size: 30px 30px, 41px 41px, 23px 23px, 35px 35px, 100% 100%;
+  background-repeat: repeat, repeat, repeat, repeat, no-repeat;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.title-row .date { font-size: 11.5px; color: var(--ink-faint); white-space: nowrap; font-weight: 500; margin-top: 2px; }
+
+.tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px 3px; }
+.tab {
+  appearance: none; border: none; background: none;
+  font-family: inherit; font-size: 10.5px; font-weight: 700;
+  color: var(--ink-faint);
+  padding: 7px 4px 9px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+  cursor: pointer;
+  border-radius: 10px 10px 0 0;
+  transition: color .2s ease, background .2s ease;
+}
+.tab .dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  margin-right: 5px; background: currentColor; opacity: 0.45; vertical-align: middle;
+}
+.tab::after {
+  content: ""; position: absolute; left: 10px; right: 10px; bottom: 0;
+  height: 3px; border-radius: 3px 3px 0 0; background: transparent; transition: background .2s ease;
+}
+.tab.active { color: var(--tab-color); background: color-mix(in srgb, var(--tab-color) 10%, transparent); }
+.tab.active .dot { opacity: 1; }
+.tab.active::after { background: var(--tab-color); }
+
+/* ---- Swipe viewport ---- */
+.viewport { flex: 1; overflow: hidden; position: relative; touch-action: pan-y; }
+.track {
+  display: flex;
+  height: 100%;
+  width: 1000%;
+  transition: transform .32s cubic-bezier(.22,.61,.36,1);
+  will-change: transform;
+}
+.panel {
+  width: 10%;
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 20px 56px;
+}
+
+.panel-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.panel-head .chip { width: 8px; height: 26px; border-radius: 4px; background: var(--cat-color); flex-shrink: 0; }
+.panel-head h2 { font-size: 20px; font-weight: 700; margin: 0; letter-spacing: 0.02em; color: var(--cat-color); }
+.panel-sub { font-size: 12px; color: var(--ink-faint); margin: 0 0 18px 18px; }
+
+.story {
+  background: var(--card);
+  border: 1px solid var(--card-line);
+  border-left: 4px solid var(--cat-color);
+  border-radius: 12px;
+  padding: 18px 18px 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(20,20,30,0.05);
+}
+.story .kicker {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: "Zen Old Mincho", serif; font-size: 11.5px; font-weight: 700;
+  color: var(--cat-color); margin-bottom: 9px;
+}
+.story h3 { font-size: 16px; font-weight: 700; line-height: 1.55; margin: 0 0 10px; }
+.story .lead { font-size: 14px; color: var(--ink); margin: 0 0 14px; line-height: 1.85; }
+
+.context {
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 10px;
+  padding: 13px 15px;
+  margin: 0 0 12px;
+}
+.context-label {
+  display: block; font-size: 10.5px; font-weight: 700;
+  color: var(--cat-color); letter-spacing: 0.04em; margin-bottom: 6px;
+}
+.context p { font-size: 13px; color: var(--ink-soft); margin: 0; line-height: 1.8; }
+
+.note { font-size: 11.5px; color: var(--ink-faint); font-weight: 500; }
+
+.term-link {
+  color: var(--cat-color);
+  text-decoration: none;
+  border-bottom: 1px dotted color-mix(in srgb, var(--cat-color) 55%, transparent);
+  font-weight: 700;
+}
+
+.meta { font-size: 11px; color: var(--ink-faint); }
+.meta a { color: var(--cat-color); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--cat-color) 40%, transparent); font-weight: 700; }
+
+.closing {
+  margin: 6px 0 0; padding: 16px 18px;
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 12px; font-size: 13px; color: var(--ink-soft); text-align: center;
+}
+.closing .label {
+  display: block; font-family: "Zen Old Mincho", serif; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.2em; color: var(--cat-color); margin-bottom: 8px;
+}
+.colophon { margin: 14px 0 8px; font-size: 10.5px; color: var(--ink-faint); line-height: 1.9; text-align: center; }
+
+@media (max-width: 420px) {
+  .topbar { padding: 16px 14px 0; }
+  .panel { padding: 16px 14px 48px; }
+  .title-row h1 { font-size: 38px; }
+  .mascot { height: 40px; }
+}
+</style>
+</head><body>
+
+
+<div class="app" id="app">
+
+  <div class="topbar">
+    <div class="title-row">
+      <div class="title-line">
+        <img class="mascot" src="mascot.jpg" alt="オオサンショウウオのマスコット">
+        <h1>Yoshi's News</h1>
+      </div>
+      <span class="date">2026年11月14日（土）・第72号</span>
+    </div>
+    <div class="tabs" id="tabs">
+      <button class="tab" id="tab-top" style="--tab-color:var(--c-top)" onclick="goTo(0)"><span class="dot"></span>トップ</button>
+      <button class="tab" id="tab-social" style="--tab-color:var(--c-social)" onclick="goTo(1)"><span class="dot"></span>社会</button>
+      <button class="tab" id="tab-polecon" style="--tab-color:var(--c-polecon)" onclick="goTo(2)"><span class="dot"></span>政治/経済</button>
+      <button class="tab" id="tab-scitech" style="--tab-color:var(--c-scitech)" onclick="goTo(3)"><span class="dot"></span>科学/テック</button>
+      <button class="tab" id="tab-business" style="--tab-color:var(--c-business)" onclick="goTo(4)"><span class="dot"></span>ビジネス</button>
+      <button class="tab" id="tab-startup" style="--tab-color:var(--c-startup)" onclick="goTo(5)"><span class="dot"></span>スタートアップ</button>
+      <button class="tab" id="tab-gadget" style="--tab-color:var(--c-gadget)" onclick="goTo(6)"><span class="dot"></span>ガジェット</button>
+      <button class="tab" id="tab-intl" style="--tab-color:var(--c-intl)" onclick="goTo(7)"><span class="dot"></span>海外</button>
+      <button class="tab" id="tab-sports" style="--tab-color:var(--c-sports)" onclick="goTo(8)"><span class="dot"></span>芸能/スポーツ</button>
+      <button class="tab" id="tab-koshien" style="--tab-color:var(--c-koshien)" onclick="goTo(9)"><span class="dot"></span>高校野球【埼玉】</button>
+    </div>
+  </div>
+
+  <div class="viewport" id="viewport">
+    <div class="track" id="track">
+
+      <section class="panel" id="panel-top" style="--cat-color:var(--c-top)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">トップニュース</h2></div>
+        <p class="panel-sub">今日いちばん知っておきたい2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ テック</span>
+          <h3>エヌビディアのフアンCEOが辞任——創業から33年、暫定CEOにクレスCFO</h3>
+          <p class="lead">米半導体大手エヌビディアは米国時間12日、創業者のジェンスン・フアン氏が社長兼CEOと取締役を即日辞任したと発表した。日本経済新聞によると、最高財務責任者（CFO）のコレット・クレス氏が暫定CEOに就き、取締役会が正式な後任を選ぶ。米証券取引委員会（SEC）に出した書類では、取締役会は11日に辞任を受け入れた。会社は辞任の理由を明らかにしていないが、報道では、中国のスパイと疑われる女性との不倫や、社内の幹部との不倫が背景にあるとされる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、わずか数日で事態が一気に進んだという点にある。疑惑の報道（11月12日既報）から、取締役会が解任を検討しているとの報道（11月13日既報）を経て、辞任の発表に至った。日本経済新聞は、事実上の解任で幕引きを急いだと伝えている。フアン氏は1993年の創業からエヌビディアを率い、ゲーム用の半導体の会社を、AIブームを支える世界最大級の企業に育てた。CFO<span class="note">（＝最高財務責任者のこと。会社のお金の管理や資金調達、投資家への説明などを担う役員）</span>が暫定的に経営を担うのは、混乱を最小限に抑えるためだ。暫定CEO<span class="note">（＝正式な後任が決まるまでの間、一時的にCEOの役割を担う人のこと）</span>のもとで、誰を正式な後継者に選ぶかが焦点になる。</p>
+          </div>
+          <div class="meta"><a href="https://www.nikkei.com/article/DGXZQOGN121U30S6A111C2000000/" target="_blank" rel="noopener">日本経済新聞</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 経済</span>
+          <h3>円相場、一時1ドル＝160円台に——約2か月ぶりの円安、財務相「一方的に急激な動き」</h3>
+          <p class="lead">12日のニューヨーク外国為替市場で円を売ってドルを買う動きが進み、円相場は一時1ドル＝160円台まで値下がりした。NHKによると、およそ2か月ぶりの円安の水準。米国の10月の消費者物価指数が予想を上回り、米国の利上げの観測が強まったことが背景にある。片山財務大臣は「足元で一方的に急激な動きが見られる」と述べ、米国の財務省と連携して対応する考えを示した。13日の東京市場では、政府・日銀による介入への警戒から159円台に押し戻される場面もあった。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「160円」が市場で特別に意識される水準だという点にある。今年、政府・日銀は円安を止めるために過去最大の円買い介入を行っており（11月10日既報）、その際にも160円前後が節目になっていた。日米の金利差<span class="note">（＝日本と米国の金利の違いのこと。米国の金利のほうが高いと、お金をドルで持つほうが得になるため、円が売られてドルが買われやすい）</span>が広がると、円安が進みやすい。財務大臣が「一方的に急激な動き」という言葉を使うのは、介入に踏み切る可能性をにおわせる口先介入<span class="note">（＝実際に介入する前に、政府の高官が発言によって市場をけん制し、行き過ぎた動きを抑えようとすること）</span>とも受け止められている。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261113de75110" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+
+        <div class="closing">
+          <span class="label serif">編集後記</span>
+          AIブームの象徴だったエヌビディアのフアン氏が、33年率いた会社を去ることになりました。円相場は一時160円台まで下がり、政府は警戒を強めています。仕事で使うMicrosoft 365の大規模な障害や、大手家電量販店・大阪市での情報流出も相次ぎました。来週はエヌビディアの決算と、Anthropicの上場が控えます。良い週末を。
+        </div>
+        <div class="colophon">AIが検索結果をもとに要約・編集しています。詳細は各記事の出典リンクでご確認ください。<br>毎朝5時発行・次号は明日<br><a href="archive.html" style="color:inherit">過去の紙面はこちら</a></div>
+      </section>
+
+      <section class="panel" id="panel-social" style="--cat-color:var(--c-social)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">社会</h2></div>
+        <p class="panel-sub">くらしに関わるニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>ヤマダデンキで最大350万件、大阪市でメール100万件余り——情報流出が相次ぐ</h3>
+          <p class="lead">家電量販店のヤマダデンキは13日、リフォームの管理システムが不正アクセスを受け、最大で350万件の情報が影響を受けた可能性があると発表した。NHKによると、氏名や住所、電話番号、リフォームを行った履歴などが含まれる。また大阪市は同じ日、オンライン申請のシステムに関わる外部のサービスが不正アクセスを受け、市民などのメールアドレス100万件余りが漏れたと明らかにした。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、企業だけでなく自治体からも情報の流出が続いているという点にある。前日には無印良品の良品計画も大規模な流出の可能性を公表したばかりだ（11月13日既報）。大阪市の件は、市のシステムそのものではなく、委託先などの外部サービスが狙われたものだ。サプライチェーン攻撃<span class="note">（＝狙った組織を直接攻撃するのではなく、取引先や委託先など、守りの弱いところから入り込んで情報を盗む攻撃のこと）</span>と呼ばれる手口は、近年増えている。流出したメールアドレスには、本物そっくりの偽メール（フィッシングメール）が届くおそれがあるため、メール内のリンクを安易に開かないよう注意したい。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261113de75739" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>神奈川・海老名で女性2人がひき逃げされ死亡——逃げたとみられるトラックを相模原で発見</h3>
+          <p class="lead">13日午後、神奈川県海老名市の交差点で、女性2人がトラックにはねられて死亡した。トラックはそのまま走り去り、警察がひき逃げ事件として捜査している。NHKによると、警察は逃走したとみられるトラックを相模原市内で見つけた。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、事故を起こした後に「逃げる」ことが、事故そのものとは別の重い罪になるという点にある。ひき逃げ<span class="note">（＝車で人をはねた後、けが人を助けたり警察に知らせたりせずに、その場から立ち去ること。道路交通法の救護義務違反などにあたり、重い罰が科される）</span>は、すぐに救護されていれば助かった命が失われることもあるため、厳しく罰せられる。事故を起こしたり目撃したりしたときは、まずけが人を助け、119番と110番に通報することが大切だ。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261113de75522" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-polecon" style="--cat-color:var(--c-polecon)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">政治／経済</h2></div>
+        <p class="panel-sub">政治・経済の動き2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 政治</span>
+          <h3>減税の「支援金」、働く人の5割以上を対象に——高市首相表明、子2人世帯で最大年6万円</h3>
+          <p class="lead">食料品の消費税を1%に下げる法案の審議が、13日に参議院の特別委員会で始まった。nippon.comなどによると、高市首相は、公明党議員の質問に答えて、法案に盛り込まれた所得に応じた支援金について、現役で働く人の5割以上が対象になるよう、所得の上限を検討すると述べた。これまで政府が示していた「3割以上」から大きく広げる形だ。2027年度に始める際の額は、夫婦と子ども2人の世帯で最大年6万円とする方向で検討しているという。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、首相が公明党の質問に答える形で、対象を広げる考えを示したという点にある。与党は参院で過半数を持たず、法案を成立させるには公明党や国民民主党などの協力が必要だ（11月12日既報）。所得の上限<span class="note">（＝支援金を受け取れる人の年収の上限のこと。上限を上げるほど対象になる人が増えるが、その分、必要なお金も増える）</span>を引き上げることは、野党側の求めに歩み寄る姿勢とも受け止められる。一方で、対象が広がれば財源の問題はさらに大きくなり、引き続き論点になりそうだ。</p>
+          </div>
+          <div class="meta"><a href="https://www.nippon.com/ja/articles/-/57392" target="_blank" rel="noopener">nippon.com</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 経済</span>
+          <h3>日経平均、322円高で反発——一時1000円超上げるも、週末前に伸び悩む</h3>
+          <p class="lead">13日の東京株式市場で日経平均株価は前日より322円99銭高い6万1142円35銭で取引を終え、2営業日ぶりに値上がりした。読売新聞によると、前日にエヌビディアをめぐる報道で売られた半導体関連の株を買い戻す動きが出て、一時は1000円を超えて上がった。ただ、週末を前に利益を確定する売りが出て、上げ幅は縮まった。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「悪い知らせが出尽くした」と受け止められると、株価が戻ることがあるという点にある。CEOの解任をめぐる不透明な状態が、辞任の発表で一つの区切りを迎えたことで、買い戻しが入った。利益確定売り<span class="note">（＝値上がりした株を売って、利益を実際に手に入れること。週末や大型連休の前には、休みの間に何が起きても困らないよう、こうした売りが出やすい）</span>が出たことで、上げ幅は縮まった。来週はエヌビディアの決算などが控えており、半導体株の値動きはなお大きくなりそうだ。</p>
+          </div>
+          <div class="meta"><a href="https://news.infoseek.co.jp/article/yomiuri_20261113_gyt1t00365/" target="_blank" rel="noopener">読売新聞（Infoseekニュース）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-scitech" style="--cat-color:var(--c-scitech)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">科学／テック</h2></div>
+        <p class="panel-sub">研究・技術のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>Microsoft 365で大規模障害——Outlook・Teams・Copilotが使えず、多数のサーバーが応答不能に</h3>
+          <p class="lead">米マイクロソフトのMicrosoft 365で米国時間12日、大規模な障害が起き、メールのOutlookや会議・チャットのTeams、AIアシスタントのCopilotなど複数のサービスが使えなくなった。ITmediaなどによると、多数のサーバーが自動の正常性チェックに失敗して応答しなくなったことが直接の原因で、直前の設定の変更が影響した可能性があるとされる。マイクロソフトは、サイバー攻撃によるものとの情報はないとしている。NHKによると、日本では比較的安定した状態が続いた。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、多くの会社の仕事が、一つの会社のクラウドサービスに頼っているという点にある。クラウド<span class="note">（＝自分のパソコンや社内のサーバーではなく、インターネットの向こうにある事業者のコンピューターでソフトやデータを使う仕組みのこと）</span>は便利な反面、提供する会社で障害が起きると、世界中の利用者が一斉に影響を受ける。報道によると、OpenAIやAnthropicのAIがMicrosoft 365とつながる機能にも影響が出た。正常性チェック<span class="note">（＝サーバーが正しく動いているかを自動で確かめる仕組みのこと。異常と判断されたサーバーは切り離される）</span>が一斉に失敗すると、残ったサーバーに負荷が集中し、障害が広がることがある。</p>
+          </div>
+          <div class="meta"><a href="https://www.itmedia.co.jp/news/article/2611/13/2000003161/" target="_blank" rel="noopener">ITmedia NEWS</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>フアン氏の後を誰が継ぐか——「ナンバー2不在」がAI業界を揺さぶる</h3>
+          <p class="lead">本日既報のフアン氏の辞任を受けて、エヌビディアの後継者選びに注目が集まっている。Forbes JAPANなどは、同社にはフアン氏の後を継ぐ明確な「ナンバー2」がいないと伝えている。エヌビディアのAI向け半導体は世界中のAI開発を支えており、経営の行方はAI業界全体に関わる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、創業者が長く率いてきた会社ほど、トップが急にいなくなったときの混乱が大きいという点にある。フアン氏は、技術の方向性から大口の顧客との交渉まで、多くを自ら決めてきたとされる。後継者計画<span class="note">（＝トップが辞めたり倒れたりしたときに備えて、次のリーダー候補を前もって育てておく計画のこと。サクセッションプランとも呼ばれる）</span>が十分でないと、会社の方針がぶれるおそれがある。エヌビディアの製品を使うGoogle、Microsoft、Amazon、そして本日既報のAnthropicなどのAI企業にとっても、無視できない問題だ。</p>
+          </div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/articles/ae1d1978ecb397a545c36ed31ceefd6bcb2068e1" target="_blank" rel="noopener">Forbes JAPAN（Yahoo!ニュース）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-business" style="--cat-color:var(--c-business)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ビジネス</h2></div>
+        <p class="panel-sub">企業・産業のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>エヌビディア暫定CEOのクレス氏とは——財務を長く担ってきたCFO</h3>
+          <p class="lead">本日既報のとおり、エヌビディアの暫定CEOには、最高財務責任者（CFO）のコレット・クレス氏が就いた。CNNによると、クレス氏は長年にわたってエヌビディアのお金の面を担い、投資家への業績の説明などでも同社の顔の一人として知られてきた。正式な後任が決まるまで、CFOの役割を兼ねながら会社を率いる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、CFOが暫定トップに選ばれることの意味にある。CFOは会社の数字や投資家との関係を最もよく知る立場にあり、混乱した時期に株主や取引先を落ち着かせる役割を期待される。決算説明会<span class="note">（＝上場企業が決算を発表した後、投資家やアナリストに向けて業績や今後の見通しを説明する会のこと）</span>で毎回説明してきたクレス氏は、市場からの信頼もある人物だ。来週17日に予定される決算の発表は、クレス氏が暫定CEOとして迎える最初の大きな場になる。</p>
+          </div>
+          <div class="meta"><a href="https://www.cnn.co.jp/business/35254819.html" target="_blank" rel="noopener">CNN.co.jp</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>来週の焦点はエヌビディア決算とAnthropic上場——AI株の行方を左右</h3>
+          <p class="lead">Bloombergは、来週の日本株について、AI関連の銘柄を中心に不安定な動きが続くとみている。エヌビディアは17日（米国時間）に8〜10月期の決算を発表する予定で、トップ交代の直後の決算となる。また、Anthropicの上場（11月11日既報）も相場の方向を左右しそうだと伝えている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、エヌビディアの決算が、AIブームが続いているかどうかを測る「体温計」のような役割を持っているという点にある。エヌビディアの売り上げは、世界のIT大手がどれだけAIに投資しているかを映す。決算の内容が良ければAI関連株全体の追い風に、悪ければ逆風になる。米国の決算は日本時間の早朝に発表されることが多く、その日の東京市場の値動きに直接響く。Anthropicの上場の値決めは、AI企業への投資家の期待の強さを示す試金石<span class="note">（＝物事の価値や実力を確かめるきっかけになるもののこと）</span>になる。</p>
+          </div>
+          <div class="meta"><a href="https://www.bloomberg.com/jp/news/articles/2026-11-13/TOF4T2KJH6V900" target="_blank" rel="noopener">Bloomberg</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-startup" style="--cat-color:var(--c-startup)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">スタートアップ</h2></div>
+        <p class="panel-sub">資金調達・注目トピック2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>月極駐車場のネット契約「Park Direct」のニーリー、シリーズCで60億円を調達</h3>
+          <p class="lead">月極駐車場をネットで探して契約できるサービス「Park Direct」を運営するニーリーは、米投資会社のInsight Partnersが主導するシリーズCで、総額60億円を調達したと発表した。開示情報をまとめるkaijiwireが、11月2日から8日の週に資金調達を発表した16社の一つとして伝えた。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、月極駐車場の契約が、今も「紙と電話」中心の古い仕組みで行われていることが多いという点にある。不動産会社に連絡し、書類に記入して、契約するまでに何日もかかるのが一般的だった。こうした業界の手作業を、ITで置き換えるサービスは「バーティカルSaaS」<span class="note">（＝特定の業界に特化して、その業界ならではの業務をクラウドで効率化するサービスのこと。幅広い業界で使える会計ソフトなどとは違い、一つの業界を深く支える）</span>と呼ばれ、投資家の注目を集めている。海外の大手投資会社が主導したことは、成長性が評価された表れと言える。</p>
+          </div>
+          <div class="meta"><a href="https://kaijiwire.jp/journal/2026-11-02-rdx5vw" target="_blank" rel="noopener">kaijiwire</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>図面管理「ズメーン」のFact Base、シリーズDで45億円を調達</h3>
+          <p class="lead">同じ週には、製造業の図面を管理するクラウドサービス「ズメーン」を運営するFact Baseも、シリーズDで総額45億円の調達を発表した。kaijiwireが伝えた。製造業の現場に眠る大量の図面のデータを、探しやすく使いやすくするサービスだ。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、日本の製造業にとって「図面」が大切な財産だという点にある。部品や製品を作るための図面は、何十年分も紙やばらばらのファイルで保管されていることが多く、必要なときに探し出すのに時間がかかる。こうした図面をデータにして整理すれば、過去の設計を生かしたり、見積もりを早く出したりできる。シリーズD<span class="note">（＝スタートアップの資金調達の段階のうち、事業がある程度大きくなり、上場なども視野に入れて規模をさらに広げる段階の調達のこと）</span>まで進んだことは、事業が順調に育っていることを示している。</p>
+          </div>
+          <div class="meta"><a href="https://kaijiwire.jp/journal/2026-11-02-rdx5vw" target="_blank" rel="noopener">kaijiwire</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-gadget" style="--cat-color:var(--c-gadget)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ガジェット</h2></div>
+        <p class="panel-sub">新製品2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>ファーウェイ、背面にも画面を持つ折りたたみPC「MateBook Fold S」を14日に中国で予約開始</h3>
+          <p class="lead">中国のファーウェイは、開くと14.7インチの画面になる折りたたみ式のパソコン「MateBook Fold S」を発表し、14日に中国で予約を始める。すまほん!!によると、背面にも小さな画面を備えるのが特徴で、8月に中国で発売した18インチの「MateBook Fold」より小さく、持ち運びやすくなる。価格や日本での発売は、本稿の時点で確認できていない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、スマートフォンで広がった「折りたたみ」の技術が、パソコンにまで広がってきたという点にある。折りたたみ式のディスプレイ<span class="note">（＝曲げられる有機ELの画面を使い、本のように折りたたんで持ち運べるようにした画面のこと）</span>を使えば、開いたときは大きな画面、閉じれば小さく持ち運べる。背面の小さな画面は、閉じたまま時刻や通知を確認するのに使える。ファーウェイは米国の規制で一部の部品やソフトの使用が制限されており、自前の技術で独自の製品づくりを進めている。</p>
+          </div>
+          <div class="meta"><a href="https://smhn.info/202611-huawei-matebook-fold-s-foldable-pc-cover-screen" target="_blank" rel="noopener">すまほん!!</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>Xiaomi 18 Pro、17日夜にグローバル発表——日本では27日発売予定</h3>
+          <p class="lead">中国のXiaomi（シャオミ）は、上位スマートフォン「Xiaomi 18 Pro」のグローバルでの発表を、日本時間17日22時に行うと予告している。ガジェット情報サイトのGGCがまとめた。日本では、背面に小さな画面を持つ「Xiaomi 18 Pro」と「18 Pro Max」が27日に発売される予定と報じられている（11月10日既報）。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、中国で先に発売したモデルを、時期をずらして世界に広げるという中国メーカーのやり方にある。グローバル発表<span class="note">（＝中国以外の世界の市場向けに、製品の仕様や価格を正式に発表すること。中国版と世界版では、使えるサービスや細かい仕様が違うことがある）</span>で、日本を含む各国での価格や仕様が明らかになる見込みだ。本日既報のファーウェイのPCと同じく、「背面にもう一つ画面を付ける」という発想が、中国メーカーの間で広がっている。</p>
+          </div>
+          <div class="meta"><a href="https://ggc-japan.com/daily-gadget-news-20261111/" target="_blank" rel="noopener">GGC</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-intl" style="--cat-color:var(--c-intl)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">海外</h2></div>
+        <p class="panel-sub">国際ニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>COP31首脳会合、英首相が中東情勢を念頭に「化石燃料からの脱却」を訴え</h3>
+          <p class="lead">トルコで開かれている国連の気候変動会議COP31で、2日間の首脳会合（11月12日既報）が開かれた。NHKによると、イギリスの首相は、中東の情勢を念頭に、化石燃料に頼らないエネルギーへの転換を進めるよう訴えた。中国、米国、インドの首脳は欠席している。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「温暖化対策」と「エネルギーの安全保障」が結びついて語られている点にある。イランをめぐる情勢で、原油の通り道であるホルムズ海峡が不安定になると（11月11日既報）、石油やガスの値段が大きく動く。化石燃料<span class="note">（＝石油、石炭、天然ガスなど、大昔の生き物の死がいが長い年月をかけて変化してできた燃料のこと。燃やすと二酸化炭素を出す）</span>への依存を減らせば、温暖化を防ぐだけでなく、海外の紛争に左右されにくい国づくりにもつながる、という考え方だ。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261113de75130" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>米特使、ロシアのプーチン大統領と会談へ——捕虜の釈放へ最終調整</h3>
+          <p class="lead">米国・ロシア・ウクライナの高官協議で大規模な捕虜交換が合意されたこと（11月13日既報）を受けて、米国の特使がロシアのプーチン大統領と会談する見通しになった。東京新聞によると、捕虜の釈放に向けた最終的な調整が行われる。AFPBB Newsは、米国の特使がロシアとウクライナの首脳と相次いで会談すると伝えている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、高官同士で決めたことを、首脳のレベルで確かなものにしようとする動きだという点にある。外交では、実務を担う高官が大枠を話し合い、最終的な判断はそれぞれの国のトップが下すことが多い。特使<span class="note">（＝大統領などに代わって、特定の外交の問題について相手国と交渉するために送られる人のこと）</span>が両国の首脳と会うことで、捕虜交換が実際に行われるかが決まる。ただし、最も難しいとされる領土の問題は、まだ解決の糸口が見えていない。</p>
+          </div>
+          <div class="meta"><a href="https://www.tokyo-np.co.jp/article/527538" target="_blank" rel="noopener">東京新聞</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-sports" style="--cat-color:var(--c-sports)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">芸能／スポーツ</h2></div>
+        <p class="panel-sub">厳選2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>九州場所6日目、単独トップの熱海富士に初黒星——幕内の全勝が消え、1敗に9人</h3>
+          <p class="lead">大相撲九州場所6日目の13日、ただ1人勝ちっぱなしだった関脇・熱海富士が、元大関の朝乃山に寄り切られて初めての黒星を喫した。BBM Sportsによると、熱海富士は朝乃山を苦手にしており、これまでの対戦成績は1勝3敗だった。日刊スポーツによると、これで幕内の全勝がいなくなり、1敗で9人が並ぶ混戦になった。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、相撲には「相性」があり、実力が上でも苦手な相手がいるという点にある。熱海富士は朝乃山に立ち合いから一方的に攻められた。日本相撲協会の八角理事長は「今日は弱い。考えなきゃ」と話している。混戦<span class="note">（＝優勝を争う力士が多く、誰が抜け出すか分からない状態のこと）</span>となったことで、横綱・大の里や大関陣を含めた優勝争いは、中盤以降の直接対決で大きく動くことになる。</p>
+          </div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/articles/799566f17f5deda93651ee421a66843ff46e6ce0" target="_blank" rel="noopener">BBM Sports（Yahoo!ニュース）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>FA交渉、オリックス・宗はDeNA入りが最有力と報道——中日は床田に関心</h3>
+          <p class="lead">プロ野球のFA交渉が解禁されて2日目、日刊スポーツは、オリックスからFA宣言した宗佑磨選手について、DeNA入りが最有力だと報じた。交渉の解禁初日に、4年の大型契約が提示されたという。また、広島の床田寛樹投手には中日が関心を示しているとされる。いずれも報道の段階で、正式な契約の発表はまだない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、FAの交渉では「何年の契約か」が大きな意味を持つという点にある。複数年契約<span class="note">（＝1年ごとではなく、2年、4年といった長い期間の契約を最初に結ぶこと。選手にとっては収入が安定し、球団にとっては主力を長く確保できる）</span>は、選手の評価の高さを示す。宗選手は複数のポジションを守れる選手で、守備の強化を求める球団から人気を集めている。広島の3人（11月13日既報）を含め、交渉はこれから本格化する。</p>
+          </div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/articles/0b60e0484acf3707d0ef0de2ae76df84d18f4f69" target="_blank" rel="noopener">日刊スポーツ（Yahoo!ニュース）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-koshien" style="--cat-color:var(--c-koshien)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">高校野球【埼玉】</h2></div>
+        <p class="panel-sub">今後の日程2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>あす15日、越谷市の市内大会が決勝——越谷市民球場で3位決定戦も</h3>
+          <p class="lead">越谷市内の高校が参加する市内大会の決勝と3位決定戦が、あす15日（日）に越谷市民球場で行われる予定だ（11月12日既報）。埼玉高校野球情報局が日程を伝えている。12月からの対外試合が禁止される期間を前に、新チームにとっては今年の締めくくりに近い実戦の場となる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、高校野球には「試合をしてはいけない期間」があるという点にある。アウト・オブ・シーズン<span class="note">（＝日本高野連の決まりで、毎年12月1日から翌年3月上旬まで、ほかの学校との練習試合や大会を行わない期間のこと。選手の体を休めることや、基礎練習に集中することが目的とされる）</span>に入ると、春まで実戦の機会がなくなる。そのため11月の大会は、秋の公式戦で出番の少なかった選手を試したり、冬の練習の課題を見つけたりする大切な機会になる。</p>
+          </div>
+          <div class="meta"><a href="https://saitama-baseball.com/shinai2026/" target="_blank" rel="noopener">埼玉高校野球情報局</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>来週21・22日は4地区選抜交流戦——県内100人の精鋭が上尾に集結</h3>
+          <p class="lead">来週の21日（土）と22日（日）には、UDトラックス上尾スタジアムで第5回埼玉県高校野球4地区選抜チーム交流戦が開かれる（11月13日既報）。県内を4つの地区に分け、各校から1人ずつ選ばれた計100人が、地区ごとのチームで戦う。同じ週の19日からは、東京で明治神宮大会も始まる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、来週が「埼玉の選手が力を見せる場」と「全国の強豪が日本一を争う場」が重なる週だという点にある。明治神宮大会<span class="note">（＝秋の各地区大会で優勝した高校が集まって、秋の日本一を決める大会のこと）</span>には関東代表として横浜が出場し、その結果は来春のセンバツの関東地区の出場枠にも関わる（11月12日既報）。埼玉の選手たちにとっては、選抜交流戦で自分の力を試しつつ、全国のレベルを知る1週間になる。</p>
+          </div>
+          <div class="meta"><a href="https://www.hb-nippon.com/articles/18896" target="_blank" rel="noopener">高校野球ドットコム</a></div>
+        </article>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var cats = ['top','social','polecon','scitech','business','startup','gadget','intl','sports','koshien'];
+  var idx = 0;
+  var track = document.getElementById('track');
+  var viewport = document.getElementById('viewport');
+  var vw = viewport.clientWidth;
+
+  function setActive(i){
+    cats.forEach(function(c, j){
+      document.getElementById('tab-' + c).classList.toggle('active', j === i);
+    });
+    var activeTab = document.getElementById('tab-' + cats[i]);
+    if (activeTab && activeTab.scrollIntoView) activeTab.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+  }
+
+  function settle(i, animate){
+    idx = Math.max(0, Math.min(cats.length - 1, i));
+    track.style.transition = animate ? 'transform .32s cubic-bezier(.22,.61,.36,1)' : 'none';
+    track.style.transform = 'translateX(' + (-idx * vw) + 'px)';
+    setActive(idx);
+  }
+
+  window.goTo = function(i){ settle(i, true); };
+
+  window.addEventListener('resize', function(){
+    vw = viewport.clientWidth;
+    settle(idx, false);
+  });
+
+  var dragging = false, decided = null, sx = 0, sy = 0, dx = 0;
+  viewport.addEventListener('touchstart', function(e){
+    dragging = true; decided = null;
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY; dx = 0;
+    track.style.transition = 'none';
+  }, { passive: true });
+
+  viewport.addEventListener('touchmove', function(e){
+    if (!dragging) return;
+    var cx = e.touches[0].clientX, cy = e.touches[0].clientY;
+    var mdx = cx - sx, mdy = cy - sy;
+    if (decided === null) {
+      if (Math.abs(mdx) > 8 || Math.abs(mdy) > 8) {
+        decided = Math.abs(mdx) > Math.abs(mdy) ? 'x' : 'y';
+      }
+    }
+    if (decided === 'x') {
+      e.preventDefault();
+      dx = mdx;
+      var atStart = idx === 0 && dx > 0;
+      var atEnd = idx === cats.length - 1 && dx < 0;
+      var eased = (atStart || atEnd) ? dx * 0.35 : dx;
+      track.style.transform = 'translateX(' + (-idx * vw + eased) + 'px)';
+    }
+  }, { passive: false });
+
+  viewport.addEventListener('touchend', function(){
+    if (!dragging) return;
+    dragging = false;
+    if (decided === 'x') {
+      var threshold = vw * 0.18;
+      if (dx <= -threshold) settle(idx + 1, true);
+      else if (dx >= threshold) settle(idx - 1, true);
+      else settle(idx, true);
+    }
+    decided = null; dx = 0;
+  });
+
+  settle(0, false);
+})();
+</script>
+
+</body></html>
