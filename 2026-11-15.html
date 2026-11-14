@@ -1,0 +1,610 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yoshi's News</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Zen+Old+Mincho:wght@600;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap');
+
+:root {
+  --bg: #ffffff;
+  --panel-bg: #ffffff;
+  --card: #ffffff;
+  --card-line: #eef0f3;
+  --ink: #1a1c20;
+  --ink-soft: #5b6068;
+  --ink-faint: #9aa0a8;
+  --shell: #f4f5f7;
+
+  --c-top: #ef3355;
+  --c-social: #00b3a4;
+  --c-polecon: #6d5bf0;
+  --c-scitech: #ff8a1e;
+  --c-business: #0091ff;
+  --c-sports: #26c281;
+  --c-startup: #ff4fa3;
+  --c-koshien: #c8860d;
+  --c-intl: #4b3f8f;
+  --c-gadget: #00bcd4;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101114;
+    --panel-bg: #101114;
+    --card: #1a1c20;
+    --card-line: #2a2c31;
+    --ink: #f1f2f4;
+    --ink-soft: #b7bcc4;
+    --ink-faint: #767c86;
+    --shell: #1a1c20;
+    --c-top: #ff6b85;
+    --c-social: #3fd8c9;
+    --c-polecon: #9c8fff;
+    --c-scitech: #ffab5c;
+    --c-business: #4db2ff;
+    --c-sports: #5be0a6;
+    --c-startup: #ff85c2;
+    --c-koshien: #e8b34c;
+    --c-intl: #a89cf0;
+    --c-gadget: #4dd8ea;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101114;
+  --panel-bg: #101114;
+  --card: #1a1c20;
+  --card-line: #2a2c31;
+  --ink: #f1f2f4;
+  --ink-soft: #b7bcc4;
+  --ink-faint: #767c86;
+  --shell: #1a1c20;
+  --c-top: #ff6b85;
+  --c-social: #3fd8c9;
+  --c-polecon: #9c8fff;
+  --c-scitech: #ffab5c;
+  --c-business: #4db2ff;
+  --c-sports: #5be0a6;
+  --c-startup: #ff85c2;
+  --c-koshien: #e8b34c;
+  --c-intl: #a89cf0;
+  --c-gadget: #4dd8ea;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--shell);
+  color: var(--ink);
+  font-family: "Zen Kaku Gothic New", -apple-system, "Hiragino Kaku Gothic ProN", sans-serif;
+  line-height: 1.7;
+  overscroll-behavior-y: none;
+}
+.serif { font-family: "Zen Old Mincho", "Hiragino Mincho ProN", serif; }
+
+.app {
+  max-width: 680px;
+  margin: 0 auto;
+  background: var(--bg);
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ---- Header ---- */
+.topbar { padding: 20px 20px 0; flex-shrink: 0; }
+.title-line { display: flex; align-items: center; gap: 8px; }
+.mascot { height: 50px; width: auto; flex-shrink: 0; border-radius: 8px; }
+.title-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  margin-bottom: 14px;
+}
+.title-row h1 {
+  font-family: "Baloo 2", "Zen Kaku Gothic New", sans-serif;
+  font-size: 48px; font-weight: 800; margin: 0; letter-spacing: 0.01em; line-height: 1;
+  -webkit-text-stroke: 2.4px #2b2013;
+  filter: drop-shadow(2px 3px 0 rgba(30,22,12,0.18));
+  background-image:
+    radial-gradient(circle at 22% 30%, #211709 0 7px, transparent 8px),
+    radial-gradient(circle at 68% 65%, #3a2b16 0 9px, transparent 10px),
+    radial-gradient(circle at 45% 88%, #241a0c 0 5px, transparent 6px),
+    radial-gradient(circle at 85% 20%, #2e2211 0 6px, transparent 7px),
+    linear-gradient(135deg, #b8a06e, #967c4c 50%, #6f5a35);
+  background-size: 30px 30px, 41px 41px, 23px 23px, 35px 35px, 100% 100%;
+  background-repeat: repeat, repeat, repeat, repeat, no-repeat;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.title-row .date { font-size: 11.5px; color: var(--ink-faint); white-space: nowrap; font-weight: 500; margin-top: 2px; }
+
+.tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px 3px; }
+.tab {
+  appearance: none; border: none; background: none;
+  font-family: inherit; font-size: 10.5px; font-weight: 700;
+  color: var(--ink-faint);
+  padding: 7px 4px 9px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+  cursor: pointer;
+  border-radius: 10px 10px 0 0;
+  transition: color .2s ease, background .2s ease;
+}
+.tab .dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  margin-right: 5px; background: currentColor; opacity: 0.45; vertical-align: middle;
+}
+.tab::after {
+  content: ""; position: absolute; left: 10px; right: 10px; bottom: 0;
+  height: 3px; border-radius: 3px 3px 0 0; background: transparent; transition: background .2s ease;
+}
+.tab.active { color: var(--tab-color); background: color-mix(in srgb, var(--tab-color) 10%, transparent); }
+.tab.active .dot { opacity: 1; }
+.tab.active::after { background: var(--tab-color); }
+
+/* ---- Swipe viewport ---- */
+.viewport { flex: 1; overflow: hidden; position: relative; touch-action: pan-y; }
+.track {
+  display: flex;
+  height: 100%;
+  width: 1000%;
+  transition: transform .32s cubic-bezier(.22,.61,.36,1);
+  will-change: transform;
+}
+.panel {
+  width: 10%;
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 20px 56px;
+}
+
+.panel-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.panel-head .chip { width: 8px; height: 26px; border-radius: 4px; background: var(--cat-color); flex-shrink: 0; }
+.panel-head h2 { font-size: 20px; font-weight: 700; margin: 0; letter-spacing: 0.02em; color: var(--cat-color); }
+.panel-sub { font-size: 12px; color: var(--ink-faint); margin: 0 0 18px 18px; }
+
+.story {
+  background: var(--card);
+  border: 1px solid var(--card-line);
+  border-left: 4px solid var(--cat-color);
+  border-radius: 12px;
+  padding: 18px 18px 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(20,20,30,0.05);
+}
+.story .kicker {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: "Zen Old Mincho", serif; font-size: 11.5px; font-weight: 700;
+  color: var(--cat-color); margin-bottom: 9px;
+}
+.story h3 { font-size: 16px; font-weight: 700; line-height: 1.55; margin: 0 0 10px; }
+.story .lead { font-size: 14px; color: var(--ink); margin: 0 0 14px; line-height: 1.85; }
+
+.context {
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 10px;
+  padding: 13px 15px;
+  margin: 0 0 12px;
+}
+.context-label {
+  display: block; font-size: 10.5px; font-weight: 700;
+  color: var(--cat-color); letter-spacing: 0.04em; margin-bottom: 6px;
+}
+.context p { font-size: 13px; color: var(--ink-soft); margin: 0; line-height: 1.8; }
+
+.note { font-size: 11.5px; color: var(--ink-faint); font-weight: 500; }
+
+.term-link {
+  color: var(--cat-color);
+  text-decoration: none;
+  border-bottom: 1px dotted color-mix(in srgb, var(--cat-color) 55%, transparent);
+  font-weight: 700;
+}
+
+.meta { font-size: 11px; color: var(--ink-faint); }
+.meta a { color: var(--cat-color); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--cat-color) 40%, transparent); font-weight: 700; }
+
+.closing {
+  margin: 6px 0 0; padding: 16px 18px;
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 12px; font-size: 13px; color: var(--ink-soft); text-align: center;
+}
+.closing .label {
+  display: block; font-family: "Zen Old Mincho", serif; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.2em; color: var(--cat-color); margin-bottom: 8px;
+}
+.colophon { margin: 14px 0 8px; font-size: 10.5px; color: var(--ink-faint); line-height: 1.9; text-align: center; }
+
+@media (max-width: 420px) {
+  .topbar { padding: 16px 14px 0; }
+  .panel { padding: 16px 14px 48px; }
+  .title-row h1 { font-size: 38px; }
+  .mascot { height: 40px; }
+}
+</style>
+</head><body>
+
+
+<div class="app" id="app">
+
+  <div class="topbar">
+    <div class="title-row">
+      <div class="title-line">
+        <img class="mascot" src="mascot.jpg" alt="オオサンショウウオのマスコット">
+        <h1>Yoshi's News</h1>
+      </div>
+      <span class="date">2026年11月15日（日）・第73号</span>
+    </div>
+    <div class="tabs" id="tabs">
+      <button class="tab" id="tab-top" style="--tab-color:var(--c-top)" onclick="goTo(0)"><span class="dot"></span>トップ</button>
+      <button class="tab" id="tab-social" style="--tab-color:var(--c-social)" onclick="goTo(1)"><span class="dot"></span>社会</button>
+      <button class="tab" id="tab-polecon" style="--tab-color:var(--c-polecon)" onclick="goTo(2)"><span class="dot"></span>政治/経済</button>
+      <button class="tab" id="tab-scitech" style="--tab-color:var(--c-scitech)" onclick="goTo(3)"><span class="dot"></span>科学/テック</button>
+      <button class="tab" id="tab-business" style="--tab-color:var(--c-business)" onclick="goTo(4)"><span class="dot"></span>ビジネス</button>
+      <button class="tab" id="tab-startup" style="--tab-color:var(--c-startup)" onclick="goTo(5)"><span class="dot"></span>スタートアップ</button>
+      <button class="tab" id="tab-gadget" style="--tab-color:var(--c-gadget)" onclick="goTo(6)"><span class="dot"></span>ガジェット</button>
+      <button class="tab" id="tab-intl" style="--tab-color:var(--c-intl)" onclick="goTo(7)"><span class="dot"></span>海外</button>
+      <button class="tab" id="tab-sports" style="--tab-color:var(--c-sports)" onclick="goTo(8)"><span class="dot"></span>芸能/スポーツ</button>
+      <button class="tab" id="tab-koshien" style="--tab-color:var(--c-koshien)" onclick="goTo(9)"><span class="dot"></span>高校野球【埼玉】</button>
+    </div>
+  </div>
+
+  <div class="viewport" id="viewport">
+    <div class="track" id="track">
+
+      <section class="panel" id="panel-top" style="--cat-color:var(--c-top)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">トップニュース</h2></div>
+        <p class="panel-sub">今日いちばん知っておきたい2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 海外</span>
+          <h3>全米の空港で飛行機が一斉に止まる——通信障害で4時間以上、欠航は1万便超</h3>
+          <p class="lead">米連邦航空局（FAA）は米国時間13日、航空管制の通信障害のため、全米の空港で出発便を止める措置をとった。NHKなどによると、運航の停止は日本時間14日朝からおよそ4時間半続き、解除された後も混乱が続いた。米FOXニュースは、13日と14日の2日間で欠航が1万便を超え、数十万人の旅客が足止めされたと伝えている。ホワイトハウスは、サイバー攻撃などの「悪意ある行為」の兆候はないとしている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、空の交通が「目に見えない通信」に支えられているという点にある。飛行機は、地上の航空管制<span class="note">（＝空港や空の上を飛ぶ飛行機に、離陸・着陸の順番や飛ぶ高さ・経路を指示し、ぶつからないように交通整理をする仕事のこと）</span>と常に連絡を取りながら飛んでいる。その通信が途切れると、安全を確保できないため、新たに飛び立たせることができなくなる。全米規模の地上停止<span class="note">（＝グラウンドストップとも呼ばれ、航空当局の指示で、空港からの出発を一時的にすべて止めること）</span>は、報道によるとこの25年で最も長いとされる。米国は週末の移動が多く、影響が長引くとみられる。米国へ旅行・出張する予定の人は、航空会社の運航情報を確かめておきたい。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261114de75764" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ テック</span>
+          <h3>Anthropicの上場、申し込みが募集の約6倍に——評価額引き上げの報道も</h3>
+          <p class="lead">米AI企業Anthropicの新規株式公開（IPO）で、投資家からの申し込みが、売り出す株の数の約6倍に達したと、米ブルームバーグやロイターが報じた。米メディアのQuartzによると、投資家への説明会（ロードショー）が始まった初日の時点で、すでに約2倍の申し込みが集まっていた。英紙フィナンシャル・タイムズは、企業価値の見込みを1.5兆ドルに引き上げる準備が進んでいると伝えた。価格は18日に決まり、19日に米ナスダック市場で取引が始まる見通しだ。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「申し込みが多い」ことが、株の値段にどうつながるかという点にある。売り出す株の数より申し込みのほうがずっと多い状態を、超過申し込み<span class="note">（＝オーバーサブスクライブとも呼ばれ、買いたいという注文が、売り出す株の数を上回ること。人気が高いほど、最終的な価格は仮の価格の上限近くや、それ以上に決まりやすい）</span>と呼ぶ。AI関連株が大きく揺れ、エヌビディアのトップが辞任した（11月14日既報）直後でも、AI企業への期待はなお強いことを示している。ロードショー<span class="note">（＝上場の前に、会社の経営陣が各地の機関投資家を回って、事業内容や将来性を説明する活動のこと）</span>は18日まで続き、条件はまだ変わる可能性がある。</p>
+          </div>
+          <div class="meta"><a href="https://qz.com/anthropic-ipo-oversubscribed-roadshow-demand-111126" target="_blank" rel="noopener">Quartz</a></div>
+        </article>
+
+        <div class="closing">
+          <span class="label serif">編集後記</span>
+          米国では航空管制の通信障害で全米の空港が止まり、1万便を超える欠航が出ました。Anthropicの上場には募集の約6倍の申し込みが集まり、来週19日の取引開始に注目が集まっています。九州場所は中日を迎え、1敗で7人が並ぶ混戦です。今日は越谷で高校野球の市内大会の決勝もあります。良い日曜日を。
+        </div>
+        <div class="colophon">AIが検索結果をもとに要約・編集しています。詳細は各記事の出典リンクでご確認ください。<br>毎朝5時発行・次号は明日<br><a href="archive.html" style="color:inherit">過去の紙面はこちら</a></div>
+      </section>
+
+      <section class="panel" id="panel-social" style="--cat-color:var(--c-social)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">社会</h2></div>
+        <p class="panel-sub">くらしに関わるニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>JR北海道の新しい観光列車「赤い星」がお披露目——普通列車を改造、国内外の富裕層を狙う</h3>
+          <p class="lead">JR北海道は14日、来年から走らせる新しい観光列車「赤い星」を報道陣に公開した。NHKによると、普通列車として使っていた車両を改造したもので、国内外の富裕層を主な客として見込んでいる。これまでの発表では、札幌と網走の間を2日かけて1往復するほか、季節によって釧路と知床斜里の間なども走る計画で、個室や畳敷きの茶室、展望室なども設けられる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、JR北海道が厳しい経営の中で「乗ること自体が目的」の列車に力を入れているという点にある。北海道は人口が少なく広いため、多くの路線が赤字になっている。そこで、移動の手段としてではなく、景色や食事、車内での時間を楽しむクルーズトレイン<span class="note">（＝ホテルのような豪華な設備を備え、何日もかけて観光地を巡る列車のこと。料金は高いが、その分、特別な体験を提供する）</span>のような観光列車で、新たな客を呼び込もうとしている。インバウンド<span class="note">（＝海外から日本を訪れる旅行者のこと）</span>の富裕層にとって、流氷や知床の自然は大きな魅力になる。当初の予定より運行の開始は遅れていたが、いよいよ実現が近づいた。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261114de75905" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>『黒死館殺人事件』の小栗虫太郎、未発表の原稿10作以上と創作メモが見つかる</h3>
+          <p class="lead">推理小説『黒死館殺人事件』で知られる作家・小栗虫太郎の、未発表とみられる原稿10作以上と、作品づくりのためのメモが見つかった。NHKが14日に伝えた。戦前の日本の探偵小説を代表する作家の一人の、知られていなかった作品の発見となる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、小栗虫太郎が日本のミステリーの歴史で特別な位置にいる作家だという点にある。『黒死館殺人事件』は、膨大な知識と難しい言葉が詰め込まれた作品で、夢野久作の『ドグラ・マグラ』などとあわせて日本探偵小説三大奇書<span class="note">（＝その独特さや難解さから、日本の探偵小説の中で特に「奇妙な傑作」とされる3つの作品のこと）</span>の一つに数えられている。未発表原稿<span class="note">（＝書かれたものの、雑誌や本として世に出ることがなかった原稿のこと）</span>や創作メモは、作家がどのように作品を組み立てていたかを知る貴重な手がかりになる。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261114de75792" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-polecon" style="--cat-color:var(--c-polecon)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">政治／経済</h2></div>
+        <p class="panel-sub">政治・経済の動き2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 政治</span>
+          <h3>国民民主・榛葉幹事長、減税法案で「住民税減税の受け入れを」——賛成の条件に</h3>
+          <p class="lead">食料品の消費税を1%に下げる法案をめぐり、国民民主党の榛葉幹事長は14日、党が主張する住民税の減税を受け入れるよう政府・与党に求めていく考えを示した。NHKによると、榛葉氏は、今の政府の説明では、2年後に消費税率が元に戻るときに中間層の負担を軽くできるかがはっきりしないと指摘した。国民民主党は以前から、住民税の減税が実現すれば法案への賛成に回る可能性があるとしている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、国民民主党が「消費税が戻った後」の負担を心配しているという点にある。法案では、食料品の消費税は2年間だけ1%になり、その後は元の8%に戻る（11月7日既報）。そのとき家計の負担が急に重くなる「崖」ができるおそれがある。住民税<span class="note">（＝住んでいる都道府県や市区町村に納める税金のこと。前の年の所得をもとに計算され、所得税と同じように働く人の多くが払っている）</span>を減らせば、税率が戻った後も中間層の負担を軽くできる、というのが国民民主党の主張だ。与党は参院で過半数を持たないため、国民民主党の賛成を得られるかが成立のカギを握る。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261114de75874" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 政治</span>
+          <h3>自民・松山参院会長「国民・公明とは方向性同じ」——幅広い賛同での成立目指す</h3>
+          <p class="lead">本日既報の消費税減税法案について、自民党の松山参院議員会長は14日、国民民主党や公明党とは政策の方向性が同じだとして、それぞれの主張に耳を傾け、幅広い賛同を得て法案を成立させたいとの考えを示した。NHKが伝えた。高市首相は13日の参院特別委員会で、支援金の対象を働く人の5割以上に広げる考えを示している（11月14日既報）。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、与党が「数の力」ではなく「話し合い」で法案を通さざるを得ない状況にあるという点にある。参院議員会長<span class="note">（＝参議院にいる、その党の議員たちをまとめる役職のこと。参院での法案の扱いや、他の党との交渉で大きな役割を果たす）</span>が「方向性は同じ」と述べたのは、国民民主党や公明党の主張を一部取り入れる修正に前向きだという合図とも受け止められる。支援金の対象を広げたのに続き、住民税の減税まで受け入れるかどうかが、今後の協議の焦点になる。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261114de76006" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-scitech" style="--cat-color:var(--c-scitech)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">科学／テック</h2></div>
+        <p class="panel-sub">研究・技術のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>全米の航空停止、原因は管制ネットワークの「更新」か——関係者が証言</h3>
+          <p class="lead">本日既報の全米の空港での運航停止について、米CBSニュースなどは、航空管制の各施設を結ぶネットワークに行ったアップデート（更新）が、機器の再起動やシステムの停止、通信の途絶を引き起こしたと、複数の関係者の話として伝えた。FAAの長官は、悪意のある行為の証拠は「まったくない」と述べた。米議会からは、詳しい説明を求める声が上がっている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、大規模なシステム障害の多くが、攻撃ではなく「自分たちの変更」から起きているという点にある。ソフトウェアのアップデート<span class="note">（＝システムの機能を改善したり、不具合を直したりするために、プログラムを新しいものに入れ替えること）</span>は欠かせない作業だが、思わぬ不具合で全体が止まることがある。前日に起きたMicrosoft 365の大規模障害（11月14日既報）でも、直前の設定の変更が影響した可能性が指摘されている。社会の重要な仕組みほど、変更を少しずつ試しながら広げるなどの慎重な運用が求められる。</p>
+          </div>
+          <div class="meta"><a href="https://www.cbsnews.com/news/faa-issues-nationwide-ground-stop/" target="_blank" rel="noopener">CBS News</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>Microsoft 365の大規模障害、全面復旧——原因は「サーバーの正常性チェック」か</h3>
+          <p class="lead">Outlook、Teams、Copilotなどが使えなくなったMicrosoft 365の大規模障害（11月14日既報）について、NHKは14日午後、全面的に復旧したと伝えた。キーマンズネットによると、多数のサーバーが自動の正常性チェックに失敗して応答しなくなったことが原因とみられ、マイクロソフトは詳しい原因の調査を続けている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、システムを守るための仕組みが、逆に障害を広げることがあるという点にある。正常性チェック<span class="note">（＝ヘルスチェックとも呼ばれ、サーバーがきちんと動いているかを自動で確かめ、異常があれば切り離す仕組みのこと）</span>は、本来、故障したサーバーを素早く外して全体を守るためのものだ。しかし、チェックそのものが誤って多くのサーバーを「異常」と判断すると、残りのサーバーに負荷が集中して、かえって全体が止まってしまう。本日既報の米国の航空障害とあわせて、身近なサービスほど、止まったときの影響の大きさを考えさせられる1週間になった。</p>
+          </div>
+          <div class="meta"><a href="https://kn.itmedia.co.jp/kn/article/2611/13/2000003175/" target="_blank" rel="noopener">キーマンズネット</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-business" style="--cat-color:var(--c-business)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ビジネス</h2></div>
+        <p class="panel-sub">企業・産業のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>NY株、ダウは小幅反発・ナスダックは続落——10月の卸売物価は予想を下回る</h3>
+          <p class="lead">13日のニューヨーク株式市場で、ダウ平均は前日より50ドル46セント高い5万2347ドル55セントと小幅に値上がりした。日本経済新聞によると、消費関連の株の一部が買われた。一方、ハイテク株の多いナスダック総合指数は0.91%安で、半導体やAIインフラ関連の株が売られた。同じ日に発表された10月の生産者物価指数は前月比0.3%上昇で、市場の予想（0.4%）を下回った。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「生産者物価」が、私たちが買う物の値段の「先行き」を示す指標だという点にある。生産者物価指数<span class="note">（＝PPIとも呼ばれ、企業同士が取引するモノやサービスの値段の動きを表す指標のこと。企業の仕入れ値が上がると、やがて店頭の値段にも反映されやすい）</span>が予想を下回ったことは、物価の上昇が少し落ち着く兆しとも受け止められる。ただ、日本経済新聞は、米国の中央銀行が12月に利上げする方針を変えるほどではないとの見方を伝えている。米国の金利の行方は、円相場（11月14日既報）にも影響する。</p>
+          </div>
+          <div class="meta"><a href="https://www.nikkei.com/article/DGXZQOFL1402F0U6A111C2000000/" target="_blank" rel="noopener">日本経済新聞</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>エヌビディア株、CEO辞任の翌日も下落——17日の決算を前に様子見</h3>
+          <p class="lead">フアン氏のCEO辞任が発表された後の13日の米国市場で、エヌビディアの株価は約2%下がった。OANDA証券は、ハイテク株中心のナスダック100指数が、エヌビディアのCEO辞任を受けて下げたものの、下げ幅は限られたと伝えている。エヌビディアは17日（米国時間）に決算を発表する予定で、暫定CEOとなったクレス氏（11月14日既報）のもとでの最初の決算となる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、株価が大きく崩れなかった理由にある。辞任によって、経営の混乱がひとまず区切りを迎えたことで、売りが一服したとみられる。下げ渋り<span class="note">（＝株価が下がっているものの、買いが入ってそれ以上なかなか下がらない状態のこと）</span>は、投資家が次の材料を待っている様子を表す。17日の決算で、AI向け半導体の需要が引き続き強いことが確認されれば、市場の不安が和らぐ可能性がある。反対に、見通しが弱ければ、AI関連株全体に再び売りが広がるおそれもある。</p>
+          </div>
+          <div class="meta"><a href="https://www.oanda.jp/lab-education/market_news/report_us100_20261113/" target="_blank" rel="noopener">OANDA証券</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-startup" style="--cat-color:var(--c-startup)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">スタートアップ</h2></div>
+        <p class="panel-sub">資金調達・注目トピック2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>AIで大腸がん検診を変えるBoston Medical Sciences、55億5000万円を調達</h3>
+          <p class="lead">日本経済新聞の週間まとめによると、11月9日から13日の週に、東京に本社を置くBoston Medical Sciencesが55億5000万円の資金調達を発表した。同社は、体に管を入れずに大腸の中を調べる、AIを使ったバーチャル大腸内視鏡のシステムを開発している。同じ週には、本紙で取り上げたBooostの17億5000万円の調達（11月10日既報）も含まれている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、大腸がんの検診が「受ける側の負担」の大きさで敬遠されがちだという点にある。大腸がんは日本で患者の多いがんの一つだが、早く見つければ治る可能性が高い。ただ、通常の大腸内視鏡検査<span class="note">（＝肛門から細いカメラの管を入れて、大腸の内側を直接見る検査のこと。正確だが、下剤を飲む準備や検査中の痛み・恥ずかしさから、受けたがらない人も多い）</span>は負担が大きい。バーチャル内視鏡<span class="note">（＝CTなどで撮った画像をもとに、コンピューターで大腸の内側を立体的に再現して調べる方法のこと）</span>とAIを組み合わせれば、負担を減らしながら病気を見つけられる可能性があり、検診を受ける人を増やすことにつながると期待されている。</p>
+          </div>
+          <div class="meta"><a href="https://www.nikkei.com/article/DGXZQOUC123SD0S6A111C2000000/" target="_blank" rel="noopener">日本経済新聞</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>Anthropicの上場、既存の出資者を優先して配分へ——「希望より少ない」投資家も</h3>
+          <p class="lead">本日既報のAnthropicの上場について、米メディアの報道によると、株の配分では、これまでAnthropicに出資してきた既存の投資家が優先されるという。そのため、新たに株を買いたい投資家の中には、希望より少ない株しか割り当てられない人も出る見通しだ。企業価値は最大1.4兆ドルとされ、一部の投資家の期待をやや下回るとの見方もある。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、人気のある上場では「欲しい人全員が買えるわけではない」という点にある。申し込みが売り出す数を大きく上回ると（本日既報）、証券会社と会社が、誰にどれだけ株を渡すかを決める。配分<span class="note">（＝アロケーションとも呼ばれ、上場で売り出す株を、申し込んだ投資家にどう割り当てるかを決めること）</span>で既存の出資者を優先するのは、創業期から会社を支えてきた投資家との関係を大切にするためだ。スタートアップにとって、初期の投資家が上場で報われることは、次の世代のスタートアップへの投資を呼び込む好循環にもつながる。</p>
+          </div>
+          <div class="meta"><a href="https://www.unite.ai/anthropic-ipo-could-raise-64-billion-as-orders-reach-six-times/" target="_blank" rel="noopener">Unite.AI</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-gadget" style="--cat-color:var(--c-gadget)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ガジェット</h2></div>
+        <p class="panel-sub">新製品2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>シャープ、17日に冬の新製品を発表へ——定番スマホ「AQUOS sense11」登場か</h3>
+          <p class="lead">シャープは、17日に2026年冬モデルの新製品の発表を行うと予告した。S-MAXによると、13日にティザー（予告）を公開しており、手ごろな価格帯で人気の「AQUOS sense」シリーズの次のモデル「AQUOS sense11」が登場する可能性があると報じられている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「AQUOS sense」が日本で最も売れているAndroidスマホのシリーズの一つだという点にある。10万円を超える高価なスマホが増える中で、5万円前後で必要十分な性能を持つミドルレンジ<span class="note">（＝最上位の高級モデルと、最も安い入門モデルの間に位置する、中くらいの価格帯のスマートフォンのこと。性能と値段のバランスがよく、多くの人に選ばれている）</span>のスマホは、買い替えの中心になっている。電池の持ちや丈夫さ、おサイフケータイなどの日本向けの機能が、このシリーズの強みとされる。ティザー<span class="note">（＝新製品の正式発表の前に、詳しい中身は伏せたまま、期待を高めるために出す予告のこと）</span>の段階のため、仕様や価格は17日の発表を待つ必要がある。</p>
+          </div>
+          <div class="meta"><a href="https://s-max.jp/archives/1804012.html" target="_blank" rel="noopener">S-MAX</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>新型Apple TV 4Kが発売——4万9800円、A19チップ搭載</h3>
+          <p class="lead">Appleの新型「Apple TV 4K」（11月10日既報）が13日に発売された。価格は4万9800円（税込）で、新しい「A19」チップを搭載し、前の世代よりCPUが最大50%速くなった。HomePod mini 2などのスピーカーを4台組み合わせれば、音に包まれるようなサラウンド環境を作ることができる。一方で、新しいAI機能「Siri AI」は、発売時点では日本が対象国に含まれていない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、AI機能の提供が「国によって時期がずれる」ことが増えているという点にある。新しいAI機能は、言語への対応や各国の規制への対応に時間がかかるため、まず英語圏などから始まり、日本語での提供は後回しになることが多い。ストリーミング端末<span class="note">（＝テレビにつなぎ、インターネット経由で動画配信サービスやアプリを大きな画面で楽しめるようにする機器のこと）</span>としての基本性能は日本でもすぐに使えるが、新しいSiriのAI機能を目当てにするなら、日本での提供開始を待つ必要がある。</p>
+          </div>
+          <div class="meta"><a href="https://gori.me/?p=171213" target="_blank" rel="noopener">gori.me</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-intl" style="--cat-color:var(--c-intl)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">海外</h2></div>
+        <p class="panel-sub">国際ニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>米ミシシッピ川でクルーズ船にタンカー衝突、船が横転——乗客全員救助で「川の奇跡」</h3>
+          <p class="lead">米ルイジアナ州ニューオーリンズのミシシッピ川で13日、停泊していたクルーズ船「アメリカン・ヘリテージ」に大型のタンカーが衝突した。NHKなどによると、クルーズ船は衝撃で横倒しになって一部が水に沈み、乗客が川に投げ出されたが、全員が救助された。日本テレビによると、乗客32人がけがをした。読売新聞によると、地元の知事は「ミシシッピ川の奇跡」と呼んだ。衝突の詳しい原因は調査中だ。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、ミシシッピ川が観光の川であると同時に、大型の船が行き交う「物流の大動脈」でもあるという点にある。ミシシッピ川<span class="note">（＝米国の中央部を北から南に流れ、メキシコ湾に注ぐ大河のこと。穀物や石油などを運ぶ船が多く行き来し、米国の物流を支えている）</span>のニューオーリンズ付近は、川幅が狭く流れも速い場所があり、大型の船の操船は難しいとされる。衝突の後、周辺では船の航行が止められた。夜間や川の流れの影響など、事故の原因は今後の調査で明らかになる。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261114de75761" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>プーチン大統領、米特使と会談——ウクライナ東部での局地停戦・人道支援を提案</h3>
+          <p class="lead">ロシアのプーチン大統領は12日、モスクワで米国のウィットコフ特使とクシュナー氏と会談した。沖縄タイムスが配信した共同通信の記事によると、プーチン氏は、ウクライナ東部ドネツク州のコンスタンチノフカで、局地的な停戦と人道支援を行う用意があると述べた。会談では、合意された大規模な捕虜交換（11月13日既報）の調整も図られたとされる。特使らはその後、ウクライナのゼレンスキー大統領とも会談する予定だ。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「全面的な停戦」ではなく「特定の場所だけの停戦」が提案されているという点にある。局地停戦<span class="note">（＝戦争全体ではなく、特定の町や地域に限って一時的に戦闘をやめること。住民の避難や、食料・医薬品などの人道支援を届けるために行われることが多い）</span>は、市民の被害を減らす一歩になりうる一方、領土をめぐる対立はなお平行線のままだ。米国の特使が両国の首脳と相次いで会うことで、和平に向けた話し合いがどこまで進むかが注目される。</p>
+          </div>
+          <div class="meta"><a href="https://www.okinawatimes.co.jp/articles/-/1964461" target="_blank" rel="noopener">沖縄タイムス（共同通信）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-sports" style="--cat-color:var(--c-sports)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">芸能／スポーツ</h2></div>
+        <p class="panel-sub">厳選2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>九州場所7日目、大の里が6連勝で首位に並ぶ——1敗に7人、安青錦は3敗に後退</h3>
+          <p class="lead">大相撲九州場所7日目の14日、横綱・大の里は新小結・美ノ海を寄り切って6連勝とし、6勝1敗で首位に並んだ。スポーツ報知によると、1敗で並ぶのは大の里のほか、大関・霧島や関脇・熱海富士など計7人。休場の危機もささやかれた横綱・豊昇龍は、小結・義ノ富士を外掛けで破って2連勝とし、4勝目を挙げた。一方、大関・安青錦は平幕の藤青雲に敗れて3敗に後退した。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、今日15日が場所のちょうど真ん中にあたる「中日（なかび）」だという点にある。中日<span class="note">（＝15日間の本場所のうち、8日目のこと。この日を境に後半戦に入り、上位の力士同士の対戦が増えていく）</span>を前に、首位に7人が並ぶ大混戦となった。初日に敗れた大の里は、その後白星を重ねて首位に追いついた。藤青雲は、豊昇龍（11月13日既報）に続いて大関の安青錦も破り、上位陣を苦しめている。</p>
+          </div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/articles/0e6ac77dbe96188c12c65f35110160ce5ef19eec" target="_blank" rel="noopener">スポーツ報知（Yahoo!ニュース）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>玉鷲、幕内通算718勝で歴代6位タイに——元大関・琴奨菊に並ぶ</h3>
+          <p class="lead">九州場所7日目、ベテランの玉鷲が勝って幕内での通算の勝ち星を718とし、元大関・琴奨菊に並んで歴代6位タイとなった。Sumostats Newsが伝えた。玉鷲は2日目に元横綱・稀勢の里の通算勝利数を超えたばかりで（11月10日既報）、記録を次々と塗り替えている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「幕内」での勝ち星を積み重ねることの難しさにある。幕内<span class="note">（＝大相撲の一番上の階級のこと。横綱から前頭までの約40人の力士が所属し、テレビ中継で見られる取組の多くがこの階級）</span>にとどまり続けるには、毎場所、勝ち越し（15日間で8勝以上）を重ねる必要がある。成績が悪ければ十両に落ちてしまう。玉鷲は、けがで休むことが少なく、長く連続で出場してきた力士として知られる。その積み重ねが、歴代上位の記録につながっている。</p>
+          </div>
+          <div class="meta"><a href="https://sumostats.com/ja/news/stories/f873c129-c521-4a40-b3f5-519bab9ea2a2" target="_blank" rel="noopener">Sumostats News</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-koshien" style="--cat-color:var(--c-koshien)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">高校野球【埼玉】</h2></div>
+        <p class="panel-sub">今日・今週の日程2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>今日15日、越谷市の市内大会で決勝と3位決定戦——越谷市民球場</h3>
+          <p class="lead">越谷市内の高校が参加する市内大会の決勝と3位決定戦が、今日15日（日）に越谷市民球場で行われる予定だ（11月12日既報）。埼玉高校野球情報局が日程を伝えている。12月からの対外試合が禁止される期間を前に、新チームにとっては今年の締めくくりに近い大会になる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、市内大会が「地元の野球の祭り」としての面も持っているという点にある。同じ市の高校同士は、練習試合などでふだんから顔を合わせることも多く、お互いをよく知るライバルだ。3位決定戦<span class="note">（＝準決勝で敗れた2チームが、3位の座をかけて戦う試合のこと）</span>まで行うことで、より多くの選手に試合の経験を積ませる意味もある。地元の人が気軽に観戦できるのも、こうした大会の魅力だ。</p>
+          </div>
+          <div class="meta"><a href="https://saitama-baseball.com/shinai2026/" target="_blank" rel="noopener">埼玉高校野球情報局</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>今週は明治神宮大会が19日開幕、21・22日は埼玉4地区選抜交流戦</h3>
+          <p class="lead">今週は、19日に秋の日本一を決める明治神宮大会（高校の部）が開幕し、関東王者の横浜は21日に登場する（11月10日既報）。同じ21日と22日には、UDトラックス上尾スタジアムで、県内100人の選手が地区ごとのチームで戦う埼玉4地区選抜チーム交流戦が開かれる（11月13日既報）。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、全国大会と県内の交流戦が、同じ週に重なるという点にある。明治神宮大会で横浜が優勝すれば、来春のセンバツで関東地区の出場枠が1つ増える「神宮大会枠」（11月7日既報）が生まれる。センバツ<span class="note">（＝毎年3月に甲子園で開かれる選抜高等学校野球大会のこと。秋の大会の成績などをもとに出場校が選ばれる）</span>への道が閉ざされた埼玉県勢にとっても、関東の枠の行方と、自分たちの交流戦での戦いぶりの両方が気になる1週間になる。</p>
+          </div>
+          <div class="meta"><a href="https://www.hb-nippon.com/articles/18896" target="_blank" rel="noopener">高校野球ドットコム</a></div>
+        </article>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var cats = ['top','social','polecon','scitech','business','startup','gadget','intl','sports','koshien'];
+  var idx = 0;
+  var track = document.getElementById('track');
+  var viewport = document.getElementById('viewport');
+  var vw = viewport.clientWidth;
+
+  function setActive(i){
+    cats.forEach(function(c, j){
+      document.getElementById('tab-' + c).classList.toggle('active', j === i);
+    });
+    var activeTab = document.getElementById('tab-' + cats[i]);
+    if (activeTab && activeTab.scrollIntoView) activeTab.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+  }
+
+  function settle(i, animate){
+    idx = Math.max(0, Math.min(cats.length - 1, i));
+    track.style.transition = animate ? 'transform .32s cubic-bezier(.22,.61,.36,1)' : 'none';
+    track.style.transform = 'translateX(' + (-idx * vw) + 'px)';
+    setActive(idx);
+  }
+
+  window.goTo = function(i){ settle(i, true); };
+
+  window.addEventListener('resize', function(){
+    vw = viewport.clientWidth;
+    settle(idx, false);
+  });
+
+  var dragging = false, decided = null, sx = 0, sy = 0, dx = 0;
+  viewport.addEventListener('touchstart', function(e){
+    dragging = true; decided = null;
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY; dx = 0;
+    track.style.transition = 'none';
+  }, { passive: true });
+
+  viewport.addEventListener('touchmove', function(e){
+    if (!dragging) return;
+    var cx = e.touches[0].clientX, cy = e.touches[0].clientY;
+    var mdx = cx - sx, mdy = cy - sy;
+    if (decided === null) {
+      if (Math.abs(mdx) > 8 || Math.abs(mdy) > 8) {
+        decided = Math.abs(mdx) > Math.abs(mdy) ? 'x' : 'y';
+      }
+    }
+    if (decided === 'x') {
+      e.preventDefault();
+      dx = mdx;
+      var atStart = idx === 0 && dx > 0;
+      var atEnd = idx === cats.length - 1 && dx < 0;
+      var eased = (atStart || atEnd) ? dx * 0.35 : dx;
+      track.style.transform = 'translateX(' + (-idx * vw + eased) + 'px)';
+    }
+  }, { passive: false });
+
+  viewport.addEventListener('touchend', function(){
+    if (!dragging) return;
+    dragging = false;
+    if (decided === 'x') {
+      var threshold = vw * 0.18;
+      if (dx <= -threshold) settle(idx + 1, true);
+      else if (dx >= threshold) settle(idx - 1, true);
+      else settle(idx, true);
+    }
+    decided = null; dx = 0;
+  });
+
+  settle(0, false);
+})();
+</script>
+
+</body></html>
