@@ -1,0 +1,610 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yoshi's News</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Zen+Old+Mincho:wght@600;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap');
+
+:root {
+  --bg: #ffffff;
+  --panel-bg: #ffffff;
+  --card: #ffffff;
+  --card-line: #eef0f3;
+  --ink: #1a1c20;
+  --ink-soft: #5b6068;
+  --ink-faint: #9aa0a8;
+  --shell: #f4f5f7;
+
+  --c-top: #ef3355;
+  --c-social: #00b3a4;
+  --c-polecon: #6d5bf0;
+  --c-scitech: #ff8a1e;
+  --c-business: #0091ff;
+  --c-sports: #26c281;
+  --c-startup: #ff4fa3;
+  --c-koshien: #c8860d;
+  --c-intl: #4b3f8f;
+  --c-gadget: #00bcd4;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101114;
+    --panel-bg: #101114;
+    --card: #1a1c20;
+    --card-line: #2a2c31;
+    --ink: #f1f2f4;
+    --ink-soft: #b7bcc4;
+    --ink-faint: #767c86;
+    --shell: #1a1c20;
+    --c-top: #ff6b85;
+    --c-social: #3fd8c9;
+    --c-polecon: #9c8fff;
+    --c-scitech: #ffab5c;
+    --c-business: #4db2ff;
+    --c-sports: #5be0a6;
+    --c-startup: #ff85c2;
+    --c-koshien: #e8b34c;
+    --c-intl: #a89cf0;
+    --c-gadget: #4dd8ea;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101114;
+  --panel-bg: #101114;
+  --card: #1a1c20;
+  --card-line: #2a2c31;
+  --ink: #f1f2f4;
+  --ink-soft: #b7bcc4;
+  --ink-faint: #767c86;
+  --shell: #1a1c20;
+  --c-top: #ff6b85;
+  --c-social: #3fd8c9;
+  --c-polecon: #9c8fff;
+  --c-scitech: #ffab5c;
+  --c-business: #4db2ff;
+  --c-sports: #5be0a6;
+  --c-startup: #ff85c2;
+  --c-koshien: #e8b34c;
+  --c-intl: #a89cf0;
+  --c-gadget: #4dd8ea;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--shell);
+  color: var(--ink);
+  font-family: "Zen Kaku Gothic New", -apple-system, "Hiragino Kaku Gothic ProN", sans-serif;
+  line-height: 1.7;
+  overscroll-behavior-y: none;
+}
+.serif { font-family: "Zen Old Mincho", "Hiragino Mincho ProN", serif; }
+
+.app {
+  max-width: 680px;
+  margin: 0 auto;
+  background: var(--bg);
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ---- Header ---- */
+.topbar { padding: 20px 20px 0; flex-shrink: 0; }
+.title-line { display: flex; align-items: center; gap: 8px; }
+.mascot { height: 50px; width: auto; flex-shrink: 0; border-radius: 8px; }
+.title-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  margin-bottom: 14px;
+}
+.title-row h1 {
+  font-family: "Baloo 2", "Zen Kaku Gothic New", sans-serif;
+  font-size: 48px; font-weight: 800; margin: 0; letter-spacing: 0.01em; line-height: 1;
+  -webkit-text-stroke: 2.4px #2b2013;
+  filter: drop-shadow(2px 3px 0 rgba(30,22,12,0.18));
+  background-image:
+    radial-gradient(circle at 22% 30%, #211709 0 7px, transparent 8px),
+    radial-gradient(circle at 68% 65%, #3a2b16 0 9px, transparent 10px),
+    radial-gradient(circle at 45% 88%, #241a0c 0 5px, transparent 6px),
+    radial-gradient(circle at 85% 20%, #2e2211 0 6px, transparent 7px),
+    linear-gradient(135deg, #b8a06e, #967c4c 50%, #6f5a35);
+  background-size: 30px 30px, 41px 41px, 23px 23px, 35px 35px, 100% 100%;
+  background-repeat: repeat, repeat, repeat, repeat, no-repeat;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.title-row .date { font-size: 11.5px; color: var(--ink-faint); white-space: nowrap; font-weight: 500; margin-top: 2px; }
+
+.tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px 3px; }
+.tab {
+  appearance: none; border: none; background: none;
+  font-family: inherit; font-size: 10.5px; font-weight: 700;
+  color: var(--ink-faint);
+  padding: 7px 4px 9px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+  cursor: pointer;
+  border-radius: 10px 10px 0 0;
+  transition: color .2s ease, background .2s ease;
+}
+.tab .dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  margin-right: 5px; background: currentColor; opacity: 0.45; vertical-align: middle;
+}
+.tab::after {
+  content: ""; position: absolute; left: 10px; right: 10px; bottom: 0;
+  height: 3px; border-radius: 3px 3px 0 0; background: transparent; transition: background .2s ease;
+}
+.tab.active { color: var(--tab-color); background: color-mix(in srgb, var(--tab-color) 10%, transparent); }
+.tab.active .dot { opacity: 1; }
+.tab.active::after { background: var(--tab-color); }
+
+/* ---- Swipe viewport ---- */
+.viewport { flex: 1; overflow: hidden; position: relative; touch-action: pan-y; }
+.track {
+  display: flex;
+  height: 100%;
+  width: 1000%;
+  transition: transform .32s cubic-bezier(.22,.61,.36,1);
+  will-change: transform;
+}
+.panel {
+  width: 10%;
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 20px 56px;
+}
+
+.panel-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.panel-head .chip { width: 8px; height: 26px; border-radius: 4px; background: var(--cat-color); flex-shrink: 0; }
+.panel-head h2 { font-size: 20px; font-weight: 700; margin: 0; letter-spacing: 0.02em; color: var(--cat-color); }
+.panel-sub { font-size: 12px; color: var(--ink-faint); margin: 0 0 18px 18px; }
+
+.story {
+  background: var(--card);
+  border: 1px solid var(--card-line);
+  border-left: 4px solid var(--cat-color);
+  border-radius: 12px;
+  padding: 18px 18px 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(20,20,30,0.05);
+}
+.story .kicker {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: "Zen Old Mincho", serif; font-size: 11.5px; font-weight: 700;
+  color: var(--cat-color); margin-bottom: 9px;
+}
+.story h3 { font-size: 16px; font-weight: 700; line-height: 1.55; margin: 0 0 10px; }
+.story .lead { font-size: 14px; color: var(--ink); margin: 0 0 14px; line-height: 1.85; }
+
+.context {
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 10px;
+  padding: 13px 15px;
+  margin: 0 0 12px;
+}
+.context-label {
+  display: block; font-size: 10.5px; font-weight: 700;
+  color: var(--cat-color); letter-spacing: 0.04em; margin-bottom: 6px;
+}
+.context p { font-size: 13px; color: var(--ink-soft); margin: 0; line-height: 1.8; }
+
+.note { font-size: 11.5px; color: var(--ink-faint); font-weight: 500; }
+
+.term-link {
+  color: var(--cat-color);
+  text-decoration: none;
+  border-bottom: 1px dotted color-mix(in srgb, var(--cat-color) 55%, transparent);
+  font-weight: 700;
+}
+
+.meta { font-size: 11px; color: var(--ink-faint); }
+.meta a { color: var(--cat-color); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--cat-color) 40%, transparent); font-weight: 700; }
+
+.closing {
+  margin: 6px 0 0; padding: 16px 18px;
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 12px; font-size: 13px; color: var(--ink-soft); text-align: center;
+}
+.closing .label {
+  display: block; font-family: "Zen Old Mincho", serif; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.2em; color: var(--cat-color); margin-bottom: 8px;
+}
+.colophon { margin: 14px 0 8px; font-size: 10.5px; color: var(--ink-faint); line-height: 1.9; text-align: center; }
+
+@media (max-width: 420px) {
+  .topbar { padding: 16px 14px 0; }
+  .panel { padding: 16px 14px 48px; }
+  .title-row h1 { font-size: 38px; }
+  .mascot { height: 40px; }
+}
+</style>
+</head><body>
+
+
+<div class="app" id="app">
+
+  <div class="topbar">
+    <div class="title-row">
+      <div class="title-line">
+        <img class="mascot" src="mascot.jpg" alt="オオサンショウウオのマスコット">
+        <h1>Yoshi's News</h1>
+      </div>
+      <span class="date">2026年11月17日（火）・第75号</span>
+    </div>
+    <div class="tabs" id="tabs">
+      <button class="tab" id="tab-top" style="--tab-color:var(--c-top)" onclick="goTo(0)"><span class="dot"></span>トップ</button>
+      <button class="tab" id="tab-social" style="--tab-color:var(--c-social)" onclick="goTo(1)"><span class="dot"></span>社会</button>
+      <button class="tab" id="tab-polecon" style="--tab-color:var(--c-polecon)" onclick="goTo(2)"><span class="dot"></span>政治/経済</button>
+      <button class="tab" id="tab-scitech" style="--tab-color:var(--c-scitech)" onclick="goTo(3)"><span class="dot"></span>科学/テック</button>
+      <button class="tab" id="tab-business" style="--tab-color:var(--c-business)" onclick="goTo(4)"><span class="dot"></span>ビジネス</button>
+      <button class="tab" id="tab-startup" style="--tab-color:var(--c-startup)" onclick="goTo(5)"><span class="dot"></span>スタートアップ</button>
+      <button class="tab" id="tab-gadget" style="--tab-color:var(--c-gadget)" onclick="goTo(6)"><span class="dot"></span>ガジェット</button>
+      <button class="tab" id="tab-intl" style="--tab-color:var(--c-intl)" onclick="goTo(7)"><span class="dot"></span>海外</button>
+      <button class="tab" id="tab-sports" style="--tab-color:var(--c-sports)" onclick="goTo(8)"><span class="dot"></span>芸能/スポーツ</button>
+      <button class="tab" id="tab-koshien" style="--tab-color:var(--c-koshien)" onclick="goTo(9)"><span class="dot"></span>高校野球【埼玉】</button>
+    </div>
+  </div>
+
+  <div class="viewport" id="viewport">
+    <div class="track" id="track">
+
+      <section class="panel" id="panel-top" style="--cat-color:var(--c-top)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">トップニュース</h2></div>
+        <p class="panel-sub">今日いちばん知っておきたい2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 海外</span>
+          <h3>米中ロの首脳、19日に深圳で史上初の3者会談へ——中国外務省が正式発表</h3>
+          <p class="lead">中国外務省は16日、習近平国家主席が19日に広東省の深圳で、ロシアのプーチン大統領、米国のトランプ大統領と3か国の首脳会談を行うと発表した。AFPBB Newsによると、3人の首脳による正式な3者会談が開かれるのは初めて。会談は、深圳で開かれるアジア太平洋経済協力会議（APEC）の首脳会議に合わせて行われる。報道によると、米国側は核兵器の削減やイランとの紛争などを議題に挙げているが、中国側の発表は議題に触れておらず、調整が続いているとされる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、世界で最も多くの核兵器を持つ3か国のトップが、初めて同じテーブルにつくという点にある。米国とロシアは、冷戦の時代から核兵器の数を減らす条約を結んできたが、その枠組みは弱まっている。一方、中国は核兵器を急速に増やしているとされ、これまで軍縮交渉への参加を拒んできた。核軍縮<span class="note">（＝核兵器の数を減らしたり、新たに作るのを制限したりすること。国同士が条約を結んで、お互いに減らしていくのが一般的）</span>に中国が加われば大きな前進になる。日本にとっては、近くにある3つの核保有国の関係が変わることを意味し、高市首相もAPECに出席するため深圳を訪れる（11月16日既報）。</p>
+          </div>
+          <div class="meta"><a href="https://www.afpbb.com/articles/-/3662555" target="_blank" rel="noopener">AFPBB News</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 経済</span>
+          <h3>7〜9月期のGDP、年率0.1%減——4四半期ぶりのマイナス成長、個人消費が2期連続で減少</h3>
+          <p class="lead">内閣府が16日に発表した7〜9月期の国内総生産（GDP）の1次速報は、物価の変動を除いた実質で前期比横ばい（マイナス0.0%）、年率に換算して0.1%減となった。OANDA証券によると、マイナス成長は4四半期ぶりで、市場の予想（年率0.2%増）を下回った。GDPの半分以上を占める個人消費は前期比0.3%減と、2四半期続けて減った。一方、企業の設備投資は1.6%増と、3四半期ぶりに増えた。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「物価高で家計が節約している」ことが、そのまま国全体の成長を押し下げているという点にある。9月の家計調査で消費支出が大きく減っていた（11月11日既報）とおり、家庭が買う量を減らしたことが響いた。実質GDP<span class="note">（＝物価の上昇分を取り除いて計算したGDPのこと。値段が上がった分ではなく、実際に生み出されたモノやサービスの量の変化を表す）</span>はマイナスでも、物価の上昇分を含む名目GDP<span class="note">（＝物価の変動をそのまま含めて計算したGDPのこと。値上がりが続くと、実質よりも大きな伸びになる）</span>は年率1.6%増だった。この結果は、日銀が12月に利上げするかどうかの判断にも影響しそうだ。</p>
+          </div>
+          <div class="meta"><a href="https://www.oanda.jp/lab-education/market_news/jpgdp-q3-2026-review/" target="_blank" rel="noopener">OANDA証券</a></div>
+        </article>
+
+        <div class="closing">
+          <span class="label serif">編集後記</span>
+          米中ロの首脳が19日、深圳で史上初の3者会談を開くことになりました。国内では7〜9月期のGDPが4四半期ぶりのマイナスとなり、日経平均も再び6万円を割り込みました。野球の侍ジャパンは韓国を破って大会3連覇。今日はエヌビディアの決算（米国時間）と、スマホの新製品発表が相次ぎます。
+        </div>
+        <div class="colophon">AIが検索結果をもとに要約・編集しています。詳細は各記事の出典リンクでご確認ください。<br>毎朝5時発行・次号は明日<br><a href="archive.html" style="color:inherit">過去の紙面はこちら</a></div>
+      </section>
+
+      <section class="panel" id="panel-social" style="--cat-color:var(--c-social)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">社会</h2></div>
+        <p class="panel-sub">くらしに関わるニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>個人消費、2期連続の減少——物価高で「買う量」を減らす家計</h3>
+          <p class="lead">本日既報のGDPで、個人消費は前期比0.3%減と2四半期続けて減った。NOVAISTなどは、物価の高止まりの中で消費が低迷していると伝えている。4〜6月期のGDPは、年率1.4%増から1.7%増に上方修正されたが、7〜9月期に入って勢いが失われた。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、給料の伸びが物価の上昇に追いつかないと、使えるお金が実質的に減るという点にある。実質賃金<span class="note">（＝受け取る給料の額から物価の上昇分を差し引いて計算した、実際に買える量で見た賃金のこと。給料が増えても物価がそれ以上に上がれば、実質賃金は減る）</span>が伸び悩むと、家計は食費や旅行などを切り詰める。9月の家計調査でも、パック旅行の支出が大きく減っていた。2027年度からの食料品の消費税の引き下げ（11月7日既報）は、こうした家計の負担を軽くすることを狙っているが、効果が出るのはまだ先だ。</p>
+          </div>
+          <div class="meta"><a href="https://novaist.jp/articles/japan-economy-shrinks/" target="_blank" rel="noopener">NOVAIST</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>北海道でヒグマの出没が続く——13〜16日の4日間で6件</h3>
+          <p class="lead">北海道では、11月13日から16日までの4日間に、警察や行政が発表したヒグマの出没が6件あった。NHKが伝えた。冬が近づく中でも、人の生活圏の近くでクマが目撃される状況が続いている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、クマが冬眠の前に、たくさん食べて体に脂肪を蓄える時期だという点にある。冬眠<span class="note">（＝冬の間、食べ物が少なくなる時期に、活動をほとんど止めて巣穴などでじっと過ごすこと。クマは秋に十分な栄養を蓄えておく必要がある）</span>を前に、山の木の実が不作の年などは、食べ物を求めて人里まで下りてくることが増える。ヒグマ<span class="note">（＝北海道にすむ大型のクマのこと。本州などにいるツキノワグマより体が大きく、力も強い）</span>に出会わないよう、山や林の近くでは鈴やラジオで音を出す、生ごみを外に置かない、といった対策が大切だ。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261116de76729" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-polecon" style="--cat-color:var(--c-polecon)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">政治／経済</h2></div>
+        <p class="panel-sub">政治・経済の動き2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 経済</span>
+          <h3>日経平均1480円安、再び6万円割れ——プライム銘柄の半数以上が下落</h3>
+          <p class="lead">16日の東京株式市場で日経平均株価は、前週末より1480円33銭安い5万9662円02銭で取引を終え、1週間ぶりに6万円を下回った。読売新聞によると、東証プライム市場の銘柄の半数以上が値下がりした。米国の半導体株が下がった流れや、エヌビディアの経営トップの人事をめぐる報道を受けて、半導体関連の株に売りが集中した。同じ日の朝に発表されたGDPのマイナス成長も重しになった。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、日本株が米国の半導体株の動きに大きく左右されているという点にある。東証プライム市場<span class="note">（＝東京証券取引所の中で、規模が大きく、厳しい上場基準を満たした企業が集まる市場のこと。日本を代表する大企業の多くが上場している）</span>の値動きは、ここ数週間、エヌビディアをめぐるニュース（11月14日既報）に振り回されてきた。今日（米国時間）に予定されるエヌビディアの決算が、次の大きな材料になる。</p>
+          </div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/articles/b62880e01f597bbabca9498adea8156ebff5ba60" target="_blank" rel="noopener">読売新聞（Yahoo!ニュース）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 政治</span>
+          <h3>高市首相がマニラ入り、比大統領と会談——AZECで「危機時の石油調達」の新枠組み提唱へ</h3>
+          <p class="lead">高市首相は16日午後、フィリピンのマニラに到着し、マルコス大統領と会談した。日本経済新聞などによると、首相は17日からASEAN関連の首脳会議に出席する。共同通信によると、17日の「アジア・ゼロエミッション共同体（AZEC）」の首脳会合では、危機が起きたときに石油の調達で協力する新しい枠組みづくりを提唱する方針だ。日米豪印の「クアッド」首脳会合も開かれる見通しだが、トランプ大統領との個別の首脳会談が実現するかは分かっていない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、中東の緊張が、アジアの国々のエネルギーの不安につながっているという点にある。日本や東南アジアの多くの国は、石油の多くを中東から輸入している。イランをめぐる情勢でホルムズ海峡（11月11日既報）が不安定になれば、石油が手に入りにくくなるおそれがある。AZEC<span class="note">（＝アジア・ゼロエミッション共同体のこと。日本が主導し、東南アジアなどの国々と協力して、脱炭素とエネルギーの安定供給を両立させることを目指す枠組み）</span>で、いざというときに石油を融通し合う仕組みを作れば、地域全体のエネルギー安全保障<span class="note">（＝必要なエネルギーを、手ごろな価格で、途切れることなく確保できる状態を保つこと）</span>を高められる。</p>
+          </div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/articles/e5f69b9d941d170384bf6d6b773a53185f4b25c1" target="_blank" rel="noopener">共同通信（Yahoo!ニュース）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-scitech" style="--cat-color:var(--c-scitech)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">科学／テック</h2></div>
+        <p class="panel-sub">研究・技術のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>辞任したフアン氏、エヌビディア復帰を検討と英紙報道——マスク氏らが復帰求める書簡</h3>
+          <p class="lead">エヌビディアのCEOを辞任したジェンスン・フアン氏（11月14日既報）が、早くも会社への復帰を検討していると、英紙フィナンシャル・タイムズが報じた。Forbes JAPANによると、フアン氏は復帰について協力者と話し合ったとされる。また、イーロン・マスク氏を含む複数の大富豪やシリコンバレーの経営者が、フアン氏の復帰を求める取締役会あての公開書簡に署名したという。いずれも報道の段階で、会社は公式に認めていない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、辞任の理由と「会社にとっての必要性」の間で、意見が分かれているという点にある。フアン氏は、中国のスパイと疑われる女性との関係などを背景に辞任したとされる。一方で、エヌビディアを世界最大級の企業に育てた手腕を高く評価する声も根強い。公開書簡<span class="note">（＝特定の相手にあてた手紙を、誰でも読めるように公表したもの。多くの著名人が署名することで、社会に向けて強いメッセージを発する手段になる）</span>は、取締役会への圧力になる。取締役会がどう判断するかは、企業の統治のあり方としても注目される。</p>
+          </div>
+          <div class="meta"><a href="https://forbesjapan.com/articles/detail/108303" target="_blank" rel="noopener">Forbes JAPAN</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>COP31、最終週へ——議長「すでに約束した資金の実行を」と各国に要請</h3>
+          <p class="lead">トルコで開かれている国連の気候変動会議COP31（11月14日既報）は、16日から最後の1週間に入った。トルコのアナドル通信によると、議長を務めるムラト・クルム環境相は、各国に対し、すでに約束した気候変動対策の資金をきちんと出すよう求めた。会議は20日に閉幕する予定で、合意文書のとりまとめに向けた交渉が大詰めを迎える。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、温暖化対策の会議で「お金の約束が守られるか」が最大の争点の一つだという点にある。気候資金<span class="note">（＝温暖化の原因となるガスを減らす取り組みや、異常気象の被害への備えのために、主に先進国から途上国に提供されるお金のこと）</span>は、途上国が対策を進めるために欠かせない。これまで先進国が約束した額が、実際には十分に届いていないとの不満が途上国から出ている。米国・中国・インドの首脳が欠席した中で（11月12日既報）、最終的にどこまで具体的な合意ができるかが問われる。</p>
+          </div>
+          <div class="meta"><a href="https://www.aa.com.tr/en/world/morning-briefing-nov-16-2026/4126094" target="_blank" rel="noopener">Anadolu Agency</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-business" style="--cat-color:var(--c-business)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ビジネス</h2></div>
+        <p class="panel-sub">企業・産業のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>エヌビディアの後任選び、アームのハースCEOやAMDのスーCEOの名前も</h3>
+          <p class="lead">エヌビディアの取締役会は、フアン氏の辞任を受けて正式な後任のCEO選びを始めた。報道によると、取締役会は英半導体設計大手アームのレネ・ハースCEOに接触したとされ、社内ではイアン・バック副社長の名前も挙がっている。米ブルームバーグ通信は、競合する米AMDのリサ・スーCEOも最終候補の1人に残るとみていると伝えた。いずれも報道の段階で、正式な決定はまだない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、候補者に「ライバル企業のトップ」まで名前が挙がっているという異例さにある。AMDはエヌビディアとAI向け半導体で競争する会社で、そのトップのスー氏は、フアン氏とは遠い親戚にあたるとも知られる。アーム<span class="note">（＝スマートフォンなどに広く使われる半導体の「設計図」を開発し、各社に使わせることで稼ぐ英国の会社のこと。ソフトバンクグループが大株主）</span>のハース氏が選ばれれば、業界の勢力図にも影響しうる。社外から大物を招くか、社内の技術者を選ぶかで、エヌビディアの今後の方向性が変わる。</p>
+          </div>
+          <div class="meta"><a href="https://www.oanda.jp/lab-education/market_news/kn_2026111401000803/" target="_blank" rel="noopener">OANDA証券（共同通信）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>エヌビディア、今日決算発表——トップ交代後初、AI需要の強さを測る試金石</h3>
+          <p class="lead">エヌビディアは今日17日（米国時間）に、8〜10月期の決算を発表する予定だ（11月16日既報）。フアン氏の辞任後、暫定CEOのクレス氏のもとで迎える初めての決算となる。日本時間では18日の朝に結果が伝わる見込みで、東京市場の半導体株の値動きにも直接影響しそうだ。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、エヌビディアの売り上げの多くが、世界のIT大手によるデータセンター向けの投資から来ているという点にある。データセンター<span class="note">（＝大量のコンピューターを集めて置き、インターネットのサービスやAIの計算を担う専用の施設のこと）</span>向けの売り上げが伸び続けていれば、AIへの投資の勢いが続いている証になる。逆に、伸びが鈍れば、「AIバブル」への警戒（11月7日既報）が再び強まる可能性がある。トップの交代という混乱の中で、会社の稼ぐ力に変わりがないかが注目される。</p>
+          </div>
+          <div class="meta"><a href="https://www.bloomberg.com/jp/news/articles/2026-11-13/TOF4T2KJH6V900" target="_blank" rel="noopener">Bloomberg</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-startup" style="--cat-color:var(--c-startup)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">スタートアップ</h2></div>
+        <p class="panel-sub">資金調達・注目トピック2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>自動運転タクシーのnewmo、KDDI主導で208億円を調達——2028年に大阪・堺で商用化目指す</h3>
+          <p class="lead">自動運転タクシーの実用化を目指すnewmoは、KDDIが主導するシリーズBで208億円を調達したと発表した。THE BRIDGEによると、三菱地所や森ビルなどのファンドも新たに加わり、これまでの累計の調達額は407億円になる見込みだ。newmoはKDDIと資本業務提携も結んでおり、2028年に大阪府堺市で自動運転タクシーの商用サービスを始めることを目指す。KDDIは通信やAIの計算の基盤などを提供する。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、日本で深刻な「タクシー運転手不足」を、自動運転で補おうとしている点にある。地方を中心に、運転手が足りずにタクシーが呼んでも来ない地域が増えている。自動運転タクシー<span class="note">（＝運転手が乗らずに、AIやセンサーが車を運転して客を運ぶタクシーのこと。米国や中国の一部の都市では、すでに有料のサービスが始まっている）</span>は、その解決策として期待されている。資本業務提携<span class="note">（＝ある会社が別の会社に出資して株を持つと同時に、技術や販売などの事業でも協力する関係を結ぶこと）</span>によって、資金と技術の両面で支える形だ。テスラもロボタクシーに力を入れており（11月8日既報）、世界で開発競争が進んでいる。</p>
+          </div>
+          <div class="meta"><a href="https://thebridge.jp/2026/11/newmo-raises-20-8-billion-yen-series-b-kddi" target="_blank" rel="noopener">THE BRIDGE</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>Anthropicの上場、今日まで投資家への説明——18日に価格決定、19日に取引開始へ</h3>
+          <p class="lead">米AI企業Anthropicの上場に向けた投資家への説明（ロードショー）は18日まで続き、同じ日に最終的な価格が決まる見通しだ。申し込みは募集の約6倍に達したと報じられており（11月15日既報）、19日に米ナスダック市場で取引が始まる予定となっている。くしくも19日は、深圳で米中ロの首脳会談が開かれる日と重なる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、上場の値決めが、市場全体の雰囲気にも左右されるという点にある。エヌビディアの決算（本日既報）でAI関連株が大きく動けば、Anthropicの最終的な価格の決め方にも影響しうる。公開価格<span class="note">（＝上場するときに、投資家に株を売り出す値段のこと。仮の価格の幅の中や、人気が高ければその上で決まる）</span>が決まった後、実際に市場で最初につく値段が、投資家の期待の強さを表すことになる。今週は、AI業界にとって大きな出来事が続く1週間だ。</p>
+          </div>
+          <div class="meta"><a href="https://qz.com/anthropic-ipo-oversubscribed-roadshow-demand-111126" target="_blank" rel="noopener">Quartz</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-gadget" style="--cat-color:var(--c-gadget)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ガジェット</h2></div>
+        <p class="panel-sub">新製品2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>テクニクスのワイヤレスヘッドホン「EAH-A1000」、19日に発売</h3>
+          <p class="lead">パナソニックは、オーディオブランド「テクニクス」のワイヤレスヘッドホン「EAH-A1000」を19日に発売する。パナソニックの発表によると、価格はオープンで、店頭の価格は販売店によって異なる。高音質を重視するテクニクスの、頭にかぶるタイプのワイヤレスヘッドホンの新製品だ。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、イヤホンが主流になった今も、ヘッドホンに根強い需要があるという点にある。ヘッドホン<span class="note">（＝耳全体を覆う、または耳に当てて使う大きめの音響機器のこと。耳の穴に入れるイヤホンに比べて、音を出す部品を大きくでき、迫力のある音を出しやすい）</span>は、音質や長時間の着け心地、ノイズキャンセリングの効きで選ばれることが多い。オープン価格<span class="note">（＝メーカーが「希望小売価格」を決めず、販売店が自由に値段を決める方式のこと）</span>のため、購入するときは店ごとの値段を比べるとよい。年末に向けて、オーディオ製品の新作が相次いでいる。</p>
+          </div>
+          <div class="meta"><a href="https://news.panasonic.com/jp/press/jn260930-2" target="_blank" rel="noopener">パナソニック</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>今日17日はスマホ発表の日——シャープの冬モデルとXiaomi 18 Proのグローバル発表</h3>
+          <p class="lead">今日17日は、シャープが2026年冬モデルの新製品を発表する（11月15日既報）。定番の「AQUOS sense」シリーズの新モデルが登場する可能性があると報じられている。また、中国のXiaomiは日本時間の今夜22時に「Xiaomi 18 Pro」のグローバル発表を行う予定だ（11月14日既報）。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、国内メーカーと海外メーカーが、同じ日にそれぞれの強みを持つ製品を出すという点にある。シャープの「AQUOS sense」は、手ごろな値段と、電池の持ち、おサイフケータイ<span class="note">（＝スマホをかざすだけで、電車に乗ったり買い物の支払いをしたりできる日本独自の機能のこと。FeliCaという技術を使う）</span>などの日本向けの機能が強みだ。一方、Xiaomiは高性能なカメラなどを比較的安い値段で出すことで知られる。買い替えを考えている人は、明日の紙面で発表の内容を比べてみてほしい。</p>
+          </div>
+          <div class="meta"><a href="https://s-max.jp/archives/1804012.html" target="_blank" rel="noopener">S-MAX</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-intl" style="--cat-color:var(--c-intl)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">海外</h2></div>
+        <p class="panel-sub">国際ニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>イラン、バーレーンの米軍レーダーにドローン攻撃と主張——米空母3隻目が中東に</h3>
+          <p class="lead">イランの革命防衛隊は15日、バーレーンのリファ空軍基地にある米軍の早期警戒レーダーに向けて、ドローン6機を発射したと発表した。アラブ首長国連邦の英字紙ザ・ナショナルによると、バーレーン側は迎撃したとしており、米国の駐バーレーン大使は革命防衛隊の「命中した」との主張を「うそだ」と否定した。こうした中、米空母セオドア・ルーズベルトが中東の海域に入り、この地域にいる米国の空母は3隻になった。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、トランプ大統領が「戦争は事実上終わった」と述べた（11月11日既報）後も、緊張が続いているという点にある。イラン側は、米軍による通信施設への攻撃への報復だと説明している。早期警戒レーダー<span class="note">（＝ミサイルや航空機が近づいてくるのを、遠くから早めに見つけるためのレーダーのこと。これが使えなくなると、防御の準備が遅れる）</span>を狙ったことは、より大きな攻撃の準備ではないかと警戒する見方もある。空母<span class="note">（＝航空母艦のこと。戦闘機を乗せて海の上を移動できる大型の軍艦で、その国の軍事力を示す存在とされる）</span>が3隻そろうのは異例で、19日の米中ロ首脳会談（本日既報）でもイランの問題が話し合われる見通しだ。</p>
+          </div>
+          <div class="meta"><a href="https://www.thenationalnews.com/news/gulf/2026/11/16/iran-escalates-threats-against-us-forces-and-gulf-states-as-third-american-carrier-arrives/" target="_blank" rel="noopener">The National</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>ウクライナ、ロシアへ開戦以来最大規模のドローン攻撃——和平協議の一方で</h3>
+          <p class="lead">トルコのアナドル通信によると、ウクライナは一晩でロシアに対して、戦争が始まって以来最大規模のドローン攻撃を行った。ウクライナ国防省のデータにもとづくもので、詳しい被害は明らかになっていない。また、ロシアと国境を接するエストニアは、破壊工作が疑われる事案を受けて、ロシアとの国境を閉鎖した。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、和平に向けた話し合いと、戦闘の激化が同時に進んでいるという点にある。米国・ロシア・ウクライナの協議では大規模な捕虜交換で合意し（11月13日既報）、米国の特使がプーチン大統領と会談した（11月15日既報）。一方で、交渉で有利な立場に立つため、戦場での圧力を強めることは戦争ではよくある。破壊工作<span class="note">（＝敵対する国の施設や設備を、ひそかに壊したり、使えなくしたりする行為のこと。サボタージュとも呼ばれる）</span>への警戒から国境を閉じたエストニアの対応は、戦争の影響がヨーロッパに広がっていることを示している。</p>
+          </div>
+          <div class="meta"><a href="https://www.aa.com.tr/en/world/morning-briefing-nov-16-2026/4126094" target="_blank" rel="noopener">Anadolu Agency</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-sports" style="--cat-color:var(--c-sports)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">芸能／スポーツ</h2></div>
+        <p class="panel-sub">厳選2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>侍ジャパン、韓国を5-1で破り大会3連覇——アジアプロ野球チャンピオンシップ、全勝優勝</h3>
+          <p class="lead">野球の「アジアプロ野球チャンピオンシップ2026」の決勝が15日、東京ドームで行われ、井口資仁監督が率いる侍ジャパンが韓国を5対1で破り、2017年、2023年に続く3連覇を果たした。報道によると、5回に1番の正木智也選手が3ランを放った。日本は4戦全勝での優勝となった。13日の韓国との対戦でも、宗山塁選手の勝ち越し3ランで9対5と勝っていた。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、この大会が「若手の登竜門」だという点にある。アジアプロ野球チャンピオンシップ<span class="note">（＝日本、韓国、台湾、オーストラリアなどが参加する国際大会のこと。原則として若い選手や、プロ入りして年数の浅い選手で代表チームを作る）</span>は、将来の日本代表を担う選手たちが国際試合の経験を積む場とされる。決勝で活躍した正木選手は、日本シリーズでも最優秀選手（MVP）に輝いている（10月31日既報）。ここで力を示した選手が、次のWBCなど大きな大会の代表につながっていく。</p>
+          </div>
+          <div class="meta"><a href="https://www.inatei.com/entry/asia-pro-baseball-championship-2026-final-japan-korea" target="_blank" rel="noopener">本家いなてい</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>九州場所9日目、大の里が勝ち越し——熱海富士が豊昇龍を破り、1敗は4人に</h3>
+          <p class="lead">大相撲九州場所9日目の16日、横綱・大の里は尊富士を寄り切って8勝1敗とし、勝ち越しを決めた。共同通信によると、関脇・熱海富士は横綱・豊昇龍を押し出して勝ち越し、大関・霧島も大栄翔を押し出して1敗を守った。1敗は、大の里、霧島、熱海富士と平幕の若元春の4人。豊昇龍は5敗目を喫した。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「勝ち越し」が力士にとって大切な節目だという点にある。勝ち越し<span class="note">（＝15日間の本場所で、勝ちの数が負けの数を上回ること。8勝以上で決まり、次の場所の番付が上がる目安になる）</span>を早く決めれば、残りの取組で優勝争いに集中できる。休場明けの豊昇龍は5敗となり、横綱として勝ち越せるかが厳しくなってきた。後半戦は、1敗の4人の直接対決が優勝の行方を大きく左右する。</p>
+          </div>
+          <div class="meta"><a href="https://ryukyushimpo.jp/kyodo/entry-5603326.html" target="_blank" rel="noopener">琉球新報（共同通信）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-koshien" style="--cat-color:var(--c-koshien)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">高校野球【埼玉】</h2></div>
+        <p class="panel-sub">今週の日程2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>明治神宮大会、あさって19日に開幕——関東王者・横浜は21日に初戦</h3>
+          <p class="lead">秋の日本一を決める第57回明治神宮野球大会（高校の部）が、あさって19日に東京の明治神宮野球場で開幕する。関東大会を制した横浜は、19日の仙台育英と鹿児島城西の試合の勝者と、21日に対戦する（11月10日既報）。決勝は24日に予定されている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、この大会の結果が、来春のセンバツの「出場枠」に関わるという点にある。神宮大会枠<span class="note">（＝明治神宮大会で優勝した学校がある地区に、センバツの出場校を1校多く割り当てる仕組みのこと）</span>によって、横浜が優勝すれば関東地区の枠が1つ増える。横浜は、埼玉1位の西武台を関東大会の1回戦で破った学校だ（11月9日既報）。埼玉県勢にとって、自分たちが敗れた相手がどこまで勝ち進むかは、来夏に向けた目標を考えるうえでも気になるところだ。</p>
+          </div>
+          <div class="meta"><a href="https://www.hb-nippon.com/articles/18396" target="_blank" rel="noopener">高校野球ドットコム</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>週末21・22日は埼玉4地区選抜交流戦——越谷市内大会の結果は確認中</h3>
+          <p class="lead">今週末の21日（土）と22日（日）には、UDトラックス上尾スタジアムで、県内の100人の選手が地区ごとのチームで戦う埼玉4地区選抜チーム交流戦が開かれる（11月13日既報）。一方、15日に行われた越谷市内大会の決勝（獨協埼玉対叡明）の結果は、本稿の時点で確認できていない（11月16日既報）。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、地域の大会の結果が、全国紙やテレビではほとんど報じられないという点にある。市内大会や選抜交流戦<span class="note">（＝県高野連の公式戦とは別に開かれる、交流や育成を目的とした試合のこと）</span>の結果は、各校のホームページや、地域の高校野球情報サイトで発表されることが多い。本紙では、確認できたものから伝えていく。12月1日からは対外試合ができなくなるため、選抜交流戦は今年の実戦の締めくくりになる。</p>
+          </div>
+          <div class="meta"><a href="http://www2.ttcn.ne.jp/sai-kouyaren/" target="_blank" rel="noopener">埼玉県高等学校野球連盟</a></div>
+        </article>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var cats = ['top','social','polecon','scitech','business','startup','gadget','intl','sports','koshien'];
+  var idx = 0;
+  var track = document.getElementById('track');
+  var viewport = document.getElementById('viewport');
+  var vw = viewport.clientWidth;
+
+  function setActive(i){
+    cats.forEach(function(c, j){
+      document.getElementById('tab-' + c).classList.toggle('active', j === i);
+    });
+    var activeTab = document.getElementById('tab-' + cats[i]);
+    if (activeTab && activeTab.scrollIntoView) activeTab.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+  }
+
+  function settle(i, animate){
+    idx = Math.max(0, Math.min(cats.length - 1, i));
+    track.style.transition = animate ? 'transform .32s cubic-bezier(.22,.61,.36,1)' : 'none';
+    track.style.transform = 'translateX(' + (-idx * vw) + 'px)';
+    setActive(idx);
+  }
+
+  window.goTo = function(i){ settle(i, true); };
+
+  window.addEventListener('resize', function(){
+    vw = viewport.clientWidth;
+    settle(idx, false);
+  });
+
+  var dragging = false, decided = null, sx = 0, sy = 0, dx = 0;
+  viewport.addEventListener('touchstart', function(e){
+    dragging = true; decided = null;
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY; dx = 0;
+    track.style.transition = 'none';
+  }, { passive: true });
+
+  viewport.addEventListener('touchmove', function(e){
+    if (!dragging) return;
+    var cx = e.touches[0].clientX, cy = e.touches[0].clientY;
+    var mdx = cx - sx, mdy = cy - sy;
+    if (decided === null) {
+      if (Math.abs(mdx) > 8 || Math.abs(mdy) > 8) {
+        decided = Math.abs(mdx) > Math.abs(mdy) ? 'x' : 'y';
+      }
+    }
+    if (decided === 'x') {
+      e.preventDefault();
+      dx = mdx;
+      var atStart = idx === 0 && dx > 0;
+      var atEnd = idx === cats.length - 1 && dx < 0;
+      var eased = (atStart || atEnd) ? dx * 0.35 : dx;
+      track.style.transform = 'translateX(' + (-idx * vw + eased) + 'px)';
+    }
+  }, { passive: false });
+
+  viewport.addEventListener('touchend', function(){
+    if (!dragging) return;
+    dragging = false;
+    if (decided === 'x') {
+      var threshold = vw * 0.18;
+      if (dx <= -threshold) settle(idx + 1, true);
+      else if (dx >= threshold) settle(idx - 1, true);
+      else settle(idx, true);
+    }
+    decided = null; dx = 0;
+  });
+
+  settle(0, false);
+})();
+</script>
+
+</body></html>
