@@ -1,0 +1,610 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yoshi's News</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Zen+Old+Mincho:wght@600;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap');
+
+:root {
+  --bg: #ffffff;
+  --panel-bg: #ffffff;
+  --card: #ffffff;
+  --card-line: #eef0f3;
+  --ink: #1a1c20;
+  --ink-soft: #5b6068;
+  --ink-faint: #9aa0a8;
+  --shell: #f4f5f7;
+
+  --c-top: #ef3355;
+  --c-social: #00b3a4;
+  --c-polecon: #6d5bf0;
+  --c-scitech: #ff8a1e;
+  --c-business: #0091ff;
+  --c-sports: #26c281;
+  --c-startup: #ff4fa3;
+  --c-koshien: #c8860d;
+  --c-intl: #4b3f8f;
+  --c-gadget: #00bcd4;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101114;
+    --panel-bg: #101114;
+    --card: #1a1c20;
+    --card-line: #2a2c31;
+    --ink: #f1f2f4;
+    --ink-soft: #b7bcc4;
+    --ink-faint: #767c86;
+    --shell: #1a1c20;
+    --c-top: #ff6b85;
+    --c-social: #3fd8c9;
+    --c-polecon: #9c8fff;
+    --c-scitech: #ffab5c;
+    --c-business: #4db2ff;
+    --c-sports: #5be0a6;
+    --c-startup: #ff85c2;
+    --c-koshien: #e8b34c;
+    --c-intl: #a89cf0;
+    --c-gadget: #4dd8ea;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101114;
+  --panel-bg: #101114;
+  --card: #1a1c20;
+  --card-line: #2a2c31;
+  --ink: #f1f2f4;
+  --ink-soft: #b7bcc4;
+  --ink-faint: #767c86;
+  --shell: #1a1c20;
+  --c-top: #ff6b85;
+  --c-social: #3fd8c9;
+  --c-polecon: #9c8fff;
+  --c-scitech: #ffab5c;
+  --c-business: #4db2ff;
+  --c-sports: #5be0a6;
+  --c-startup: #ff85c2;
+  --c-koshien: #e8b34c;
+  --c-intl: #a89cf0;
+  --c-gadget: #4dd8ea;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--shell);
+  color: var(--ink);
+  font-family: "Zen Kaku Gothic New", -apple-system, "Hiragino Kaku Gothic ProN", sans-serif;
+  line-height: 1.7;
+  overscroll-behavior-y: none;
+}
+.serif { font-family: "Zen Old Mincho", "Hiragino Mincho ProN", serif; }
+
+.app {
+  max-width: 680px;
+  margin: 0 auto;
+  background: var(--bg);
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ---- Header ---- */
+.topbar { padding: 20px 20px 0; flex-shrink: 0; }
+.title-line { display: flex; align-items: center; gap: 8px; }
+.mascot { height: 50px; width: auto; flex-shrink: 0; border-radius: 8px; }
+.title-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  margin-bottom: 14px;
+}
+.title-row h1 {
+  font-family: "Baloo 2", "Zen Kaku Gothic New", sans-serif;
+  font-size: 48px; font-weight: 800; margin: 0; letter-spacing: 0.01em; line-height: 1;
+  -webkit-text-stroke: 2.4px #2b2013;
+  filter: drop-shadow(2px 3px 0 rgba(30,22,12,0.18));
+  background-image:
+    radial-gradient(circle at 22% 30%, #211709 0 7px, transparent 8px),
+    radial-gradient(circle at 68% 65%, #3a2b16 0 9px, transparent 10px),
+    radial-gradient(circle at 45% 88%, #241a0c 0 5px, transparent 6px),
+    radial-gradient(circle at 85% 20%, #2e2211 0 6px, transparent 7px),
+    linear-gradient(135deg, #b8a06e, #967c4c 50%, #6f5a35);
+  background-size: 30px 30px, 41px 41px, 23px 23px, 35px 35px, 100% 100%;
+  background-repeat: repeat, repeat, repeat, repeat, no-repeat;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.title-row .date { font-size: 11.5px; color: var(--ink-faint); white-space: nowrap; font-weight: 500; margin-top: 2px; }
+
+.tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px 3px; }
+.tab {
+  appearance: none; border: none; background: none;
+  font-family: inherit; font-size: 10.5px; font-weight: 700;
+  color: var(--ink-faint);
+  padding: 7px 4px 9px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+  cursor: pointer;
+  border-radius: 10px 10px 0 0;
+  transition: color .2s ease, background .2s ease;
+}
+.tab .dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  margin-right: 5px; background: currentColor; opacity: 0.45; vertical-align: middle;
+}
+.tab::after {
+  content: ""; position: absolute; left: 10px; right: 10px; bottom: 0;
+  height: 3px; border-radius: 3px 3px 0 0; background: transparent; transition: background .2s ease;
+}
+.tab.active { color: var(--tab-color); background: color-mix(in srgb, var(--tab-color) 10%, transparent); }
+.tab.active .dot { opacity: 1; }
+.tab.active::after { background: var(--tab-color); }
+
+/* ---- Swipe viewport ---- */
+.viewport { flex: 1; overflow: hidden; position: relative; touch-action: pan-y; }
+.track {
+  display: flex;
+  height: 100%;
+  width: 1000%;
+  transition: transform .32s cubic-bezier(.22,.61,.36,1);
+  will-change: transform;
+}
+.panel {
+  width: 10%;
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 20px 56px;
+}
+
+.panel-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.panel-head .chip { width: 8px; height: 26px; border-radius: 4px; background: var(--cat-color); flex-shrink: 0; }
+.panel-head h2 { font-size: 20px; font-weight: 700; margin: 0; letter-spacing: 0.02em; color: var(--cat-color); }
+.panel-sub { font-size: 12px; color: var(--ink-faint); margin: 0 0 18px 18px; }
+
+.story {
+  background: var(--card);
+  border: 1px solid var(--card-line);
+  border-left: 4px solid var(--cat-color);
+  border-radius: 12px;
+  padding: 18px 18px 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(20,20,30,0.05);
+}
+.story .kicker {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: "Zen Old Mincho", serif; font-size: 11.5px; font-weight: 700;
+  color: var(--cat-color); margin-bottom: 9px;
+}
+.story h3 { font-size: 16px; font-weight: 700; line-height: 1.55; margin: 0 0 10px; }
+.story .lead { font-size: 14px; color: var(--ink); margin: 0 0 14px; line-height: 1.85; }
+
+.context {
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 10px;
+  padding: 13px 15px;
+  margin: 0 0 12px;
+}
+.context-label {
+  display: block; font-size: 10.5px; font-weight: 700;
+  color: var(--cat-color); letter-spacing: 0.04em; margin-bottom: 6px;
+}
+.context p { font-size: 13px; color: var(--ink-soft); margin: 0; line-height: 1.8; }
+
+.note { font-size: 11.5px; color: var(--ink-faint); font-weight: 500; }
+
+.term-link {
+  color: var(--cat-color);
+  text-decoration: none;
+  border-bottom: 1px dotted color-mix(in srgb, var(--cat-color) 55%, transparent);
+  font-weight: 700;
+}
+
+.meta { font-size: 11px; color: var(--ink-faint); }
+.meta a { color: var(--cat-color); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--cat-color) 40%, transparent); font-weight: 700; }
+
+.closing {
+  margin: 6px 0 0; padding: 16px 18px;
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 12px; font-size: 13px; color: var(--ink-soft); text-align: center;
+}
+.closing .label {
+  display: block; font-family: "Zen Old Mincho", serif; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.2em; color: var(--cat-color); margin-bottom: 8px;
+}
+.colophon { margin: 14px 0 8px; font-size: 10.5px; color: var(--ink-faint); line-height: 1.9; text-align: center; }
+
+@media (max-width: 420px) {
+  .topbar { padding: 16px 14px 0; }
+  .panel { padding: 16px 14px 48px; }
+  .title-row h1 { font-size: 38px; }
+  .mascot { height: 40px; }
+}
+</style>
+</head><body>
+
+
+<div class="app" id="app">
+
+  <div class="topbar">
+    <div class="title-row">
+      <div class="title-line">
+        <img class="mascot" src="mascot.jpg" alt="オオサンショウウオのマスコット">
+        <h1>Yoshi's News</h1>
+      </div>
+      <span class="date">2026年11月21日（土）・第79号</span>
+    </div>
+    <div class="tabs" id="tabs">
+      <button class="tab" id="tab-top" style="--tab-color:var(--c-top)" onclick="goTo(0)"><span class="dot"></span>トップ</button>
+      <button class="tab" id="tab-social" style="--tab-color:var(--c-social)" onclick="goTo(1)"><span class="dot"></span>社会</button>
+      <button class="tab" id="tab-polecon" style="--tab-color:var(--c-polecon)" onclick="goTo(2)"><span class="dot"></span>政治/経済</button>
+      <button class="tab" id="tab-scitech" style="--tab-color:var(--c-scitech)" onclick="goTo(3)"><span class="dot"></span>科学/テック</button>
+      <button class="tab" id="tab-business" style="--tab-color:var(--c-business)" onclick="goTo(4)"><span class="dot"></span>ビジネス</button>
+      <button class="tab" id="tab-startup" style="--tab-color:var(--c-startup)" onclick="goTo(5)"><span class="dot"></span>スタートアップ</button>
+      <button class="tab" id="tab-gadget" style="--tab-color:var(--c-gadget)" onclick="goTo(6)"><span class="dot"></span>ガジェット</button>
+      <button class="tab" id="tab-intl" style="--tab-color:var(--c-intl)" onclick="goTo(7)"><span class="dot"></span>海外</button>
+      <button class="tab" id="tab-sports" style="--tab-color:var(--c-sports)" onclick="goTo(8)"><span class="dot"></span>芸能/スポーツ</button>
+      <button class="tab" id="tab-koshien" style="--tab-color:var(--c-koshien)" onclick="goTo(9)"><span class="dot"></span>高校野球【埼玉】</button>
+    </div>
+  </div>
+
+  <div class="viewport" id="viewport">
+    <div class="track" id="track">
+
+      <section class="panel" id="panel-top" style="--cat-color:var(--c-top)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">トップニュース</h2></div>
+        <p class="panel-sub">今日いちばん知っておきたい2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 経済</span>
+          <h3>日経平均3007円安、下げ幅は歴代5位——AIへの不安で全面安、7か月ぶりの5万6000円台</h3>
+          <p class="lead">20日の東京株式市場で日経平均株価は、前日より3007円56銭（5.06%）安い5万6436円65銭で取引を終えた。日本テレビなどによると、下げ幅は歴代5位の大きさで、終値は約7か月ぶりの水準となった。前日の米国市場でハイテク株が売られた流れを受け、東証プライム市場の9割を超える銘柄が値下がりした。アドバンテストとソフトバンクグループの2銘柄だけで、日経平均を約1016円押し下げた。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「AIへの期待」で上がってきた株価が、その期待が揺らいだとたんに大きく下がったという点にある。19日に米ナスダック市場に上場したAnthropic（11月20日既報）は、初値こそ大きく上がったものの、その後は伸び悩んだ。これが「AIブームは行き過ぎではないか」という不安を呼び、米国の株式市場でハイテク株が売られた。日経平均<span class="note">（＝東京証券取引所に上場する代表的な225社の株価をもとに計算する指数のこと）</span>は、アドバンテストなどAI・半導体に関わる値がさ株<span class="note">（＝1株あたりの株価が高い銘柄のこと。日経平均の計算では、こうした銘柄の値動きの影響が大きくなる）</span>の比重が大きいため、AI関連株が売られると下げ幅がふくらみやすい。</p>
+          </div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/articles/4f3d50b08ce88bfe7ff3ad7fddb3666d7992e888" target="_blank" rel="noopener">日テレNEWS NNN（Yahoo!ニュース）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 社会</span>
+          <h3>マーケティングツール「KARTE」への不正アクセス、影響はのべ約2200社に——再開は来年1月中旬目標</h3>
+          <p class="lead">IT企業のプレイドが提供するマーケティングツール「KARTE（カルテ）」が不正アクセスを受けた問題で、情報が漏れたり、漏れたおそれがあったりする利用企業が、のべおよそ2200社にのぼることが分かった。NHKが20日に伝えた。Impress Watchによると、プレイドは20日に調査結果を公表し、止めているサービスを2027年1月中旬から段階的に再開することを目指すとした。眼鏡のJINSは会員アカウント最大約1829万件について漏えいの可能性を公表するなど、影響は多くの企業の顧客に広がっている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、自分が使っている会社が直接攻撃されなくても、その会社が仕事を任せている「委託先」から情報が漏れることがあるという点にある。KARTEは、企業のウェブサイトやアプリでの客の動きを分析し、メールやお知らせを送るのに使われる道具で、多くの企業が客の情報を預けていた。こうした仕組みはSaaS<span class="note">（＝ソフトウェアを自社のパソコンに入れるのではなく、インターネット経由でサービスとして使う形のこと。多くの企業が同じ仕組みを共有する）</span>と呼ばれ、1か所が破られると多くの企業に被害が一度に広がる。サプライチェーン攻撃<span class="note">（＝狙った相手を直接攻めるのではなく、取引先や委託先など、つながりのある弱いところを入り口にして攻撃すること）</span>への備えが、社会全体の課題になっている。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261120de79350" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+
+        <div class="closing">
+          <span class="label serif">編集後記</span>
+          日経平均が3000円を超える大幅な値下がりとなりました。AIへの期待で上がってきた相場が、その期待の揺らぎに大きく反応した形です。KARTEの情報流出は影響の広さが明らかになってきました。心当たりのある会社からのお知らせメールは、リンクを開く前に送り主を確かめてください。今日は神宮で横浜と仙台育英が激突し、上尾では4地区選抜交流戦が始まります。
+        </div>
+        <div class="colophon">AIが検索結果をもとに要約・編集しています。詳細は各記事の出典リンクでご確認ください。<br>毎朝5時発行・次号は明日<br><a href="archive.html" style="color:inherit">過去の紙面はこちら</a></div>
+      </section>
+
+      <section class="panel" id="panel-social" style="--cat-color:var(--c-social)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">社会</h2></div>
+        <p class="panel-sub">くらしに関わるニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>はんこ通販「ハンコヤドットコム」、クレジットカード情報約8220件が漏えいか</h3>
+          <p class="lead">大阪の会社が運営する印鑑などのネット通販サイト「ハンコヤドットコム」は、システムが不正アクセスを受け、約8220件のクレジットカード情報が漏れた可能性があると、会社のホームページで発表した。NHKが20日に伝えた。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、ネット通販のカード情報の流出は、利用者が気づかないうちに不正利用につながるおそれがあるという点にある。盗まれたカード番号は、闇のサイトなどで売り買いされ、知らないうちに買い物に使われることがある。心当たりのある人は、カードの利用明細<span class="note">（＝カードでいつ、どこで、いくら使ったかが一覧になったもの。カード会社のアプリやウェブで確認できる）</span>に身に覚えのない請求がないかを確かめ、不審な点があればカード会社に連絡することが大切だ。ここ最近、楽天証券（11月19日既報）やKARTE（本日既報）など、不正アクセスによる情報流出が相次いでいる。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261120de79394" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>日曜日にかけて冷え込み続く——気温の変化に注意、体調管理を</h3>
+          <p class="lead">各地で冷え込みが強まっており、NHKによると、日曜日にかけて冷え込みが続く見通しだ。朝晩と日中の気温の差も大きくなるため、体調管理に注意するよう呼びかけられている。今週は北海道でも、発達した低気圧による暴風への警戒が呼びかけられていた（11月19日既報）。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、急な冷え込みが、かぜだけでなく体のさまざまな不調の引き金になるという点にある。特に注意したいのがヒートショック<span class="note">（＝暖かい部屋から寒い脱衣所や浴室に移ったときなどに、急な温度の変化で血圧が大きく上下し、失神や心筋梗塞、脳卒中などを起こすこと。高齢者に多い）</span>だ。冬に入るこの時期は、脱衣所や浴室を暖めておく、お湯の温度を上げすぎないといった工夫が勧められる。また、空気が乾燥するとインフルエンザなどの感染症も広がりやすくなるため、手洗いや適度な加湿も大切になる。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261120de79279" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-polecon" style="--cat-color:var(--c-polecon)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">政治／経済</h2></div>
+        <p class="panel-sub">政治・経済の動き2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 政治</span>
+          <h3>消費減税法案、青森で参院の地方公聴会——「負担軽減に期待」「便乗値上げが心配」</h3>
+          <p class="lead">飲食料品の消費税率を引き下げる法案を審議している参議院の特別委員会は20日、青森市で地方公聴会を開いた。時事通信によると、物価高の中での負担軽減に期待する声が上がった一方、値下げに乗じた「便乗値上げ」や、減税が終わった後の消費の落ち込みを心配する意見も出た。NHKによると、自治体や農家などへの支援を求める声もあった。法案は、2027年度から2年間、飲食料品の税率を1%に下げる内容だ。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、参議院では与党が過半数を持っておらず、法案が通るかどうかがまだ分からないという点にある。与党は、無所属の議員や一部の野党の賛成を得ようとしている。地方公聴会<span class="note">（＝国会の委員会が地方に出向き、その地域の専門家や住民の代表から、法案についての意見を直接聞く会のこと）</span>は、採決に向けた手続きの一つでもある。税率が下がると、お店はレジや値札の変更などの手間がかかるほか、農家などは税の計算のしかたが変わる影響も受ける。減税の恩恵と、現場の負担をどう調整するかが問われている。</p>
+          </div>
+          <div class="meta"><a href="https://www.jiji.com/jc/article?k=2026112001075&amp;g=eco" target="_blank" rel="noopener">時事通信</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 経済</span>
+          <h3>米国株安、ダウは5万ドル割れ・ナスダック2%安——Anthropic上場でも「AI相場」戻らず</h3>
+          <p class="lead">19日の米国株式市場では、ハイテク株を中心に売りが広がった。米CNBCによると、ダウ平均株価は5万ドルを下回って取引を終え、ハイテク株の多いナスダック総合指数は約2%下がった。Anthropicの上場が「AI相場」を立て直すきっかけになると期待されていたが、そうはならなかった。半導体大手AMDの株は7%以上値下がりした。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、米国の株価の動きが、時差を経て翌日の日本の株価に大きく影響するという点にある。米国の市場が閉まるのは日本時間の朝で、その結果を受けて東京の市場が開く。本日既報の日経平均の大幅な値下がりも、この米国株安が引き金となった。AI相場<span class="note">（＝AIに関わる企業の株が、将来の成長への期待から次々と買われ、株価全体を押し上げてきた相場の流れのこと）</span>は、期待が大きいぶん、少しの不安でも売りが広がりやすい。ナスダック<span class="note">（＝米国の株式市場の一つで、アップルやエヌビディアなどハイテク企業が多く上場している。その値動きを表す指数も同じ名前で呼ばれる）</span>の動きは、世界のハイテク株の温度計といえる。</p>
+          </div>
+          <div class="meta"><a href="https://www.cnbc.com/2026/11/18/stock-market-today-live-updates.html" target="_blank" rel="noopener">CNBC（英語）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-scitech" style="--cat-color:var(--c-scitech)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">科学／テック</h2></div>
+        <p class="panel-sub">研究・技術のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>KARTEへの攻撃、サーバーの弱点から「認証情報」を盗み出す——連携先のサービスにも波及</h3>
+          <p class="lead">本日既報のKARTEへの不正アクセスは、13日未明に起きた。INTERNET Watchによると、第三者がサーバーの脆弱性を悪用して認証情報を盗み、データベースなどから情報を外部に読み出した。漏れたのは、KARTEのアカウントのメールアドレス約7万9000件や、外部のサービスと連携するための認証情報、利用企業が取り込んだ顧客データの一部などだ。プレイドは全サービスを止め、利用企業に連携用の認証情報を無効にするよう求めている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、盗まれたのが「データそのもの」だけでなく、他のシステムに入るための「鍵」でもあったという点にある。脆弱性<span class="note">（＝ソフトウェアやシステムの設計・作りの不備によって生じる、安全上の弱点のこと）</span>を突かれて認証情報<span class="note">（＝システムにアクセスする権限があることを証明するための、パスワードや専用の鍵（キー）などの情報のこと）</span>が盗まれると、それを使って、KARTEとつながっている別のサービスにまで入り込まれるおそれがある。そのため、利用企業は鍵を作り直す作業に追われている。便利な「つながり」が、攻撃の通り道にもなりうることを示している。</p>
+          </div>
+          <div class="meta"><a href="https://internet.watch.impress.co.jp/docs/news/2157316.html" target="_blank" rel="noopener">INTERNET Watch</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>漏れた個人情報の拡散をどう防ぐ——総務省、悪質サイトへの「アクセス抑止」で初会合</h3>
+          <p class="lead">総務省は20日、サイバー攻撃で漏れた個人情報がインターネット上に掲載された場合に、悪質なサイトへのアクセスを抑える方法を検討する会議の初会合を開いた。NHKが伝えた。会議は、通信事業者がサイバー攻撃を防ぐための手段としての「アクセス抑止」のあり方を話し合うもので、政府が6日にまとめた緊急の対策を受けて設けられた。報道によると、来年の初めにも中間的な取りまとめを行う。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、悪質なサイトへの接続を止める方法が、「通信の秘密」という大切な原則とぶつかるという点にある。ブロッキング<span class="note">（＝インターネットの接続業者が、特定のサイトへの接続を強制的に遮断すること）</span>を行うには、利用者がどのサイトに接続しようとしているかを業者が確かめる必要がある。これは憲法が守る通信の秘密<span class="note">（＝手紙や電話、ネットの通信の中身や、誰と誰がやりとりしたかを、他人が勝手にのぞいたり漏らしたりしてはならないという原則のこと）</span>に触れるおそれがある。被害の拡大を防ぐことと、自由な通信を守ることのバランスが議論の焦点になる。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261120de79437" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-business" style="--cat-color:var(--c-business)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ビジネス</h2></div>
+        <p class="panel-sub">企業・産業のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>Anthropic株、上場初日は97ドルで終える——2日目は一時12%下落</h3>
+          <p class="lead">19日に米ナスダック市場に上場したAnthropicの株は、初日の取引を1株97.17ドルで終えた。米フォーブスによると、公開価格の83ドルを約17%上回ったが、初値の111.5ドル（11月20日既報）からは値を下げた。米CNNによると、終値で計算した会社の価値は約1.76兆ドルとなった。米ヤフー・ファイナンスによると、2日目の20日には株価が一時12%下がった。20日の終値は本稿の時点で確認できていない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、上場直後の株価は、期待と不安で大きく揺れやすいという点にある。人気のある会社ほど、初日は買いが殺到して株価が跳ね上がるが、その後は「高すぎるのではないか」と考えた投資家の利益確定<span class="note">（＝値上がりした株を売って、利益を手にすること。多くの人が一斉に行うと株価が下がる）</span>の売りが出やすい。Anthropicの株価の動きは、AI企業全体への評価を映す鏡として、世界の市場から注目されている。本日既報のとおり、その揺れが日米の株式市場全体にも波及した。</p>
+          </div>
+          <div class="meta"><a href="https://www.forbes.com/sites/fionariley/2026/11/19/anthropic-ipo-live-stock-closes-day-at-97-up-more-than-17/" target="_blank" rel="noopener">Forbes（英語）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>プレイド、KARTEの調査結果を公表——連携データが570社、認証情報が754社で漏えいなど</h3>
+          <p class="lead">KARTEを提供するプレイドは20日、不正アクセスの調査結果を公表した。INTERNET Watchによると、利用企業から預かっていた情報のうち、漏れた、または漏れたおそれがある情報を4つに分けて対象の社数を示した。連携データの一部は570社、外部サービスと連携するための認証情報の一部は754社が対象となった。すでに契約が終わった企業の情報も漏えいの対象に含まれていた。サービスは2027年1月中旬からの段階的な再開を目指す。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、サービスが2か月近く止まることが、KARTEを使う企業の仕事にも大きな影響を与えるという点にある。多くの企業は、KARTEを使ってお客へのお知らせやキャンペーンを配信しており、年末商戦の時期に使えないのは痛手になる。プレイドは東証グロース市場<span class="note">（＝東京証券取引所の市場の一つで、成長が期待される比較的新しい企業が多く上場している）</span>に上場している。契約が終わった企業の情報まで残っていた点は、データを必要以上に持ち続けないというデータ保持<span class="note">（＝預かったデータをいつまで保管し、いつ消すかというルールのこと）</span>の考え方の大切さも示している。</p>
+          </div>
+          <div class="meta"><a href="https://internet.watch.impress.co.jp/docs/news/2158284.html" target="_blank" rel="noopener">INTERNET Watch</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-startup" style="--cat-color:var(--c-startup)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">スタートアップ</h2></div>
+        <p class="panel-sub">資金調達・注目トピック2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>空飛ぶクルマのSkyDrive、東武鉄道などから資金調達——日光エリアに離着陸場の計画</h3>
+          <p class="lead">空飛ぶクルマを開発するSkyDriveは12日、東武鉄道と東武トップツアーズを引受先とする資金調達を発表した。トラベルボイスによると、東武グループの交通や観光の資源と、SkyDriveの機体開発や運航の知見を組み合わせ、関東での実用化を進める。東武鉄道は日光エリアなどで離着陸場の整備を計画している。SkyDriveにとって鉄道会社との提携は、近鉄、大阪メトロ、JR東日本、JR九州に続いて5社目となる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、空飛ぶクルマを使えるようにするには、機体だけでなく「乗り場」や「旅の商品」が必要だという点にある。空飛ぶクルマ<span class="note">（＝電動で垂直に離着陸できる小型の航空機のこと。eVTOL（イーブイトール）とも呼ばれ、ヘリコプターより静かで手軽な移動手段として期待されている）</span>が発着するには、バーティポート<span class="note">（＝空飛ぶクルマ専用の離着陸場のこと）</span>が欠かせない。駅や観光地を持つ鉄道会社と組むことで、電車と空の移動を組み合わせた観光ルートを作りやすくなる。報道によると、2028年の商用サービス開始を目指している。</p>
+          </div>
+          <div class="meta"><a href="https://www.travelvoice.jp/20261113-160852" target="_blank" rel="noopener">トラベルボイス</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>外貨両替の「ポケットチェンジ」、パスポート番号最大2万4000件余りが流出</h3>
+          <p class="lead">余った外国のお金を電子マネーなどに交換するサービスを手がけるポケットチェンジは、不正アクセスの影響で、顧客のパスポート番号が最大2万4000件余り外部に流出したと明らかにした。NHKが20日に伝えた。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、パスポート番号が、本人確認に使われる大切な情報だという点にある。外貨の両替などでは、法律にもとづく本人確認<span class="note">（＝マネーロンダリング（犯罪で得たお金の出どころを隠すこと）などを防ぐため、取引の相手が本人であることを、身分証などで確かめること）</span>が求められるため、パスポートの情報を預かることがある。パスポート番号だけで悪用されることは多くないとされるが、名前や生年月日など他の情報と組み合わされると、なりすましに使われるおそれがある。スタートアップでも、預かる情報が大切なものであるほど、守りを固めることが求められる。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261120de78976" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-gadget" style="--cat-color:var(--c-gadget)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ガジェット</h2></div>
+        <p class="panel-sub">新製品2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>横向きで寝ても気になりにくい——final「ZE500 NYUMIN」、20日に一般発売</h3>
+          <p class="lead">オーディオメーカーのfinalは、寝る前の時間に向けて設計したイヤホン「ZE500 NYUMIN」を20日に一般発売した。PHILE WEBによると、予想実売価格は税込1万1800円前後。片側約3グラムのとても小さな作りで、耳に浅く入れる設計のため、横向きで耳が枕に当たっても違和感を抑えるという。応援購入サービス「Makuake」での先行販売では、約7770万円が集まった。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「眠り」がガジェットの新しい市場になっているという点にある。寝る前に音楽や環境音を聞いてリラックスしたい人は多いが、ふつうのイヤホンは横向きに寝ると耳が痛くなりやすかった。クラウドファンディング<span class="note">（＝インターネットを通じて、多くの人から少しずつお金を集める仕組みのこと。商品の場合は、支援した人が完成品を先に受け取れることが多い）</span>で多くの支援が集まったことは、こうした悩みを持つ人が多いことを示している。睡眠の質を高める「スリープテック<span class="note">（＝睡眠（スリープ）と技術（テクノロジー）を組み合わせた言葉で、眠りの改善を手助けする製品やサービスのこと）</span>」の一つといえる。</p>
+          </div>
+          <div class="meta"><a href="https://www.phileweb.com/sp/news/d-av/202611/12/66371.html" target="_blank" rel="noopener">PHILE WEB</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>ドコモ「スマートウォッチ03」、25日発売——8980円、電池は最大7日</h3>
+          <p class="lead">NTTドコモは、手ごろな価格のスマートウォッチ「スマートウォッチ03」を25日に発売する。スマートウォッチライフによると、価格は8980円で、1.93インチの有機ELディスプレイを備え、電池は最大7日間もつ。初期設定は、時計の画面に出るQRコードをスマホで読み取るだけでできる。文字の大きさは最大で約1.5倍にでき、iPhoneとAndroidの両方で使える。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、スマートウォッチが「詳しい人向けの道具」から「誰でも使える道具」へ広がろうとしている点にある。スマートウォッチ<span class="note">（＝スマホと連携して、通知の確認や歩数・心拍数の記録などができる腕時計型の機器のこと）</span>は、高機能なものだと数万円するうえ、設定も難しいと感じる人がいた。1万円を切る価格や、QRコードでの簡単な設定、大きな文字は、スマホに不慣れな人や高齢の人も意識したものだ。有機EL<span class="note">（＝画素そのものが光る仕組みのディスプレイのこと。黒がくっきりし、消費電力を抑えやすい）</span>の画面で、屋外でも見やすくしている。</p>
+          </div>
+          <div class="meta"><a href="https://www.smartwatchlife.jp/85010/" target="_blank" rel="noopener">スマートウォッチライフ</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-intl" style="--cat-color:var(--c-intl)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">海外</h2></div>
+        <p class="panel-sub">国際ニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>国際司法裁判所、ロヒンギャ迫害を「ジェノサイド」と認定——国家に対しては史上初</h3>
+          <p class="lead">オランダ・ハーグの国際司法裁判所（ICJ）は19日、ミャンマーが西部ラカイン州で少数派のイスラム教徒ロヒンギャに対してジェノサイド（集団殺害）を行ったと認める判決を言い渡した。時事通信によると、ICJが国家によるジェノサイドを認めたのは初めてで、15人の裁判官のうち9人が認定に賛成した。判決は、避難している人たちの安全な帰還を認め、ミャンマーに被害への賠償を命じた。判決は日本出身の岩沢雄司所長が読み上げた。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、国と国との争いを裁くICJが、「国家としての責任」を認めたという点にある。ロヒンギャは、ミャンマー国軍による殺害や性暴力、村の焼き打ちなどで、2017年以降、数十万人が隣国バングラデシュに逃れた。ジェノサイド<span class="note">（＝特定の民族や宗教の集団を、その全部または一部を滅ぼす意図をもって殺害したり、迫害したりすること。国際法で最も重い犯罪の一つとされる）</span>条約に違反したとして、西アフリカのガンビアが2019年に訴えていた。ICJ<span class="note">（＝国際司法裁判所のこと。国連の主要な機関で、国家どうしの争いを国際法にもとづいて裁く）</span>の判決は上訴できず、法的な拘束力があるが、無理やり従わせる手段はない。</p>
+          </div>
+          <div class="meta"><a href="https://www.jiji.com/jc/article?k=2026111901253&amp;g=int" target="_blank" rel="noopener">時事通信</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>「負け犬トリオに何が決められる」——キーウ市民、米中ロ首脳会談を冷ややかに</h3>
+          <p class="lead">米中ロの首脳会談（11月20日既報）について、ウクライナの首都キーウの市民からは冷ややかな声が上がっている。AFP通信によると、キーウがロシアの無人機による攻撃にさらされていた19日、市民の男性は3人の首脳を「負け犬トリオ」と呼び、会談の成果を批判した。AFPは同じ日、プーチン大統領がウクライナによるクリミア橋への攻撃に報復すると表明したとも伝えている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、戦争の当事者であるウクライナが、大国どうしの話し合いの場に呼ばれていないという点にある。ウクライナの人々には、自分たちの運命が頭越しに決められてしまうのではないかという不安がある。一部では、第2次世界大戦の末期に米英ソの首脳が戦後の世界のあり方を決めた「ヤルタ会談<span class="note">（＝1945年2月、米国・英国・ソ連の首脳がクリミア半島のヤルタで開いた会談のこと。戦後の国境や勢力範囲が、関係する国々の頭越しに決められたとして、批判的に引き合いに出されることが多い）</span>」になぞらえる見方もある。会談の後もウクライナへの攻撃は続いており、戦争の終わりはまだ見えない。</p>
+          </div>
+          <div class="meta"><a href="https://www.afpbb.com/articles/-/3663327" target="_blank" rel="noopener">AFPBB News</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-sports" style="--cat-color:var(--c-sports)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">芸能／スポーツ</h2></div>
+        <p class="panel-sub">厳選2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>大の里、直接対決で若元春を破る——ともに2敗で首位に並ぶ、九州場所13日目</h3>
+          <p class="lead">大相撲九州場所13日目の20日、横綱・大の里は、1敗で単独首位だった平幕の若元春を寄り切りで破った。NHKなどによると、大の里は立ち合いで相手の体を起こし、そのまま前に出て勝った。若元春の連勝は10で止まり、2人は11勝2敗で首位に並んだ。関脇・熱海富士と平幕の金峰山はともに3敗に後退した。14日目、大の里は金峰山と対戦する。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、優勝争いが「横綱と平幕の2人の争い」になったという点にある。昨日の時点で、この一番は優勝を左右する直接対決として注目されていた（11月20日既報）。横綱が意地を見せて並んだことで、残り2日は両者とも負けられない戦いになる。もし2人が同じ成績で15日間を終えると、優勝決定戦<span class="note">（＝本場所の最終日に、最も良い成績の力士が複数いた場合に、優勝を決めるために改めて行う取組のこと）</span>が行われる。大の里は2場所連続の優勝、若元春は初優勝をかけて残りの取組に臨む。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261120de79095" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>大関・霧島、年間最多勝が確定——豊昇龍は勝ち越し</h3>
+          <p class="lead">九州場所13日目、大関・霧島は9勝目を挙げ、今年1年間で最も多く勝った力士となる「年間最多勝」を単独で確定させた。日本経済新聞などによると、横綱・豊昇龍は大関・安青錦を送り投げで破り、8勝目を挙げて勝ち越した。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、年間最多勝が「1年を通して安定して強かった」ことの証しだという点にある。大相撲の本場所は年6回、1場所15日間で、年間最多勝<span class="note">（＝1年間の6場所すべての勝ち星の合計がいちばん多い力士に贈られる記録のこと）</span>は、けがなく出場し続け、毎場所勝ち星を重ねないと手にできない。優勝の回数とは違い、1年間の安定感を示す勲章といえる。一方、豊昇龍は今場所苦しんでいたが（11月19日既報）、勝ち越し<span class="note">（＝15日間で勝ち数が負け数を上回ること）</span>を決めて横綱としての面目を保った。</p>
+          </div>
+          <div class="meta"><a href="https://www.nikkei.com/article/DGXZQODH20A6E0Q6A121C2000000/" target="_blank" rel="noopener">日本経済新聞</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-koshien" style="--cat-color:var(--c-koshien)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">高校野球【埼玉】</h2></div>
+        <p class="panel-sub">今週末の日程・結果2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>明治神宮大会2日目、二松学舎大付と常葉大菊川が4強——今日21日は横浜が仙台育英と初戦</h3>
+          <p class="lead">明治神宮野球大会（高校の部）は20日、準々決勝2試合が行われた。共同通信などによると、二松学舎大付（東京）は明徳義塾（四国）に4－1で勝ち、エースの川島投手が1失点で完投した。常葉大菊川（東海）は帝京長岡（北信越）を4－1で破った。今日21日は、関東大会を制した横浜（神奈川）が、初戦でサヨナラ勝ちした仙台育英（東北）と準々決勝で対戦する（11月20日既報）。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、東京代表の二松学舎大付と関東代表の横浜の勝ち上がりが、来春のセンバツの出場枠にも関わるという点にある。神宮大会で優勝した学校の地区には、センバツの出場枠が1つ増える神宮枠<span class="note">（＝明治神宮大会の高校の部で優勝した学校が属する地区に、翌春の選抜高校野球大会の出場枠を1つ追加する仕組みのこと）</span>がある（11月7日既報）。東京の二松学舎大付が勝ち進めば東京、横浜が勝ち進めば関東の枠が増える可能性がある。埼玉の学校にとっても、関東の枠が増えるかどうかは見逃せない。</p>
+          </div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/articles/8abc952604682612f4bf9eee1ccb1f8e7647e1ef" target="_blank" rel="noopener">共同通信（Yahoo!ニュース）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>今日21日から埼玉4地区選抜交流戦——UDトラックス上尾スタジアムで2日間</h3>
+          <p class="lead">今日21日（土）と明日22日（日）、UDトラックス上尾スタジアムで第5回埼玉県高校野球4地区選抜チーム交流戦が開かれる（11月13日既報）。県内を4つの地区に分け、各校から選ばれた選手が地区ごとのチームで戦う。12月からは対外試合ができない期間に入るため、今年最後の大きな実戦の場となる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、ふだんはライバルどうしの選手が、同じユニホームで戦う年に一度の舞台だという点にある。12月1日からはアウト・オブ・シーズン<span class="note">（＝日本高野連の決まりで、翌年3月上旬まで、ほかの学校との練習試合や大会を行わない期間のこと）</span>に入り、各校は冬の練習に専念する。他校の選手のプレーや考え方にふれることは、冬の間に力を伸ばすヒントになる。秋の県大会で活躍した選手たちのプレーを、まとめて見られる貴重な機会だ。</p>
+          </div>
+          <div class="meta"><a href="https://www.hb-nippon.com/articles/18896" target="_blank" rel="noopener">高校野球ドットコム</a></div>
+        </article>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var cats = ['top','social','polecon','scitech','business','startup','gadget','intl','sports','koshien'];
+  var idx = 0;
+  var track = document.getElementById('track');
+  var viewport = document.getElementById('viewport');
+  var vw = viewport.clientWidth;
+
+  function setActive(i){
+    cats.forEach(function(c, j){
+      document.getElementById('tab-' + c).classList.toggle('active', j === i);
+    });
+    var activeTab = document.getElementById('tab-' + cats[i]);
+    if (activeTab && activeTab.scrollIntoView) activeTab.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+  }
+
+  function settle(i, animate){
+    idx = Math.max(0, Math.min(cats.length - 1, i));
+    track.style.transition = animate ? 'transform .32s cubic-bezier(.22,.61,.36,1)' : 'none';
+    track.style.transform = 'translateX(' + (-idx * vw) + 'px)';
+    setActive(idx);
+  }
+
+  window.goTo = function(i){ settle(i, true); };
+
+  window.addEventListener('resize', function(){
+    vw = viewport.clientWidth;
+    settle(idx, false);
+  });
+
+  var dragging = false, decided = null, sx = 0, sy = 0, dx = 0;
+  viewport.addEventListener('touchstart', function(e){
+    dragging = true; decided = null;
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY; dx = 0;
+    track.style.transition = 'none';
+  }, { passive: true });
+
+  viewport.addEventListener('touchmove', function(e){
+    if (!dragging) return;
+    var cx = e.touches[0].clientX, cy = e.touches[0].clientY;
+    var mdx = cx - sx, mdy = cy - sy;
+    if (decided === null) {
+      if (Math.abs(mdx) > 8 || Math.abs(mdy) > 8) {
+        decided = Math.abs(mdx) > Math.abs(mdy) ? 'x' : 'y';
+      }
+    }
+    if (decided === 'x') {
+      e.preventDefault();
+      dx = mdx;
+      var atStart = idx === 0 && dx > 0;
+      var atEnd = idx === cats.length - 1 && dx < 0;
+      var eased = (atStart || atEnd) ? dx * 0.35 : dx;
+      track.style.transform = 'translateX(' + (-idx * vw + eased) + 'px)';
+    }
+  }, { passive: false });
+
+  viewport.addEventListener('touchend', function(){
+    if (!dragging) return;
+    dragging = false;
+    if (decided === 'x') {
+      var threshold = vw * 0.18;
+      if (dx <= -threshold) settle(idx + 1, true);
+      else if (dx >= threshold) settle(idx - 1, true);
+      else settle(idx, true);
+    }
+    decided = null; dx = 0;
+  });
+
+  settle(0, false);
+})();
+</script>
+
+</body></html>
