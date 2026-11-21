@@ -1,0 +1,610 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yoshi's News</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Zen+Old+Mincho:wght@600;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap');
+
+:root {
+  --bg: #ffffff;
+  --panel-bg: #ffffff;
+  --card: #ffffff;
+  --card-line: #eef0f3;
+  --ink: #1a1c20;
+  --ink-soft: #5b6068;
+  --ink-faint: #9aa0a8;
+  --shell: #f4f5f7;
+
+  --c-top: #ef3355;
+  --c-social: #00b3a4;
+  --c-polecon: #6d5bf0;
+  --c-scitech: #ff8a1e;
+  --c-business: #0091ff;
+  --c-sports: #26c281;
+  --c-startup: #ff4fa3;
+  --c-koshien: #c8860d;
+  --c-intl: #4b3f8f;
+  --c-gadget: #00bcd4;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101114;
+    --panel-bg: #101114;
+    --card: #1a1c20;
+    --card-line: #2a2c31;
+    --ink: #f1f2f4;
+    --ink-soft: #b7bcc4;
+    --ink-faint: #767c86;
+    --shell: #1a1c20;
+    --c-top: #ff6b85;
+    --c-social: #3fd8c9;
+    --c-polecon: #9c8fff;
+    --c-scitech: #ffab5c;
+    --c-business: #4db2ff;
+    --c-sports: #5be0a6;
+    --c-startup: #ff85c2;
+    --c-koshien: #e8b34c;
+    --c-intl: #a89cf0;
+    --c-gadget: #4dd8ea;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101114;
+  --panel-bg: #101114;
+  --card: #1a1c20;
+  --card-line: #2a2c31;
+  --ink: #f1f2f4;
+  --ink-soft: #b7bcc4;
+  --ink-faint: #767c86;
+  --shell: #1a1c20;
+  --c-top: #ff6b85;
+  --c-social: #3fd8c9;
+  --c-polecon: #9c8fff;
+  --c-scitech: #ffab5c;
+  --c-business: #4db2ff;
+  --c-sports: #5be0a6;
+  --c-startup: #ff85c2;
+  --c-koshien: #e8b34c;
+  --c-intl: #a89cf0;
+  --c-gadget: #4dd8ea;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--shell);
+  color: var(--ink);
+  font-family: "Zen Kaku Gothic New", -apple-system, "Hiragino Kaku Gothic ProN", sans-serif;
+  line-height: 1.7;
+  overscroll-behavior-y: none;
+}
+.serif { font-family: "Zen Old Mincho", "Hiragino Mincho ProN", serif; }
+
+.app {
+  max-width: 680px;
+  margin: 0 auto;
+  background: var(--bg);
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ---- Header ---- */
+.topbar { padding: 20px 20px 0; flex-shrink: 0; }
+.title-line { display: flex; align-items: center; gap: 8px; }
+.mascot { height: 50px; width: auto; flex-shrink: 0; border-radius: 8px; }
+.title-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  margin-bottom: 14px;
+}
+.title-row h1 {
+  font-family: "Baloo 2", "Zen Kaku Gothic New", sans-serif;
+  font-size: 48px; font-weight: 800; margin: 0; letter-spacing: 0.01em; line-height: 1;
+  -webkit-text-stroke: 2.4px #2b2013;
+  filter: drop-shadow(2px 3px 0 rgba(30,22,12,0.18));
+  background-image:
+    radial-gradient(circle at 22% 30%, #211709 0 7px, transparent 8px),
+    radial-gradient(circle at 68% 65%, #3a2b16 0 9px, transparent 10px),
+    radial-gradient(circle at 45% 88%, #241a0c 0 5px, transparent 6px),
+    radial-gradient(circle at 85% 20%, #2e2211 0 6px, transparent 7px),
+    linear-gradient(135deg, #b8a06e, #967c4c 50%, #6f5a35);
+  background-size: 30px 30px, 41px 41px, 23px 23px, 35px 35px, 100% 100%;
+  background-repeat: repeat, repeat, repeat, repeat, no-repeat;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.title-row .date { font-size: 11.5px; color: var(--ink-faint); white-space: nowrap; font-weight: 500; margin-top: 2px; }
+
+.tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px 3px; }
+.tab {
+  appearance: none; border: none; background: none;
+  font-family: inherit; font-size: 10.5px; font-weight: 700;
+  color: var(--ink-faint);
+  padding: 7px 4px 9px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+  cursor: pointer;
+  border-radius: 10px 10px 0 0;
+  transition: color .2s ease, background .2s ease;
+}
+.tab .dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  margin-right: 5px; background: currentColor; opacity: 0.45; vertical-align: middle;
+}
+.tab::after {
+  content: ""; position: absolute; left: 10px; right: 10px; bottom: 0;
+  height: 3px; border-radius: 3px 3px 0 0; background: transparent; transition: background .2s ease;
+}
+.tab.active { color: var(--tab-color); background: color-mix(in srgb, var(--tab-color) 10%, transparent); }
+.tab.active .dot { opacity: 1; }
+.tab.active::after { background: var(--tab-color); }
+
+/* ---- Swipe viewport ---- */
+.viewport { flex: 1; overflow: hidden; position: relative; touch-action: pan-y; }
+.track {
+  display: flex;
+  height: 100%;
+  width: 1000%;
+  transition: transform .32s cubic-bezier(.22,.61,.36,1);
+  will-change: transform;
+}
+.panel {
+  width: 10%;
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 20px 56px;
+}
+
+.panel-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.panel-head .chip { width: 8px; height: 26px; border-radius: 4px; background: var(--cat-color); flex-shrink: 0; }
+.panel-head h2 { font-size: 20px; font-weight: 700; margin: 0; letter-spacing: 0.02em; color: var(--cat-color); }
+.panel-sub { font-size: 12px; color: var(--ink-faint); margin: 0 0 18px 18px; }
+
+.story {
+  background: var(--card);
+  border: 1px solid var(--card-line);
+  border-left: 4px solid var(--cat-color);
+  border-radius: 12px;
+  padding: 18px 18px 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(20,20,30,0.05);
+}
+.story .kicker {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: "Zen Old Mincho", serif; font-size: 11.5px; font-weight: 700;
+  color: var(--cat-color); margin-bottom: 9px;
+}
+.story h3 { font-size: 16px; font-weight: 700; line-height: 1.55; margin: 0 0 10px; }
+.story .lead { font-size: 14px; color: var(--ink); margin: 0 0 14px; line-height: 1.85; }
+
+.context {
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 10px;
+  padding: 13px 15px;
+  margin: 0 0 12px;
+}
+.context-label {
+  display: block; font-size: 10.5px; font-weight: 700;
+  color: var(--cat-color); letter-spacing: 0.04em; margin-bottom: 6px;
+}
+.context p { font-size: 13px; color: var(--ink-soft); margin: 0; line-height: 1.8; }
+
+.note { font-size: 11.5px; color: var(--ink-faint); font-weight: 500; }
+
+.term-link {
+  color: var(--cat-color);
+  text-decoration: none;
+  border-bottom: 1px dotted color-mix(in srgb, var(--cat-color) 55%, transparent);
+  font-weight: 700;
+}
+
+.meta { font-size: 11px; color: var(--ink-faint); }
+.meta a { color: var(--cat-color); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--cat-color) 40%, transparent); font-weight: 700; }
+
+.closing {
+  margin: 6px 0 0; padding: 16px 18px;
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 12px; font-size: 13px; color: var(--ink-soft); text-align: center;
+}
+.closing .label {
+  display: block; font-family: "Zen Old Mincho", serif; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.2em; color: var(--cat-color); margin-bottom: 8px;
+}
+.colophon { margin: 14px 0 8px; font-size: 10.5px; color: var(--ink-faint); line-height: 1.9; text-align: center; }
+
+@media (max-width: 420px) {
+  .topbar { padding: 16px 14px 0; }
+  .panel { padding: 16px 14px 48px; }
+  .title-row h1 { font-size: 38px; }
+  .mascot { height: 40px; }
+}
+</style>
+</head><body>
+
+
+<div class="app" id="app">
+
+  <div class="topbar">
+    <div class="title-row">
+      <div class="title-line">
+        <img class="mascot" src="mascot.jpg" alt="オオサンショウウオのマスコット">
+        <h1>Yoshi's News</h1>
+      </div>
+      <span class="date">2026年11月22日（日）・第80号</span>
+    </div>
+    <div class="tabs" id="tabs">
+      <button class="tab" id="tab-top" style="--tab-color:var(--c-top)" onclick="goTo(0)"><span class="dot"></span>トップ</button>
+      <button class="tab" id="tab-social" style="--tab-color:var(--c-social)" onclick="goTo(1)"><span class="dot"></span>社会</button>
+      <button class="tab" id="tab-polecon" style="--tab-color:var(--c-polecon)" onclick="goTo(2)"><span class="dot"></span>政治/経済</button>
+      <button class="tab" id="tab-scitech" style="--tab-color:var(--c-scitech)" onclick="goTo(3)"><span class="dot"></span>科学/テック</button>
+      <button class="tab" id="tab-business" style="--tab-color:var(--c-business)" onclick="goTo(4)"><span class="dot"></span>ビジネス</button>
+      <button class="tab" id="tab-startup" style="--tab-color:var(--c-startup)" onclick="goTo(5)"><span class="dot"></span>スタートアップ</button>
+      <button class="tab" id="tab-gadget" style="--tab-color:var(--c-gadget)" onclick="goTo(6)"><span class="dot"></span>ガジェット</button>
+      <button class="tab" id="tab-intl" style="--tab-color:var(--c-intl)" onclick="goTo(7)"><span class="dot"></span>海外</button>
+      <button class="tab" id="tab-sports" style="--tab-color:var(--c-sports)" onclick="goTo(8)"><span class="dot"></span>芸能/スポーツ</button>
+      <button class="tab" id="tab-koshien" style="--tab-color:var(--c-koshien)" onclick="goTo(9)"><span class="dot"></span>高校野球【埼玉】</button>
+    </div>
+  </div>
+
+  <div class="viewport" id="viewport">
+    <div class="track" id="track">
+
+      <section class="panel" id="panel-top" style="--cat-color:var(--c-top)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">トップニュース</h2></div>
+        <p class="panel-sub">今日いちばん知っておきたい2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 経済</span>
+          <h3>NY株949ドル安、ナスダック5.28%の急落——AI懸念でハイテク売りが加速、年初からの上昇分が消える</h3>
+          <p class="lead">20日のニューヨーク株式市場で、ダウ平均株価は前日より949ドル73セント安い4万8147ドル33セントで取引を終えた。共同通信などによると、ハイテク株の多いナスダック総合指数は1261ポイント（5.28%）下がり、今年に入ってからの上昇分をすべて失った。AI関連株への売りが一段と強まり、主要な株価指数のS&P500も3.70%下がった。ナスダックは1週間で約10%、ダウは約8%値下がりし、2020年3月以来の大きな下げとなった。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「AIへの期待」で株価を押し上げてきた流れが、この1週間で一気に逆回転したという点にある。Anthropicの上場（11月20日既報）が期待ほどの盛り上がりを生まず、そこにエヌビディアへの当局の調査報道（本日既報）が重なった。巨額のAI投資に見合う利益が出るのかという疑問も強まっている。2020年3月は、新型コロナウイルスの世界的な流行で株価が暴落した時期で、それ以来の下げ幅ということは、市場がそれだけ動揺していることを示す。日本の株式市場は前日にも3000円を超える値下がりとなっており（11月21日既報）、週明け23日は祝日で休場のため、24日の取引が注目される。</p>
+          </div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/articles/34a6c740c22cbea2f560678e02e248143966f55a" target="_blank" rel="noopener">共同通信（Yahoo!ニュース）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ テック</span>
+          <h3>エヌビディア株14%急落——米SECが会計処理を調査とロイター報道</h3>
+          <p class="lead">米半導体大手エヌビディアの株価が20日、前日より約14%下がった。日本経済新聞によると、米証券取引委員会（SEC）が同社の会計処理を調べていると、ロイター通信が関係者の話として伝えたことがきっかけとなった。ブルームバーグによると、SECの法執行部門の担当者が、会計に問題がないかを精査しているという。調査の具体的な対象は公表されておらず、SECもエヌビディアもコメントしていない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「調査されている」ことと「不正があった」ことは別だという点にある。SEC<span class="note">（＝米証券取引委員会のこと。株式市場で投資家が不当に損をしないよう、企業の情報開示や会計が正しいかを監督する米国の政府機関）</span>が調べ始めても、違反が認められるとは限らない。ただ、エヌビディアは世界の株式市場で最も価値の高い企業の一つで、AIブームの象徴でもある。フアン氏がCEOを辞任した（11月14日既報）直後でもあり、経営の安定を心配していた投資家が、さらに売りに走った。会計<span class="note">（＝企業のお金の出入りや財産を記録し、決算書などにまとめること。投資家はこれを見て企業の価値を判断する）</span>への信頼が揺らぐと、株価には大きく響く。</p>
+          </div>
+          <div class="meta"><a href="https://www.nikkei.com/article/DGXZQOGN210130R21C26A1000000/" target="_blank" rel="noopener">日本経済新聞</a></div>
+        </article>
+
+        <div class="closing">
+          <span class="label serif">編集後記</span>
+          米国株が大きく値下がりし、「AI相場」は1週間で様変わりしました。エヌビディアへの当局の調査報道が、不安に追い打ちをかけています。一方、AnthropicのAIと数学者が「リーマン予想」を証明したと主張し、数学界が検証に動き出しました。今日は九州場所の千秋楽、神宮では横浜が準決勝に臨みます。
+        </div>
+        <div class="colophon">AIが検索結果をもとに要約・編集しています。詳細は各記事の出典リンクでご確認ください。<br>毎朝5時発行・次号は明日<br><a href="archive.html" style="color:inherit">過去の紙面はこちら</a></div>
+      </section>
+
+      <section class="panel" id="panel-social" style="--cat-color:var(--c-social)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">社会</h2></div>
+        <p class="panel-sub">くらしに関わるニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>前橋の住宅街でクマ、通学中の高校生が「追いかけられた」——親グマとみられ、警戒続く</h3>
+          <p class="lead">群馬県前橋市の住宅街で19日朝、通学中の男子高校生から「クマに追いかけられた」と警察に通報があった。NHKによると、高校生にけがはなかった。前橋市では17日に親子とみられる2頭のクマの目撃が相次ぎ、子グマ1頭は捕獲されたが、男性1人が襲われてけがをした。警察や市は、まだ捕まっていない親グマの可能性があるとみて警戒を続けている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、クマが山の中だけでなく、県庁所在地の住宅街にまで出てくるようになっているという点にある。クマの出没<span class="note">（＝野生のクマが、人の住む地域や道路などに姿を現すこと）</span>が増えている背景には、山のドングリなどエサの不作や、人口が減って人の手が入らなくなった里山が広がっていることがあるとされる。秋のクマは冬眠<span class="note">（＝冬の間、エサの少ない時期を、穴の中などでじっとして過ごすこと。クマは冬眠の前に、たくさん食べて体に脂肪をためる）</span>に備えてエサを探し回るため、特に行動範囲が広がる。前橋市では18日に市立の小中高校など70校が休校するなど、生活にも影響が出ている。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261119de78168" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>強い冬型で雪、山形の国道で約50台が立ち往生——長野でも一時2キロの渋滞</h3>
+          <p class="lead">強い冬型の気圧配置の影響で、北日本や東日本の山沿いを中心に雪が降り、交通に影響が出た。新潟日報によると、山形県の国道では雪の影響でトラックが動けなくなり、約50台が一時立ち往生した。長野県でも一時、2キロにわたって車が連なった。冬型の気圧配置は22日まで続く見込みだ。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、冬の始まりのこの時期は、まだ冬用タイヤに替えていない車が多く、急な雪で立ち往生が起きやすいという点にある。冬型の気圧配置<span class="note">（＝日本の西に高気圧、東に低気圧がある「西高東低」の状態のこと。大陸からの冷たい風が日本海を渡るときに雪雲ができ、日本海側や山沿いに雪を降らせる）</span>になると、峠道などでは一気に雪が積もる。立ち往生<span class="note">（＝雪や事故などで、車が前にも後ろにも動けなくなること。1台が止まると後ろの車も動けなくなり、長い列になることがある）</span>に巻き込まれると、何時間も車内で過ごすことになりかねない。雪の予報が出ている地域に車で出かけるときは、冬用タイヤやチェーンを準備し、毛布や飲み物も積んでおくと安心だ。</p>
+          </div>
+          <div class="meta"><a href="https://www.niigata-nippo.co.jp/articles/-/947132" target="_blank" rel="noopener">新潟日報</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-polecon" style="--cat-color:var(--c-polecon)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">政治／経済</h2></div>
+        <p class="panel-sub">政治・経済の動き2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 政治</span>
+          <h3>原子力潜水艦「検討に着手、早期に結論」——安保3文書改定の政府素案、非核三原則の例外も明文化</h3>
+          <p class="lead">政府が年末に改定する安全保障関連の3つの文書の素案で、原子力潜水艦について「検討に着手し、早期に結論を得る」と記す方向となった。山陰中央新報（共同通信）などによると、素案は非核三原則を堅持するとしつつ、緊急時に例外的に核兵器の持ち込みを認めることを明文化する。自民党内には、導入を前提とすることに慎重な声もある。最終的な文言はまだ固まっていない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、日本が長く守ってきた安全保障の考え方が、大きく見直されようとしているという点にある。安保3文書<span class="note">（＝国家安全保障戦略、国家防衛戦略、防衛力整備計画の3つの文書のこと。日本の安全保障の基本方針や、防衛力をどう整えるかを定める）</span>の改定で、原子力潜水艦<span class="note">（＝原子炉の力で動く潜水艦のこと。燃料の補給なしに長い期間、水中を高速で航行できる。核兵器を積んでいるとは限らない）</span>の導入を検討すると明記されれば、日本の防衛の考え方の大きな転換となる。また、非核三原則<span class="note">（＝核兵器を「持たず、作らず、持ち込ませず」という日本政府の方針のこと）</span>の「持ち込ませず」に例外を設けることは、唯一の戦争被爆国としての日本の立場とも関わり、議論を呼びそうだ。</p>
+          </div>
+          <div class="meta"><a href="https://www.sanin-chuo.co.jp/articles/-/1120170" target="_blank" rel="noopener">山陰中央新報（共同通信）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 政治</span>
+          <h3>関文科相、議員会館で会費9万円の政治資金パーティー——野党は問責決議案も視野</h3>
+          <p class="lead">関芳弘文部科学相は18日、2024年3月に経済産業省の課長を講師として招き、会費1人9万円の政治資金パーティーを開いていたことを明らかにした。時事通信によると、関氏は2024年6月にも、衆議院の内規に反して議員会館でパーティーを開いていた。関氏は「法令に従って開催している」と違法性を否定している。立憲民主党など野党6党は、説明が不十分なら問責決議案の提出も視野に入れる方針で一致した。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「省庁の担当者を講師に呼んで高い会費を取る」ことが、なぜ問題視されるのかという点にある。参加する企業などから見ると、役所の担当者と顔をつなげる場に見えかねず、政治と行政の公正さに疑いを招く。政治資金パーティー<span class="note">（＝政治家が会費を集めて開く会合のこと。会費から会場費などを引いた分が政治活動の資金になる）</span>は、議員会館で開くことを衆議院の内規で禁じている。問責決議<span class="note">（＝参議院が、大臣などの責任を問うために行う決議のこと。可決されても法的な拘束力はないが、政治的に大きな打撃となる）</span>が出されれば、消費減税法案の審議（11月21日既報）にも影響しかねない。</p>
+          </div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/articles/2b7f64278378c93a258a2ca6922d74686f190e6d" target="_blank" rel="noopener">時事通信（Yahoo!ニュース）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-scitech" style="--cat-color:var(--c-scitech)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">科学／テック</h2></div>
+        <p class="panel-sub">研究・技術のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>Anthropicの数学者、AI「Claude」と「リーマン予想」を証明と主張——数学界が検証へ</h3>
+          <p class="lead">米AI企業Anthropicに所属する数学者のレベント・アルポゲ氏が、同社のAI「Claude」と協力して、数学最大の難問の一つ「リーマン予想」を証明したと主張した。米サイエンティフィック・アメリカンなどによると、アルポゲ氏は自身のウェブサイトで4ページの論文を公開し、コンピューターで証明を一つずつ確かめられる形式のデータも示した。Anthropicは公式の発表をしていない。英科学誌ネイチャーによると、同じ日には人間だけで書いた別の証明も発表され、数学者たちを驚かせている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、リーマン予想が160年以上だれにも解けなかった問題で、本当に証明されたかどうかは専門家の検証を待たなければならないという点にある。リーマン予想<span class="note">（＝1859年にドイツの数学者リーマンが示した、素数（1とその数自身でしか割り切れない数）の並び方に深く関わる予想のこと。証明には100万ドルの懸賞金がかけられている）</span>は、これまでも何度も「証明した」という主張が出ては、誤りが見つかってきた。今回はLean<span class="note">（＝数学の証明が正しいかを、コンピューターが一歩ずつ機械的に確かめられるようにするためのプログラミング言語のこと）</span>で書かれたデータも示されたが、専門家からは「もっと分かりやすくまとめてから発表すべきだった」との声も出ている。本稿の時点で、証明の正しさは確認されていない。</p>
+          </div>
+          <div class="meta"><a href="https://www.scientificamerican.com/article/anthropic-mathematician-claims-to-prove-riemann-hypothesis-most-famous-problem-in-all-of-math/" target="_blank" rel="noopener">Scientific American（英語）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>新潟・柏崎市と上越市に「レベル4土砂災害危険警報」——雨が続き、山沿いでは積雪</h3>
+          <p class="lead">強い冬型の気圧配置の影響で、新潟県では平地を中心に雨が続き、柏崎市と上越市に「レベル4土砂災害危険警報」が出た。NHKによると、新潟県や長野県の山沿いでは雪が積もっている。BSN新潟放送によると、雨の影響で北陸自動車道が一時通行止めになり、JR信越本線の一部で21日の運転が取りやめになった。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「レベル4」が、危険な場所にいる人は全員避難する必要がある段階だという点にある。災害の危険度は、警戒レベル<span class="note">（＝災害の危険度と、住民がとるべき行動を5段階で示したもの。レベル5は「すでに災害が起きているか差し迫っている」状態で、レベル4は危険な場所からの全員避難が必要な段階）</span>で示される。土砂災害<span class="note">（＝大雨や雪解け水で地盤がゆるみ、がけ崩れや土石流、地すべりが起きること。家が押しつぶされるなど命に関わる）</span>は、雨が止んだ後でも起きることがあるため、がけの近くや谷沿いに住む人は、明るいうちの早めの避難が大切になる。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261121de79593" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-business" style="--cat-color:var(--c-business)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ビジネス</h2></div>
+        <p class="panel-sub">企業・産業のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>SECが着目したエヌビディアの「地域別売上」——集計の基準を変更、AIインフラの金融取引も</h3>
+          <p class="lead">本日既報のエヌビディアへのSECの調査について、ブルームバーグなどは、当局の関心事として、同社が昨年変更した地域別の売上高の集計基準や、AIインフラに関わる金融取引が挙げられていると伝えた。地域別の集計は、請求先の住所ではなく、顧客の本社がある場所で数える方法に変えられた。株価は125ドル台まで下がった。調査が始まった時期は分かっていない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「どの国でどれだけ売れたか」という数字が、米国の輸出規制と深く関わっているという点にある。米国は中国などへのAI向け半導体の輸出を厳しく制限しており（11月18日既報）、どの地域に売っているかは投資家や当局にとって重要な情報だ。地域別売上<span class="note">（＝企業の売り上げを、国や地域ごとに分けて示したもの。どの市場に頼っているかが分かる）</span>の数え方を変えると、同じ取引でも見え方が変わる。また、AIインフラ<span class="note">（＝AIを動かすためのデータセンターや半導体、電力などの設備のこと）</span>への巨額投資では、企業どうしが出資や融資を絡めた複雑な取引をすることがあり、その会計の扱いにも注目が集まっている。</p>
+          </div>
+          <div class="meta"><a href="https://www.bloomberg.com/jp/news/articles/2026-11-20/TOTHCGKJH6V400" target="_blank" rel="noopener">ブルームバーグ</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>エヌビディア株、7週連続の値下がり——相次ぐ懸案で「AIの象徴」に試練</h3>
+          <p class="lead">米フォーブスによると、SECによる会計調査の報道を受けて、エヌビディアの株価は週間で7週連続の値下がりとなった。同社では、フアン氏の私生活をめぐる問題とCEO辞任（11月14日既報）、米国の輸出規制の強化、そして今回の調査報道と、懸案が相次いでいる。好決算を発表した（11月19日既報）にもかかわらず、株価の下落に歯止めがかかっていない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、株価は「今の業績」だけでなく、「将来への安心感」でも決まるという点にある。エヌビディアは8〜10月期に過去最高の売上高を発表したが、経営トップの交代や当局の調査など、先行きの不確かさが増えると、投資家は株を手放しやすくなる。時価総額<span class="note">（＝株価に発行済みの株の数をかけたもので、市場がその会社にどれだけの価値をつけているかを示す数字のこと）</span>の大きい同社の株が下がると、株価指数全体も大きく押し下げられる。AI関連の企業に投資する人にとって、同社の動きは市場の雰囲気を測る目安になっている。</p>
+          </div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/articles/20bfeeeaa64809f787360e976b30ffa0b7f9e6d8" target="_blank" rel="noopener">Forbes JAPAN（Yahoo!ニュース）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-startup" style="--cat-color:var(--c-startup)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">スタートアップ</h2></div>
+        <p class="panel-sub">資金調達・注目トピック2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>Anthropic株、上場2日目は公開価格まであと5セントに——終値は88ドル台</h3>
+          <p class="lead">米AI企業Anthropicの株は、上場2日目の20日、一時83.05ドルまで下がり、公開価格の83ドルまであと5セントに迫った。米24/7ウォール・ストリートによると、その後は持ち直し、前日より約9%安い88.30ドルで取引を終えた。終値は、米紙ウォール・ストリート・ジャーナルを引用した報道では88.91ドルとされるなど、伝え方に差がある。初値の111.5ドル（11月20日既報）からは2割以上値を下げた。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「公開価格を下回るかどうか」が、上場の成否を測る一つの目安になっているという点にある。公開価格<span class="note">（＝上場の前に、投資家が株を買う値段として決められた価格のこと。Anthropicは1株83ドルだった）</span>を下回ると、上場前に株を買った投資家が損をすることになり、「上場は失敗だった」と受け止められやすい。2012年に上場した米フェイスブック（現メタ）は、上場2日目に公開価格を約10%下回って取引を終えた。Anthropicはなんとか公開価格を守った形だが、AI株全体が売られる中で、来週以降も値動きの荒い展開が続きそうだ。</p>
+          </div>
+          <div class="meta"><a href="https://247wallst.com/investing/2026/11/20/anthropic-stock-came-within-5-cents-of-its-83-ipo-price-on-day-2-then-bounced-6-to-close-at-88-30-facebook-closed-its-day-2-10-below-its-ipo-price/" target="_blank" rel="noopener">24/7 Wall St.（英語）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>サイバー防御AIの米Corma、1億2500万ドルを調達——表舞台に出て3か月で企業価値10億ドル</h3>
+          <p class="lead">サイバー攻撃を防ぐためのAIを開発する米スタートアップのCormaは、シリーズAで1億2500万ドル（約190億円）を調達し、企業価値が10億ドルに達した。The Next Webによると、調達は米ベンチャーキャピタルのNEAが主導し、セコイア・キャピタルなども追加で出資した。同社は8月に6000万ドルの調達とともに事業を公表したばかりで、わずか3か月で次の大型調達を実現した。資金は、独自のAIモデルの規模拡大や計算能力の強化に使う。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、AIが「攻撃する側」にも使われるようになり、守る側にもAIが欠かせなくなっているという点にある。今月だけでも、日本ではKARTE（11月21日既報）や楽天証券（11月19日既報）など、不正アクセスによる情報流出が相次いだ。AIを使えば、攻撃の兆しを人より早く見つけたり、大量の記録から異常を探したりできる。企業価値10億ドル以上の未上場企業はユニコーン<span class="note">（＝評価額が10億ドル（約1500億円）以上の未上場のスタートアップのこと。めったにいない伝説の生き物にたとえた呼び名）</span>と呼ばれる。ステルス<span class="note">（＝スタートアップが、事業の内容を公表せずにひそかに開発を進めている状態のこと）</span>を解いてすぐにユニコーンになるのは異例の速さだ。</p>
+          </div>
+          <div class="meta"><a href="https://thenextweb.com/news/corma-series-a-125m-1bn-valuation-nea" target="_blank" rel="noopener">The Next Web（英語）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-gadget" style="--cat-color:var(--c-gadget)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ガジェット</h2></div>
+        <p class="panel-sub">新製品・イベント2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>オーディオテクニカ「ATH-TWX9MK3」が発売——環境に合わせてノイズキャンセルを最適化</h3>
+          <p class="lead">オーディオテクニカは、完全ワイヤレスイヤホンの最上位モデル「ATH-TWX9MK3」を20日に発売した（11月12日既報）。AV Watchによると、周りの環境や耳への付け方に応じて、ノイズキャンセリングの効き方を最適にする。直販価格は税込4万1800円で、色はベージュとブラックの2色。前のモデル「ATH-TWX9MK2」の後継にあたる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、ノイズキャンセリングの効き方が、人によって、また場所によって変わるという点にある。ノイズキャンセリング<span class="note">（＝周りの騒音をマイクで拾い、それを打ち消す逆向きの音を出すことで、騒音を小さく感じさせる技術のこと）</span>は、イヤホンが耳にしっかり合っていないと効果が落ちる。そこで、耳の形や付け方、電車や街なかといった環境を測り、自動で調整する機能が上位モデルに広がっている。完全ワイヤレスイヤホン<span class="note">（＝左右のイヤホンをつなぐコードがなく、それぞれが独立して無線で音を受け取るイヤホンのこと）</span>は、4万円を超える高級品から数千円の手ごろなものまで、選択肢が広がっている。</p>
+          </div>
+          <div class="meta"><a href="https://av.watch.impress.co.jp/docs/news/2153884.html" target="_blank" rel="noopener">AV Watch</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>「Xiaomi 18 Pro」発売記念イベント、23日まで表参道で——27日の発売を前に実機に触れる</h3>
+          <p class="lead">27日に日本で発売されるシャオミのスマートフォン「Xiaomi 18 Pro」と「Xiaomi 18 Pro Max」（11月19日既報）について、東京・表参道で20日から23日まで記念イベントが開かれている。S-MAXによると、発売前に実際の製品に触れられる機会となる。両機種とも背面に小さな画面を備え、ライカと共同開発したカメラを搭載している。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、20万円を超える高級スマホは、「実際に触ってから買いたい」という人が多いという点にある。海外メーカーのスマホは、日本では携帯ショップや家電量販店に置かれる機種が限られ、手に取る機会が少ない。そのため、メーカーは期間限定のイベントやポップアップストア<span class="note">（＝短い期間だけ開かれる仮設のお店や展示スペースのこと）</span>で、製品の魅力を直接伝えようとしている。背面ディスプレイ<span class="note">（＝スマホの裏側に付いた小さな画面のこと。背面のカメラで自撮りするときに構図を確かめるなどに使える）</span>のような新しい機能は、写真や動画だけでは伝わりにくく、触ってこそ分かる部分が大きい。</p>
+          </div>
+          <div class="meta"><a href="https://s-max.jp/archives/1801010.html" target="_blank" rel="noopener">S-MAX</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-intl" style="--cat-color:var(--c-intl)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">海外</h2></div>
+        <p class="panel-sub">国際ニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>ポーランドにロシアの巡航ミサイルが落下——トゥスク首相「意図的な挑発」と非難</h3>
+          <p class="lead">ポーランド政府は20日、ロシアの飛翔体が領空を侵犯して国内に落下したと発表した。AFP通信によると、東部の村にロシア軍が使う巡航ミサイル「Kh101」1発が落ちたことが確認され、別の場所でも2発目のミサイルや無人機が落ちた疑いがある。けが人はいなかった。トゥスク首相は「われわれは意図的な挑発に直面している」と述べた。BBCによると、近くではウクライナを支援する国々の部隊が演習を行っていた。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、ポーランドがNATOの加盟国であり、ロシアの攻撃がNATOとの直接の衝突につながりかねないという点にある。NATO<span class="note">（＝北大西洋条約機構のこと。米国や欧州の国々が加盟する軍事同盟で、加盟国の1つが攻撃されたら全体への攻撃とみなして共同で対応すると定めている）</span>の加盟国の領土に、ロシアのミサイルが落ちたことは重大だ。巡航ミサイル<span class="note">（＝ジェットエンジンで飛び、低い高度を地形に沿って飛行して目標を狙うミサイルのこと）</span>は、ウクライナへの攻撃で使われることが多い。米中ロの首脳会談（11月20日既報）の直後だけに、ロシアの意図をめぐって欧州の警戒が強まっている。</p>
+          </div>
+          <div class="meta"><a href="https://www.afpbb.com/articles/-/3663549" target="_blank" rel="noopener">AFPBB News</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>米株価指数、S&amp;P500とダウが「調整局面」入り——ナスダックは今年の上昇分を失う</h3>
+          <p class="lead">本日既報の米国株の急落で、主要な株価指数のS&amp;P500とダウ平均株価が、そろって「調整局面」に入った。財経新聞によると、ハイテク株の多いナスダック総合指数は、今年に入ってからの上昇分をすべて失った。AI関連株の売りが加速したことが大きな要因だ。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「調整局面」が、市場関係者の間で使われる下落の目安の一つだという点にある。調整局面<span class="note">（＝株価が直近の高値から10%以上値下がりした状態のこと。20%以上の値下がりは「弱気相場」と呼ばれる）</span>は、上がり続けた株価が一時的に下がることを指す場合もあれば、より大きな下落の入り口になる場合もある。S&amp;P500<span class="note">（＝米国の代表的な500社の株価をもとに計算する株価指数のこと。米国の株式市場全体の動きを表す）</span>は、世界中の年金や投資信託の運用にも使われるため、その値下がりは日本の個人の資産にも影響しうる。</p>
+          </div>
+          <div class="meta"><a href="https://www.zaikei.co.jp/article/20261121/878679.html" target="_blank" rel="noopener">財経新聞</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-sports" style="--cat-color:var(--c-sports)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">芸能／スポーツ</h2></div>
+        <p class="panel-sub">厳選2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>九州場所、大の里と若元春が2敗で並び今日千秋楽——熱海富士が1差で追う</h3>
+          <p class="lead">大相撲九州場所14日目の21日、横綱・大の里は金峰山を寄り切りで破り、12勝2敗で首位を守った。NHKなどによると、平幕の若元春も大関・安青錦を寄り倒し、自己最多となる12勝目を挙げて2敗を守った。関脇・熱海富士が3敗で1差で追う。金峰山は4敗目で優勝の可能性がなくなり、安青錦は負け越しが決まった。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、今日の千秋楽の結果次第で、3人による「巴戦」もありうるという点にある。大の里と若元春がともに敗れ、熱海富士が勝てば、3人が12勝3敗で並ぶ。その場合は巴戦<span class="note">（＝3人の力士で優勝を決める方式のこと。1人が2連勝するまで、勝った力士が次の相手と取り続ける）</span>で優勝が決まる。2人が並んだまま終われば、2人による優勝決定戦となる。千秋楽<span class="note">（＝本場所の最終日である15日目のこと。もとは芝居の最終日を指す言葉）</span>は、大の里がいちばん最後の取組の「結び」で、横綱・豊昇龍と対戦する。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261121de79717" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>大の里「気持ちの高ぶりは一切ない」——千秋楽は過去2勝9敗の豊昇龍と結びで対戦</h3>
+          <p class="lead">連覇を目指す横綱・大の里は、千秋楽を前に「気持ちの高ぶりは一切ないですね」と冷静に語った。スポーツ報知によると、千秋楽の結びの一番では横綱・豊昇龍と対戦する。大の里はこれまで豊昇龍に2勝9敗と大きく負け越している。豊昇龍は14日目まで5連勝と、調子を上げている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、優勝のかかる最後の一番の相手が、大の里にとって最も苦手な横綱だという点にある。相撲では、力士どうしの相性が勝敗に大きく影響することがあり、過去の対戦成績<span class="note">（＝2人の力士がこれまでに対戦して、どちらが何回勝ったかという記録のこと）</span>は重要な手がかりになる。豊昇龍は場所の前半に苦しんだが（11月19日既報）、後半に立て直してきた。横綱どうしの対決が優勝の行方を決めるかもしれない、注目の一番となる。</p>
+          </div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/articles/89f728239a79ec7d213234c21e0ce49b38b8ac31" target="_blank" rel="noopener">スポーツ報知（Yahoo!ニュース）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-koshien" style="--cat-color:var(--c-koshien)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">高校野球【埼玉】</h2></div>
+        <p class="panel-sub">今週末の日程・結果2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>横浜、仙台育英に9回サヨナラ勝ちで4強——今日22日の準決勝は二松学舎大付と</h3>
+          <p class="lead">明治神宮野球大会（高校の部）の準々決勝が21日に行われ、関東王者の横浜（神奈川）が仙台育英（東北）に8－7でサヨナラ勝ちした。神奈川新聞などによると、仙台育英が8回に7－6と勝ち越したが、横浜は9回裏に追いつき、2死三塁から川上慧選手の振り逃げの際に捕手が悪送球し、三塁走者がかえって決着した。横浜は今日22日の準決勝で、二松学舎大付（東京）と対戦する。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、横浜が勝ち進むほど、関東地区のセンバツ出場枠が増える可能性が高まるという点にある。神宮大会で優勝した学校の地区には、翌春のセンバツの出場枠が1つ増える神宮枠<span class="note">（＝明治神宮大会の高校の部で優勝した学校が属する地区に、翌春の選抜高校野球大会の出場枠を1つ追加する仕組みのこと）</span>がある（11月7日既報）。振り逃げ<span class="note">（＝打者が三振しても、捕手がボールをしっかり捕れなかったときなどに、打者が一塁へ走ってアウトを逃れようとするプレーのこと）</span>から試合が決まるのは珍しい。準決勝は、関東の横浜と東京の二松学舎大付という、どちらが勝っても関東・東京の枠に関わる注目の一戦だ。</p>
+          </div>
+          <div class="meta"><a href="https://www.kanaloco.jp/sports/baseball/hsbaseball/article-1322657.html" target="_blank" rel="noopener">神奈川新聞（カナロコ）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>埼玉4地区選抜交流戦、今日22日が2日目——UDトラックス上尾スタジアム</h3>
+          <p class="lead">第5回埼玉県高校野球4地区選抜チーム交流戦は、21日に始まり、今日22日（日）が2日目となる（11月13日既報）。会場はUDトラックス上尾スタジアムで、県内を東西南北の4地区に分け、1地区25人ずつの選手で地区ごとのチームを作って戦う。初日の試合結果は、本稿の時点で確認できていない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、この交流戦が、12月から始まる長い「試合のない冬」の前の、今年最後の大きな実戦の場だという点にある。12月1日からはアウト・オブ・シーズン<span class="note">（＝日本高野連の決まりで、翌年3月上旬まで、ほかの学校との練習試合や大会を行わない期間のこと）</span>に入り、各校は冬の練習に専念する。ふだんはライバルの選手と同じチームで戦うことで、技術や考え方を学び合える。埼玉の高校野球を担う選手たちのプレーをまとめて見られる、貴重な機会だ。</p>
+          </div>
+          <div class="meta"><a href="https://www.hb-nippon.com/articles/18896" target="_blank" rel="noopener">高校野球ドットコム</a></div>
+        </article>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var cats = ['top','social','polecon','scitech','business','startup','gadget','intl','sports','koshien'];
+  var idx = 0;
+  var track = document.getElementById('track');
+  var viewport = document.getElementById('viewport');
+  var vw = viewport.clientWidth;
+
+  function setActive(i){
+    cats.forEach(function(c, j){
+      document.getElementById('tab-' + c).classList.toggle('active', j === i);
+    });
+    var activeTab = document.getElementById('tab-' + cats[i]);
+    if (activeTab && activeTab.scrollIntoView) activeTab.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+  }
+
+  function settle(i, animate){
+    idx = Math.max(0, Math.min(cats.length - 1, i));
+    track.style.transition = animate ? 'transform .32s cubic-bezier(.22,.61,.36,1)' : 'none';
+    track.style.transform = 'translateX(' + (-idx * vw) + 'px)';
+    setActive(idx);
+  }
+
+  window.goTo = function(i){ settle(i, true); };
+
+  window.addEventListener('resize', function(){
+    vw = viewport.clientWidth;
+    settle(idx, false);
+  });
+
+  var dragging = false, decided = null, sx = 0, sy = 0, dx = 0;
+  viewport.addEventListener('touchstart', function(e){
+    dragging = true; decided = null;
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY; dx = 0;
+    track.style.transition = 'none';
+  }, { passive: true });
+
+  viewport.addEventListener('touchmove', function(e){
+    if (!dragging) return;
+    var cx = e.touches[0].clientX, cy = e.touches[0].clientY;
+    var mdx = cx - sx, mdy = cy - sy;
+    if (decided === null) {
+      if (Math.abs(mdx) > 8 || Math.abs(mdy) > 8) {
+        decided = Math.abs(mdx) > Math.abs(mdy) ? 'x' : 'y';
+      }
+    }
+    if (decided === 'x') {
+      e.preventDefault();
+      dx = mdx;
+      var atStart = idx === 0 && dx > 0;
+      var atEnd = idx === cats.length - 1 && dx < 0;
+      var eased = (atStart || atEnd) ? dx * 0.35 : dx;
+      track.style.transform = 'translateX(' + (-idx * vw + eased) + 'px)';
+    }
+  }, { passive: false });
+
+  viewport.addEventListener('touchend', function(){
+    if (!dragging) return;
+    dragging = false;
+    if (decided === 'x') {
+      var threshold = vw * 0.18;
+      if (dx <= -threshold) settle(idx + 1, true);
+      else if (dx >= threshold) settle(idx - 1, true);
+      else settle(idx, true);
+    }
+    decided = null; dx = 0;
+  });
+
+  settle(0, false);
+})();
+</script>
+
+</body></html>
