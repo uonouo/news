@@ -1,0 +1,610 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yoshi's News</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Zen+Old+Mincho:wght@600;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap');
+
+:root {
+  --bg: #ffffff;
+  --panel-bg: #ffffff;
+  --card: #ffffff;
+  --card-line: #eef0f3;
+  --ink: #1a1c20;
+  --ink-soft: #5b6068;
+  --ink-faint: #9aa0a8;
+  --shell: #f4f5f7;
+
+  --c-top: #ef3355;
+  --c-social: #00b3a4;
+  --c-polecon: #6d5bf0;
+  --c-scitech: #ff8a1e;
+  --c-business: #0091ff;
+  --c-sports: #26c281;
+  --c-startup: #ff4fa3;
+  --c-koshien: #c8860d;
+  --c-intl: #4b3f8f;
+  --c-gadget: #00bcd4;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101114;
+    --panel-bg: #101114;
+    --card: #1a1c20;
+    --card-line: #2a2c31;
+    --ink: #f1f2f4;
+    --ink-soft: #b7bcc4;
+    --ink-faint: #767c86;
+    --shell: #1a1c20;
+    --c-top: #ff6b85;
+    --c-social: #3fd8c9;
+    --c-polecon: #9c8fff;
+    --c-scitech: #ffab5c;
+    --c-business: #4db2ff;
+    --c-sports: #5be0a6;
+    --c-startup: #ff85c2;
+    --c-koshien: #e8b34c;
+    --c-intl: #a89cf0;
+    --c-gadget: #4dd8ea;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101114;
+  --panel-bg: #101114;
+  --card: #1a1c20;
+  --card-line: #2a2c31;
+  --ink: #f1f2f4;
+  --ink-soft: #b7bcc4;
+  --ink-faint: #767c86;
+  --shell: #1a1c20;
+  --c-top: #ff6b85;
+  --c-social: #3fd8c9;
+  --c-polecon: #9c8fff;
+  --c-scitech: #ffab5c;
+  --c-business: #4db2ff;
+  --c-sports: #5be0a6;
+  --c-startup: #ff85c2;
+  --c-koshien: #e8b34c;
+  --c-intl: #a89cf0;
+  --c-gadget: #4dd8ea;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--shell);
+  color: var(--ink);
+  font-family: "Zen Kaku Gothic New", -apple-system, "Hiragino Kaku Gothic ProN", sans-serif;
+  line-height: 1.7;
+  overscroll-behavior-y: none;
+}
+.serif { font-family: "Zen Old Mincho", "Hiragino Mincho ProN", serif; }
+
+.app {
+  max-width: 680px;
+  margin: 0 auto;
+  background: var(--bg);
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ---- Header ---- */
+.topbar { padding: 20px 20px 0; flex-shrink: 0; }
+.title-line { display: flex; align-items: center; gap: 8px; }
+.mascot { height: 50px; width: auto; flex-shrink: 0; border-radius: 8px; }
+.title-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  margin-bottom: 14px;
+}
+.title-row h1 {
+  font-family: "Baloo 2", "Zen Kaku Gothic New", sans-serif;
+  font-size: 48px; font-weight: 800; margin: 0; letter-spacing: 0.01em; line-height: 1;
+  -webkit-text-stroke: 2.4px #2b2013;
+  filter: drop-shadow(2px 3px 0 rgba(30,22,12,0.18));
+  background-image:
+    radial-gradient(circle at 22% 30%, #211709 0 7px, transparent 8px),
+    radial-gradient(circle at 68% 65%, #3a2b16 0 9px, transparent 10px),
+    radial-gradient(circle at 45% 88%, #241a0c 0 5px, transparent 6px),
+    radial-gradient(circle at 85% 20%, #2e2211 0 6px, transparent 7px),
+    linear-gradient(135deg, #b8a06e, #967c4c 50%, #6f5a35);
+  background-size: 30px 30px, 41px 41px, 23px 23px, 35px 35px, 100% 100%;
+  background-repeat: repeat, repeat, repeat, repeat, no-repeat;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.title-row .date { font-size: 11.5px; color: var(--ink-faint); white-space: nowrap; font-weight: 500; margin-top: 2px; }
+
+.tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px 3px; }
+.tab {
+  appearance: none; border: none; background: none;
+  font-family: inherit; font-size: 10.5px; font-weight: 700;
+  color: var(--ink-faint);
+  padding: 7px 4px 9px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+  cursor: pointer;
+  border-radius: 10px 10px 0 0;
+  transition: color .2s ease, background .2s ease;
+}
+.tab .dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  margin-right: 5px; background: currentColor; opacity: 0.45; vertical-align: middle;
+}
+.tab::after {
+  content: ""; position: absolute; left: 10px; right: 10px; bottom: 0;
+  height: 3px; border-radius: 3px 3px 0 0; background: transparent; transition: background .2s ease;
+}
+.tab.active { color: var(--tab-color); background: color-mix(in srgb, var(--tab-color) 10%, transparent); }
+.tab.active .dot { opacity: 1; }
+.tab.active::after { background: var(--tab-color); }
+
+/* ---- Swipe viewport ---- */
+.viewport { flex: 1; overflow: hidden; position: relative; touch-action: pan-y; }
+.track {
+  display: flex;
+  height: 100%;
+  width: 1000%;
+  transition: transform .32s cubic-bezier(.22,.61,.36,1);
+  will-change: transform;
+}
+.panel {
+  width: 10%;
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 20px 56px;
+}
+
+.panel-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.panel-head .chip { width: 8px; height: 26px; border-radius: 4px; background: var(--cat-color); flex-shrink: 0; }
+.panel-head h2 { font-size: 20px; font-weight: 700; margin: 0; letter-spacing: 0.02em; color: var(--cat-color); }
+.panel-sub { font-size: 12px; color: var(--ink-faint); margin: 0 0 18px 18px; }
+
+.story {
+  background: var(--card);
+  border: 1px solid var(--card-line);
+  border-left: 4px solid var(--cat-color);
+  border-radius: 12px;
+  padding: 18px 18px 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(20,20,30,0.05);
+}
+.story .kicker {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: "Zen Old Mincho", serif; font-size: 11.5px; font-weight: 700;
+  color: var(--cat-color); margin-bottom: 9px;
+}
+.story h3 { font-size: 16px; font-weight: 700; line-height: 1.55; margin: 0 0 10px; }
+.story .lead { font-size: 14px; color: var(--ink); margin: 0 0 14px; line-height: 1.85; }
+
+.context {
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 10px;
+  padding: 13px 15px;
+  margin: 0 0 12px;
+}
+.context-label {
+  display: block; font-size: 10.5px; font-weight: 700;
+  color: var(--cat-color); letter-spacing: 0.04em; margin-bottom: 6px;
+}
+.context p { font-size: 13px; color: var(--ink-soft); margin: 0; line-height: 1.8; }
+
+.note { font-size: 11.5px; color: var(--ink-faint); font-weight: 500; }
+
+.term-link {
+  color: var(--cat-color);
+  text-decoration: none;
+  border-bottom: 1px dotted color-mix(in srgb, var(--cat-color) 55%, transparent);
+  font-weight: 700;
+}
+
+.meta { font-size: 11px; color: var(--ink-faint); }
+.meta a { color: var(--cat-color); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--cat-color) 40%, transparent); font-weight: 700; }
+
+.closing {
+  margin: 6px 0 0; padding: 16px 18px;
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 12px; font-size: 13px; color: var(--ink-soft); text-align: center;
+}
+.closing .label {
+  display: block; font-family: "Zen Old Mincho", serif; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.2em; color: var(--cat-color); margin-bottom: 8px;
+}
+.colophon { margin: 14px 0 8px; font-size: 10.5px; color: var(--ink-faint); line-height: 1.9; text-align: center; }
+
+@media (max-width: 420px) {
+  .topbar { padding: 16px 14px 0; }
+  .panel { padding: 16px 14px 48px; }
+  .title-row h1 { font-size: 38px; }
+  .mascot { height: 40px; }
+}
+</style>
+</head><body>
+
+
+<div class="app" id="app">
+
+  <div class="topbar">
+    <div class="title-row">
+      <div class="title-line">
+        <img class="mascot" src="mascot.jpg" alt="オオサンショウウオのマスコット">
+        <h1>Yoshi's News</h1>
+      </div>
+      <span class="date">2026年11月23日（月）・第81号</span>
+    </div>
+    <div class="tabs" id="tabs">
+      <button class="tab" id="tab-top" style="--tab-color:var(--c-top)" onclick="goTo(0)"><span class="dot"></span>トップ</button>
+      <button class="tab" id="tab-social" style="--tab-color:var(--c-social)" onclick="goTo(1)"><span class="dot"></span>社会</button>
+      <button class="tab" id="tab-polecon" style="--tab-color:var(--c-polecon)" onclick="goTo(2)"><span class="dot"></span>政治/経済</button>
+      <button class="tab" id="tab-scitech" style="--tab-color:var(--c-scitech)" onclick="goTo(3)"><span class="dot"></span>科学/テック</button>
+      <button class="tab" id="tab-business" style="--tab-color:var(--c-business)" onclick="goTo(4)"><span class="dot"></span>ビジネス</button>
+      <button class="tab" id="tab-startup" style="--tab-color:var(--c-startup)" onclick="goTo(5)"><span class="dot"></span>スタートアップ</button>
+      <button class="tab" id="tab-gadget" style="--tab-color:var(--c-gadget)" onclick="goTo(6)"><span class="dot"></span>ガジェット</button>
+      <button class="tab" id="tab-intl" style="--tab-color:var(--c-intl)" onclick="goTo(7)"><span class="dot"></span>海外</button>
+      <button class="tab" id="tab-sports" style="--tab-color:var(--c-sports)" onclick="goTo(8)"><span class="dot"></span>芸能/スポーツ</button>
+      <button class="tab" id="tab-koshien" style="--tab-color:var(--c-koshien)" onclick="goTo(9)"><span class="dot"></span>高校野球【埼玉】</button>
+    </div>
+  </div>
+
+  <div class="viewport" id="viewport">
+    <div class="track" id="track">
+
+      <section class="panel" id="panel-top" style="--cat-color:var(--c-top)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">トップニュース</h2></div>
+        <p class="panel-sub">今日いちばん知っておきたい2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 科学</span>
+          <h3>AIと挑んだ「リーマン予想」の証明、コンピューター検証の専門家たちが「正しい」と共同声明</h3>
+          <p class="lead">米AI企業Anthropicの数学者レベント・アルポゲ氏が、AI「Claude」と共同でリーマン予想を証明したと主張した問題（11月22日既報）で、証明をコンピューターで検証する「Lean」と、その数学ライブラリ「Mathlib」の利用者コミュニティが21日、証明は正しいとする共同声明を出した。ITmedia NEWSによると、数十人が証明の再現に成功し、複数の独立した検証プログラムでも確かめられた。証明の結論が、Mathlibに収められたリーマン予想の正式な記述と一致することも確認されたという。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「コンピューターが手順の正しさを確かめた」ことと、「数学者が中身を理解して認めた」ことは別だという点にある。Lean<span class="note">（＝数学の証明を、コンピューターが一歩ずつ機械的に正しいかどうか確かめられる形で書くためのプログラミング言語のこと）</span>で書かれた証明は、論理の飛躍や計算ミスがあれば通らないため、信頼性は高いとされる。Mathlib<span class="note">（＝世界中の数学者がLeanで書きためてきた、定理や定義の巨大なライブラリのこと。証明の「ものさし」として使われる）</span>と照らし合わせたことで、「別の問題を解いてしまった」というおそれも小さくなった。ただ、人が読める形の論文はまだなく、数学界がその意味を理解し、正式に認めるには時間がかかる見通しだ。</p>
+          </div>
+          <div class="meta"><a href="https://www.itmedia.co.jp/news/article/2611/22/2000003388/" target="_blank" rel="noopener">ITmedia NEWS</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ スポーツ</span>
+          <h3>大の里、決定戦で若元春を下し2場所連続7度目の優勝——羽黒山に並ぶ、九州場所は初制覇</h3>
+          <p class="lead">大相撲九州場所の千秋楽の22日、横綱・大の里は、13勝2敗で並んだ平幕の若元春との優勝決定戦を渡し込みで制し、2場所連続7度目の優勝を果たした。NHKなどによると、大の里は本割の結びの一番で横綱・豊昇龍を破り、決定戦に持ち込んだ。若元春は関脇・熱海富士を突き落としで破って2敗を守っていた。7度の優勝は、戦前から戦後にかけて活躍した横綱・羽黒山に並び、大の里にとっては九州場所での初めての優勝となった。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、大の里が横綱になってから初めて「連覇」を達成したという点にある。北國新聞によると、横綱としての連続優勝は、昇進から9場所目で初めてだった。優勝決定戦<span class="note">（＝本場所の15日間を終えて、最も良い成績の力士が複数いた場合に、優勝を決めるために改めて行う取組のこと）</span>は、1日に2度、優勝のかかる大一番を取らなければならず、精神的な強さも問われる。本割<span class="note">（＝決定戦などとは別に、あらかじめ組まれた本来の取組のこと）</span>で苦手の豊昇龍を破り、続けて決定戦にも勝ったことは、横綱としての強さを示すものとなった。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261122de80055" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+
+        <div class="closing">
+          <span class="label serif">編集後記</span>
+          AIとともに挑んだ「リーマン予想」の証明は、コンピューターによる検証の専門家たちから「正しい」とのお墨付きを得ました。数学の歴史が動くのか、これからの評価が注目されます。九州場所は大の里が決定戦を制し、神宮では横浜が大勝して決勝へ。今日23日は勤労感謝の日で東京市場は休み。米国株急落の影響は、24日の取引に表れそうです。
+        </div>
+        <div class="colophon">AIが検索結果をもとに要約・編集しています。詳細は各記事の出典リンクでご確認ください。<br>毎朝5時発行・次号は明日<br><a href="archive.html" style="color:inherit">過去の紙面はこちら</a></div>
+      </section>
+
+      <section class="panel" id="panel-social" style="--cat-color:var(--c-social)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">社会</h2></div>
+        <p class="panel-sub">くらしに関わるニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>埼玉・三郷ジャンクション近くの物流施設で火事——消火活動が続く</h3>
+          <p class="lead">埼玉県三郷市の三郷ジャンクション近くにある物流施設で21日、火事があった。NHKによると、消防が消火活動を続けた。消防によると、報道の時点で逃げ遅れやけが人の情報は入っていないという。火事の原因や、どの程度燃えたかは、本稿の時点で確認できていない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、大きな物流施設の火事は、いったん燃え広がると消すのに長い時間がかかりやすいという点にある。三郷市は、常磐道と東京外環道、首都高が交わる三郷ジャンクション<span class="note">（＝複数の高速道路がつながる分岐・合流の地点のこと）</span>があり、首都圏への配送の拠点として大型の物流倉庫が集まっている。物流倉庫<span class="note">（＝ネット通販などの商品を保管し、仕分けて全国に送り出すための大きな施設のこと）</span>は、段ボールなど燃えやすいものが大量にあり、窓が少なく中が広いため、消防が近づきにくい。過去には、鎮火まで何日もかかった倉庫火災も起きている。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261121de79548" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>千葉・富津の飲食店で火事、周辺の店やコンビニなど少なくとも5棟に燃え広がる</h3>
+          <p class="lead">千葉県富津市で21日、飲食店から火が出て、周辺の飲食店やコンビニエンスストアを含む少なくとも5棟の建物に燃え広がった。NHKが伝えた。けが人の有無や火が出た原因は、本稿の時点で確認できていない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、空気が乾燥して風が強まるこれからの季節は、火事が燃え広がりやすくなるという点にある。冬は湿度が下がり、木材などが燃えやすくなる。建物が近くに並ぶ場所では、1軒から出た火が次々と隣に移る延焼<span class="note">（＝火事が、火元の建物から周りの建物へ燃え移って広がること）</span>が起きやすい。今週は各地で住宅火事による死者も相次いでいる。飲食店では油を使う調理器具の周り、家庭では暖房器具の近くに燃えやすいものを置かないことが、火事を防ぐ基本となる。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261121de79677" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-polecon" style="--cat-color:var(--c-polecon)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">政治／経済</h2></div>
+        <p class="panel-sub">政治・経済の動き2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 政治</span>
+          <h3>関文科相の進退、今週がヤマ場——官房長官は幹事長の「交代示唆」を軌道修正</h3>
+          <p class="lead">議員会館での政治資金パーティーなどが問題となっている関芳弘文部科学相（11月22日既報）の進退をめぐり、与野党の攻防が今週ヤマ場を迎える。東京新聞（共同通信）によると、木原官房長官は22日、関氏の交代の可能性をにおわせた自民党の鈴木幹事長の発言を軌道修正した。高市首相は今のところ静観しているとみられる。野党は24日にも、参議院で問責決議案の提出に向けて協議し、圧力を強める構えだ。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、政権の中で「辞めさせて早く幕引きする」か「守り切る」かで考えが割れているという点にある。参議院で与党は過半数を持っていないため、野党がまとまれば問責決議<span class="note">（＝参議院が、大臣などの責任を問うために行う決議のこと。可決されても法的な拘束力はないが、政治的に大きな打撃となる）</span>は可決される可能性がある。そうなれば、野党が審議に応じなくなり、消費減税法案など政権が成立を目指す法案の行方にも響きかねない。閣僚<span class="note">（＝内閣を構成する大臣のこと）</span>の不祥事は、首相の任命責任にもつながるため、対応次第で政権への打撃が大きくなる。</p>
+          </div>
+          <div class="meta"><a href="https://www.tokyo-np.co.jp/article/530044" target="_blank" rel="noopener">東京新聞（共同通信）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 政治</span>
+          <h3>国民民主・玉木氏「文科相は問責に値」——自発的な辞任を促す、立民は首相の任命責任を指摘</h3>
+          <p class="lead">国民民主党の玉木雄一郎代表は、関文部科学相について「問責に値する」との考えを示した。時事通信によると、玉木氏は、問責決議案が出されれば消費税減税の関連法案などの審議に影響が出るとして、関氏に自ら辞任するよう促した。立憲民主党の田名部匡代幹事長は、高市首相の任命責任を指摘した。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、国民民主党の動きが、参議院での法案の行方を左右しうるという点にある。参議院で与党が過半数に届かない中、与党は消費減税法案を通すために、一部の野党の協力を求めている（11月21日既報）。国民民主党は政策ごとに与党と協力することもある政党で、その党首が「問責に値する」と述べたことは、与党にとって重い。任命責任<span class="note">（＝大臣を選んで任命した首相が、その大臣の問題について負うべき責任のこと）</span>を問う声が強まれば、首相の判断が一段と注目される。</p>
+          </div>
+          <div class="meta"><a href="https://topics.smt.docomo.ne.jp/article/jiji/politics/jiji-2026112200094" target="_blank" rel="noopener">時事通信（dメニューニュース）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-scitech" style="--cat-color:var(--c-scitech)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">科学／テック</h2></div>
+        <p class="panel-sub">研究・技術のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>リーマン予想の証明、数学者たちの評価は——タオ氏「読み解くには時間がかかる」</h3>
+          <p class="lead">本日既報のリーマン予想の証明について、数学者たちの評価が出始めている。CNET Japanによると、米マサチューセッツ工科大学（MIT）の数学者が独自に証明の検証の再現に成功した。一方、世界的な数学者のテレンス・タオ氏は、証明の仕組みを読み解くには時間がかかるとの見方を示した。読売新聞によると、米コーネル大学のストロガッツ教授は、証明が正しければ数学の歴史に残る成果になると述べた。Anthropicは公式な声明を出していない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、数学の世界では「正しい」だけでなく「なぜそうなるのか」を理解することが重視されるという点にある。リーマン予想<span class="note">（＝1859年にドイツの数学者リーマンが示した、素数（1とその数自身でしか割り切れない数）の並び方に深く関わる予想のこと。証明には100万ドルの懸賞金がかけられている）</span>は、多くの数学の理論の土台になっているため、その証明の方法から新しい発見が生まれると期待される。AIが証明の中心的な役割を果たしたとすれば、数学の研究のあり方そのものが変わる可能性がある。テレンス・タオ<span class="note">（＝数学のノーベル賞とも呼ばれるフィールズ賞を受けた、世界を代表する数学者の一人のこと）</span>のような第一人者の評価が、今後の受け止め方を大きく左右しそうだ。</p>
+          </div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/articles/c6bed2e9ea95a323d4d3d5960dba7846bf5f84b1" target="_blank" rel="noopener">CNET Japan（Yahoo!ニュース）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>同じ日に「人間が書いた」別の証明も——AIと人、2つのリーマン予想の証明に数学者が驚き</h3>
+          <p class="lead">英科学誌ネイチャーによると、アルポゲ氏がAIと共同で証明したと主張した20日と同じ日に、人間だけで書かれた別のリーマン予想の証明も発表され、数学者たちを驚かせている。167年にわたって解かれなかった問題に、同じ日に2つの証明が出てきたことになる。どちらの証明についても、数学界による本格的な検証はこれからだ。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、大きな数学の主張が正式に認められるまでには、長い検証の過程があるという点にある。通常、新しい証明は論文として発表され、査読<span class="note">（＝論文を学術誌に載せる前に、同じ分野の専門家が内容に誤りがないかを詳しく調べること）</span>を経て、専門家の間で受け入れられていく。過去には、ロシアの数学者ペレルマンが解いた「ポアンカレ予想」のように、検証に数年かかった例もある。AIによる証明と人間による証明が並んで登場したことで、両者を比べながらの議論が進むことになりそうだ。</p>
+          </div>
+          <div class="meta"><a href="https://www.nature.com/articles/d41586-026-03812-7" target="_blank" rel="noopener">Nature（英語）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-business" style="--cat-color:var(--c-business)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ビジネス</h2></div>
+        <p class="panel-sub">企業・産業のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>エヌビディア、四半期報告書の提出を延期——取締役会の独立委員会が調査中、期限は12月4日</h3>
+          <p class="lead">米SECによる会計処理の調査が報じられたエヌビディア（11月22日既報）は、四半期ごとに当局へ出す正式な報告書の提出を「今後数週間のうちに」と遅らせている。米メディアによると、同社は決算と合わせて当局に出した資料で、取締役会の独立した委員会による調査が続いていることを明らかにしていた。報告書の提出期限は12月4日で、それを過ぎると猶予期間に入る。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、大企業が決算の正式な報告書を期限通りに出せないことは、それ自体が「何か問題があるのでは」という不安を呼ぶという点にある。米国の上場企業は、四半期ごとに10-Q<span class="note">（＝米国の上場企業がSECに提出する四半期報告書のこと。決算の詳しい数字やリスクなどを記載する）</span>を出す義務がある。独立委員会<span class="note">（＝経営陣から独立した社外取締役などで作る委員会のこと。経営陣が関わる問題を、公平な立場で調べるために置かれる）</span>が何を調べているのかは明らかになっていない。エヌビディアは2006年にも、株式報酬の処理をめぐる社内調査で報告書の提出が遅れたことがある。</p>
+          </div>
+          <div class="meta"><a href="https://www.nacionale.com/en/articles/when-will-nvidia-file-10-q-december-4-deadline-what-happens-if-late-nasdaq" target="_blank" rel="noopener">Nacionale（英語）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>今週の予定：24日に月例経済報告、25日にファストリの株主総会——米株急落後の東京市場も焦点</h3>
+          <p class="lead">日本経済新聞によると、今週は24日に政府が11月の月例経済報告を公表し、25日にはユニクロを展開するファーストリテイリングの株主総会が開かれる。台湾では統一地方選挙も予定されている。東京株式市場は23日が勤労感謝の日で休みとなり、先週末の米国株の急落（11月22日既報）を受けた取引は24日になる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、祝日で市場が休む間に、海外の大きな値動きが「たまる」という点にある。先週の金曜日に米国のナスダックが5%を超えて下がり、エヌビディアも大きく値下がりした。東京市場は月曜が休みのため、その影響は火曜日の取引にまとめて表れる可能性がある。月例経済報告<span class="note">（＝政府が毎月、景気の現状についての公式な判断をまとめて公表する報告のこと。「緩やかに回復」などの表現の変化が注目される）</span>で、政府が景気の見方を変えるかどうかも注目される。</p>
+          </div>
+          <div class="meta"><a href="https://www.nikkei.com/article/DGXZQOCD180X80Y6A111C2000000/" target="_blank" rel="noopener">日本経済新聞</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-startup" style="--cat-color:var(--c-startup)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">スタートアップ</h2></div>
+        <p class="panel-sub">資金調達・注目トピック2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>新生児から看取りまで訪問看護を届けるWyL、約15億円を調達</h3>
+          <p class="lead">訪問看護の事業を展開するWyLが、第三者割当増資で約15億円を調達した。スタートアップ情報サイトのSTARTUP DBが、11月16〜20日の注目の資金調達として伝えた。同社は、生まれたばかりの赤ちゃんから人生の最期を迎える人まで、幅広い人に訪問看護を届けることを掲げている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、高齢化が進む中で、「病院ではなく家で療養する」人が増えているという点にある。訪問看護<span class="note">（＝看護師などが利用者の自宅を訪ね、医師の指示にもとづいて病状の観察や医療的なケアを行うサービスのこと）</span>は、住み慣れた家で暮らし続けたい人を支える。また、医療的なケアが必要な子ども（医療的ケア児）の家庭でも需要がある。看取り<span class="note">（＝人生の最期が近い人を、家族や医療者がそばで見守り、穏やかに最期を迎えられるよう支えること）</span>までを支えるには、24時間の対応など手厚い体制が必要で、人材の確保が事業の成長のカギとなる。</p>
+          </div>
+          <div class="meta"><a href="https://lp.startup-db.com/media/articles/20261116-1120" target="_blank" rel="noopener">STARTUP DB</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>国内ECに特化したAIエージェントのSTRACT、12億円を調達</h3>
+          <p class="lead">国内の電子商取引（EC）に特化したAIエージェントを開発するSTRACTが、12億円を調達した。STARTUP DBが伝えた。ネット通販を手がける事業者向けに、AIで業務を支える仕組みを提供している。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、ネット通販の運営には、商品の登録や広告、問い合わせ対応など、細かい作業が山ほどあるという点にある。中小の事業者では、少ない人数でこれらをこなさなければならない。AIエージェント<span class="note">（＝人が細かく指示しなくても、目的に向けて自分で手順を考え、複数の作業をこなしていくAIのこと）</span>は、こうした作業を肩代わりできると期待されている。EC<span class="note">（＝電子商取引のこと。インターネットを通じて商品やサービスを売り買いすること）</span>の市場は拡大を続けており、「国内に特化」することで、日本の商習慣やサイトに合わせた細かな対応を強みにしようとしている。</p>
+          </div>
+          <div class="meta"><a href="https://lp.startup-db.com/media/articles/20261116-1120" target="_blank" rel="noopener">STARTUP DB</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-gadget" style="--cat-color:var(--c-gadget)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ガジェット</h2></div>
+        <p class="panel-sub">新製品2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>ファーウェイ「Mate 90 Air」、24日に中国で発表——Mateシリーズで最も薄い通常型スマホ</h3>
+          <p class="lead">中国のファーウェイは、新しいスマートフォン「Mate 90 Air」を24日に中国で発表する。中国のIT情報サイトTechNodeによると、折りたたまない通常の形のMateシリーズとしては、これまでで最も薄いモデルになるという。同じ発表会では、折りたたみ型の「Mate X8」も披露される。色は3色で、メモリは12GB、保存容量は256GBと512GBが用意される。価格や詳しい性能はまだ明らかにされておらず、日本での発売も確認されていない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、スマホの「薄さ」をめぐる競争が各社で激しくなっているという点にある。アップルやサムスンも薄型モデルを相次いで出しており、ファーウェイもこの流れに加わった形だ。ファーウェイは米国の制裁<span class="note">（＝米国が安全保障上の理由から、ファーウェイへの半導体などの輸出を厳しく制限している措置のこと）</span>で、最先端の半導体や米グーグルのサービスを使いにくくなったが、自社開発の部品やOS<span class="note">（＝スマホやパソコンを動かすための基本ソフトのこと。ファーウェイは独自の「HarmonyOS」を使っている）</span>で中国国内の市場で巻き返している。</p>
+          </div>
+          <div class="meta"><a href="https://technode.com/2026/11/19/huawei-announces-mate-90-air-its-thinnest-mate-slab-phone/" target="_blank" rel="noopener">TechNode（英語）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>今週はスマホ・ウォッチの発売ラッシュ——25日ドコモの腕時計、26日AQUOS sense11、27日Xiaomi 18 Pro</h3>
+          <p class="lead">今週は新しいガジェットの発売が相次ぐ。25日にはNTTドコモの「スマートウォッチ03」（11月21日既報）、26日にはシャープの「AQUOS sense11」（11月18日既報）、27日にはシャオミの「Xiaomi 18 Pro」と「Xiaomi 18 Pro Max」（11月19日既報）が発売される。PHILE WEBによると、AQUOS sense11のメーカー版の価格は9万4600円からで、前のモデルより3万円以上高くなった。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、年末商戦に向けて、各社が新製品を一気に投入する時期だという点にある。年末商戦<span class="note">（＝クリスマスや年末年始、ボーナスの時期に合わせて買い物が増える時期のこと。家電やスマホの売り上げが1年で最も伸びる）</span>を逃さないよう、11月下旬に発売が集中する。ただ、部品の値上がりなどで、スマホの値段は全体に上がっている。手ごろな価格帯とされてきたミッドレンジ<span class="note">（＝最上位の高級モデルと入門モデルの間にある、中くらいの価格帯のスマートフォンのこと）</span>の機種でも値上げが目立つため、買い替えの際は通信会社の割引なども比べたい。</p>
+          </div>
+          <div class="meta"><a href="https://gadget.phileweb.com/post-137625/" target="_blank" rel="noopener">PHILE WEB</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-intl" style="--cat-color:var(--c-intl)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">海外</h2></div>
+        <p class="panel-sub">国際ニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>ロシアのミサイル落下、NATO事務総長「深刻な領空侵犯」——ポーランドは防空の増強を要請</h3>
+          <p class="lead">ロシアの巡航ミサイルなどがポーランド国内に落下した問題（11月22日既報）で、NATOのルッテ事務総長は「深刻な領空侵犯だ」と非難し、ポーランドと連携して抑止力と防衛力を強化すると表明した。産経新聞などによると、ポーランドに落ちたのは巡航ミサイル2発と、ジェットエンジンで飛ぶ無人機とみられる飛行体1機で、けが人はいなかった。米ラテン・タイムズによると、ポーランドはNATOの防空任務のもとで追加の戦力を求めたが、加盟国どうしの正式な協議を求める北大西洋条約第4条の発動は見送った。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、NATOの条約には段階があり、どこまで踏み込むかが「ロシアへのメッセージ」になるという点にある。北大西洋条約第4条<span class="note">（＝加盟国が、自国の領土や安全が脅かされていると考えたときに、ほかの加盟国に正式な協議を求めることができるという規定のこと）</span>は、集団で反撃する第5条<span class="note">（＝加盟国の1つへの攻撃を全加盟国への攻撃とみなし、共同で対応するという規定のこと。NATOの中心となる約束）</span>の手前の段階にあたる。第4条を見送ったのは、事態を必要以上に大きくしない判断とみられる。落下地点の近くでは、英仏が主導するウクライナ支援の有志国の部隊が演習を行っていた。</p>
+          </div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/articles/3938844f0718d684d6629aed6cb66ca96001c032" target="_blank" rel="noopener">産経新聞（Yahoo!ニュース）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>ロシアがウクライナに大規模攻撃、少なくとも8人死亡——米中ロ会談後も攻撃続く</h3>
+          <p class="lead">米CBSニュースによると、ロシアはポーランドへのミサイル落下と同じ時期に、ウクライナに対して大規模な攻撃を行い、少なくとも8人が死亡した。米中ロの首脳会談（11月20日既報）の直後にもかかわらず、ロシアによる攻撃は続いている。ロシア側は、ポーランドへの落下について、本稿の時点で公式な説明をしていない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、大国どうしの首脳会談が開かれても、戦場では攻撃が止まっていないという点にある。ロシアはウクライナの発電所や都市に向けて、ミサイルと無人機を大量に組み合わせて撃ち込む攻撃を繰り返している。冬に向けて電力や暖房を狙う攻撃が強まると、市民の暮らしは一段と厳しくなる。防空<span class="note">（＝敵のミサイルや航空機、無人機を、レーダーで見つけて撃ち落とし、被害を防ぐこと）</span>の網をすり抜けたミサイルが、隣の国にまで落ちるおそれがあることを、今回のポーランドの件は示した。</p>
+          </div>
+          <div class="meta"><a href="https://www.cbsnews.com/news/ukraine-war-russia-intentional-provocation-poland-missiles-nato/" target="_blank" rel="noopener">CBS News（英語）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-sports" style="--cat-color:var(--c-sports)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">芸能／スポーツ</h2></div>
+        <p class="panel-sub">厳選2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>「やっと終わった。長かった」——大の里、苦難の1年を連覇で締めくくる</h3>
+          <p class="lead">九州場所で2場所連続の優勝を果たした横綱・大の里は、「やっと終わった。長かった」と1年を振り返った。産経新聞が伝えた。本日既報のとおり、大の里は千秋楽の結びで豊昇龍を破り、優勝決定戦で若元春を退けた。BBM Sportsは、決定戦で大の里が若元春を圧倒したと伝えている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、横綱という地位が、勝ち続けることを当然とされる重圧の大きい立場だという点にある。横綱<span class="note">（＝大相撲の力士の最高位のこと。成績が悪くても地位は下がらないが、そのぶん常に優勝争いに加わることが求められ、不振が続くと引退を迫られることもある）</span>は、負ければ厳しい批判を受ける。大の里が「長かった」と語った言葉には、横綱としての1年間の苦しさがにじむ。年の最後の場所を連覇で締めくくったことで、来年の初場所<span class="note">（＝毎年1月に東京・両国国技館で開かれる、その年最初の本場所のこと）</span>では3連覇がかかる。</p>
+          </div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/articles/c3e4f06cafafb8b6d6e534d6a80518f7097c0c50" target="_blank" rel="noopener">産経新聞（Yahoo!ニュース）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>若元春、平幕で13勝の大健闘——10連勝で優勝争いをけん引、決定戦で力尽きる</h3>
+          <p class="lead">九州場所で、平幕の若元春は13勝2敗の好成績を挙げ、横綱・大の里との優勝決定戦に進んだ。BBM Sportsなどによると、若元春は一時10連勝して単独首位に立ち、千秋楽も関脇・熱海富士を破って決定戦に持ち込んだが、大の里に敗れて初優勝はならなかった。弟の若隆景も十両で好成績を挙げ、兄弟そろって注目を集めた場所となった。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、平幕の力士が最後まで横綱と優勝を争うことが、いかに珍しく価値のあることかという点にある。平幕<span class="note">（＝横綱・大関・関脇・小結の「役力士」を除いた、幕内の力士のこと。前頭（まえがしら）とも呼ばれる）</span>の力士が13勝を挙げれば、来場所は番付が大きく上がることが期待される。また、優れた成績を挙げた力士には三賞<span class="note">（＝本場所で活躍した関脇以下の力士に贈られる殊勲賞・敢闘賞・技能賞のこと）</span>が贈られることがある。若元春の活躍は、上位陣の顔ぶれに新しい風を吹き込むものとなった。</p>
+          </div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/articles/94bbf95f54a622e904ca7ba4907041ebacf7adaa" target="_blank" rel="noopener">BBM Sports（Yahoo!ニュース）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-koshien" style="--cat-color:var(--c-koshien)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">高校野球【埼玉】</h2></div>
+        <p class="panel-sub">今週の日程・結果2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>横浜、二松学舎大付に20－7で7回コールド勝ち——神宮大会の決勝へ、脇山魁音が大会タイの8打点</h3>
+          <p class="lead">明治神宮野球大会（高校の部）の準決勝が22日に行われ、関東王者の横浜（神奈川）が二松学舎大付（東京）に20－7で7回コールド勝ちし、決勝に進んだ。神奈川新聞によると、横浜は4－5で迎えた4回に、河内景虎選手の3点三塁打など打者一巡の攻撃で6点を奪って逆転した。脇山魁音選手は1試合8打点の大会タイ記録をマークした。二松学舎大付は初回に5点を奪って逆転したが、その後は投手陣が崩れた。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、横浜が決勝で勝てば、関東地区のセンバツ出場枠が1つ増えるという点にある。神宮大会で優勝した学校の地区には、翌春のセンバツの出場枠が1つ増える神宮枠<span class="note">（＝明治神宮大会の高校の部で優勝した学校が属する地区に、翌春の選抜高校野球大会の出場枠を1つ追加する仕組みのこと）</span>がある（11月7日既報）。関東地区の枠が増えれば、秋の関東大会で上位に進んだ学校のセンバツへの道が広がる。コールド勝ち<span class="note">（＝大きな点差がついた場合などに、規定の回を待たずに試合を打ち切って勝ちとすること）</span>での大勝で、横浜は勢いに乗って決勝に臨む。決勝は24日に予定されている。</p>
+          </div>
+          <div class="meta"><a href="https://www.kanaloco.jp/sports/baseball/hsbaseball/article-1322819.html" target="_blank" rel="noopener">神奈川新聞（カナロコ）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>埼玉4地区選抜交流戦、22日までの日程——12月からは「試合のない冬」へ</h3>
+          <p class="lead">UDトラックス上尾スタジアムでは、21日と22日の2日間の日程で、第5回埼玉県高校野球4地区選抜チーム交流戦（11月13日既報）が予定されていた。県内を東西南北の4地区に分け、1地区25人ずつの選手で地区ごとのチームを作って戦った。試合結果は、本稿の時点で確認できていない。来週12月1日からは、対外試合ができない期間に入る。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、高校野球が12月から春先まで、ほかの学校との試合をしない期間に入るという点にある。アウト・オブ・シーズン<span class="note">（＝日本高野連の決まりで、毎年12月1日から翌年3月上旬まで、ほかの学校との練習試合や大会を行わない期間のこと）</span>は、選手の体を休ませ、基礎体力や技術を鍛え直すために設けられている。この冬の間にどれだけ力をつけられるかが、春の県大会や夏の甲子園予選での成績を左右する。交流戦で他校の選手から学んだことを、冬の練習に生かしていく。</p>
+          </div>
+          <div class="meta"><a href="https://www.hb-nippon.com/articles/18896" target="_blank" rel="noopener">高校野球ドットコム</a></div>
+        </article>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var cats = ['top','social','polecon','scitech','business','startup','gadget','intl','sports','koshien'];
+  var idx = 0;
+  var track = document.getElementById('track');
+  var viewport = document.getElementById('viewport');
+  var vw = viewport.clientWidth;
+
+  function setActive(i){
+    cats.forEach(function(c, j){
+      document.getElementById('tab-' + c).classList.toggle('active', j === i);
+    });
+    var activeTab = document.getElementById('tab-' + cats[i]);
+    if (activeTab && activeTab.scrollIntoView) activeTab.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+  }
+
+  function settle(i, animate){
+    idx = Math.max(0, Math.min(cats.length - 1, i));
+    track.style.transition = animate ? 'transform .32s cubic-bezier(.22,.61,.36,1)' : 'none';
+    track.style.transform = 'translateX(' + (-idx * vw) + 'px)';
+    setActive(idx);
+  }
+
+  window.goTo = function(i){ settle(i, true); };
+
+  window.addEventListener('resize', function(){
+    vw = viewport.clientWidth;
+    settle(idx, false);
+  });
+
+  var dragging = false, decided = null, sx = 0, sy = 0, dx = 0;
+  viewport.addEventListener('touchstart', function(e){
+    dragging = true; decided = null;
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY; dx = 0;
+    track.style.transition = 'none';
+  }, { passive: true });
+
+  viewport.addEventListener('touchmove', function(e){
+    if (!dragging) return;
+    var cx = e.touches[0].clientX, cy = e.touches[0].clientY;
+    var mdx = cx - sx, mdy = cy - sy;
+    if (decided === null) {
+      if (Math.abs(mdx) > 8 || Math.abs(mdy) > 8) {
+        decided = Math.abs(mdx) > Math.abs(mdy) ? 'x' : 'y';
+      }
+    }
+    if (decided === 'x') {
+      e.preventDefault();
+      dx = mdx;
+      var atStart = idx === 0 && dx > 0;
+      var atEnd = idx === cats.length - 1 && dx < 0;
+      var eased = (atStart || atEnd) ? dx * 0.35 : dx;
+      track.style.transform = 'translateX(' + (-idx * vw + eased) + 'px)';
+    }
+  }, { passive: false });
+
+  viewport.addEventListener('touchend', function(){
+    if (!dragging) return;
+    dragging = false;
+    if (decided === 'x') {
+      var threshold = vw * 0.18;
+      if (dx <= -threshold) settle(idx + 1, true);
+      else if (dx >= threshold) settle(idx - 1, true);
+      else settle(idx, true);
+    }
+    decided = null; dx = 0;
+  });
+
+  settle(0, false);
+})();
+</script>
+
+</body></html>
