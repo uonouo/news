@@ -1,0 +1,610 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yoshi's News</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Zen+Old+Mincho:wght@600;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap');
+
+:root {
+  --bg: #ffffff;
+  --panel-bg: #ffffff;
+  --card: #ffffff;
+  --card-line: #eef0f3;
+  --ink: #1a1c20;
+  --ink-soft: #5b6068;
+  --ink-faint: #9aa0a8;
+  --shell: #f4f5f7;
+
+  --c-top: #ef3355;
+  --c-social: #00b3a4;
+  --c-polecon: #6d5bf0;
+  --c-scitech: #ff8a1e;
+  --c-business: #0091ff;
+  --c-sports: #26c281;
+  --c-startup: #ff4fa3;
+  --c-koshien: #c8860d;
+  --c-intl: #4b3f8f;
+  --c-gadget: #00bcd4;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101114;
+    --panel-bg: #101114;
+    --card: #1a1c20;
+    --card-line: #2a2c31;
+    --ink: #f1f2f4;
+    --ink-soft: #b7bcc4;
+    --ink-faint: #767c86;
+    --shell: #1a1c20;
+    --c-top: #ff6b85;
+    --c-social: #3fd8c9;
+    --c-polecon: #9c8fff;
+    --c-scitech: #ffab5c;
+    --c-business: #4db2ff;
+    --c-sports: #5be0a6;
+    --c-startup: #ff85c2;
+    --c-koshien: #e8b34c;
+    --c-intl: #a89cf0;
+    --c-gadget: #4dd8ea;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101114;
+  --panel-bg: #101114;
+  --card: #1a1c20;
+  --card-line: #2a2c31;
+  --ink: #f1f2f4;
+  --ink-soft: #b7bcc4;
+  --ink-faint: #767c86;
+  --shell: #1a1c20;
+  --c-top: #ff6b85;
+  --c-social: #3fd8c9;
+  --c-polecon: #9c8fff;
+  --c-scitech: #ffab5c;
+  --c-business: #4db2ff;
+  --c-sports: #5be0a6;
+  --c-startup: #ff85c2;
+  --c-koshien: #e8b34c;
+  --c-intl: #a89cf0;
+  --c-gadget: #4dd8ea;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--shell);
+  color: var(--ink);
+  font-family: "Zen Kaku Gothic New", -apple-system, "Hiragino Kaku Gothic ProN", sans-serif;
+  line-height: 1.7;
+  overscroll-behavior-y: none;
+}
+.serif { font-family: "Zen Old Mincho", "Hiragino Mincho ProN", serif; }
+
+.app {
+  max-width: 680px;
+  margin: 0 auto;
+  background: var(--bg);
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ---- Header ---- */
+.topbar { padding: 20px 20px 0; flex-shrink: 0; }
+.title-line { display: flex; align-items: center; gap: 8px; }
+.mascot { height: 50px; width: auto; flex-shrink: 0; border-radius: 8px; }
+.title-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  margin-bottom: 14px;
+}
+.title-row h1 {
+  font-family: "Baloo 2", "Zen Kaku Gothic New", sans-serif;
+  font-size: 48px; font-weight: 800; margin: 0; letter-spacing: 0.01em; line-height: 1;
+  -webkit-text-stroke: 2.4px #2b2013;
+  filter: drop-shadow(2px 3px 0 rgba(30,22,12,0.18));
+  background-image:
+    radial-gradient(circle at 22% 30%, #211709 0 7px, transparent 8px),
+    radial-gradient(circle at 68% 65%, #3a2b16 0 9px, transparent 10px),
+    radial-gradient(circle at 45% 88%, #241a0c 0 5px, transparent 6px),
+    radial-gradient(circle at 85% 20%, #2e2211 0 6px, transparent 7px),
+    linear-gradient(135deg, #b8a06e, #967c4c 50%, #6f5a35);
+  background-size: 30px 30px, 41px 41px, 23px 23px, 35px 35px, 100% 100%;
+  background-repeat: repeat, repeat, repeat, repeat, no-repeat;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.title-row .date { font-size: 11.5px; color: var(--ink-faint); white-space: nowrap; font-weight: 500; margin-top: 2px; }
+
+.tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px 3px; }
+.tab {
+  appearance: none; border: none; background: none;
+  font-family: inherit; font-size: 10.5px; font-weight: 700;
+  color: var(--ink-faint);
+  padding: 7px 4px 9px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+  cursor: pointer;
+  border-radius: 10px 10px 0 0;
+  transition: color .2s ease, background .2s ease;
+}
+.tab .dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  margin-right: 5px; background: currentColor; opacity: 0.45; vertical-align: middle;
+}
+.tab::after {
+  content: ""; position: absolute; left: 10px; right: 10px; bottom: 0;
+  height: 3px; border-radius: 3px 3px 0 0; background: transparent; transition: background .2s ease;
+}
+.tab.active { color: var(--tab-color); background: color-mix(in srgb, var(--tab-color) 10%, transparent); }
+.tab.active .dot { opacity: 1; }
+.tab.active::after { background: var(--tab-color); }
+
+/* ---- Swipe viewport ---- */
+.viewport { flex: 1; overflow: hidden; position: relative; touch-action: pan-y; }
+.track {
+  display: flex;
+  height: 100%;
+  width: 1000%;
+  transition: transform .32s cubic-bezier(.22,.61,.36,1);
+  will-change: transform;
+}
+.panel {
+  width: 10%;
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 20px 56px;
+}
+
+.panel-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.panel-head .chip { width: 8px; height: 26px; border-radius: 4px; background: var(--cat-color); flex-shrink: 0; }
+.panel-head h2 { font-size: 20px; font-weight: 700; margin: 0; letter-spacing: 0.02em; color: var(--cat-color); }
+.panel-sub { font-size: 12px; color: var(--ink-faint); margin: 0 0 18px 18px; }
+
+.story {
+  background: var(--card);
+  border: 1px solid var(--card-line);
+  border-left: 4px solid var(--cat-color);
+  border-radius: 12px;
+  padding: 18px 18px 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(20,20,30,0.05);
+}
+.story .kicker {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: "Zen Old Mincho", serif; font-size: 11.5px; font-weight: 700;
+  color: var(--cat-color); margin-bottom: 9px;
+}
+.story h3 { font-size: 16px; font-weight: 700; line-height: 1.55; margin: 0 0 10px; }
+.story .lead { font-size: 14px; color: var(--ink); margin: 0 0 14px; line-height: 1.85; }
+
+.context {
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 10px;
+  padding: 13px 15px;
+  margin: 0 0 12px;
+}
+.context-label {
+  display: block; font-size: 10.5px; font-weight: 700;
+  color: var(--cat-color); letter-spacing: 0.04em; margin-bottom: 6px;
+}
+.context p { font-size: 13px; color: var(--ink-soft); margin: 0; line-height: 1.8; }
+
+.note { font-size: 11.5px; color: var(--ink-faint); font-weight: 500; }
+
+.term-link {
+  color: var(--cat-color);
+  text-decoration: none;
+  border-bottom: 1px dotted color-mix(in srgb, var(--cat-color) 55%, transparent);
+  font-weight: 700;
+}
+
+.meta { font-size: 11px; color: var(--ink-faint); }
+.meta a { color: var(--cat-color); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--cat-color) 40%, transparent); font-weight: 700; }
+
+.closing {
+  margin: 6px 0 0; padding: 16px 18px;
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 12px; font-size: 13px; color: var(--ink-soft); text-align: center;
+}
+.closing .label {
+  display: block; font-family: "Zen Old Mincho", serif; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.2em; color: var(--cat-color); margin-bottom: 8px;
+}
+.colophon { margin: 14px 0 8px; font-size: 10.5px; color: var(--ink-faint); line-height: 1.9; text-align: center; }
+
+@media (max-width: 420px) {
+  .topbar { padding: 16px 14px 0; }
+  .panel { padding: 16px 14px 48px; }
+  .title-row h1 { font-size: 38px; }
+  .mascot { height: 40px; }
+}
+</style>
+</head><body>
+
+
+<div class="app" id="app">
+
+  <div class="topbar">
+    <div class="title-row">
+      <div class="title-line">
+        <img class="mascot" src="mascot.jpg" alt="オオサンショウウオのマスコット">
+        <h1>Yoshi's News</h1>
+      </div>
+      <span class="date">2026年11月24日（火）・第82号</span>
+    </div>
+    <div class="tabs" id="tabs">
+      <button class="tab" id="tab-top" style="--tab-color:var(--c-top)" onclick="goTo(0)"><span class="dot"></span>トップ</button>
+      <button class="tab" id="tab-social" style="--tab-color:var(--c-social)" onclick="goTo(1)"><span class="dot"></span>社会</button>
+      <button class="tab" id="tab-polecon" style="--tab-color:var(--c-polecon)" onclick="goTo(2)"><span class="dot"></span>政治/経済</button>
+      <button class="tab" id="tab-scitech" style="--tab-color:var(--c-scitech)" onclick="goTo(3)"><span class="dot"></span>科学/テック</button>
+      <button class="tab" id="tab-business" style="--tab-color:var(--c-business)" onclick="goTo(4)"><span class="dot"></span>ビジネス</button>
+      <button class="tab" id="tab-startup" style="--tab-color:var(--c-startup)" onclick="goTo(5)"><span class="dot"></span>スタートアップ</button>
+      <button class="tab" id="tab-gadget" style="--tab-color:var(--c-gadget)" onclick="goTo(6)"><span class="dot"></span>ガジェット</button>
+      <button class="tab" id="tab-intl" style="--tab-color:var(--c-intl)" onclick="goTo(7)"><span class="dot"></span>海外</button>
+      <button class="tab" id="tab-sports" style="--tab-color:var(--c-sports)" onclick="goTo(8)"><span class="dot"></span>芸能/スポーツ</button>
+      <button class="tab" id="tab-koshien" style="--tab-color:var(--c-koshien)" onclick="goTo(9)"><span class="dot"></span>高校野球【埼玉】</button>
+    </div>
+  </div>
+
+  <div class="viewport" id="viewport">
+    <div class="track" id="track">
+
+      <section class="panel" id="panel-top" style="--cat-color:var(--c-top)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">トップニュース</h2></div>
+        <p class="panel-sub">今日いちばん知っておきたい2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ テック</span>
+          <h3>フアン氏、エヌビディアCEOに復帰——取締役会が全会一致で決定、株価は一時33%高</h3>
+          <p class="lead">米半導体大手エヌビディアの取締役会は23日、ジェンスン・フアン氏を最高経営責任者（CEO）と取締役に復帰させると発表した。ブルームバーグなどによると、取締役会は全会一致で決め、フアン氏は22日付で復帰した。取締役会は、米政府の意見も踏まえたうえで、復帰が国家安全保障上のリスクにはならないと確認したと説明している。暫定CEOを務めたクレス氏は最高財務責任者（CFO）に戻る。発表を受けて、同社の株価は一時33%上がった。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、フアン氏が「中国のスパイ疑惑」のある人物との関係をめぐる問題でCEOを辞任してから（11月14日既報）、わずか10日ほどで戻ってきたという点にある。辞任後、同社はSECによる会計調査の報道（11月22日既報）も重なり、株価が大きく下がっていた。報道によると、トランプ大統領が復帰を後押ししたとされる。取締役会<span class="note">（＝株主に代わって会社の経営を監督し、CEOを選んだり辞めさせたりする権限を持つ機関のこと）</span>がCEOを呼び戻すのは異例だ。創業者のカリスマ性に頼る経営には、ガバナンス<span class="note">（＝企業が健全に経営されるよう、経営陣をチェックし、ルールに沿って運営する仕組みのこと）</span>の面から疑問の声も出そうだ。</p>
+          </div>
+          <div class="meta"><a href="https://www.bloomberg.com/jp/news/articles/2026-11-23/TOYK5UKJH6V400" target="_blank" rel="noopener">ブルームバーグ</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 社会</span>
+          <h3>首里城正殿、7年ぶりに復元——23日から一般公開、国王の玉座「御差床」も</h3>
+          <p class="lead">2019年の火災で焼失した那覇市の首里城の正殿が復元され、23日から一般公開が始まった。Time Out東京によると、前日の22日には復元完成式が開かれた。報道陣への先行公開では、琉球国王が座った「御差床（うさすか）」なども公開された。沖縄県は6月に、正殿の公開開始日を11月23日に決めていた。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、首里城が沖縄の人々にとって、単なる観光地ではなく「心のよりどころ」だという点にある。首里城は、およそ450年続いた琉球王国<span class="note">（＝15世紀から1879年まで、現在の沖縄県を中心に栄えた王国のこと。中国や日本、東南アジアとの貿易で独自の文化を育んだ）</span>の王の住まいであり、政治の中心だった。沖縄戦で焼け、戦後に復元されたが、2019年10月の火災で正殿を含む9棟が再び焼失した。今回の「令和の復元」は、全国から寄せられた寄付にも支えられて進められてきた。正殿<span class="note">（＝城の中心となる最も重要な建物のこと。首里城では儀式や政治が行われた）</span>の復活は、沖縄の再出発を象徴する出来事となる。</p>
+          </div>
+          <div class="meta"><a href="https://www.timeout.jp/tokyo/ja/news/shuri-castle-reopen-102126" target="_blank" rel="noopener">Time Out東京</a></div>
+        </article>
+
+        <div class="closing">
+          <span class="label serif">編集後記</span>
+          エヌビディアのフアン氏が、辞任からわずか10日ほどでCEOに戻りました。株価は急反発し、先週の米国株の急落から一転して買い戻しが広がっています。沖縄では首里城の正殿が復元され、多くの人が待ち望んだ一般公開が始まりました。今日は連休明けの東京市場が開き、神宮では横浜が19年前と同じ常葉大菊川との決勝に臨みます。
+        </div>
+        <div class="colophon">AIが検索結果をもとに要約・編集しています。詳細は各記事の出典リンクでご確認ください。<br>毎朝5時発行・次号は明日<br><a href="archive.html" style="color:inherit">過去の紙面はこちら</a></div>
+      </section>
+
+      <section class="panel" id="panel-social" style="--cat-color:var(--c-social)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">社会</h2></div>
+        <p class="panel-sub">くらしに関わるニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>今日24日は曇りや雨に——寒さ続き、岐阜県の山沿いでは「なだれ」に注意</h3>
+          <p class="lead">NHKによると、23日も各地で寒い一日となり、今日24日は前線や湿った空気の影響で、曇りや雨となるところが多い見込みだ。岐阜県の山沿いでは、積もった雪によるなだれに注意が呼びかけられている。先週末からの強い冬型の気圧配置では、各地で雪による車の立ち往生なども起きた（11月22日既報）。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、雪が積もった後に気温が上がったり雨が降ったりすると、なだれの危険が高まるという点にある。なだれ<span class="note">（＝山の斜面に積もった雪が、一気に崩れ落ちる現象のこと。人や車、建物を巻き込むと大きな被害になる）</span>は、雪が多く降った直後のほか、雨で雪が重く緩んだときにも起きやすい。山あいの道路を通るときや、山の近くに住む人は、気象台が出す注意報などに気をつけたい。寒暖差<span class="note">（＝1日の中や日ごとの気温の差のこと。差が大きいと体が対応しきれず、体調を崩しやすくなる）</span>による体調の変化にも注意が必要だ。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261123de80256" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>「多文化共生」の意味を理解している人、4割に届かず——愛知県の世論調査</h3>
+          <p class="lead">愛知県が行った世論調査で、「多文化共生社会」という言葉の意味を理解していると答えた人は4割に届かなかった。NHKが23日に伝えた。愛知県は外国人が多く暮らす地域の一つで、県は調査結果を今後の取り組みに生かすとみられる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、日本で暮らす外国人が増える中で、「ともに暮らす」ための考え方がまだ広く知られていないという点にある。多文化共生<span class="note">（＝国籍や民族などの違う人々が、互いの文化の違いを認め合い、地域社会の一員としてともに生きていくこと）</span>は、国や自治体が掲げる目標の一つだ。愛知県は、自動車産業などで働く外国人が多く、学校や職場、地域で言葉や習慣の違いにどう向き合うかが身近な課題になっている。言葉の意味が知られていないことは、取り組みを進めるうえでの出発点を示している。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261123de80215" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-polecon" style="--cat-color:var(--c-polecon)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">政治／経済</h2></div>
+        <p class="panel-sub">政治・経済の動き2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 政治</span>
+          <h3>関文科相の問責決議案、野党が今日24日にも協議——本人は辞任を否定</h3>
+          <p class="lead">政治資金パーティーをめぐる問題で批判されている関芳弘文部科学相（11月23日既報）について、野党は今日24日にも、参議院での問責決議案の提出に向けて協議し、辞任を求める声を強める。琉球新報（共同通信）によると、関氏は辞任を否定しており、政権幹部も「法的に問題ない」として、説明責任を果たすよう求めるにとどめる構えだ。時事通信によると、関氏は政府職員をパーティーに出席させたケースが、2024年にはこれまで明らかになった分とは別に3回あったと明かし、国会での答弁との食い違いから野党の態度が硬くなっている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、参議院では与党が少数のため、野党がまとまれば問責決議案が可決される可能性があるという点にある。問責決議<span class="note">（＝参議院が、大臣などの責任を問うために行う決議のこと。可決されても法的な拘束力はないが、政治的に大きな打撃となる）</span>が可決されると、野党がその大臣の出る審議に応じなくなることが多い。国会答弁<span class="note">（＝国会の委員会や本会議で、大臣などが議員の質問に答えること。うそや食い違いがあると、信頼を大きく損なう）</span>との食い違いが明らかになったことで、問題はさらに大きくなっている。</p>
+          </div>
+          <div class="meta"><a href="https://ryukyushimpo.jp/kyodo/entry-5612610.html" target="_blank" rel="noopener">琉球新報（共同通信）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 政治</span>
+          <h3>国民民主・榛葉幹事長「週明けの早い段階で、本人や首相が決断を」</h3>
+          <p class="lead">関文部科学相の問題について、国民民主党の榛葉賀津也幹事長は、「週明けの早い段階で本人や首相が決断を」と述べ、早期の進退判断を求めた。読売新聞が伝えた。野党は問責決議案の提出に向けて足並みをそろえつつある。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、国民民主党が「与党とも協力しうる野党」であり、その幹部の発言が政権に重くのしかかるという点にある。与党は、参議院で消費減税法案などを成立させるため、国民民主党などの協力を必要としている（11月21日既報）。その国民民主党が早期の決断を迫ったことで、政権は「辞任させて法案の審議を守る」か「かばい続ける」かの判断を迫られている。進退<span class="note">（＝その職にとどまるか、辞めるかということ）</span>の判断が長引くほど、国会の審議全体が止まるおそれが高まる。</p>
+          </div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/articles/209a002b57df1cb102c9a7ea7ea3cac2b17ca787" target="_blank" rel="noopener">読売新聞（Yahoo!ニュース）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-scitech" style="--cat-color:var(--c-scitech)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">科学／テック</h2></div>
+        <p class="panel-sub">研究・技術のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>ロボットに「触覚」を与える電子皮膚——中国・途見科技、大型調達で年100万枚の生産めざす</h3>
+          <p class="lead">ロボットに触覚を与える「電子皮膚」を開発する中国のスタートアップ、途見科技（北京）は9月、億元（数十億円）規模の資金調達を完了していた。中国の投資情報サイト投中網などによると、北京市の人工知能と新素材の産業投資ファンドが共同で主導した。資金は、電子皮膚の生産量を年間100万枚規模に引き上げることなどに使う。創業者は、米スタンフォード大学で電子皮膚の研究で知られる研究室に所属していたという。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、人型ロボットが人間のように器用に動くには、「さわった感覚」が欠かせないという点にある。電子皮膚<span class="note">（＝薄く柔らかいシートに小さなセンサーを並べ、圧力や温度などを感じ取れるようにした人工の皮膚のこと）</span>があれば、ロボットは卵をつぶさずに持ったり、人とぶつかりそうになると力を緩めたりできる。中国では人型ロボットの開発競争が激しく、手足だけでなく「触覚」の部品にも資金が集まっている。触覚センサー<span class="note">（＝物にふれたときの力の強さや向きを測るセンサーのこと）</span>を大量に安く作れるかどうかが、ロボットの普及のカギの一つになる。</p>
+          </div>
+          <div class="meta"><a href="https://m.chinaventure.com.cn/news/114-20260929-393483.html" target="_blank" rel="noopener">投中網（中国語）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>AIと数学、ここまでの歩み——8月には「リーマン予想」に関わる記録を更新していた</h3>
+          <p class="lead">Anthropicの数学者がAI「Claude」と共同でリーマン予想を証明したと主張し、検証の専門家たちが正しいとする声明を出した問題（11月23日既報）。米テッククランチによると、Anthropicは今年8月、未公開の研究用モデルが、リーマン予想に関わる「ある数値の記録」を更新したと公表していた。そのときAnthropic自身は、使った手法でリーマン予想の証明にたどり着く見込みはないとしていた。わずか3か月で、状況は大きく変わったことになる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、AIの数学の力が、ここ1年ほどで急速に伸びているという点にある。報道によると、8月の成果は、リーマン予想に出てくるゼータ関数<span class="note">（＝素数の分布と深く関わる、数学で特別に重要な関数のこと。リーマン予想は、この関数の「ゼロになる点」がすべて一直線上に並ぶかどうかを問うている）</span>のゼロ点のうち、予想どおりの場所にあると証明できる割合の下限を引き上げるものだった。今回の主張が本当なら、AIが「部分的な前進」から「完全な解決」へと一気に進んだことになる。数学者による本格的な検証<span class="note">（＝証明に誤りがないかを、専門家が細かく確かめること）</span>の行方が注目される。</p>
+          </div>
+          <div class="meta"><a href="https://techcrunch.com/2026/08/11/an-unreleased-anthropic-model-made-progress-on-one-of-maths-biggest-unsolved-problems/" target="_blank" rel="noopener">TechCrunch（英語）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-business" style="--cat-color:var(--c-business)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ビジネス</h2></div>
+        <p class="panel-sub">企業・産業のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>NY株が急反発、ダウは一時1500ドル超高——フアン氏復帰でハイテク株の買い戻し広がる</h3>
+          <p class="lead">23日のニューヨーク株式市場では、ハイテク株を中心に買い戻しが広がり、株価が大きく上がった。時事通信などによると、エヌビディアのフアン氏のCEO復帰の発表を受けて同社の株が急騰し、ダウ平均は一時1300ドルを超えて値上がりした。みんかぶによると、ニューヨーク時間の午後1時すぎには、ダウ平均が前の週末より1529ドル高く、ナスダック総合指数も6.6%上がっていた。最終的な終値は本稿の時点で確認できていない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、先週の大きな値下がりの「反動」が出ているという点にある。先週末、ナスダックは5%を超えて下がり、今年の上昇分をすべて失っていた（11月22日既報）。売られすぎたと考えた投資家が買い戻しに動いたところに、フアン氏の復帰という好材料が加わった。買い戻し<span class="note">（＝値下がりで売られた株を、投資家が改めて買うこと。株価を大きく押し上げることがある）</span>による上昇は勢いがある一方、不安材料が解消されたわけではないため、値動きの荒い展開が続く可能性もある。エヌビディアの会計調査の報道（11月22日既報）も、まだ決着していない。</p>
+          </div>
+          <div class="meta"><a href="https://www.jiji.com/jc/article?k=2026112300565&amp;g=int&amp;m=rss" target="_blank" rel="noopener">時事通信</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>東京市場、3連休明けの今日24日に取引再開——日経平均は「弱気相場」入りの指摘も</h3>
+          <p class="lead">東京株式市場は、勤労感謝の日の休みを挟んで、今日24日に取引を再開する。財経新聞の相場展望によると、日経平均株価は先週、高値からの下落幅が大きくなり「弱気相場」入りしたと指摘され、年初来の安値をつける銘柄も相次いでいた。休みの間に、米国では先週末の急落と23日の急反発という大きな値動きがあった。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、市場が休んでいる間の海外の動きが、休み明けにまとめて反映されるという点にある。弱気相場<span class="note">（＝株価が直近の高値から20%以上下がった状態のこと。10%以上の下落は「調整局面」と呼ばれる）</span>は、投資家の悲観が強まっていることを示す。一方で、米国では23日に大きく買い戻されたため、東京市場でも半導体やAI関連の株に買いが戻るかどうかが注目される。年初来安値<span class="note">（＝その年の初めから現在までの中で、いちばん安い株価のこと）</span>をつける銘柄が多いほど、市場全体の雰囲気は暗い。</p>
+          </div>
+          <div class="meta"><a href="https://www.zaikei.co.jp/article/20261124/878810.html" target="_blank" rel="noopener">財経新聞</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-startup" style="--cat-color:var(--c-startup)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">スタートアップ</h2></div>
+        <p class="panel-sub">資金調達・注目トピック2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>中国DeepSeek、約2兆5000億円を調達か——国有資本の割合が27%に拡大と報道</h3>
+          <p class="lead">中国のAI企業DeepSeekが、2回目の資金調達で約1055億元（約2兆5300億円）を集めたと、米メディアのThe Informationが報じた。36Kr Japanによると、調達後の企業価値は約15兆円とされ、中国の国有の機関や政府系ファンドが出した資金は全体の約27%にのぼる。中国IT大手のテンセントと電池大手のCATLが主導し、約30の企業や機関が参加したという。DeepSeekはこの金額を公式には認めていない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、中国政府がAIの開発を「国家の戦略」として、資金面でも強く後押ししているという点にある。DeepSeekは、少ない費用で高性能なAIを作ったことで世界を驚かせた企業だ。国有資本<span class="note">（＝国や地方政府、国有企業が出しているお金のこと。出資の割合が高いほど、政府の意向が経営に影響しやすくなる）</span>の割合が増えたことは、米国との技術競争の中で、中国がAIを国の柱として育てようとしていることを示す。米国はAI向け半導体の輸出を制限しており（11月18日既報）、中国は自前の技術と資金で対抗しようとしている。</p>
+          </div>
+          <div class="meta"><a href="https://36kr.jp/504018/" target="_blank" rel="noopener">36Kr Japan</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>脳に埋め込む「完全ワイヤレス」BCIの中国NeuroXess、約170億円を調達——臨床試験と量産へ</h3>
+          <p class="lead">脳とコンピューターをつなぐ装置を開発する中国のNeuroXess（脳虎科技）が、シリーズBで7億元（約170億円）を調達した。36Kr Japanなどによると、資金は複数の病院での臨床試験や、医療機器としての承認の取得、量産のための工場建設に使う。同社は、首のけがで手足がまひした患者の腕の機能の回復を目指す試験を、約20の病院で進めている。年間1万台を生産できる工場も建設中だという。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「考えるだけで機械を動かす」技術が、研究から医療の現場へと移りつつあるという点にある。BCI<span class="note">（＝ブレイン・コンピューター・インターフェースのこと。脳の信号を読み取り、パソコンやロボットアームなどを操作できるようにする技術）</span>は、病気やけがで体を動かせなくなった人の生活を大きく変える可能性がある。「完全ワイヤレス」は、頭の外に線を出さずに信号を送れるため、感染症のリスクを下げられるとされる。臨床試験<span class="note">（＝新しい薬や医療機器が、人にとって安全で効果があるかを、実際の患者の協力を得て確かめる試験のこと）</span>の結果が、実用化の行方を左右する。</p>
+          </div>
+          <div class="meta"><a href="https://36kr.jp/504135/" target="_blank" rel="noopener">36Kr Japan</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-gadget" style="--cat-color:var(--c-gadget)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ガジェット</h2></div>
+        <p class="panel-sub">新製品2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>ファーウェイ「Mate 90 Air」、今日24日に中国で発表——折りたたみ「Mate X8」も</h3>
+          <p class="lead">中国のファーウェイは、今日24日に中国で新しいスマートフォン「Mate 90 Air」を発表する（11月23日既報）。TechNodeによると、折りたたまない通常の形のMateシリーズとしては最も薄いモデルになる。同じ発表会では、折りたたみ型の「Mate X8」や、腕時計型の「Watch Air」も発表される見込みだ。価格や詳しい性能は、発表を待つ必要がある。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、ファーウェイが米国の制裁を受けながらも、中国国内で存在感を取り戻しているという点にある。米国の制裁<span class="note">（＝米国が安全保障上の理由から、ファーウェイへの半導体などの輸出を厳しく制限している措置のこと）</span>で、一時は高性能なスマホを作るのが難しくなったが、自社や中国企業の部品を使って新製品を出し続けている。折りたたみスマホ<span class="note">（＝画面を本のように折りたためるスマートフォンのこと。開くとタブレットのように大きな画面で使える）</span>の分野でも、ファーウェイは先頭集団にいる。日本での発売は確認されていない。</p>
+          </div>
+          <div class="meta"><a href="https://technode.com/2026/11/19/huawei-announces-mate-90-air-its-thinnest-mate-slab-phone/" target="_blank" rel="noopener">TechNode（英語）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>泳ぐ人を自動で追いかける電動ボート——中国発MIRAVA、欧州市場に照準</h3>
+          <p class="lead">中国発のスマートボートのブランド「MIRAVA」が、欧州市場への本格進出を目指している。36Kr Japanなどによると、同社のボートは、泳いだりダイビングをしたりしている人が身につけた機器の位置に合わせて、安全な距離を保ちながら自動で後をついていく。全長7.9メートルの「M800」シリーズには電動版とガソリン版があり、自動で岸に着けたり離れたりする機能も備える。同社は500万ドルのエンジェル投資を受けており、2027年には独デュッセルドルフの国際ボート見本市にも出展する予定だ。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、自動運転の技術が、車だけでなく船にも広がっているという点にある。レジャー用のボートでは、泳ぎに出た人のために誰かが船に残って見張る必要があった。自動追従<span class="note">（＝人や物の位置を測りながら、一定の距離を保って自動的についていく機能のこと）</span>があれば、全員が海を楽しめる。中国のメーカーは、電気自動車やドローンで培った電池やセンサーの技術を、船にも応用し始めている。エンジェル投資<span class="note">（＝創業まもない企業に、個人の投資家がお金を出すこと。投資の見返りに株を受け取ることが多い）</span>で集めた資金で、少量生産と納品を進める段階だ。</p>
+          </div>
+          <div class="meta"><a href="https://36kr.jp/504384/" target="_blank" rel="noopener">36Kr Japan</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-intl" style="--cat-color:var(--c-intl)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">海外</h2></div>
+        <p class="panel-sub">国際ニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>COP31、成果文書なく閉幕——「脱化石燃料」で対立、交渉決裂は2009年以来</h3>
+          <p class="lead">トルコ南部のアンタルヤで開かれていた国連気候変動枠組み条約の第31回締約国会議（COP31）が22日、成果文書を採択できないまま閉幕した。産経新聞によると、化石燃料からの脱却をめぐり、温暖化対策を重視する欧州連合（EU）などと、サウジアラビアやロシアなどの産油国との対立が解けなかった。合意文書なしの閉幕は、2009年にデンマークで開かれたCOP15以来となる。今年で退任する国連のグテーレス事務総長は「深く失望している」とのコメントを出した。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、COPが全会一致を原則としているため、1つの国や国のグループが強く反対すると合意ができないという点にある。COP<span class="note">（＝国連気候変動枠組み条約の締約国会議のこと。毎年、世界の国々が集まり、地球温暖化を防ぐための対策を話し合う）</span>は、2015年のパリ協定<span class="note">（＝世界の平均気温の上昇を産業革命前に比べて1.5〜2度未満に抑えることを目指す国際的な約束のこと）</span>で目標を決めたが、その実現への道筋をめぐって各国の思惑がぶつかっている。今回は会期中から、主要国の首脳の欠席が目立っていた（11月12日既報）。合意がないまま終わったことで、温暖化対策の国際的な勢いが弱まることが心配されている。</p>
+          </div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/articles/ee78366bc30d0effd5fc6ffcca867e5d406d12d9" target="_blank" rel="noopener">産経新聞（Yahoo!ニュース）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>イスラエルの組閣、アイゼンコット氏とネタニヤフ氏側が「挙国一致」へ3度目の協議</h3>
+          <p class="lead">イスラエルで次の政府づくりを任された野党のアイゼンコット氏（11月10日既報）の陣営と、現職のネタニヤフ首相の陣営が23日、挙国一致の政府をつくるための3度目の協議を始めた。イスラエル紙タイムズ・オブ・イスラエルによると、協議にはほとんど進展がないと伝えられている。アイゼンコット氏には、原則28日以内（最大14日の延長が可能）に政府をつくることが求められている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、イスラエルでは1つの政党だけで議会の過半数を取ることがほとんどなく、複数の政党の連立で政府をつくる必要があるという点にある。組閣<span class="note">（＝首相となる人が大臣を選び、内閣（政府）をつくること）</span>を任されても、議会（定数120）で過半数の61議席の支持を集められなければ、政府はつくれない。挙国一致内閣<span class="note">（＝ふだんは対立する主要な政党が協力して、一緒につくる内閣のこと。戦争や危機のときにつくられることが多い）</span>は、イランとの緊張などが続く中で求める声がある。長くイスラエルを率いてきたネタニヤフ氏の扱いが、協議の大きな焦点になっている。</p>
+          </div>
+          <div class="meta"><a href="https://timesofisrael.com/liveblog-november-23-2026" target="_blank" rel="noopener">The Times of Israel（英語）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-sports" style="--cat-color:var(--c-sports)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">芸能／スポーツ</h2></div>
+        <p class="panel-sub">厳選2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>ラグビー早慶戦、早大が44－8で快勝し2位に浮上——「早明戦」が優勝決定戦に</h3>
+          <p class="lead">ラグビーの関東大学対抗戦で、早稲田大学が慶應義塾大学に44－8で快勝し、2位に浮上した。スポーツジャーナリストの斉藤健仁氏によると、司令塔のスタンドオフ服部選手が活躍した。この結果、伝統の一戦「早明戦」が、事実上の優勝決定戦となる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、早慶戦や早明戦が、100年を超える歴史を持つ大学ラグビーの「伝統の一戦」だという点にある。関東大学対抗戦<span class="note">（＝早稲田、慶應、明治、帝京など、関東の大学ラグビーの強豪が総当たりで戦うリーグのこと）</span>の最終盤に組まれる早明戦は、毎年12月に国立競技場などで行われ、多くの観客を集める。スタンドオフ<span class="note">（＝ラグビーで、パスやキックで攻撃を組み立てる司令塔の役割を担うポジションのこと。背番号10）</span>の出来は、チームの攻撃の成否を大きく左右する。この後には、大学日本一を決める全国大学選手権も控えている。</p>
+          </div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/expert/articles/004d3911ca1f109b599f2a00f92cf077db09b1a4" target="_blank" rel="noopener">Yahoo!ニュース エキスパート</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>大の里「やっと思い出せた」——九州場所制覇で完全復活を印象づける</h3>
+          <p class="lead">大相撲九州場所で2場所連続7度目の優勝を果たした横綱・大の里（11月23日既報）が、「やっと思い出せた」と語った。東京新聞が伝えた。横綱としての初めての連覇で、完全復活を印象づけた。千秋楽の本割で豊昇龍を、優勝決定戦で若元春を破っての優勝だった。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、大の里にとって今年が、横綱として苦しんだ1年だったという点にある。横綱<span class="note">（＝大相撲の力士の最高位のこと。成績が悪くても地位は下がらないが、そのぶん常に優勝争いに加わることが求められる）</span>は、不振が続くと周囲から厳しい目を向けられる。「やっと思い出せた」という言葉には、勝ち方や自分の相撲の感覚を取り戻したという実感がこもっている。来年1月の初場所では、3場所連続の優勝がかかる。連覇<span class="note">（＝続けて優勝すること。2場所続ければ「2連覇」）</span>を伸ばせるかが、来年の大相撲の大きな注目点となる。</p>
+          </div>
+          <div class="meta"><a href="https://www.tokyo-np.co.jp/article/530118" target="_blank" rel="noopener">東京新聞</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-koshien" style="--cat-color:var(--c-koshien)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">高校野球【埼玉】</h2></div>
+        <p class="panel-sub">今日の決勝ほか2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>神宮大会決勝は今日24日午前10時、横浜対常葉大菊川——19年前と同じ顔合わせ</h3>
+          <p class="lead">明治神宮野球大会（高校の部）の決勝が、今日24日午前10時から神宮球場で行われ、関東代表の横浜（神奈川）と東海代表の常葉大菊川（静岡）が対戦する。スポーツ報知などによると、常葉大菊川は初出場で優勝した2007年の決勝でも横浜と戦っており、19年ぶりに同じ顔合わせとなった。横浜は準決勝で二松学舎大付に20－7で大勝している（11月23日既報）。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、この決勝の結果が、来春のセンバツの関東地区の出場枠に直結するという点にある。神宮大会で優勝した学校の地区には、センバツの出場枠が1つ増える神宮枠<span class="note">（＝明治神宮大会の高校の部で優勝した学校が属する地区に、翌春の選抜高校野球大会の出場枠を1つ追加する仕組みのこと）</span>がある（11月7日既報）。横浜が勝てば関東地区、常葉大菊川が勝てば東海地区の枠が増える。関東の枠が増えれば、秋の関東大会に出場した学校のセンバツ選出の可能性が広がるため、埼玉の高校野球ファンにとっても見逃せない一戦だ。</p>
+          </div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/articles/68403972e9c1c2b70f61abfc5f66ec6c9e7e2715" target="_blank" rel="noopener">スポーツ報知（Yahoo!ニュース）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>常葉大菊川、京都国際に3－2で競り勝ち決勝へ——近藤悠人が2失点完投、後藤歩武がソロ</h3>
+          <p class="lead">22日の準決勝で、常葉大菊川（東海）は京都国際（近畿）に3－2で競り勝ち、優勝した2007年以来19年ぶりに決勝に進んだ。中日スポーツなどによると、背番号10の近藤悠人投手が6安打2失点で完投し、9番の後藤歩武捕手が中押しのソロ本塁打を放った。後藤選手は「この流れのまま勝ちたい」と決勝への意気込みを語った。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、横浜が対戦する常葉大菊川が、接戦に強いチームだという点にある。準決勝では、エース番号ではない背番号10の投手が完投し、少ない点差を守り切った。完投<span class="note">（＝先発した投手が、交代せずに最後まで1人で投げ切ること）</span>できる投手が複数いることは、連戦の大会で大きな強みになる。中押し<span class="note">（＝試合の中盤に追加点を挙げて、相手との差を広げること）</span>の一発のような効果的な得点で勝ち上がってきた常葉大菊川と、大量得点で勝ち上がった横浜の対照的な戦いぶりも見どころだ。</p>
+          </div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/articles/299bf625bd96f8229b0bf0dd0bacefa4250c243e" target="_blank" rel="noopener">中日スポーツ（Yahoo!ニュース）</a></div>
+        </article>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var cats = ['top','social','polecon','scitech','business','startup','gadget','intl','sports','koshien'];
+  var idx = 0;
+  var track = document.getElementById('track');
+  var viewport = document.getElementById('viewport');
+  var vw = viewport.clientWidth;
+
+  function setActive(i){
+    cats.forEach(function(c, j){
+      document.getElementById('tab-' + c).classList.toggle('active', j === i);
+    });
+    var activeTab = document.getElementById('tab-' + cats[i]);
+    if (activeTab && activeTab.scrollIntoView) activeTab.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+  }
+
+  function settle(i, animate){
+    idx = Math.max(0, Math.min(cats.length - 1, i));
+    track.style.transition = animate ? 'transform .32s cubic-bezier(.22,.61,.36,1)' : 'none';
+    track.style.transform = 'translateX(' + (-idx * vw) + 'px)';
+    setActive(idx);
+  }
+
+  window.goTo = function(i){ settle(i, true); };
+
+  window.addEventListener('resize', function(){
+    vw = viewport.clientWidth;
+    settle(idx, false);
+  });
+
+  var dragging = false, decided = null, sx = 0, sy = 0, dx = 0;
+  viewport.addEventListener('touchstart', function(e){
+    dragging = true; decided = null;
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY; dx = 0;
+    track.style.transition = 'none';
+  }, { passive: true });
+
+  viewport.addEventListener('touchmove', function(e){
+    if (!dragging) return;
+    var cx = e.touches[0].clientX, cy = e.touches[0].clientY;
+    var mdx = cx - sx, mdy = cy - sy;
+    if (decided === null) {
+      if (Math.abs(mdx) > 8 || Math.abs(mdy) > 8) {
+        decided = Math.abs(mdx) > Math.abs(mdy) ? 'x' : 'y';
+      }
+    }
+    if (decided === 'x') {
+      e.preventDefault();
+      dx = mdx;
+      var atStart = idx === 0 && dx > 0;
+      var atEnd = idx === cats.length - 1 && dx < 0;
+      var eased = (atStart || atEnd) ? dx * 0.35 : dx;
+      track.style.transform = 'translateX(' + (-idx * vw + eased) + 'px)';
+    }
+  }, { passive: false });
+
+  viewport.addEventListener('touchend', function(){
+    if (!dragging) return;
+    dragging = false;
+    if (decided === 'x') {
+      var threshold = vw * 0.18;
+      if (dx <= -threshold) settle(idx + 1, true);
+      else if (dx >= threshold) settle(idx - 1, true);
+      else settle(idx, true);
+    }
+    decided = null; dx = 0;
+  });
+
+  settle(0, false);
+})();
+</script>
+
+</body></html>
