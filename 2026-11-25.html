@@ -1,0 +1,610 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yoshi's News</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Zen+Old+Mincho:wght@600;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap');
+
+:root {
+  --bg: #ffffff;
+  --panel-bg: #ffffff;
+  --card: #ffffff;
+  --card-line: #eef0f3;
+  --ink: #1a1c20;
+  --ink-soft: #5b6068;
+  --ink-faint: #9aa0a8;
+  --shell: #f4f5f7;
+
+  --c-top: #ef3355;
+  --c-social: #00b3a4;
+  --c-polecon: #6d5bf0;
+  --c-scitech: #ff8a1e;
+  --c-business: #0091ff;
+  --c-sports: #26c281;
+  --c-startup: #ff4fa3;
+  --c-koshien: #c8860d;
+  --c-intl: #4b3f8f;
+  --c-gadget: #00bcd4;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101114;
+    --panel-bg: #101114;
+    --card: #1a1c20;
+    --card-line: #2a2c31;
+    --ink: #f1f2f4;
+    --ink-soft: #b7bcc4;
+    --ink-faint: #767c86;
+    --shell: #1a1c20;
+    --c-top: #ff6b85;
+    --c-social: #3fd8c9;
+    --c-polecon: #9c8fff;
+    --c-scitech: #ffab5c;
+    --c-business: #4db2ff;
+    --c-sports: #5be0a6;
+    --c-startup: #ff85c2;
+    --c-koshien: #e8b34c;
+    --c-intl: #a89cf0;
+    --c-gadget: #4dd8ea;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101114;
+  --panel-bg: #101114;
+  --card: #1a1c20;
+  --card-line: #2a2c31;
+  --ink: #f1f2f4;
+  --ink-soft: #b7bcc4;
+  --ink-faint: #767c86;
+  --shell: #1a1c20;
+  --c-top: #ff6b85;
+  --c-social: #3fd8c9;
+  --c-polecon: #9c8fff;
+  --c-scitech: #ffab5c;
+  --c-business: #4db2ff;
+  --c-sports: #5be0a6;
+  --c-startup: #ff85c2;
+  --c-koshien: #e8b34c;
+  --c-intl: #a89cf0;
+  --c-gadget: #4dd8ea;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--shell);
+  color: var(--ink);
+  font-family: "Zen Kaku Gothic New", -apple-system, "Hiragino Kaku Gothic ProN", sans-serif;
+  line-height: 1.7;
+  overscroll-behavior-y: none;
+}
+.serif { font-family: "Zen Old Mincho", "Hiragino Mincho ProN", serif; }
+
+.app {
+  max-width: 680px;
+  margin: 0 auto;
+  background: var(--bg);
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ---- Header ---- */
+.topbar { padding: 20px 20px 0; flex-shrink: 0; }
+.title-line { display: flex; align-items: center; gap: 8px; }
+.mascot { height: 50px; width: auto; flex-shrink: 0; border-radius: 8px; }
+.title-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  margin-bottom: 14px;
+}
+.title-row h1 {
+  font-family: "Baloo 2", "Zen Kaku Gothic New", sans-serif;
+  font-size: 48px; font-weight: 800; margin: 0; letter-spacing: 0.01em; line-height: 1;
+  -webkit-text-stroke: 2.4px #2b2013;
+  filter: drop-shadow(2px 3px 0 rgba(30,22,12,0.18));
+  background-image:
+    radial-gradient(circle at 22% 30%, #211709 0 7px, transparent 8px),
+    radial-gradient(circle at 68% 65%, #3a2b16 0 9px, transparent 10px),
+    radial-gradient(circle at 45% 88%, #241a0c 0 5px, transparent 6px),
+    radial-gradient(circle at 85% 20%, #2e2211 0 6px, transparent 7px),
+    linear-gradient(135deg, #b8a06e, #967c4c 50%, #6f5a35);
+  background-size: 30px 30px, 41px 41px, 23px 23px, 35px 35px, 100% 100%;
+  background-repeat: repeat, repeat, repeat, repeat, no-repeat;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.title-row .date { font-size: 11.5px; color: var(--ink-faint); white-space: nowrap; font-weight: 500; margin-top: 2px; }
+
+.tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px 3px; }
+.tab {
+  appearance: none; border: none; background: none;
+  font-family: inherit; font-size: 10.5px; font-weight: 700;
+  color: var(--ink-faint);
+  padding: 7px 4px 9px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+  cursor: pointer;
+  border-radius: 10px 10px 0 0;
+  transition: color .2s ease, background .2s ease;
+}
+.tab .dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  margin-right: 5px; background: currentColor; opacity: 0.45; vertical-align: middle;
+}
+.tab::after {
+  content: ""; position: absolute; left: 10px; right: 10px; bottom: 0;
+  height: 3px; border-radius: 3px 3px 0 0; background: transparent; transition: background .2s ease;
+}
+.tab.active { color: var(--tab-color); background: color-mix(in srgb, var(--tab-color) 10%, transparent); }
+.tab.active .dot { opacity: 1; }
+.tab.active::after { background: var(--tab-color); }
+
+/* ---- Swipe viewport ---- */
+.viewport { flex: 1; overflow: hidden; position: relative; touch-action: pan-y; }
+.track {
+  display: flex;
+  height: 100%;
+  width: 1000%;
+  transition: transform .32s cubic-bezier(.22,.61,.36,1);
+  will-change: transform;
+}
+.panel {
+  width: 10%;
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 20px 56px;
+}
+
+.panel-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.panel-head .chip { width: 8px; height: 26px; border-radius: 4px; background: var(--cat-color); flex-shrink: 0; }
+.panel-head h2 { font-size: 20px; font-weight: 700; margin: 0; letter-spacing: 0.02em; color: var(--cat-color); }
+.panel-sub { font-size: 12px; color: var(--ink-faint); margin: 0 0 18px 18px; }
+
+.story {
+  background: var(--card);
+  border: 1px solid var(--card-line);
+  border-left: 4px solid var(--cat-color);
+  border-radius: 12px;
+  padding: 18px 18px 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(20,20,30,0.05);
+}
+.story .kicker {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: "Zen Old Mincho", serif; font-size: 11.5px; font-weight: 700;
+  color: var(--cat-color); margin-bottom: 9px;
+}
+.story h3 { font-size: 16px; font-weight: 700; line-height: 1.55; margin: 0 0 10px; }
+.story .lead { font-size: 14px; color: var(--ink); margin: 0 0 14px; line-height: 1.85; }
+
+.context {
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 10px;
+  padding: 13px 15px;
+  margin: 0 0 12px;
+}
+.context-label {
+  display: block; font-size: 10.5px; font-weight: 700;
+  color: var(--cat-color); letter-spacing: 0.04em; margin-bottom: 6px;
+}
+.context p { font-size: 13px; color: var(--ink-soft); margin: 0; line-height: 1.8; }
+
+.note { font-size: 11.5px; color: var(--ink-faint); font-weight: 500; }
+
+.term-link {
+  color: var(--cat-color);
+  text-decoration: none;
+  border-bottom: 1px dotted color-mix(in srgb, var(--cat-color) 55%, transparent);
+  font-weight: 700;
+}
+
+.meta { font-size: 11px; color: var(--ink-faint); }
+.meta a { color: var(--cat-color); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--cat-color) 40%, transparent); font-weight: 700; }
+
+.closing {
+  margin: 6px 0 0; padding: 16px 18px;
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 12px; font-size: 13px; color: var(--ink-soft); text-align: center;
+}
+.closing .label {
+  display: block; font-family: "Zen Old Mincho", serif; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.2em; color: var(--cat-color); margin-bottom: 8px;
+}
+.colophon { margin: 14px 0 8px; font-size: 10.5px; color: var(--ink-faint); line-height: 1.9; text-align: center; }
+
+@media (max-width: 420px) {
+  .topbar { padding: 16px 14px 0; }
+  .panel { padding: 16px 14px 48px; }
+  .title-row h1 { font-size: 38px; }
+  .mascot { height: 40px; }
+}
+</style>
+</head><body>
+
+
+<div class="app" id="app">
+
+  <div class="topbar">
+    <div class="title-row">
+      <div class="title-line">
+        <img class="mascot" src="mascot.jpg" alt="オオサンショウウオのマスコット">
+        <h1>Yoshi's News</h1>
+      </div>
+      <span class="date">2026年11月25日（水）・第83号</span>
+    </div>
+    <div class="tabs" id="tabs">
+      <button class="tab" id="tab-top" style="--tab-color:var(--c-top)" onclick="goTo(0)"><span class="dot"></span>トップ</button>
+      <button class="tab" id="tab-social" style="--tab-color:var(--c-social)" onclick="goTo(1)"><span class="dot"></span>社会</button>
+      <button class="tab" id="tab-polecon" style="--tab-color:var(--c-polecon)" onclick="goTo(2)"><span class="dot"></span>政治/経済</button>
+      <button class="tab" id="tab-scitech" style="--tab-color:var(--c-scitech)" onclick="goTo(3)"><span class="dot"></span>科学/テック</button>
+      <button class="tab" id="tab-business" style="--tab-color:var(--c-business)" onclick="goTo(4)"><span class="dot"></span>ビジネス</button>
+      <button class="tab" id="tab-startup" style="--tab-color:var(--c-startup)" onclick="goTo(5)"><span class="dot"></span>スタートアップ</button>
+      <button class="tab" id="tab-gadget" style="--tab-color:var(--c-gadget)" onclick="goTo(6)"><span class="dot"></span>ガジェット</button>
+      <button class="tab" id="tab-intl" style="--tab-color:var(--c-intl)" onclick="goTo(7)"><span class="dot"></span>海外</button>
+      <button class="tab" id="tab-sports" style="--tab-color:var(--c-sports)" onclick="goTo(8)"><span class="dot"></span>芸能/スポーツ</button>
+      <button class="tab" id="tab-koshien" style="--tab-color:var(--c-koshien)" onclick="goTo(9)"><span class="dot"></span>高校野球【埼玉】</button>
+    </div>
+  </div>
+
+  <div class="viewport" id="viewport">
+    <div class="track" id="track">
+
+      <section class="panel" id="panel-top" style="--cat-color:var(--c-top)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">トップニュース</h2></div>
+        <p class="panel-sub">今日いちばん知っておきたい2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 経済</span>
+          <h3>日経平均2207円高、連休明けに急反発——フアン氏のエヌビディア復帰を好感</h3>
+          <p class="lead">3連休明けの24日の東京株式市場で、日経平均株価は前週末より2207円98銭（3.91%）高い5万8644円63銭で取引を終えた。共同通信などによると、エヌビディアのフアン氏のCEO復帰（11月24日既報）を受けて前日の米国で半導体株が大きく上がった流れが波及し、AI関連の銘柄を中心に買い戻しが広がった。一時は2800円を超えて上がり、5万9000円台を回復する場面もあった。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、東京市場が休んでいた間に、米国で「急落」と「急反発」の両方が起きていたという点にある。先週20日には日経平均が3000円を超えて下がり（11月21日既報）、市場には悲観が広がっていた。そこにフアン氏の復帰という好材料が加わり、売られすぎていた半導体株に買いが戻った。ただ、米国では24日にエヌビディア株が再び値下がりしており（本日既報）、日経平均先物<span class="note">（＝将来のある時点の日経平均を、前もって決めた価格で売り買いする取引のこと。夜間も取引されるため、翌日の東京市場の動きを占う目安になる）</span>は24日夜に大きく下がっていた。値動きの荒い相場<span class="note">（＝株価が短い期間に大きく上下する市場の状態のこと）</span>が続きそうだ。</p>
+          </div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/articles/9294e757d3194bc1f5857e5091e26d95c4ce9dc5" target="_blank" rel="noopener">共同通信（Yahoo!ニュース）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 政治</span>
+          <h3>野党、関文科相への問責決議案の提出を決定——「辞任なければ消費減税法案の審議に応じない」</h3>
+          <p class="lead">参議院の野党6会派は24日、国会対策委員長の会談を開き、関芳弘文部科学相に対する問責決議案を提出することを決めた。TBSによると、立憲民主党の斎藤嘉隆参院国対委員長は「文部科学大臣としての任にあらず」と述べた。野党は、関氏が辞任するか更迭されなければ、消費税減税の関連法案の審議には応じられないとけん制している。一方、関氏は辞任を否定しており、自民党の幹部は「官邸は更迭するつもりはない」としている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、この問題が、政権が最も力を入れる消費減税法案の行方にまで影響し始めたという点にある。参議院では与党が過半数を持っていないため、問責決議<span class="note">（＝参議院が、大臣などの責任を問うために行う決議のこと。可決されても法的な拘束力はないが、政治的に大きな打撃となる）</span>は可決される可能性がある。更迭<span class="note">（＝本人の意思にかかわらず、首相などが大臣をその職から外すこと）</span>しないまま問責が可決されれば、野党が審議を拒み、国会が止まるおそれがある。今国会の会期末は12月12日で、残された時間は多くない。</p>
+          </div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/articles/1e907374a1cba2ce2c627f07ba4cfc4f94fbecb1" target="_blank" rel="noopener">TBS NEWS DIG（Yahoo!ニュース）</a></div>
+        </article>
+
+        <div class="closing">
+          <span class="label serif">編集後記</span>
+          連休明けの東京市場は大きく反発しましたが、米国ではエヌビディア株が再び下がり、議会もフアン氏への追及を強めています。国会では関文科相への問責決議案の提出が決まり、消費減税法案の行方にも影を落とし始めました。神宮大会の決勝の結果は、本稿の時点で確認できていません。明日の紙面でお伝えします。
+        </div>
+        <div class="colophon">AIが検索結果をもとに要約・編集しています。詳細は各記事の出典リンクでご確認ください。<br>毎朝5時発行・次号は明日<br><a href="archive.html" style="color:inherit">過去の紙面はこちら</a></div>
+      </section>
+
+      <section class="panel" id="panel-social" style="--cat-color:var(--c-social)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">社会</h2></div>
+        <p class="panel-sub">くらしに関わるニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>小田原厚木道路で車2台の事故、1人重体——1台が逆走か、神奈川・平塚</h3>
+          <p class="lead">神奈川県平塚市の小田原厚木道路で24日、車2台が絡む事故があり、1人が意識不明の重体となった。NHKによると、1台が逆走していたという情報があり、警察が詳しい事故の状況を調べている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、高速道路での逆走が、正面衝突という命に関わる事故につながりやすいという点にある。逆走<span class="note">（＝決められた進行方向とは反対の向きに車を走らせること。高速道路では、インターチェンジやサービスエリアの出入り口で間違えて入るケースが多い）</span>は、高齢のドライバーによるものが多いとされる一方、若い人でも道を間違えて起きることがある。国や高速道路会社は、矢印の路面表示や注意喚起の看板を増やして対策を進めている。もし逆走車を見かけたら、安全な場所に止まって110番通報することが大切だ。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261124de80860" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>枚方の3歳女児死亡、市と児相は1月に情報を共有——児相「即時対応が必要とは判断せず」</h3>
+          <p class="lead">大阪府枚方市で8月に3歳の女の子が亡くなり、両親が逮捕された事件で、虐待を疑う通告を受けた市から、府の児童相談所に今年1月には情報が共有されていたことが分かった。熊本日日新聞（共同通信）によると、児童相談所は「即時対応が必要な事案とは判断しなかった」と説明している。伏見隆市長は、市の対応を今年度中に検証し終えたい考えを示している。大阪府も、児童相談所の対応を検証する部会を設ける。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、虐待から子どもを守る仕組みが、市と児童相談所の「二重の網」になっているにもかかわらず、それが機能しなかったという点にある。児童相談所<span class="note">（＝都道府県などに置かれ、虐待を受けている子どもを保護したり、家庭を支援したりする専門の行政機関のこと。「児相」と略される）</span>は、危険が高いと判断すれば子どもを家庭から一時的に引き離す一時保護<span class="note">（＝子どもの安全を守るため、児童相談所が子どもを一時的に預かること）</span>ができる。どこで危険を見落としたのかを検証し、再発を防ぐことが求められている。</p>
+          </div>
+          <div class="meta"><a href="https://kumanichi.com/articles/2058375" target="_blank" rel="noopener">熊本日日新聞（共同通信）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-polecon" style="--cat-color:var(--c-polecon)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">政治／経済</h2></div>
+        <p class="panel-sub">政治・経済の動き2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 政治</span>
+          <h3>関文科相「職務に全力で邁進」と辞任を否定——国会審議ストップの可能性も</h3>
+          <p class="lead">問責決議案の提出が決まった関芳弘文部科学相（本日既報）は24日の閣議後の記者会見で、辞任を否定し、「職務に全力で邁進することで責任を果たしてまいりたい」と述べた。TBSによると、関氏は政治資金パーティーに官僚を呼び、企業の関係者に政策を説明させていたことが問題とされている。野党が審議に応じなくなれば、国会での審議が止まる可能性がある。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「官僚に政策を説明させる場で高い会費を取る」ことが、なぜ問題とされるのかという点にある。参加した企業から見ると、役所の担当者と直接つながる場に見え、政治と行政の公正さに疑いを招く。政治資金パーティー<span class="note">（＝政治家が会費を集めて開く会合のこと。会費から会場費などを引いた分が政治活動の資金になる）</span>は合法だが、議員会館で開くことは衆議院の内規で禁じられている（11月22日既報）。閣議後の記者会見<span class="note">（＝週2回の閣議のあとに、各大臣が開く定例の記者会見のこと）</span>での辞任否定で、与野党の対立は一段と深まった。</p>
+          </div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/articles/fbfc85a556440a2a51778df9f73dbb4b68700c6e" target="_blank" rel="noopener">TBS NEWS DIG（Yahoo!ニュース）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 経済</span>
+          <h3>日経2207円高でも値上がり銘柄は6割——非鉄金属に資金、上げは一部に偏る</h3>
+          <p class="lead">本日既報の日経平均の大幅高について、投資情報サイトの世界一やさしい投資の学校は、東証プライム市場で値上がりした銘柄は全体の6割ほどにとどまったと分析している。非鉄金属の業種に資金が向かった一方、日経平均の上げ幅は、AI・半導体関連の一部の大型株の値上がりに支えられた面が大きかった。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、日経平均の数字だけを見ると、市場全体の動きを見誤ることがあるという点にある。日経平均<span class="note">（＝東京証券取引所に上場する代表的な225社の株価をもとに計算する指数のこと。株価の高い一部の銘柄の影響を受けやすい）</span>は、アドバンテストやソフトバンクグループなどの値動きに大きく左右される。値上がり銘柄の割合を示す騰落レシオ<span class="note">（＝一定期間の値上がり銘柄数と値下がり銘柄数を比べた指標のこと。市場全体の勢いを見るのに使われる）</span>などを合わせて見ると、上昇が市場全体に広がっているかどうかが分かる。非鉄金属<span class="note">（＝銅やアルミニウム、亜鉛など、鉄以外の金属のこと。電線や半導体の材料などに使われる）</span>は、AI向けのデータセンター需要の恩恵を受ける分野とされる。</p>
+          </div>
+          <div class="meta"><a href="https://tbladvisory.com/20261124nk/" target="_blank" rel="noopener">世界一やさしい投資の学校</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-scitech" style="--cat-color:var(--c-scitech)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">科学／テック</h2></div>
+        <p class="panel-sub">研究・技術のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>空気からCO2を直接回収する東大発Planet Savers、10.8億円を調達</h3>
+          <p class="lead">空気中から二酸化炭素（CO2）を直接回収する技術を開発する東京大学発のスタートアップ、Planet Saversが、プレシリーズAで10.8億円を調達した。スタートアップ情報サイトのBRIDGEが24日に伝えた。新エネルギー・産業技術総合開発機構（NEDO）によると、同社は2023年に設立され、ゼオライトという素材を使ってCO2を吸着する装置を開発している。最初の商用機で1トンあたり約400ドルの回収費用を、量産によって100ドルまで下げることを目指している。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、温暖化を止めるには、CO2を「出さない」だけでなく「取り除く」技術も必要だとされている点にある。DAC<span class="note">（＝ダイレクト・エア・キャプチャーのこと。空気の中に薄く含まれるCO2を、装置で直接取り出して回収する技術）</span>は、飛行機や工場など、どうしてもCO2が出てしまう分を相殺する手段として注目されている。ゼオライト<span class="note">（＝細かい穴がたくさん開いた鉱物のこと。特定の気体などを穴の中に取り込む性質があり、吸着剤として使われる）</span>を使う方式は、比較的安く作れる可能性がある。課題は回収にかかるコストで、どこまで安くできるかが普及のカギとなる。COP31が成果なく終わった（11月24日既報）中、技術による解決への期待も高まっている。</p>
+          </div>
+          <div class="meta"><a href="https://www.nedo.go.jp/activities/startups/company77.html" target="_blank" rel="noopener">NEDO（新エネルギー・産業技術総合開発機構）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>フアン氏、米議会で12月1日と3日に公聴会へ——民主党は「全力で調査」</h3>
+          <p class="lead">エヌビディアのCEOに復帰したフアン氏（11月24日既報）は、12月1日に米下院の3つの委員会による非公開の公聴会に、3日には上院の委員会による生中継の公聴会に出席する予定だ。米CNBCなどによると、上院民主党トップのシューマー院内総務は、フアン氏や政権、エヌビディアの幹部について、民主党の持てる力のすべてを使って調査すると表明した。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、フアン氏の復帰が「経営の問題」から「国家安全保障の問題」へと広がっているという点にある。フアン氏は、中国のスパイだったとされる人物との関係が報じられて辞任していた。そのフアン氏を、トランプ政権の働きかけで呼び戻したことに、野党の民主党は強く反発している。公聴会<span class="note">（＝議会の委員会が、関係者を呼んで証言や意見を聞く会のこと。法律づくりや調査のために開かれる）</span>での発言は記録に残り、うそをつけば罪に問われることもある。AI向け半導体は軍事にも関わる重要な技術であるため、議会の監視<span class="note">（＝議会が、政府や企業の行動が適切かどうかを調べ、チェックすること）</span>の目は厳しい。</p>
+          </div>
+          <div class="meta"><a href="https://www.cnbc.com/2026/11/24/nvidia-stock-jensen-huang-return.html" target="_blank" rel="noopener">CNBC（英語）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-business" style="--cat-color:var(--c-business)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ビジネス</h2></div>
+        <p class="panel-sub">企業・産業のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>エヌビディア株、復帰ラリーから一転して7〜8%安——統治への疑問消えず</h3>
+          <p class="lead">米ヤフー・ファイナンスなどによると、エヌビディアの株価は24日、前日の大幅高から一転して下がった。下落率は報道によって7〜8%程度とされる。前日はフアン氏の復帰を受けて31%上がっていた。アナリストからは、企業統治や取締役会による監督をめぐる疑問がまだ残っているとの声が出ている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、急な値上がりの後には、利益を確保するための売りが出やすいという点にある。前日の31%もの値上がりは、1日の動きとしては異例の大きさだった。さらに、SECによる会計処理の調査の報道（11月22日既報）や、議会による追及（本日既報）など、不安材料はまだ解消されていない。企業統治<span class="note">（＝ガバナンスとも呼ばれ、企業が健全に経営されるよう、経営陣をチェックする仕組みのこと）</span>への疑問が続く限り、株価は神経質な動きが続きそうだ。利益確定<span class="note">（＝値上がりした株を売って、利益を手にすること）</span>の売りは、ほかのAI関連株にも広がった。</p>
+          </div>
+          <div class="meta"><a href="https://finance.yahoo.com/markets/stocks/article/nvidia-stock-falls-after-epic-rally-on-jensen-huangs-return-as-ceo-094535877.html" target="_blank" rel="noopener">Yahoo!ファイナンス（英語）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>米国株はまちまち、ダウは上昇・ナスダックは下落——半導体株から資金が移る</h3>
+          <p class="lead">24日の米国株式市場は、主要な株価指数の動きが分かれた。米ヤフー・ファイナンスによると、半導体株が売られてハイテク株の多いナスダック総合指数やS&amp;P500が下がった一方、ダウ平均は上がった。投資家はヘルスケアや小売りなどの銘柄に資金を移したとされる。利上げの観測が再び出ていることや、物価の統計、パソコン大手デルの決算などにも関心が集まっている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、投資家がAI関連株に偏っていた資金を、ほかの分野に分散させ始めているという点にある。こうした動きはセクターローテーション<span class="note">（＝景気や市場の見通しに応じて、投資家が資金を移す業種（セクター）を入れ替えること）</span>と呼ばれる。ダウ平均<span class="note">（＝米国を代表する30社の株価から計算する株価指数のこと。ハイテク以外の伝統的な大企業も多く含む）</span>が上がり、ナスダックが下がったのは、その表れだ。利上げ<span class="note">（＝中央銀行が政策金利を引き上げること。お金を借りにくくなり、株価には逆風になりやすい）</span>の観測は、成長への期待で株価が高くなっているハイテク株に特に重くのしかかる。</p>
+          </div>
+          <div class="meta"><a href="https://finance.yahoo.com/markets/live/stock-market-today-tuesday-november-24-dow-sp-500-nasdaq-chip-stocks-nvidia-140629923.html" target="_blank" rel="noopener">Yahoo!ファイナンス（英語）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-startup" style="--cat-color:var(--c-startup)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">スタートアップ</h2></div>
+        <p class="panel-sub">資金調達・注目トピック2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>東南アジアの病院の保険請求をAIで自動化——Kentasu、シードで8400万円を調達</h3>
+          <p class="lead">医療機関の保険請求をAIで自動化するサービスを手がけるKentasuが、シードラウンドで8400万円を調達した。BRIDGEが24日に伝えた。スタートアップ情報サイトのスピーダによると、同社は2024年5月に東京・渋谷で設立され、医療機関の保険請求や医療費の決済、回収などのお金の管理業務を効率化する仕組みを提供している。東南アジアの医療機関を対象にしている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、病院の「お金の手続き」が、とても手間のかかる仕事だという点にある。保険請求<span class="note">（＝病院が、患者の治療にかかった費用のうち保険でまかなわれる分を、保険会社や公的な機関に請求する手続きのこと）</span>は、書類の様式が細かく決められており、間違いがあると支払いが遅れたり断られたりする。東南アジアでは、民間の医療保険の利用が広がる一方、手続きの電子化が遅れている国も多い。AIで書類の作成や確認を自動化できれば、病院の負担が減り、収入も安定する。シードラウンド<span class="note">（＝事業の立ち上げ初期に行う資金調達のこと）</span>で集めた資金で、事業の基盤をつくる段階だ。</p>
+          </div>
+          <div class="meta"><a href="https://initial.inc/companies/A-QQBGQ" target="_blank" rel="noopener">スピーダ スタートアップ情報リサーチ</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>STRACT、国内EC特化のAIエージェント「DONDO」を発表——出資と融資で約12億円</h3>
+          <p class="lead">国内の電子商取引（EC）に特化したAIエージェントを開発するSTRACTは、新しいAIエージェント「DONDO」を発表した。BRIDGEが24日に伝えた。同社は出資と融資を合わせて約12億円を調達している（11月23日既報）。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、資金を集めたスタートアップが、すぐに具体的な製品を打ち出して事業を広げようとしているという点にある。AIエージェント<span class="note">（＝人が細かく指示しなくても、目的に向けて自分で手順を考え、複数の作業をこなしていくAIのこと）</span>は、ネット通販の商品の登録や広告、問い合わせへの対応などを肩代わりできると期待されている。融資<span class="note">（＝銀行などからお金を借りること。出資と違って返済が必要だが、経営者の持ち株の割合は減らない）</span>を組み合わせて資金を集めるのは、株を手放しすぎずに成長資金を得る工夫だ。年末商戦<span class="note">（＝クリスマスや年末年始に合わせて買い物が増える時期のこと）</span>を前に、EC事業者の人手不足を補う道具として売り込む狙いがあるとみられる。</p>
+          </div>
+          <div class="meta"><a href="https://thebridge.jp/" target="_blank" rel="noopener">BRIDGE</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-gadget" style="--cat-color:var(--c-gadget)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ガジェット</h2></div>
+        <p class="panel-sub">新製品2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>ドコモ「スマートウォッチ03」、今日25日発売——8980円、文字は最大約1.5倍に</h3>
+          <p class="lead">NTTドコモの手ごろな価格のスマートウォッチ「スマートウォッチ03」が、今日25日に発売される（11月21日既報）。スマートウォッチライフによると、価格は8980円で、1.93インチの有機ELディスプレイを備え、電池は最大7日間もつ。初期設定は時計の画面に出るQRコードを読み取るだけで、文字の大きさは最大で約1.5倍にできる。色はブラック、ベージュ、ラベンダー、さくらの4色。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、スマートウォッチを「初めての人」や「高齢の人」にも使いやすくしようとしている点にある。スマートウォッチ<span class="note">（＝スマホと連携して、通知の確認や歩数・心拍数の記録などができる腕時計型の機器のこと）</span>は、多機能なぶん設定が難しいと感じる人もいる。QRコード<span class="note">（＝白黒の四角い模様に情報を埋め込んだ二次元のコードのこと。スマホのカメラで読み取ると、設定やサイトへの移動などが簡単にできる）</span>を使った簡単な設定や大きな文字は、そうした人に配慮したものだ。iPhoneとAndroidの両方で使える。</p>
+          </div>
+          <div class="meta"><a href="https://www.smartwatchlife.jp/85010/" target="_blank" rel="noopener">スマートウォッチライフ</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>ファーウェイ「Mate 90 Air」、中国で発表予定だった24日——電池は6800mAhとの情報</h3>
+          <p class="lead">中国のファーウェイは、Mateシリーズで最も薄い通常型スマートフォン「Mate 90 Air」を24日に中国で発表する予定だった（11月24日既報）。gagadgetなどによると、電池の容量は6800mAhになるとの情報がある。前のモデル「Mate 70 Air」は4199元（約9万円）で発売されたが、今回は値上がりが予想されている。発表された正式な価格や性能は、本稿の時点で確認できていない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「薄さ」と「電池の持ち」は本来、両立させるのが難しいという点にある。スマホを薄くすると、中に入れられる電池が小さくなりがちだ。そこで各社は、同じ大きさでより多くの電気をためられる新しい電池の技術を競っている。mAh<span class="note">（＝ミリアンペアアワーのこと。電池にためられる電気の量を表す単位で、数字が大きいほど長く使える）</span>で6800という容量は、薄型のスマホとしては大きい。ファーウェイは、米国の制裁<span class="note">（＝米国が安全保障上の理由から、ファーウェイへの半導体などの輸出を厳しく制限している措置のこと）</span>の中でも、自社開発の部品で新製品を出し続けている。</p>
+          </div>
+          <div class="meta"><a href="https://gagadget.com/en/734954-huawei-mate-90-air-thinnest-mate-arrives-nov-24-china-first/" target="_blank" rel="noopener">gagadget（英語）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-intl" style="--cat-color:var(--c-intl)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">海外</h2></div>
+        <p class="panel-sub">国際ニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>EU、第22弾の対ロシア制裁を準備——ロシア選手の大会出場禁止も検討</h3>
+          <p class="lead">欧州連合（EU）は、ロシアに対する第22弾の制裁パッケージの準備を進めている。南アフリカ紙タイムズ・ライブなどによると、欧州委員会は年末までの採択を目指し、11月下旬までに案をまとめる方針だ。EUの外相会合では、ロシアの選手がEU域内のスポーツ大会に出場するのを禁じることや、ビザの発給を厳しくすることを求める声が上がった。銀行や暗号資産への新たな制限、第三国を通じた抜け道をふさぐ措置も盛り込まれる見込みだ。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、EUが2022年のロシアのウクライナ侵攻以来、制裁を何度も積み重ねてきたという点にある。制裁<span class="note">（＝ある国の行動をやめさせるために、輸出入の制限や資産の凍結などで経済的な圧力をかけること）</span>は、今回で22回目となる。それでもロシアは、中国やインドなどとの貿易で抜け道を見つけてきた。暗号資産<span class="note">（＝ビットコインなど、インターネット上でやりとりされるデジタルのお金のこと。国境を越えて送金しやすく、制裁逃れに使われることがある）</span>への規制は、そうした抜け道を減らす狙いがある。ポーランドへのロシアのミサイル落下（11月22日既報）などを受け、欧州の警戒感は一段と強まっている。</p>
+          </div>
+          <div class="meta"><a href="https://www.timeslive.co.za/news/world/2026-11-12-eu-to-unveil-new-russia-sanctions-package-by-year-end/" target="_blank" rel="noopener">TimesLIVE（英語）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>英国、ミャンマーの駐在武官に国外退去を命令——ロヒンギャの「ジェノサイド」認定を受け</h3>
+          <p class="lead">国際司法裁判所（ICJ）がミャンマーによるロヒンギャへの迫害をジェノサイドと認めた判決（11月21日既報）を受け、英国のミリバンド外相は、ミャンマーの国防駐在武官に国外退去を命じた。マレーシアの国営ベルナマ通信によると、英国は国連安全保障理事会の緊急会合を求めるとともに、ミャンマーの代理大使を呼び出し、責任を負う者に説明責任を果たさせるため、さらなる措置をとるとしている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、ICJの判決には「無理やり従わせる手段」がないため、各国がどう動くかが重要になるという点にある。ICJ<span class="note">（＝国際司法裁判所のこと。国連の主要な機関で、国家どうしの争いを国際法にもとづいて裁く）</span>の判決は法的な拘束力を持つが、ミャンマーが従わない場合、それを強制する仕組みはない。そこで、各国が外交や制裁で圧力をかけることになる。駐在武官<span class="note">（＝大使館に置かれ、軍事に関する情報の収集や、受け入れ国の軍との連絡を担う軍人のこと）</span>の追放は、軍事政権への強い抗議の意思を示すものだ。ほかの国が英国に続くかが注目される。</p>
+          </div>
+          <div class="meta"><a href="https://bernama.com/en/news.php?id=2636882" target="_blank" rel="noopener">BERNAMA（英語）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-sports" style="--cat-color:var(--c-sports)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">芸能／スポーツ</h2></div>
+        <p class="panel-sub">厳選2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>プロ野球、戦力外・引退の選手が正式発表——各球団が来季の体制づくりへ</h3>
+          <p class="lead">プロ野球の各球団は23日、戦力外通告や現役引退、自由契約、退団となる選手を正式に発表した。ベースボールチャンネルがまとめて伝えた。今季限りでは、西武の栗山巧選手やソフトバンクの中村晃選手が現役引退を表明している。各球団は来季に向けたチームづくりを本格化させている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、プロ野球の秋は「別れと出会い」の季節だという点にある。シーズンが終わると、各球団は翌年の契約を結ばない選手を決める。戦力外通告<span class="note">（＝球団が選手に対し、翌シーズンの契約を結ばないと伝えること。実質的な解雇にあたる）</span>を受けた選手は、ほかの球団からの声がかかるのを待ったり、合同トライアウトで実力を示したりする。自由契約<span class="note">（＝どの球団とも契約していない状態のこと。ほかの球団と自由に契約を結べる）</span>となった選手の中から、新たな活躍の場を見つける人もいる。埼玉の西武一筋で長く活躍した栗山選手の引退は、地元のファンにとって大きな節目となる。</p>
+          </div>
+          <div class="meta"><a href="https://baseballchannel.jp/npb/302864" target="_blank" rel="noopener">ベースボールチャンネル</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>FA移籍の決断は2人、残る8人の去就に注目——23日時点</h3>
+          <p class="lead">プロ野球でフリーエージェント（FA）の権利を行使した選手のうち、23日の時点で移籍先などの決断をしたのは2人で、残る8人の去就が注目されている。野球情報サイトがまとめた。各球団は、獲得を目指す選手との交渉を続けている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、FAが、選手が自分の意思で所属先を選べる貴重な機会だという点にある。FA<span class="note">（＝フリーエージェントのこと。一定の年数、一軍で活躍した選手が得られる権利で、ほかの球団とも自由に契約の交渉ができる）</span>の権利を得るには、何年もの間、一軍に登録され続ける必要がある。人気選手のFA移籍は、チームの戦力を大きく左右するため、ファンの関心も高い。FAで選手を獲得した球団は、元の球団に人的補償<span class="note">（＝FAで選手を獲得した球団が、元の球団に対して自分の球団の選手を差し出すこと。金銭で済ませる場合もある）</span>を求められることがある。</p>
+          </div>
+          <div class="meta"><a href="https://dnomotoke.com/archives/20261123170037/" target="_blank" rel="noopener">dnomotoke（野球情報サイト）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-koshien" style="--cat-color:var(--c-koshien)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">高校野球【埼玉】</h2></div>
+        <p class="panel-sub">決勝の行方ほか2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>神宮大会決勝・横浜対常葉大菊川、結果は本稿の時点で確認できず——順延の情報も</h3>
+          <p class="lead">明治神宮野球大会（高校の部）の決勝、横浜（関東）対常葉大菊川（東海）は、24日午前10時から行われる予定だった（11月24日既報）。ただ、決勝の結果は本稿の時点で確認できていない。一部の情報サイトには、天候の影響で決勝が25日に順延されたとの記載もある。高校野球ドットコムによると、決勝で同じ顔合わせが再び実現するのは大会史上2度目で、19年前の2007年には横浜が常葉大菊川に4－5で敗れている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、この決勝の勝敗が、来春のセンバツの関東地区の出場枠を左右するという点にある。神宮大会で優勝した学校の地区には、センバツの出場枠が1つ増える神宮枠<span class="note">（＝明治神宮大会の高校の部で優勝した学校が属する地区に、翌春の選抜高校野球大会の出場枠を1つ追加する仕組みのこと）</span>がある（11月7日既報）。横浜が勝てば関東地区、常葉大菊川が勝てば東海地区の枠が増える。順延<span class="note">（＝雨などの理由で、予定していた試合を後の日にずらすこと）</span>があったかどうかも含め、正確な結果は明日の紙面でお伝えする。</p>
+          </div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/articles/7bc7ff0333fa0d27d3f7224e99c76b24cd117c29" target="_blank" rel="noopener">高校野球ドットコム（Yahoo!ニュース）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>京都国際の敗退で近畿の「6枠目」は混戦に——神宮枠が各地区のセンバツ争いを左右</h3>
+          <p class="lead">明治神宮大会の準決勝で京都国際（近畿）が常葉大菊川に敗れたことで、近畿地区は神宮枠を得られなくなった。スポーツニッポンによると、これにより近畿の6校目の出場枠をめぐる争いが混戦になり、大阪桐蔭のセンバツ出場にも暗雲が漂っているという。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、センバツの出場校が、秋の大会の成績をもとに選考委員会で選ばれるという点にある。センバツ<span class="note">（＝毎年3月に甲子園で開かれる選抜高校野球大会のこと。夏の大会と違い、秋の成績などをもとに出場校が選ばれる）</span>では、地区ごとに出場枠の数が決まっている。神宮枠を得た地区は1校多く選ばれるため、秋の地区大会で上位に入れなかった学校にもチャンスが広がる。関東地区も、決勝の結果次第で同じように選考の行方が変わる。埼玉の西武台や山村学園などがどう評価されるかも、来年1月の選考委員会で明らかになる。</p>
+          </div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/articles/5d0f31bcc08e1de1c19f38200b7b688287c00a43" target="_blank" rel="noopener">スポーツニッポン（Yahoo!ニュース）</a></div>
+        </article>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var cats = ['top','social','polecon','scitech','business','startup','gadget','intl','sports','koshien'];
+  var idx = 0;
+  var track = document.getElementById('track');
+  var viewport = document.getElementById('viewport');
+  var vw = viewport.clientWidth;
+
+  function setActive(i){
+    cats.forEach(function(c, j){
+      document.getElementById('tab-' + c).classList.toggle('active', j === i);
+    });
+    var activeTab = document.getElementById('tab-' + cats[i]);
+    if (activeTab && activeTab.scrollIntoView) activeTab.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+  }
+
+  function settle(i, animate){
+    idx = Math.max(0, Math.min(cats.length - 1, i));
+    track.style.transition = animate ? 'transform .32s cubic-bezier(.22,.61,.36,1)' : 'none';
+    track.style.transform = 'translateX(' + (-idx * vw) + 'px)';
+    setActive(idx);
+  }
+
+  window.goTo = function(i){ settle(i, true); };
+
+  window.addEventListener('resize', function(){
+    vw = viewport.clientWidth;
+    settle(idx, false);
+  });
+
+  var dragging = false, decided = null, sx = 0, sy = 0, dx = 0;
+  viewport.addEventListener('touchstart', function(e){
+    dragging = true; decided = null;
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY; dx = 0;
+    track.style.transition = 'none';
+  }, { passive: true });
+
+  viewport.addEventListener('touchmove', function(e){
+    if (!dragging) return;
+    var cx = e.touches[0].clientX, cy = e.touches[0].clientY;
+    var mdx = cx - sx, mdy = cy - sy;
+    if (decided === null) {
+      if (Math.abs(mdx) > 8 || Math.abs(mdy) > 8) {
+        decided = Math.abs(mdx) > Math.abs(mdy) ? 'x' : 'y';
+      }
+    }
+    if (decided === 'x') {
+      e.preventDefault();
+      dx = mdx;
+      var atStart = idx === 0 && dx > 0;
+      var atEnd = idx === cats.length - 1 && dx < 0;
+      var eased = (atStart || atEnd) ? dx * 0.35 : dx;
+      track.style.transform = 'translateX(' + (-idx * vw + eased) + 'px)';
+    }
+  }, { passive: false });
+
+  viewport.addEventListener('touchend', function(){
+    if (!dragging) return;
+    dragging = false;
+    if (decided === 'x') {
+      var threshold = vw * 0.18;
+      if (dx <= -threshold) settle(idx + 1, true);
+      else if (dx >= threshold) settle(idx - 1, true);
+      else settle(idx, true);
+    }
+    decided = null; dx = 0;
+  });
+
+  settle(0, false);
+})();
+</script>
+
+</body></html>
