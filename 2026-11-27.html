@@ -1,0 +1,610 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yoshi's News</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Zen+Old+Mincho:wght@600;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap');
+
+:root {
+  --bg: #ffffff;
+  --panel-bg: #ffffff;
+  --card: #ffffff;
+  --card-line: #eef0f3;
+  --ink: #1a1c20;
+  --ink-soft: #5b6068;
+  --ink-faint: #9aa0a8;
+  --shell: #f4f5f7;
+
+  --c-top: #ef3355;
+  --c-social: #00b3a4;
+  --c-polecon: #6d5bf0;
+  --c-scitech: #ff8a1e;
+  --c-business: #0091ff;
+  --c-sports: #26c281;
+  --c-startup: #ff4fa3;
+  --c-koshien: #c8860d;
+  --c-intl: #4b3f8f;
+  --c-gadget: #00bcd4;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101114;
+    --panel-bg: #101114;
+    --card: #1a1c20;
+    --card-line: #2a2c31;
+    --ink: #f1f2f4;
+    --ink-soft: #b7bcc4;
+    --ink-faint: #767c86;
+    --shell: #1a1c20;
+    --c-top: #ff6b85;
+    --c-social: #3fd8c9;
+    --c-polecon: #9c8fff;
+    --c-scitech: #ffab5c;
+    --c-business: #4db2ff;
+    --c-sports: #5be0a6;
+    --c-startup: #ff85c2;
+    --c-koshien: #e8b34c;
+    --c-intl: #a89cf0;
+    --c-gadget: #4dd8ea;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101114;
+  --panel-bg: #101114;
+  --card: #1a1c20;
+  --card-line: #2a2c31;
+  --ink: #f1f2f4;
+  --ink-soft: #b7bcc4;
+  --ink-faint: #767c86;
+  --shell: #1a1c20;
+  --c-top: #ff6b85;
+  --c-social: #3fd8c9;
+  --c-polecon: #9c8fff;
+  --c-scitech: #ffab5c;
+  --c-business: #4db2ff;
+  --c-sports: #5be0a6;
+  --c-startup: #ff85c2;
+  --c-koshien: #e8b34c;
+  --c-intl: #a89cf0;
+  --c-gadget: #4dd8ea;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--shell);
+  color: var(--ink);
+  font-family: "Zen Kaku Gothic New", -apple-system, "Hiragino Kaku Gothic ProN", sans-serif;
+  line-height: 1.7;
+  overscroll-behavior-y: none;
+}
+.serif { font-family: "Zen Old Mincho", "Hiragino Mincho ProN", serif; }
+
+.app {
+  max-width: 680px;
+  margin: 0 auto;
+  background: var(--bg);
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ---- Header ---- */
+.topbar { padding: 20px 20px 0; flex-shrink: 0; }
+.title-line { display: flex; align-items: center; gap: 8px; }
+.mascot { height: 50px; width: auto; flex-shrink: 0; border-radius: 8px; }
+.title-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  margin-bottom: 14px;
+}
+.title-row h1 {
+  font-family: "Baloo 2", "Zen Kaku Gothic New", sans-serif;
+  font-size: 48px; font-weight: 800; margin: 0; letter-spacing: 0.01em; line-height: 1;
+  -webkit-text-stroke: 2.4px #2b2013;
+  filter: drop-shadow(2px 3px 0 rgba(30,22,12,0.18));
+  background-image:
+    radial-gradient(circle at 22% 30%, #211709 0 7px, transparent 8px),
+    radial-gradient(circle at 68% 65%, #3a2b16 0 9px, transparent 10px),
+    radial-gradient(circle at 45% 88%, #241a0c 0 5px, transparent 6px),
+    radial-gradient(circle at 85% 20%, #2e2211 0 6px, transparent 7px),
+    linear-gradient(135deg, #b8a06e, #967c4c 50%, #6f5a35);
+  background-size: 30px 30px, 41px 41px, 23px 23px, 35px 35px, 100% 100%;
+  background-repeat: repeat, repeat, repeat, repeat, no-repeat;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.title-row .date { font-size: 11.5px; color: var(--ink-faint); white-space: nowrap; font-weight: 500; margin-top: 2px; }
+
+.tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px 3px; }
+.tab {
+  appearance: none; border: none; background: none;
+  font-family: inherit; font-size: 10.5px; font-weight: 700;
+  color: var(--ink-faint);
+  padding: 7px 4px 9px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+  cursor: pointer;
+  border-radius: 10px 10px 0 0;
+  transition: color .2s ease, background .2s ease;
+}
+.tab .dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  margin-right: 5px; background: currentColor; opacity: 0.45; vertical-align: middle;
+}
+.tab::after {
+  content: ""; position: absolute; left: 10px; right: 10px; bottom: 0;
+  height: 3px; border-radius: 3px 3px 0 0; background: transparent; transition: background .2s ease;
+}
+.tab.active { color: var(--tab-color); background: color-mix(in srgb, var(--tab-color) 10%, transparent); }
+.tab.active .dot { opacity: 1; }
+.tab.active::after { background: var(--tab-color); }
+
+/* ---- Swipe viewport ---- */
+.viewport { flex: 1; overflow: hidden; position: relative; touch-action: pan-y; }
+.track {
+  display: flex;
+  height: 100%;
+  width: 1000%;
+  transition: transform .32s cubic-bezier(.22,.61,.36,1);
+  will-change: transform;
+}
+.panel {
+  width: 10%;
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 20px 56px;
+}
+
+.panel-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.panel-head .chip { width: 8px; height: 26px; border-radius: 4px; background: var(--cat-color); flex-shrink: 0; }
+.panel-head h2 { font-size: 20px; font-weight: 700; margin: 0; letter-spacing: 0.02em; color: var(--cat-color); }
+.panel-sub { font-size: 12px; color: var(--ink-faint); margin: 0 0 18px 18px; }
+
+.story {
+  background: var(--card);
+  border: 1px solid var(--card-line);
+  border-left: 4px solid var(--cat-color);
+  border-radius: 12px;
+  padding: 18px 18px 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(20,20,30,0.05);
+}
+.story .kicker {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: "Zen Old Mincho", serif; font-size: 11.5px; font-weight: 700;
+  color: var(--cat-color); margin-bottom: 9px;
+}
+.story h3 { font-size: 16px; font-weight: 700; line-height: 1.55; margin: 0 0 10px; }
+.story .lead { font-size: 14px; color: var(--ink); margin: 0 0 14px; line-height: 1.85; }
+
+.context {
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 10px;
+  padding: 13px 15px;
+  margin: 0 0 12px;
+}
+.context-label {
+  display: block; font-size: 10.5px; font-weight: 700;
+  color: var(--cat-color); letter-spacing: 0.04em; margin-bottom: 6px;
+}
+.context p { font-size: 13px; color: var(--ink-soft); margin: 0; line-height: 1.8; }
+
+.note { font-size: 11.5px; color: var(--ink-faint); font-weight: 500; }
+
+.term-link {
+  color: var(--cat-color);
+  text-decoration: none;
+  border-bottom: 1px dotted color-mix(in srgb, var(--cat-color) 55%, transparent);
+  font-weight: 700;
+}
+
+.meta { font-size: 11px; color: var(--ink-faint); }
+.meta a { color: var(--cat-color); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--cat-color) 40%, transparent); font-weight: 700; }
+
+.closing {
+  margin: 6px 0 0; padding: 16px 18px;
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 12px; font-size: 13px; color: var(--ink-soft); text-align: center;
+}
+.closing .label {
+  display: block; font-family: "Zen Old Mincho", serif; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.2em; color: var(--cat-color); margin-bottom: 8px;
+}
+.colophon { margin: 14px 0 8px; font-size: 10.5px; color: var(--ink-faint); line-height: 1.9; text-align: center; }
+
+@media (max-width: 420px) {
+  .topbar { padding: 16px 14px 0; }
+  .panel { padding: 16px 14px 48px; }
+  .title-row h1 { font-size: 38px; }
+  .mascot { height: 40px; }
+}
+</style>
+</head><body>
+
+
+<div class="app" id="app">
+
+  <div class="topbar">
+    <div class="title-row">
+      <div class="title-line">
+        <img class="mascot" src="mascot.jpg" alt="オオサンショウウオのマスコット">
+        <h1>Yoshi's News</h1>
+      </div>
+      <span class="date">2026年11月27日（金）・第85号</span>
+    </div>
+    <div class="tabs" id="tabs">
+      <button class="tab" id="tab-top" style="--tab-color:var(--c-top)" onclick="goTo(0)"><span class="dot"></span>トップ</button>
+      <button class="tab" id="tab-social" style="--tab-color:var(--c-social)" onclick="goTo(1)"><span class="dot"></span>社会</button>
+      <button class="tab" id="tab-polecon" style="--tab-color:var(--c-polecon)" onclick="goTo(2)"><span class="dot"></span>政治/経済</button>
+      <button class="tab" id="tab-scitech" style="--tab-color:var(--c-scitech)" onclick="goTo(3)"><span class="dot"></span>科学/テック</button>
+      <button class="tab" id="tab-business" style="--tab-color:var(--c-business)" onclick="goTo(4)"><span class="dot"></span>ビジネス</button>
+      <button class="tab" id="tab-startup" style="--tab-color:var(--c-startup)" onclick="goTo(5)"><span class="dot"></span>スタートアップ</button>
+      <button class="tab" id="tab-gadget" style="--tab-color:var(--c-gadget)" onclick="goTo(6)"><span class="dot"></span>ガジェット</button>
+      <button class="tab" id="tab-intl" style="--tab-color:var(--c-intl)" onclick="goTo(7)"><span class="dot"></span>海外</button>
+      <button class="tab" id="tab-sports" style="--tab-color:var(--c-sports)" onclick="goTo(8)"><span class="dot"></span>芸能/スポーツ</button>
+      <button class="tab" id="tab-koshien" style="--tab-color:var(--c-koshien)" onclick="goTo(9)"><span class="dot"></span>高校野球【埼玉】</button>
+    </div>
+  </div>
+
+  <div class="viewport" id="viewport">
+    <div class="track" id="track">
+
+      <section class="panel" id="panel-top" style="--cat-color:var(--c-top)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">トップニュース</h2></div>
+        <p class="panel-sub">今日いちばん知っておきたい2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 政治</span>
+          <h3>関文科相への問責決議案、野党8党派が提出——今日27日に参院で採決、僅差の攻防に</h3>
+          <p class="lead">立憲民主党など参議院の野党8党派は26日、関芳弘文部科学相に対する問責決議案を参院に共同で提出した。今日27日の本会議で採決される。東京新聞によると、与野党ともに参院で単独の過半数を持っておらず、決議案に賛成する野党だけでは過半数に届かない。日本保守党と無所属の議員の動きが勝敗を左右するとみられ、日本維新の会の中にも棄権する議員が出るとの見方がある。高市首相は関氏を擁護している。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、可決されるかどうかが、ごく少数の議員の判断にかかっているという点にある。問責決議<span class="note">（＝参議院が、大臣などの責任を問うために行う決議のこと。可決されても法的な拘束力はないが、政治的に大きな打撃となる）</span>が可決されれば、野党は関氏が出席する審議に応じなくなり、消費減税法案などの成立が危うくなる。否決されれば、政権は関氏を守り切った形になる。棄権<span class="note">（＝採決のときに、賛成にも反対にも票を投じないこと。可決に必要な票数の計算に影響する）</span>する議員がどれだけ出るかも、結果を左右する。今国会の会期末は12月12日に迫っている。</p>
+          </div>
+          <div class="meta"><a href="https://www.tokyo-np.co.jp/article/530820" target="_blank" rel="noopener">東京新聞</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 社会</span>
+          <h3>不登校の小中学生、過去最多の35万9424人——小学生で増加、親が仕事を辞めるケースも</h3>
+          <p class="lead">昨年度に学校を長く休んだ不登校の小中学生は35万9424人で、過去最多を更新した。NHKが26日に伝えた。特に小学生で増えている。子どもが学校に行けなくなったことで、付き添いなどのために親が仕事を辞めるケースも出ていると伝えられている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、不登校が「特別な子どもの問題」ではなく、どの家庭にも起こりうる身近な問題になっているという点にある。不登校<span class="note">（＝病気や経済的な理由以外で、年間30日以上学校を欠席している状態のこと。文部科学省が毎年調査している）</span>の子どもは、ここ10年以上増え続けている。背景には、無理に登校させず休ませることを認める考え方が広がったことや、学校での人間関係の悩みなどがあるとされる。学校以外で学べるフリースクール<span class="note">（＝不登校の子どもなどが通える、学校以外の学びや居場所のこと。民間の団体などが運営している）</span>などの選択肢を広げることや、子どもを支える親への支援も課題になっている。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261126de81766" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+
+        <div class="closing">
+          <span class="label serif">編集後記</span>
+          今日は関文科相への問責決議案が参院で採決され、ごく少数の議員の判断が結果を左右しそうです。不登校の子どもは過去最多となり、子どもだけでなく家族を支える仕組みも問われています。エヌビディアは東南アジア4か国へのAIサーバーの出荷停止を求めたと報じられました。今日27日はXiaomiの新しいスマホの発売日です。
+        </div>
+        <div class="colophon">AIが検索結果をもとに要約・編集しています。詳細は各記事の出典リンクでご確認ください。<br>毎朝5時発行・次号は明日<br><a href="archive.html" style="color:inherit">過去の紙面はこちら</a></div>
+      </section>
+
+      <section class="panel" id="panel-social" style="--cat-color:var(--c-social)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">社会</h2></div>
+        <p class="panel-sub">くらしに関わるニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>福岡の駐輪場で男性刺殺、逃走した男は商業施設に約20分間とどまっていたか</h3>
+          <p class="lead">福岡市の駐輪場で男性が刺されて死亡した事件で、NHKによると、逃げた男は近くの商業施設におよそ20分間とどまっていたとみられる。男の身元や動機、警察の捜査の詳しい状況については、本稿の時点で確認できていない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、事件の解決に、街中の防犯カメラの映像が大きな役割を果たしているという点にある。警察は、事件現場の周りや商業施設の防犯カメラ<span class="note">（＝犯罪を防いだり記録したりするために、店や道路などに設置されたカメラのこと）</span>の映像をつなぎ合わせて、逃げた人の足取りを追う。こうした捜査はリレー方式<span class="note">（＝複数のカメラの映像を順番にたどり、人の移動経路を割り出していく捜査の手法のこと）</span>とも呼ばれる。人通りの多い場所での事件は、近くにいた人に大きな不安を与えるため、全容の早い解明が求められる。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261126de81597" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>ロシアで拘束の北海道新聞記者、妻が手記「小さな娘に、大切なパパを返して」</h3>
+          <p class="lead">ロシアで拘束されている北海道新聞の記者（10月19日既報）の妻が手記を公表した。NHKが26日に全文を伝えた。妻は手記で「小さな娘に、大切なパパを返して」と訴え、早期の解放を求めている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、記者の拘束が、日本とロシアの関係が冷え込む中で起きた問題だという点にある。高市首相は先週、中国・深圳でプーチン大統領と約30分間意見を交わし、記者の早期解放を求めた（11月20日既報）。しかし、解放の見通しは立っていない。報道の自由<span class="note">（＝記者などが、政府などから妨げられずに取材し、報道できる権利のこと。民主主義を支える大切な原則とされる）</span>が十分に守られていない国では、外国の記者が拘束されることもある。家族の手記の公表は、事件への関心を高め、解放を後押ししたいという思いの表れだ。領事面会<span class="note">（＝外国で拘束された自国民に、大使館や領事館の職員が会い、健康状態などを確かめること）</span>などを通じた政府の働きかけも続いている。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261126de81607" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-polecon" style="--cat-color:var(--c-polecon)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">政治／経済</h2></div>
+        <p class="panel-sub">政治・経済の動き2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 政治</span>
+          <h3>問責決議のカギは日本保守党と無所属の計7議席——高市政権を揺さぶる「参院決戦」</h3>
+          <p class="lead">本日既報の関文科相への問責決議案について、東洋経済オンラインは、日本保守党と無所属の合わせて7議席の動きが結果を左右すると分析している。与党と、決議案に賛成する野党のどちらも、それだけでは過半数に届かないためだ。可決されれば、高市政権にとって大きな痛手となる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、参議院で与党が過半数を持っていない「少数与党」の状態だと、小さな会派の存在感が一気に大きくなるという点にある。少数与党<span class="note">（＝政権を担う与党が、議会で過半数の議席を持っていない状態のこと。法案を通すには、ほかの党の協力が必要になる）</span>の国会では、数議席の会派がキャスティングボート<span class="note">（＝賛否が拮抗しているときに、どちらに付くかで結果を決められる少数の勢力の票のこと）</span>を握ることになる。日本保守党や無所属の議員が賛成・反対・棄権のどれを選ぶかで、政権の行方が左右されることになる。</p>
+          </div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/articles/c3381664349bead1a55ce71ce2d907e0de4cd1ee" target="_blank" rel="noopener">東洋経済オンライン（Yahoo!ニュース）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 政治</span>
+          <h3>問責決議案の理由は「行政の中立・公正を損なう」——国会答弁の訂正も指摘</h3>
+          <p class="lead">立憲民主党によると、野党8党派が提出した問責決議案は、関氏が自らの政治資金集めに官僚を関わらせ、利害関係のある企業との接点を設けたことを「行政の中立性や公正性を損なう」と指摘している。また、関氏が国会の委員会で「パーティー7回のうち国家公務員を招いたのは2回」と答えた後、ほかにも3回あったと記者団に明らかにした経緯も問題視している。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、問題が「パーティーそのもの」から「国会での説明の食い違い」にまで広がったという点にある。行政の中立性<span class="note">（＝役所が、特定の政治家や企業に有利にならないよう、公平に仕事をすべきだという原則のこと）</span>が疑われると、政策への信頼が揺らぐ。また、国会答弁<span class="note">（＝国会の委員会や本会議で、大臣などが議員の質問に答えること）</span>が後から訂正されたことで、「国会を軽んじている」との批判が強まった。政治資金をめぐる問題は、ここ数年、政治への信頼を大きく損なってきた。</p>
+          </div>
+          <div class="meta"><a href="https://cdp-japan.jp/news/20261126_0789" target="_blank" rel="noopener">立憲民主党</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-scitech" style="--cat-color:var(--c-scitech)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">科学／テック</h2></div>
+        <p class="panel-sub">研究・技術のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>アディーレ法律事務所に不正アクセス、個人情報が漏えい</h3>
+          <p class="lead">大手の法律事務所、アディーレ法律事務所は、不正アクセスを受けて個人情報が漏えいしたと明らかにした。NHKが26日に伝えた。漏えいした情報の範囲や件数については、各報道で確認する必要がある。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、法律事務所が、依頼者の極めてプライベートな情報を預かる場所だという点にある。借金や離婚、交通事故など、法律の相談には、人に知られたくない事情が多く含まれる。そうした情報が漏れると、詐欺やゆすりに悪用されるおそれもある。今月は、マーケティングツール「KARTE」の問題（11月21日既報）など、不正アクセス<span class="note">（＝他人のIDやパスワードを使ったり、システムの弱点を突いたりして、権限なくコンピューターに入り込むこと）</span>による情報漏えいが相次いでいる。弁護士には守秘義務<span class="note">（＝仕事で知った依頼者の秘密を、他人に漏らしてはならないという法律上の義務のこと）</span>があり、情報の管理は特に重い責任を伴う。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261126de81692" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>ファーウェイに米陪審が有罪評決、営業秘密の窃取の共謀など——「技術覇権」争いの象徴に</h3>
+          <p class="lead">中国の通信機器大手ファーウェイ（華為技術）について、米ニューヨークの連邦地裁の陪審は24日、問われた12の罪のうち10の罪で有罪と判断した。CNET Japanなどによると、有罪となったのは、営業秘密を盗む共謀、銀行詐欺、通信詐欺、米国のイランへの制裁に違反した罪などだ。組織犯罪を取り締まる法律に違反する共謀と、司法妨害の共謀については無罪とされた。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、この裁判が、米中の「技術をめぐる争い」の象徴とされてきたという点にある。米国は、ファーウェイが米国企業の技術を不正に手に入れ、中国政府とも近いとして、長年警戒してきた。営業秘密<span class="note">（＝企業が秘密として管理している技術やノウハウ、顧客情報などのこと。盗まれると企業の競争力が大きく損なわれる）</span>の窃取は、技術開発の競争の公正さを損なう行為とされる。陪審<span class="note">（＝米国の裁判で、一般の市民から選ばれ、有罪か無罪かを判断する人たちのこと）</span>の判断は、米中の技術の対立が法廷にも及んでいることを示している。</p>
+          </div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/articles/24d7c3b5c1e8f870f27977f3b41fbe979dc3d26e" target="_blank" rel="noopener">CNET Japan（Yahoo!ニュース）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-business" style="--cat-color:var(--c-business)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ビジネス</h2></div>
+        <p class="panel-sub">企業・産業のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>エヌビディア、東南アジア4か国へのAIサーバー出荷停止を取引先に要請と報道</h3>
+          <p class="lead">米半導体大手エヌビディアが、取引先に対し、シンガポール、マレーシア、タイ、インドネシアの東南アジア4か国向けのAIサーバーの出荷を止めるよう求めたと、英紙フィナンシャル・タイムズ（FT）が25日に報じた。日本経済新聞によると、同社のAI半導体を載せたサーバーを手がける米スーパー・マイクロ・コンピューターや米デルなどが対象となる。中国への迂回輸出の対策を強める狙いとみられる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、米国が先週強めた輸出規制（11月18日既報）が、東南アジアのデータセンターを通じて中国企業がAIの計算能力を使う「抜け道」をふさぐ狙いだったという点にある。迂回輸出<span class="note">（＝輸出が規制されている国に、別の国を経由して製品を届けること）</span>を防ぐため、規制は東南アジアの4か国なども対象にした。エヌビディアの今回の要請は、その規制に合わせた動きとみられる。AIサーバー<span class="note">（＝AIの学習や処理のために、高性能な半導体を多数載せた大型のコンピューターのこと）</span>の出荷が止まれば、東南アジアで建設が進むデータセンターの計画にも影響が出る可能性がある。この報道を受けて、26日の東京市場では半導体株の上昇が鈍った。</p>
+          </div>
+          <div class="meta"><a href="https://www.nikkei.com/article/DGXZQOGN265WG0W6A121C2000000/" target="_blank" rel="noopener">日本経済新聞</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>日経平均487円高、キオクシアが12%高——一時1200円超上げるも、エヌビディア報道で失速</h3>
+          <p class="lead">26日の東京株式市場で日経平均株価は、前日より487円54銭（0.86%）高い5万7499円16銭で取引を終えた。投資情報サイトの世界一やさしい投資の学校によると、半導体メモリー大手のキオクシアが12%上がるなど、午前には一時1200円を超えて値上がりした。しかし、午後はエヌビディアの出荷停止の報道（本日既報）を受けて上げ幅を縮めた。米国の市場は26日、祝日の感謝祭で休みだった。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、米国が休みの日は、東京市場の値動きの「手がかり」が少なくなるという点にある。感謝祭<span class="note">（＝毎年11月の第4木曜日に祝われる米国の祝日のこと。家族で七面鳥を食べるのが伝統で、株式市場も休みになる）</span>の翌日の金曜日は、ブラックフライデーと呼ばれる大規模な安売りの日で、米国の消費の勢いを測る目安になる。キオクシア<span class="note">（＝データを保存するフラッシュメモリーを作る日本の半導体メーカーのこと。旧東芝メモリ）</span>のようなメモリーの会社は、AI向けのデータセンターの需要の恩恵を受けるとして注目されている。今週は日経平均が1日で1000円以上上下する日が続いている。</p>
+          </div>
+          <div class="meta"><a href="https://tbladvisory.com/20261126nk/" target="_blank" rel="noopener">世界一やさしい投資の学校</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-startup" style="--cat-color:var(--c-startup)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">スタートアップ</h2></div>
+        <p class="panel-sub">資金調達・注目トピック2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>船の自動運転を手がけるエイトノット、シリーズAで約1.7億円を追加調達——累計は約14.3億円に</h3>
+          <p class="lead">船の自律航行の技術を開発するエイトノットは、シリーズAの2回目の締め切り（セカンドクローズ）で、第三者割当増資と金融機関からの融資により合わせて約1.7億円を調達した。とれまがニュースによると、これでシリーズAの調達総額は約6.2億円、創業からの累計の調達額は約14.3億円となった。同社は、今ある船に後から取り付けられる自律航行のシステム「AI CAPTAIN」を開発している。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、船の世界でも、人手不足を背景に「自動運転」への期待が高まっているという点にある。日本の海運や離島を結ぶ船の業界では、船員の高齢化と人手不足が深刻になっている。自律航行<span class="note">（＝人が操縦しなくても、船がセンサーやAIで周りの状況を判断し、自動で航行すること）</span>の技術が実用化されれば、少ない人数で安全に船を動かせるようになる。新しい船を造らなくても、今ある船に後から付けられる仕組みは、導入の費用を抑えられるのが強みだ。セカンドクローズ<span class="note">（＝一つの資金調達ラウンドを複数回に分けて締め切るときの、2回目の締め切りのこと）</span>で資金を上乗せし、量産や海外展開を進める。</p>
+          </div>
+          <div class="meta"><a href="https://news.toremaga.com/economy/bussiness/4373169.html" target="_blank" rel="noopener">とれまがニュース</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>Forbes JAPAN「2027年注目の日本発スタートアップ100選」——個人事業主向けのお金アプリ「タックスナップ」も選出</h3>
+          <p class="lead">経済誌Forbes JAPANが、「2027年注目の日本発スタートアップ100選」を発表した。PR TIMESに掲載された発表によると、個人事業主のためのお金の管理アプリ「タックスナップ」も選ばれた。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、こうした「注目企業リスト」が、スタートアップにとって知名度を上げる大きなきっかけになるという点にある。経済誌に選ばれると、投資家や取引先、採用したい人材の目にとまりやすくなる。個人事業主<span class="note">（＝会社をつくらず、個人として事業を行っている人のこと。フリーランスとも呼ばれ、自分で確定申告をする必要がある）</span>は、帳簿づけや確定申告<span class="note">（＝1年間の所得と税金を計算して、税務署に申告する手続きのこと）</span>の手間が大きな負担になっている。こうした手続きをアプリで簡単にするサービスは、働き方の多様化とともに需要が伸びている分野だ。</p>
+          </div>
+          <div class="meta"><a href="https://prtimes.jp/main/html/rd/p/000000062.000122860.html" target="_blank" rel="noopener">PR TIMES</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-gadget" style="--cat-color:var(--c-gadget)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ガジェット</h2></div>
+        <p class="panel-sub">新製品2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>背面にも画面の「Xiaomi 18 Pro」シリーズ、今日27日発売——Proは20万9800円から</h3>
+          <p class="lead">シャオミの上位スマートフォン「Xiaomi 18 Pro」と「Xiaomi 18 Pro Max」が、今日27日に日本で発売される（11月19日既報）。4Gamer.netによると、6.4インチの画面のProと、6.9インチのPro Maxの2機種で、どちらも本体の背面に小さな画面を備える。メーカーが想定する価格は、Proが20万9800円から、Pro Maxが23万9800円から（いずれも税込）。おサイフケータイに対応するのはPro Maxだけで、2027年1月3日までに買うと値引きがある。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、背面ディスプレイ<span class="note">（＝スマホの裏側に付いた小さな画面のこと。背面の高性能なカメラで自撮りをするときに構図を確かめたり、通知を見たりできる）</span>が、日本で発売されるスマホとしては珍しい機能だという点にある。ふつう、自撮りには画質が劣る前面のカメラを使うが、背面に画面があれば、高画質な背面カメラで自分を撮りながら確認できる。おサイフケータイ<span class="note">（＝スマホをかざすだけで電車に乗ったり支払いをしたりできる機能のこと。FeliCaという技術を使う）</span>の有無は、日本で海外製のスマホを選ぶときの大きなポイントになる。</p>
+          </div>
+          <div class="meta"><a href="https://www.4gamer.net/games/990/G999019/20261117044/" target="_blank" rel="noopener">4Gamer.net</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>今週はイヤホンの発売も相次ぐ——26日にMADOO「Typ435」、27日にAnkerの完全ワイヤレス</h3>
+          <p class="lead">新製品の情報をまとめるDigimagaによると、今週はイヤホンの新製品の発売も相次いでいる。26日にはMADOOの有線イヤホン「Typ435」が発売され、27日にはAnkerの完全ワイヤレスイヤホンが発売される予定だ。25日にはAlphaThetaのDJヘッドホンも発売された（11月26日既報）。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、イヤホンの世界では「有線」と「完全ワイヤレス」の両方に、それぞれ根強い人気があるという点にある。完全ワイヤレスイヤホン<span class="note">（＝左右のイヤホンをつなぐコードがなく、それぞれが独立して無線で音を受け取るイヤホンのこと）</span>は手軽さが魅力で、今では主流になっている。一方、有線イヤホン<span class="note">（＝ケーブルでスマホや音楽プレーヤーにつなぐイヤホンのこと。電池がいらず、音の遅れも少ない）</span>は、音質にこだわる人や、ゲームで音のずれを嫌う人に支持されている。年末商戦を前に、各社が新製品をそろえる時期だ。</p>
+          </div>
+          <div class="meta"><a href="https://digimaga.jp/this-week-releases/" target="_blank" rel="noopener">Digimaga</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-intl" style="--cat-color:var(--c-intl)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">海外</h2></div>
+        <p class="panel-sub">国際ニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>ファーウェイ有罪評決、イランとの取引で銀行を欺く——量刑は2027年9月、同社は控訴へ</h3>
+          <p class="lead">本日既報のファーウェイに対する有罪評決について、東京新聞によると、陪審は、同社がイランとの取引をめぐって銀行を欺いたと認めた。財経新聞によると、量刑の言い渡しは2027年9月14日に予定されている。ファーウェイは控訴する方針で、有罪とされた罪について「法的な根拠を欠いている」と主張している。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、この事件が、カナダでのファーウェイ幹部の拘束をきっかけに、米中とカナダの外交問題にまで発展した経緯を持つという点にある。2018年、ファーウェイの創業者の娘で幹部の孟晩舟氏が、米国の要請を受けてカナダで逮捕され、中国が強く反発した。銀行詐欺<span class="note">（＝うその説明をして銀行をだまし、お金の取引をさせる犯罪のこと）</span>とされたのは、米国の制裁<span class="note">（＝米国が、イランなど特定の国との取引を禁じたり制限したりしている措置のこと）</span>に違反するイランとの取引を、銀行に隠していたとされる点だ。米中の対立が続く中、判決は両国関係にも影を落としそうだ。</p>
+          </div>
+          <div class="meta"><a href="https://www.tokyo-np.co.jp/article/530536" target="_blank" rel="noopener">東京新聞</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>エヌビディアの出荷停止、東南アジアの「AIの計算基盤」づくりに波紋——中国の迂回ルートを遮断</h3>
+          <p class="lead">本日既報のエヌビディアによる東南アジア4か国向けのAIサーバーの出荷停止の要請について、中国経済新聞は、米商務省の新しい輸出規制で、東南アジアのデータセンターを通じて中国企業が計算能力を使う場合に許可が必要になったことへの対応とみられると伝えた。停止が一時的な措置かどうかは、明らかになっていない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、東南アジアが近年、「AIの計算基盤の集積地」として急成長してきたという点にある。電気代や土地代が比較的安く、中国にも近いことから、多くのデータセンター<span class="note">（＝大量のコンピューターを集めて、計算やデータの保存を行う専用の施設のこと）</span>が建てられてきた。その一部が、中国企業がAIを開発するための計算能力<span class="note">（＝コンピューターがどれだけ多くの計算をこなせるかという処理の力のこと）</span>を借りる場になっていたと米国はみている。出荷停止が長引けば、シンガポールやマレーシアなどのデータセンター事業の計画が見直しを迫られる可能性がある。</p>
+          </div>
+          <div class="meta"><a href="https://chinanews.jp/archives/38439" target="_blank" rel="noopener">中国経済新聞</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-sports" style="--cat-color:var(--c-sports)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">芸能／スポーツ</h2></div>
+        <p class="panel-sub">厳選2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>FA解禁から2週間、10人中7人の去就が未定——広島の主力3人の動向に注目</h3>
+          <p class="lead">プロ野球のフリーエージェント（FA）の交渉が11月11日に解禁されてから2週間がたち、FAを宣言した10人のうち7人の去就がまだ決まっていない。Full-Countによると、広島から宣言した森下暢仁投手、床田寛樹投手、坂倉将吾捕手の主力3人の動きが注目されている。これまでに、宗佑磨選手がオリックスからDeNAへ、戸柱恭孝選手がDeNAからオリックスへ、上林誠知選手が中日から阪神への移籍を決めている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、1つの球団から主力が3人も同時にFA宣言するのは珍しく、広島の来季の戦力を大きく左右するという点にある。FA<span class="note">（＝フリーエージェントのこと。一定の年数、一軍で活躍した選手が得られる権利で、ほかの球団とも自由に契約の交渉ができる）</span>宣言をしても、元の球団に残る「宣言残留」を選ぶ選手もいる。Full-Countは、12月1日を一つの区切りとして挙げている。契約更改<span class="note">（＝シーズン後に、球団と選手が翌年の年俸などの契約を結び直すこと）</span>の時期とも重なり、球界の冬の動きが本格化している。</p>
+          </div>
+          <div class="meta"><a href="https://full-count.jp/2026/11/26/post2050559/" target="_blank" rel="noopener">Full-Count</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>西武・髙橋光成、メジャー球団との交渉期限は12月1日——埼玉のエースの去就に注目</h3>
+          <p class="lead">プロ野球の移籍情報をまとめるサイトによると、西武の髙橋光成投手は、米大リーグの球団との交渉の期限を12月1日に設定したと報じられている。メジャー移籍が実現するかどうかが注目されている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、日本の選手が大リーグに移るには、FAのほかにポスティングという仕組みがあるという点にある。ポスティングシステム<span class="note">（＝FA権を持たない日本の選手が、所属球団の同意を得て大リーグの球団と交渉できるようにする制度のこと。交渉できる期間が決められている）</span>では、決められた期間内に契約がまとまらなければ、元の球団に残ることになる。西武で長くエースとして活躍してきた髙橋投手が抜ければ、チームにとって大きな痛手になる。大リーグ<span class="note">（＝メジャーリーグのこと。米国とカナダの30球団で構成される世界最高峰のプロ野球リーグ）</span>への挑戦が実るかどうか、埼玉のファンの関心も高い。</p>
+          </div>
+          <div class="meta"><a href="https://nozanoza-note.com/npb_fa/" target="_blank" rel="noopener">nozanoza-note</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-koshien" style="--cat-color:var(--c-koshien)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">高校野球【埼玉】</h2></div>
+        <p class="panel-sub">神宮大会のその後ほか2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>神宮制覇の横浜・村田監督、今夏亡くなった恩師・渡辺元智氏に届けた「秋の日本一」</h3>
+          <p class="lead">明治神宮大会で2年ぶり3度目の優勝を果たした横浜（11月26日既報）の村田浩明監督の優勝後の思いを、日刊スポーツが伝えた。村田監督の恩師で、横浜を長く率いた渡辺元智元監督は今年の夏に亡くなっており、村田監督は夏の甲子園の期間中に「甲子園の空から絶対に見守ってくれてる」と語っていた。関東大会の1回戦で埼玉の西武台を破った横浜（10月19日既報）は、秋の全国の頂点に立った。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、横浜が、渡辺元智氏のもとで全国屈指の強豪校となり、その教え子である村田監督が伝統を受け継いでいるという点にある。渡辺氏は監督として甲子園で春夏通算5度の優勝を果たした名将として知られる。秋の新チームで全国の頂点に立ったことで、来春のセンバツでも注目を集めそうだ。神宮枠<span class="note">（＝明治神宮大会の高校の部で優勝した学校が属する地区に、翌春の選抜高校野球大会の出場枠を1つ追加する仕組みのこと）</span>を関東地区にもたらしたことも大きい。埼玉の学校にとって、横浜は関東で勝ち上がるうえで避けて通れない「壁」であり、来年に向けてどう力を伸ばすかが問われる。</p>
+          </div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/articles/0dafb1821be304f80456ee1581553c5ee2f7b53e" target="_blank" rel="noopener">日刊スポーツ（Yahoo!ニュース）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>来週12月1日から高校野球は「試合のない冬」へ——埼玉の球児は春に向けた力づくり</h3>
+          <p class="lead">高校野球は来週12月1日から、ほかの学校との試合ができない期間に入る。埼玉では11月21・22日に4地区選抜チームの交流戦が予定されていた（11月13日既報）。来年3月上旬までは、各校で体力づくりや技術の練習に打ち込む時期となる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、冬の練習が、春と夏の大会の結果を大きく左右するという点にある。アウト・オブ・シーズン<span class="note">（＝日本高野連の決まりで、毎年12月1日から翌年3月上旬まで、ほかの学校との練習試合や大会を行わない期間のこと。選手の体を休ませ、基礎を鍛え直す目的がある）</span>の間、多くの学校は走り込みや筋力トレーニング<span class="note">（＝重りや自分の体重などを使って、筋肉を鍛える運動のこと。打球の速さや球速の向上につながる）</span>で体を大きくすることに力を入れる。秋の県大会や関東大会で見えた課題をどう克服するかが、来年の飛躍のカギとなる。</p>
+          </div>
+          <div class="meta"><a href="https://www.hb-nippon.com/articles/18896" target="_blank" rel="noopener">高校野球ドットコム</a></div>
+        </article>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var cats = ['top','social','polecon','scitech','business','startup','gadget','intl','sports','koshien'];
+  var idx = 0;
+  var track = document.getElementById('track');
+  var viewport = document.getElementById('viewport');
+  var vw = viewport.clientWidth;
+
+  function setActive(i){
+    cats.forEach(function(c, j){
+      document.getElementById('tab-' + c).classList.toggle('active', j === i);
+    });
+    var activeTab = document.getElementById('tab-' + cats[i]);
+    if (activeTab && activeTab.scrollIntoView) activeTab.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+  }
+
+  function settle(i, animate){
+    idx = Math.max(0, Math.min(cats.length - 1, i));
+    track.style.transition = animate ? 'transform .32s cubic-bezier(.22,.61,.36,1)' : 'none';
+    track.style.transform = 'translateX(' + (-idx * vw) + 'px)';
+    setActive(idx);
+  }
+
+  window.goTo = function(i){ settle(i, true); };
+
+  window.addEventListener('resize', function(){
+    vw = viewport.clientWidth;
+    settle(idx, false);
+  });
+
+  var dragging = false, decided = null, sx = 0, sy = 0, dx = 0;
+  viewport.addEventListener('touchstart', function(e){
+    dragging = true; decided = null;
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY; dx = 0;
+    track.style.transition = 'none';
+  }, { passive: true });
+
+  viewport.addEventListener('touchmove', function(e){
+    if (!dragging) return;
+    var cx = e.touches[0].clientX, cy = e.touches[0].clientY;
+    var mdx = cx - sx, mdy = cy - sy;
+    if (decided === null) {
+      if (Math.abs(mdx) > 8 || Math.abs(mdy) > 8) {
+        decided = Math.abs(mdx) > Math.abs(mdy) ? 'x' : 'y';
+      }
+    }
+    if (decided === 'x') {
+      e.preventDefault();
+      dx = mdx;
+      var atStart = idx === 0 && dx > 0;
+      var atEnd = idx === cats.length - 1 && dx < 0;
+      var eased = (atStart || atEnd) ? dx * 0.35 : dx;
+      track.style.transform = 'translateX(' + (-idx * vw + eased) + 'px)';
+    }
+  }, { passive: false });
+
+  viewport.addEventListener('touchend', function(){
+    if (!dragging) return;
+    dragging = false;
+    if (decided === 'x') {
+      var threshold = vw * 0.18;
+      if (dx <= -threshold) settle(idx + 1, true);
+      else if (dx >= threshold) settle(idx - 1, true);
+      else settle(idx, true);
+    }
+    decided = null; dx = 0;
+  });
+
+  settle(0, false);
+})();
+</script>
+
+</body></html>
