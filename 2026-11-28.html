@@ -1,0 +1,610 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yoshi's News</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Zen+Old+Mincho:wght@600;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap');
+
+:root {
+  --bg: #ffffff;
+  --panel-bg: #ffffff;
+  --card: #ffffff;
+  --card-line: #eef0f3;
+  --ink: #1a1c20;
+  --ink-soft: #5b6068;
+  --ink-faint: #9aa0a8;
+  --shell: #f4f5f7;
+
+  --c-top: #ef3355;
+  --c-social: #00b3a4;
+  --c-polecon: #6d5bf0;
+  --c-scitech: #ff8a1e;
+  --c-business: #0091ff;
+  --c-sports: #26c281;
+  --c-startup: #ff4fa3;
+  --c-koshien: #c8860d;
+  --c-intl: #4b3f8f;
+  --c-gadget: #00bcd4;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101114;
+    --panel-bg: #101114;
+    --card: #1a1c20;
+    --card-line: #2a2c31;
+    --ink: #f1f2f4;
+    --ink-soft: #b7bcc4;
+    --ink-faint: #767c86;
+    --shell: #1a1c20;
+    --c-top: #ff6b85;
+    --c-social: #3fd8c9;
+    --c-polecon: #9c8fff;
+    --c-scitech: #ffab5c;
+    --c-business: #4db2ff;
+    --c-sports: #5be0a6;
+    --c-startup: #ff85c2;
+    --c-koshien: #e8b34c;
+    --c-intl: #a89cf0;
+    --c-gadget: #4dd8ea;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101114;
+  --panel-bg: #101114;
+  --card: #1a1c20;
+  --card-line: #2a2c31;
+  --ink: #f1f2f4;
+  --ink-soft: #b7bcc4;
+  --ink-faint: #767c86;
+  --shell: #1a1c20;
+  --c-top: #ff6b85;
+  --c-social: #3fd8c9;
+  --c-polecon: #9c8fff;
+  --c-scitech: #ffab5c;
+  --c-business: #4db2ff;
+  --c-sports: #5be0a6;
+  --c-startup: #ff85c2;
+  --c-koshien: #e8b34c;
+  --c-intl: #a89cf0;
+  --c-gadget: #4dd8ea;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--shell);
+  color: var(--ink);
+  font-family: "Zen Kaku Gothic New", -apple-system, "Hiragino Kaku Gothic ProN", sans-serif;
+  line-height: 1.7;
+  overscroll-behavior-y: none;
+}
+.serif { font-family: "Zen Old Mincho", "Hiragino Mincho ProN", serif; }
+
+.app {
+  max-width: 680px;
+  margin: 0 auto;
+  background: var(--bg);
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ---- Header ---- */
+.topbar { padding: 20px 20px 0; flex-shrink: 0; }
+.title-line { display: flex; align-items: center; gap: 8px; }
+.mascot { height: 50px; width: auto; flex-shrink: 0; border-radius: 8px; }
+.title-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  margin-bottom: 14px;
+}
+.title-row h1 {
+  font-family: "Baloo 2", "Zen Kaku Gothic New", sans-serif;
+  font-size: 48px; font-weight: 800; margin: 0; letter-spacing: 0.01em; line-height: 1;
+  -webkit-text-stroke: 2.4px #2b2013;
+  filter: drop-shadow(2px 3px 0 rgba(30,22,12,0.18));
+  background-image:
+    radial-gradient(circle at 22% 30%, #211709 0 7px, transparent 8px),
+    radial-gradient(circle at 68% 65%, #3a2b16 0 9px, transparent 10px),
+    radial-gradient(circle at 45% 88%, #241a0c 0 5px, transparent 6px),
+    radial-gradient(circle at 85% 20%, #2e2211 0 6px, transparent 7px),
+    linear-gradient(135deg, #b8a06e, #967c4c 50%, #6f5a35);
+  background-size: 30px 30px, 41px 41px, 23px 23px, 35px 35px, 100% 100%;
+  background-repeat: repeat, repeat, repeat, repeat, no-repeat;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.title-row .date { font-size: 11.5px; color: var(--ink-faint); white-space: nowrap; font-weight: 500; margin-top: 2px; }
+
+.tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px 3px; }
+.tab {
+  appearance: none; border: none; background: none;
+  font-family: inherit; font-size: 10.5px; font-weight: 700;
+  color: var(--ink-faint);
+  padding: 7px 4px 9px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+  cursor: pointer;
+  border-radius: 10px 10px 0 0;
+  transition: color .2s ease, background .2s ease;
+}
+.tab .dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  margin-right: 5px; background: currentColor; opacity: 0.45; vertical-align: middle;
+}
+.tab::after {
+  content: ""; position: absolute; left: 10px; right: 10px; bottom: 0;
+  height: 3px; border-radius: 3px 3px 0 0; background: transparent; transition: background .2s ease;
+}
+.tab.active { color: var(--tab-color); background: color-mix(in srgb, var(--tab-color) 10%, transparent); }
+.tab.active .dot { opacity: 1; }
+.tab.active::after { background: var(--tab-color); }
+
+/* ---- Swipe viewport ---- */
+.viewport { flex: 1; overflow: hidden; position: relative; touch-action: pan-y; }
+.track {
+  display: flex;
+  height: 100%;
+  width: 1000%;
+  transition: transform .32s cubic-bezier(.22,.61,.36,1);
+  will-change: transform;
+}
+.panel {
+  width: 10%;
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 20px 56px;
+}
+
+.panel-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.panel-head .chip { width: 8px; height: 26px; border-radius: 4px; background: var(--cat-color); flex-shrink: 0; }
+.panel-head h2 { font-size: 20px; font-weight: 700; margin: 0; letter-spacing: 0.02em; color: var(--cat-color); }
+.panel-sub { font-size: 12px; color: var(--ink-faint); margin: 0 0 18px 18px; }
+
+.story {
+  background: var(--card);
+  border: 1px solid var(--card-line);
+  border-left: 4px solid var(--cat-color);
+  border-radius: 12px;
+  padding: 18px 18px 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(20,20,30,0.05);
+}
+.story .kicker {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: "Zen Old Mincho", serif; font-size: 11.5px; font-weight: 700;
+  color: var(--cat-color); margin-bottom: 9px;
+}
+.story h3 { font-size: 16px; font-weight: 700; line-height: 1.55; margin: 0 0 10px; }
+.story .lead { font-size: 14px; color: var(--ink); margin: 0 0 14px; line-height: 1.85; }
+
+.context {
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 10px;
+  padding: 13px 15px;
+  margin: 0 0 12px;
+}
+.context-label {
+  display: block; font-size: 10.5px; font-weight: 700;
+  color: var(--cat-color); letter-spacing: 0.04em; margin-bottom: 6px;
+}
+.context p { font-size: 13px; color: var(--ink-soft); margin: 0; line-height: 1.8; }
+
+.note { font-size: 11.5px; color: var(--ink-faint); font-weight: 500; }
+
+.term-link {
+  color: var(--cat-color);
+  text-decoration: none;
+  border-bottom: 1px dotted color-mix(in srgb, var(--cat-color) 55%, transparent);
+  font-weight: 700;
+}
+
+.meta { font-size: 11px; color: var(--ink-faint); }
+.meta a { color: var(--cat-color); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--cat-color) 40%, transparent); font-weight: 700; }
+
+.closing {
+  margin: 6px 0 0; padding: 16px 18px;
+  background: color-mix(in srgb, var(--cat-color) 9%, var(--bg));
+  border-radius: 12px; font-size: 13px; color: var(--ink-soft); text-align: center;
+}
+.closing .label {
+  display: block; font-family: "Zen Old Mincho", serif; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.2em; color: var(--cat-color); margin-bottom: 8px;
+}
+.colophon { margin: 14px 0 8px; font-size: 10.5px; color: var(--ink-faint); line-height: 1.9; text-align: center; }
+
+@media (max-width: 420px) {
+  .topbar { padding: 16px 14px 0; }
+  .panel { padding: 16px 14px 48px; }
+  .title-row h1 { font-size: 38px; }
+  .mascot { height: 40px; }
+}
+</style>
+</head><body>
+
+
+<div class="app" id="app">
+
+  <div class="topbar">
+    <div class="title-row">
+      <div class="title-line">
+        <img class="mascot" src="mascot.jpg" alt="オオサンショウウオのマスコット">
+        <h1>Yoshi's News</h1>
+      </div>
+      <span class="date">2026年11月28日（土）・第86号</span>
+    </div>
+    <div class="tabs" id="tabs">
+      <button class="tab" id="tab-top" style="--tab-color:var(--c-top)" onclick="goTo(0)"><span class="dot"></span>トップ</button>
+      <button class="tab" id="tab-social" style="--tab-color:var(--c-social)" onclick="goTo(1)"><span class="dot"></span>社会</button>
+      <button class="tab" id="tab-polecon" style="--tab-color:var(--c-polecon)" onclick="goTo(2)"><span class="dot"></span>政治/経済</button>
+      <button class="tab" id="tab-scitech" style="--tab-color:var(--c-scitech)" onclick="goTo(3)"><span class="dot"></span>科学/テック</button>
+      <button class="tab" id="tab-business" style="--tab-color:var(--c-business)" onclick="goTo(4)"><span class="dot"></span>ビジネス</button>
+      <button class="tab" id="tab-startup" style="--tab-color:var(--c-startup)" onclick="goTo(5)"><span class="dot"></span>スタートアップ</button>
+      <button class="tab" id="tab-gadget" style="--tab-color:var(--c-gadget)" onclick="goTo(6)"><span class="dot"></span>ガジェット</button>
+      <button class="tab" id="tab-intl" style="--tab-color:var(--c-intl)" onclick="goTo(7)"><span class="dot"></span>海外</button>
+      <button class="tab" id="tab-sports" style="--tab-color:var(--c-sports)" onclick="goTo(8)"><span class="dot"></span>芸能/スポーツ</button>
+      <button class="tab" id="tab-koshien" style="--tab-color:var(--c-koshien)" onclick="goTo(9)"><span class="dot"></span>高校野球【埼玉】</button>
+    </div>
+  </div>
+
+  <div class="viewport" id="viewport">
+    <div class="track" id="track">
+
+      <section class="panel" id="panel-top" style="--cat-color:var(--c-top)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">トップニュース</h2></div>
+        <p class="panel-sub">今日いちばん知っておきたい2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 政治</span>
+          <h3>関文科相への問責決議案、参院で否決——賛成120・反対124のわずか4票差</h3>
+          <p class="lead">参議院は27日の本会議で、野党8党派が提出した関芳弘文部科学相への問責決議案（11月27日既報）を、賛成120票、反対124票で否決した。東京新聞（共同通信）によると、自民党や日本維新の会などが反対した。高市首相は関氏を続投させる構えで、関氏は「ご迷惑、ご心配をおかけし深くおわびを申し上げる」と述べた。野党は僅差だった結果を踏まえ、関氏の責任の追及を続ける方針だ。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、否決されたとはいえ、わずか4票差という結果が、政権の足元の不安定さを示しているという点にある。参議院では与党が単独で過半数を持っておらず、日本保守党や無所属の議員の動きが結果を左右するとみられていた（11月27日既報）。問責決議<span class="note">（＝参議院が、大臣などの責任を問うために行う決議のこと。可決されても法的な拘束力はないが、政治的に大きな打撃となる）</span>が可決されていれば、野党は関氏が出る審議に応じなくなり、国会が止まるおそれがあった。否決によって、政権は当面の危機を乗り切った形だ。ただ、関氏が政治資金パーティー<span class="note">（＝政治家が、参加者から会費を集めて開く会合のこと。政治活動の資金を集める手段の一つ）</span>に官僚を呼んでいた問題そのものは解決しておらず、12月12日の会期末まで火種として残る。</p>
+          </div>
+          <div class="meta"><a href="https://www.tokyo-np.co.jp/article/531066" target="_blank" rel="noopener">東京新聞（共同通信）</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 社会</span>
+          <h3>学校のいじめ79万件超で過去最多——「性的いじめ」を初めて調査、8000件以上</h3>
+          <p class="lead">文部科学省の調査で、全国の小中高校と特別支援学校が昨年度に把握したいじめは79万1784件となり、過去最多を更新した。NHKによると、今回初めて調べた「性的いじめ」は8000件以上にのぼった。リシード（教育業界ニュース）によると、暴力行為も13万4895件、心身や財産に重大な被害が出た疑いのある「重大事態」も1798件で、いずれも過去最多だった。同じ調査では、不登校の小中学生も35万9424人で過去最多となっている（11月27日既報）。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、件数が増えたことが、必ずしも「いじめそのものが急に増えた」ことだけを意味しないという点にある。文部科学省は、ささいなことでもいじめとして積極的に認知<span class="note">（＝学校が、いじめがあったと把握して記録すること。見逃さずに早く対応するため、国は積極的に認知するよう求めている）</span>し、安易に「解決した」と扱わない学校が増えたことも背景にあるとみている。一方で、SNS上のいじめのように、大人の目に触れにくく、解決を確かめにくいケースが増えていることも課題だ。重大事態<span class="note">（＝いじめによって、子どもの命や心身、財産に重大な被害が出た疑いがある場合や、長く学校を休まざるを得なくなった疑いがある場合のこと。法律で、学校などに調査が義務づけられている）</span>が過去最多となったことは、深刻なケースへの対応が追いついていないことを示している。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261127de82139" target="_blank" rel="noopener">NHK</a> ／ <a href="https://reseed.resemom.jp/article/2026/11/27/14648.html" target="_blank" rel="noopener">リシード</a></div>
+        </article>
+
+        <div class="closing">
+          <span class="label serif">編集後記</span>
+          関文科相への問責決議案は、わずか4票差で否決されました。学校のいじめは過去最多となり、不登校とあわせて子どもを取り巻く環境の厳しさが浮かび上がっています。株価は1200円を超えて上がり、5万8000円台を回復しました。埼玉からは山村学園が、センバツの21世紀枠の候補として推薦されました。
+        </div>
+        <div class="colophon">AIが検索結果をもとに要約・編集しています。詳細は各記事の出典リンクでご確認ください。<br>毎朝5時発行・次号は明日<br><a href="archive.html" style="color:inherit">過去の紙面はこちら</a></div>
+      </section>
+
+      <section class="panel" id="panel-social" style="--cat-color:var(--c-social)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">社会</h2></div>
+        <p class="panel-sub">くらしに関わるニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>千葉・八街の住宅に覆面の3人組、現金約2400万円と腕時計を奪って逃走</h3>
+          <p class="lead">27日午前2時ごろ、千葉県八街市の住宅に、覆面のようなものをした3人組が押し入り、住人の50代の男性の手足を縛って、現金およそ2400万円と腕時計などを奪って逃げた。NHKなどによると、男性は手に擦り傷などの軽いけがをした。3人は中国語を話していたといい、警察は強盗致傷などの疑いで行方を追っている。どのように家に入ったのかは、本稿の時点で分かっていない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、ここ数年、首都圏などで、多額の現金がある家を狙った強盗事件が相次いでいるという点にある。中には、SNSで「高収入」などとうたって実行役を集める「闇バイト<span class="note">（＝SNSなどで、簡単に高い報酬が得られるとうたって、犯罪の実行役を募集する違法な仕事のこと）</span>」が使われたケースもあった。今回の事件の背景は、本稿の時点で明らかになっていない。強盗致傷<span class="note">（＝強盗をする際に、相手にけがをさせる犯罪のこと。強盗よりも重い刑が科される）</span>は重大な犯罪で、警察は周辺の防犯カメラの映像などを調べているとみられる。自宅に多額の現金を置かないことや、戸締まりの徹底が、身を守る基本となる。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261127de82761" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>「ぶつかってスマホが壊れた」と言いがかり、女性から16万円だまし取った疑い——同様の被害との関連調べる</h3>
+          <p class="lead">東京・渋谷で、女性に「ぶつかってスマホが壊れた」と言いがかりをつけ、現金16万円をだまし取ったとして、43歳の容疑者が詐欺の疑いで逮捕された。NHKが27日に伝えた。警察は、同じような被害がほかにもないか、関連を調べている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、これが「当たり屋」と呼ばれる古くからある手口の一つで、誰でも被害に遭いうるという点にある。当たり屋<span class="note">（＝わざと人や車にぶつかり、けがや物の破損を口実にお金を要求する人のこと）</span>は、相手を驚かせ、その場で冷静に考える時間を与えずにお金を払わせようとする。こうしたトラブルに巻き込まれたときは、その場でお金を渡さず、警察を呼ぶことが大切だ。本当に壊れたのであれば、警察の立ち会いのもとで連絡先を交換し、修理の見積もりなどを確認してから対応すればよい。示談<span class="note">（＝裁判などをせずに、当事者どうしの話し合いでトラブルを解決すること）</span>をその場で急がせる相手には、特に注意が必要だ。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261127de82737" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-polecon" style="--cat-color:var(--c-polecon)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">政治／経済</h2></div>
+        <p class="panel-sub">政治・経済の動き2件</p>
+
+        <article class="story">
+          <span class="kicker">01 ／ 政治</span>
+          <h3>問責否決で参院の審議が再開へ——消費減税関連法案の行方に焦点</h3>
+          <p class="lead">本日既報の問責決議案の否決を受け、参議院では、止まっていた消費税の減税に関連する法案の審議が再開される見通しとなった。日本経済新聞が伝えた。法案を今の国会で成立させるには、12月12日の会期末までに参院で可決する必要がある。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、国会では、大臣の進退をめぐる対立が、ほかの法案の審議を止めてしまうことがあるという点にある。野党は、問責決議案を提出している間、関氏が関わる審議に応じない姿勢をとっていた。否決によって、審議を止める理由がなくなった形だ。消費税<span class="note">（＝商品やサービスを買うときにかかる税金のこと。今の税率は10％で、食料品などは8％の軽減税率が適用されている）</span>の減税は、物価の高騰に苦しむ家計を支える狙いがある。一方で、減税によって減る税収をどう穴埋めするかという財源<span class="note">（＝政策を実行するために必要なお金の出どころのこと）</span>の問題も議論になっている。会期末まで残り約2週間で、日程は窮屈だ。</p>
+          </div>
+          <div class="meta"><a href="https://www.nikkei.com/article/DGXZQOUA270RH0X21C26A1000000/" target="_blank" rel="noopener">日本経済新聞</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02 ／ 政治</span>
+          <h3>高市首相「法的な問題はない」——関文科相を続投させる考え、野党は追及継続の構え</h3>
+          <p class="lead">高市首相は、問責決議案が否決された関芳弘文部科学相について「法的な問題はない」として、続投させる考えを示した。東京新聞が伝えた。一方、野党は、4票差という僅差の結果を踏まえ、引き続き国会で関氏の責任を追及する構えだ。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「法律に違反していないこと」と「政治的な責任がないこと」は、必ずしも同じではないという点にある。関氏は、衆議院の内規<span class="note">（＝組織の中だけで決めているルールのこと。法律とは違い、破っても罰則がない場合が多い）</span>に反して議員会館で政治資金パーティーを開き、そこに官僚を呼んでいたと指摘されている。首相は法律上の問題がないことを理由に続投させるが、野党は、行政の公正さを疑わせる行為だとして、説明責任<span class="note">（＝自分の行動について、なぜそうしたのかを国民にきちんと説明する責任のこと）</span>を果たすよう求めている。少数与党の国会では、こうした問題が長引くと、政権の運営に影響しかねない。</p>
+          </div>
+          <div class="meta"><a href="https://www.tokyo-np.co.jp/article/531191" target="_blank" rel="noopener">東京新聞</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-scitech" style="--cat-color:var(--c-scitech)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">科学／テック</h2></div>
+        <p class="panel-sub">研究・技術のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>エタノールで植物が塩害に強くなる仕組みを解明——近畿大などの研究グループ</h3>
+          <p class="lead">近畿大学の藤原すみれ氏や台湾の国立成功大学の高木優氏らの研究グループは、植物にエタノールを与えると塩害に強くなる仕組みの一端を明らかにしたと発表した。発表によると、エタノールで処理すると、TRBと呼ばれるたんぱく質などが働き、植物の体にたまる有害な「活性酸素」を取り除く遺伝子が活発になることが分かった。新しい塩害対策の開発につながることが期待されている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、塩害が、世界の食料生産にとって大きな脅威になっているという点にある。塩害<span class="note">（＝土の中に塩分がたまり、植物がうまく育たなくなる被害のこと。農地に水を引く際に、水に含まれる塩分が少しずつ蓄積することなどで起きる）</span>は、乾燥した地域の農地を中心に広がっている。植物は塩分のストレスを受けると、体の中に活性酸素<span class="note">（＝ほかの物質と反応しやすい性質を持つ酸素のこと。増えすぎると細胞を傷つける）</span>がたまり、弱ってしまう。エタノールが植物の耐塩性を高めること自体は、2017年に理化学研究所が発表していた。今回の研究は、なぜそうなるのかという遺伝子レベルの仕組みに迫ったものだ。エタノールは安価で手に入りやすく、仕組みが分かれば、より効果的な使い方を考えられるようになる。</p>
+          </div>
+          <div class="meta"><a href="https://www.atpress.ne.jp/news/1986632" target="_blank" rel="noopener">@Press</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>“偽の社長”のメールで送金指示、長崎・諫早の会社が1000万円の被害</h3>
+          <p class="lead">長崎県諫早市の会社が、社長になりすました人物からの送金の指示を受け、およそ1000万円をだまし取られる被害に遭った。NHKが27日に伝えた。従業員が、社長を名乗る偽の連絡を本物だと信じて振り込んだとみられる。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、これが「ビジネスメール詐欺」と呼ばれる、企業を狙った手口の一つだという点にある。ビジネスメール詐欺<span class="note">（＝取引先や自社の経営者になりすましたメールを送り、偽の口座にお金を振り込ませる詐欺のこと。BEC（Business Email Compromise）とも呼ばれる）</span>は、「急ぎで」「内密に」などと言って、確認する時間を与えないのが特徴だ。最近は、メッセージアプリのグループに誘い込んだり、AIで本人そっくりの声を作ったりする手口も報告されている。被害を防ぐには、お金を動かす指示を受けたら、電話など別の方法で本人に確かめることが大切だ。社内で送金の承認を複数人で行う仕組み<span class="note">（＝1人の判断だけで送金できないように、上司など別の人の確認を必ず挟むルールのこと）</span>を作ることも、有効な対策とされる。</p>
+          </div>
+          <div class="meta"><a href="https://news.web.nhk/newsweb/na/nd-20261127de82766" target="_blank" rel="noopener">NHK</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-business" style="--cat-color:var(--c-business)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ビジネス</h2></div>
+        <p class="panel-sub">企業・産業のニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>エヌビディアの東南アジア出荷停止、期間は「未定」——デルなどは顧客に納品できないと通知へ</h3>
+          <p class="lead">米半導体大手エヌビディアが、シンガポール、マレーシア、タイ、インドネシアの4か国向けにAIサーバーの出荷を止めるよう取引先に求めた問題（11月27日既報）で、米テック系メディアのTechCrunchは、米紙ウォール・ストリート・ジャーナルの報道として、停止の期間は決まっていないと伝えた。エヌビディアは、現地の取引先が米国の輸出の規則を守っているかどうかを確かめている間、出荷を止めるという。これにより、米デルや米スーパー・マイクロ・コンピューターは、顧客に注文の品を届けられないと伝えることになる。エヌビディアは、停止の期間や範囲についてコメントを控えた。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、この停止が、米商務省が19日に導入した新しい規則（11月18日既報）への対応だという点にある。規則では、東南アジアの4か国などに高性能なAI半導体を送るには、米国の許可が必要になった。中国企業が、こうした国を経由して半導体を手に入れたり、現地のデータセンターの計算能力を使ったりする「抜け道」をふさぐ狙いがある。輸出管理<span class="note">（＝軍事や安全保障に関わる製品や技術が、懸念のある国に渡らないよう、国が輸出を規制する仕組みのこと）</span>に違反すると、企業は巨額の罰金を科されるおそれがあるため、エヌビディアは慎重になっているとみられる。サーバーメーカー<span class="note">（＝半導体などの部品を組み合わせて、データセンター向けの大型コンピューターを作る会社のこと）</span>にとっては、売り上げの減少につながりかねない。</p>
+          </div>
+          <div class="meta"><a href="https://techcrunch.com/2026/11/26/nvidia-hits-pause-on-chip-shipments-to-southeast-asia/" target="_blank" rel="noopener">TechCrunch</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>日経平均1211円高、5万8711円——AI・半導体株に買い戻し、5万8000円台を回復</h3>
+          <p class="lead">27日の東京株式市場で日経平均株価は大幅に続伸し、前日より1211円95銭（2.11％）高い5万8711円11銭で取引を終えた。財経新聞などによると、AIや半導体に関連する株に見直しの買いが入り、5万8000円台を回復した。前日の米国市場は感謝祭の祝日で休みだった。26日も487円高で終えていた（11月27日既報）。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、このところ株価が、AIへの投資の先行きをめぐる期待と不安の間で、大きく上下しているという点にある。エヌビディアをめぐる問題などで売られた半導体株が、「下がりすぎた」とみた投資家に買い戻された形だ。見直し買い<span class="note">（＝値下がりした株について、本来の価値より安くなりすぎたと判断した投資家が、改めて買うこと）</span>が広がると、株価は短い期間で大きく戻ることがある。株探は、来週以降の相場について、米国の金利を決めるFOMC<span class="note">（＝米連邦公開市場委員会のこと。米国の中央銀行にあたるFRBが、政策金利を決める会合）</span>をめぐる動きが注目されるとの見方を示している。</p>
+          </div>
+          <div class="meta"><a href="https://www.zaikei.co.jp/article/20261127/879481.html" target="_blank" rel="noopener">財経新聞</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-startup" style="--cat-color:var(--c-startup)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">スタートアップ</h2></div>
+        <p class="panel-sub">資金調達・注目トピック2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>超急速充電の技術を持つnaturenix、シリーズAで総額4.8億円を調達——東南アジアで電動バイクの電池事業</h3>
+          <p class="lead">電池を長持ちさせる技術や、超急速充電の技術を開発するnaturenixは、シリーズAで総額4.8億円の資金調達を完了したと、11月20日にPR TIMESで発表した。調達した資金で、急速充電の技術の量産化や、東南アジアでの電池のサービス事業を進める計画だ。同社は東芝と組み、タイ・バンコクで電動バイクタクシー向けに電池を貸し出す実証を行ってきた。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、東南アジアでは、バイクが庶民の主な移動手段で、その電動化が大きな市場になりつつあるという点にある。ガソリン価格の高騰もあり、電動バイクへの関心が高まっている。ただ、電動バイクは充電に時間がかかることが普及の壁になっている。BaaS<span class="note">（＝Battery as a Serviceの略。電池を買うのではなく、月額料金などで借りて使うサービスのこと。電池が劣化しても交換してもらえる）</span>のような仕組みは、利用者の初期費用を抑えられる。超急速充電<span class="note">（＝ふつうよりはるかに短い時間で電池を充電できる技術のこと。同社は小型の乗り物を最短3分で充電できるとしている）</span>が実用化されれば、充電待ちの不便さを大きく減らせる。</p>
+          </div>
+          <div class="meta"><a href="https://prtimes.jp/main/html/rd/p/000000005.000180201.html" target="_blank" rel="noopener">PR TIMES</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>ウェルビーイング分野のピッチコンテスト「WE AT Challenge 2026」、27日に東京で最終選考——各部門の優勝に1000万円</h3>
+          <p class="lead">心と体と社会の健やかさ（ウェルビーイング）に関わる事業を競うピッチコンテスト「WE AT Challenge 2026」の最終選考会が、27日に東京のTokyo Innovation Baseで開かれた。主催する一般社団法人WE ATによると、4つの部門からそれぞれ5組、計20組がファイナリストとして登壇し、各部門の優勝者には1000万円の賞金が贈られる。優勝者は、本稿の時点で確認できていない。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、ピッチコンテストが、スタートアップにとって資金や知名度を得る大切な場になっているという点にある。ピッチ<span class="note">（＝起業家が、投資家や審査員の前で、自分の事業の魅力を短い時間で説明するプレゼンテーションのこと）</span>で評価されれば、賞金だけでなく、投資家や大企業とのつながりも生まれやすい。ウェルビーイング<span class="note">（＝体の健康だけでなく、心や社会とのつながりも含めて、満たされた良い状態にあること）</span>は、働き方や地域社会、環境問題などにも関わる幅広い分野で、新しいビジネスのテーマとして注目されている。今回の賞金は株式と引き換えではない資金で、創業間もない会社にとっては特にありがたい。</p>
+          </div>
+          <div class="meta"><a href="https://we-at.tokyo/news/973" target="_blank" rel="noopener">WE AT</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-gadget" style="--cat-color:var(--c-gadget)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">ガジェット</h2></div>
+        <p class="panel-sub">新製品・セール2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>ALLDOCUBEの11インチタブレット「iPlay 80H」が発売——通常2万4999円、セールで1万7999円に</h3>
+          <p class="lead">中国のタブレットメーカーALLDOCUBEは、11インチのAndroidタブレット「iPlay 80H」を27日に発売した。PR TIMESでの発表によると、最新のAndroid 17を搭載し、メモリーは6GB、保存容量は128GB、電池の容量は8800mAh。通常価格は本体のみで2万4999円だが、Amazonのブラックフライデーに合わせたセールでは、クーポンを使うと1万7999円で買える。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、「動画を見る」「ネットを調べる」といった使い方なら、2万円前後の手ごろなタブレットで十分な人が増えているという点にある。iPadなどの高性能なタブレットは5万円以上することが多いが、ALLDOCUBEのような中国メーカーは、性能を絞って価格を抑えた製品で人気を集めている。SIMフリー<span class="note">（＝特定の携帯電話会社に縛られず、どの会社のSIMカードでも使える状態のこと。このタブレットは外出先でもモバイル通信ができる）</span>であることも特徴だ。mAh<span class="note">（＝ミリアンペアアワーのこと。電池にためられる電気の量を表す単位で、数字が大きいほど長く使える）</span>の数字が大きい電池は、長時間の動画視聴にも向いている。</p>
+          </div>
+          <div class="meta"><a href="https://prtimes.jp/main/html/rd/p/000000033.000141131.html" target="_blank" rel="noopener">PR TIMES</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>Amazonブラックフライデーの先行セールが27日に開始——モニターアームやイヤホンなどが対象</h3>
+          <p class="lead">Amazonの年末の大型セール「ブラックフライデー」の先行セールが27日に始まった。ガジェット情報サイトのgori.meによると、エルゴトロンのモニターアームや、Shokzのイヤホンなどがセールの対象になっている。ガジェット通信によると、26日には報道向けのイベントで、セール対象の商品の追加情報が発表された。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、ブラックフライデーが、日本でも年末の買い物の大きなきっかけとして定着してきたという点にある。ブラックフライデー<span class="note">（＝米国で感謝祭の翌日の金曜日に行われる大規模な安売りのこと。お店が黒字になる日という意味があるとされ、日本でも広がっている）</span>は、もともと米国の習慣だ。セール中は、普段より大幅に安くなる商品がある一方、値引き前の価格を高く見せる表示もあるため、注意が必要だ。過去の価格の推移を確かめてから買うと失敗しにくい。先行セール<span class="note">（＝本番のセールが始まる前に、一足早く始まる割引販売のこと）</span>の時点で、目当ての商品が安くなっていることもある。</p>
+          </div>
+          <div class="meta"><a href="https://gori.me/amazon/amazon-sale/172959" target="_blank" rel="noopener">gori.me</a> ／ <a href="https://getnews.jp/archives/3758176" target="_blank" rel="noopener">ガジェット通信</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-intl" style="--cat-color:var(--c-intl)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">海外</h2></div>
+        <p class="panel-sub">国際ニュース2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>トランプ氏、プーチン氏に欧州への「あらゆる軍事侵略」の停止を求めたと発表</h3>
+          <p class="lead">トランプ米大統領は26日、交流サイト（SNS）への投稿で、先週中国でロシアのプーチン大統領と会談した際に、欧州でのあらゆる軍事侵略をやめるよう求めたと明らかにした。AFP通信によると、トランプ氏は、ロシアとウクライナの間で早く合意がまとまることへの期待も示した。トランプ氏はこの投稿の直前に、NATOのルッテ事務総長との共同声明を再び投稿していた。AFPは、先週プーチン氏を「友人」と呼んでいたトランプ氏が、再び姿勢を変えたと伝えている。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、欧州で、ロシアの脅威がウクライナの外にまで広がりつつあるという危機感が高まっている点にある。今月20日には、ロシアの巡航ミサイルなどがNATO加盟国のポーランドに落下し、ルッテ事務総長が「深刻な領空侵犯だ」と非難していた（11月23日既報）。NATO<span class="note">（＝北大西洋条約機構のこと。米国や欧州の国々などでつくる軍事同盟で、加盟国が攻撃されたら全体で守ることを約束している）</span>の中心である米国の大統領の発言は、ロシアや欧州の国々に大きな影響を与える。トランプ氏は先週、中国・深圳で開かれた米中ロの首脳会談（11月20日既報）に出席していた。和平の仲介<span class="note">（＝争っている当事者の間に入って、話し合いによる解決を手助けすること）</span>を目指すトランプ氏が、ロシアに厳しい姿勢を続けるかどうかが注目される。</p>
+          </div>
+          <div class="meta"><a href="https://www.afpbb.com/articles/-/3664389" target="_blank" rel="noopener">AFPBB News</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>中国、オーストラリアとフィリピンの防衛協定を非難——「南シナ海の緊張を高める」</h3>
+          <p class="lead">中国は、オーストラリアとフィリピンが結んだ防衛協定について、南シナ海の緊張を高めるものだと非難した。AFP通信によると、この協定は、オーストラリアのアルバニージー首相が今月、フィリピンの首都マニラを訪れた際に結ばれた。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、南シナ海で、中国と周りの国々の対立が長く続いているという点にある。中国は南シナ海のほぼ全域で権利を主張し、人工島を造って軍事拠点にしてきた。フィリピンは、自国の近くの海域で中国の船と衝突を繰り返している。そのためフィリピンは、米国や日本、オーストラリアなどとの防衛協力を強めている。防衛協定<span class="note">（＝国どうしが、軍隊の共同訓練や相互の訪問などで協力することを取り決めた約束のこと）</span>は、中国から見れば、自国を取り囲む動きに映る。南シナ海は、日本に向かう石油などを運ぶ船が通るシーレーン<span class="note">（＝国の経済や安全にとって重要な、海上の輸送ルートのこと）</span>でもあり、日本にとっても無関係ではない。</p>
+          </div>
+          <div class="meta"><a href="https://www.afpbb.com/articles/-/3664456" target="_blank" rel="noopener">AFPBB News</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-sports" style="--cat-color:var(--c-sports)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">芸能／スポーツ</h2></div>
+        <p class="panel-sub">厳選2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>FA宣言の広島・森下と坂倉、近く去就を決断へ——床田は「熟考」続く</h3>
+          <p class="lead">プロ野球・広島からフリーエージェント（FA）の権利を使った森下暢仁投手と坂倉将吾捕手が27日、自らの去就について近く決断する考えを示した。中国新聞が伝えた。一方、床田寛樹投手は、まだ広島との交渉を残しているとして、結論を急がない姿勢を示している。FAを宣言した10人のうち7人の去就が決まっていない状況が続いている（11月27日既報）。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、広島の主力3人が同時にFA宣言し、その結論が来季のチームの形を大きく左右するという点にある。FA<span class="note">（＝フリーエージェントのこと。一定の年数、一軍で活躍した選手が得られる権利で、ほかの球団とも自由に契約の交渉ができる）</span>宣言をした選手には、他球団に移るか、元の球団に残る「宣言残留」を選ぶかの道がある。他球団の主力を獲得した球団は、元の球団に補償<span class="note">（＝FAで選手を失った球団に対して、獲得した球団がお金や選手を渡すこと。選手の年俸の順位によって決まる）</span>をする必要がある場合もあり、移籍は両球団の戦力に影響する。3人の決断の行方に、ファンの注目が集まっている。</p>
+          </div>
+          <div class="meta"><a href="https://chugoku-np.co.jp/articles/-/931208" target="_blank" rel="noopener">中国新聞</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>プロ野球の契約更改が本格化——中日・広島が27日に更改選手を発表</h3>
+          <p class="lead">プロ野球の各球団で、来季の年俸などを決める契約更改が本格化している。ベースボールチャンネルによると、中日と広島は27日、契約更改を行った選手をそれぞれ正式に発表した。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、契約更改が、選手にとって1年間の働きが評価される「通知表」のような場だという点にある。契約更改<span class="note">（＝シーズン後に、球団と選手が翌年の年俸などの契約を結び直すこと）</span>では、成績に応じて年俸が上がったり下がったりする。選手が提示額に納得できなければ、サインを保留して交渉を続けることもある。年俸の減額には上限があり、野球協約<span class="note">（＝日本のプロ野球のルールを定めた取り決めのこと。選手の契約や移籍の条件などが決められている）</span>で、選手の同意なしに大きく下げることはできない仕組みになっている。FAの交渉と並んで、冬の球界の風物詩だ。</p>
+          </div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/articles/8671faacf771047271802d6c5122d2debc0bdf47" target="_blank" rel="noopener">ベースボールチャンネル（Yahoo!ニュース）</a></div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-koshien" style="--cat-color:var(--c-koshien)">
+        <div class="panel-head"><span class="chip"></span><h2 class="serif">高校野球【埼玉】</h2></div>
+        <p class="panel-sub">センバツ21世紀枠2件</p>
+
+        <article class="story">
+          <span class="kicker">01</span>
+          <h3>センバツ21世紀枠、埼玉県の推薦校は山村学園に——秋の県大会で準優勝</h3>
+          <p class="lead">来春の第99回選抜高校野球大会の「21世紀枠」について、各都府県の高野連が推薦する学校が出そろい、埼玉県からは山村学園が推薦された。高校野球ドットコムが伝えた。山村学園は秋の埼玉県大会で準優勝し（10月7日既報）、関東大会では1回戦で山梨学院に1－2で敗れていた（10月18日既報）。推薦校は全部で46校となった。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、21世紀枠が、秋の大会の成績だけでは選ばれにくい学校にも、甲子園への道を開く仕組みだという点にある。21世紀枠<span class="note">（＝選抜高校野球大会で、成績に加えて、困難な環境の克服や地域への貢献、文武両道などを評価して選ばれる特別な出場枠のこと。毎年2校が選ばれる）</span>では、まず各都道府県が1校ずつを推薦し、次に全国9つの地区ごとに1校ずつに絞られる。埼玉の推薦校は例年11月ごろに発表されるとしていたが（11月11日既報）、今回、山村学園に決まった。山村学園は2022年秋にも埼玉の推薦校に選ばれたことがある。</p>
+          </div>
+          <div class="meta"><a href="https://www.hb-nippon.com/articles/19386" target="_blank" rel="noopener">高校野球ドットコム</a></div>
+        </article>
+
+        <article class="story">
+          <span class="kicker">02</span>
+          <h3>関東の21世紀枠推薦校は私立が多数——12月11日に地区候補、1月29日に出場2校が決定</h3>
+          <p class="lead">高校野球ドットコムによると、今回の21世紀枠の推薦校を地区別にみると、関東地区では私立の学校が多い。茨城の江戸川学園取手、栃木の足利大付、埼玉の山村学園、千葉の東京学館、東京の日大二などが推薦された。今後は12月11日に全国9地区の候補校が選ばれ、来年1月29日の選考委員会で、出場する2校が決まる予定だ。</p>
+          <div class="context">
+            <span class="context-label">📎 知っておきたい背景</span>
+            <p>この記事を理解するポイントは、21世紀枠に選ばれるまでには、何段階もの選考があり、道のりは長いという点にある。山村学園がセンバツに出るには、まず12月11日に関東・東京地区の候補校に選ばれる必要がある。21世紀枠は、もともと公立校や部員が少ない学校などが選ばれることが多かったが、近年は私立校の推薦も増えている。一般選考<span class="note">（＝21世紀枠とは別に、秋の地区大会の成績などをもとに出場校を選ぶ通常の選考のこと）</span>では、関東地区は横浜の神宮大会優勝で枠が1つ増えている（11月26日既報）。選考委員会<span class="note">（＝センバツの出場校を決めるために、主催者の毎日新聞社と日本高野連が開く会議のこと）</span>の結果は、来年1月末に明らかになる。</p>
+          </div>
+          <div class="meta"><a href="https://news.yahoo.co.jp/articles/a87a6b305deb71e8ea1db50cb2d547f55269b2c4" target="_blank" rel="noopener">高校野球ドットコム（Yahoo!ニュース）</a></div>
+        </article>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var cats = ['top','social','polecon','scitech','business','startup','gadget','intl','sports','koshien'];
+  var idx = 0;
+  var track = document.getElementById('track');
+  var viewport = document.getElementById('viewport');
+  var vw = viewport.clientWidth;
+
+  function setActive(i){
+    cats.forEach(function(c, j){
+      document.getElementById('tab-' + c).classList.toggle('active', j === i);
+    });
+    var activeTab = document.getElementById('tab-' + cats[i]);
+    if (activeTab && activeTab.scrollIntoView) activeTab.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+  }
+
+  function settle(i, animate){
+    idx = Math.max(0, Math.min(cats.length - 1, i));
+    track.style.transition = animate ? 'transform .32s cubic-bezier(.22,.61,.36,1)' : 'none';
+    track.style.transform = 'translateX(' + (-idx * vw) + 'px)';
+    setActive(idx);
+  }
+
+  window.goTo = function(i){ settle(i, true); };
+
+  window.addEventListener('resize', function(){
+    vw = viewport.clientWidth;
+    settle(idx, false);
+  });
+
+  var dragging = false, decided = null, sx = 0, sy = 0, dx = 0;
+  viewport.addEventListener('touchstart', function(e){
+    dragging = true; decided = null;
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY; dx = 0;
+    track.style.transition = 'none';
+  }, { passive: true });
+
+  viewport.addEventListener('touchmove', function(e){
+    if (!dragging) return;
+    var cx = e.touches[0].clientX, cy = e.touches[0].clientY;
+    var mdx = cx - sx, mdy = cy - sy;
+    if (decided === null) {
+      if (Math.abs(mdx) > 8 || Math.abs(mdy) > 8) {
+        decided = Math.abs(mdx) > Math.abs(mdy) ? 'x' : 'y';
+      }
+    }
+    if (decided === 'x') {
+      e.preventDefault();
+      dx = mdx;
+      var atStart = idx === 0 && dx > 0;
+      var atEnd = idx === cats.length - 1 && dx < 0;
+      var eased = (atStart || atEnd) ? dx * 0.35 : dx;
+      track.style.transform = 'translateX(' + (-idx * vw + eased) + 'px)';
+    }
+  }, { passive: false });
+
+  viewport.addEventListener('touchend', function(){
+    if (!dragging) return;
+    dragging = false;
+    if (decided === 'x') {
+      var threshold = vw * 0.18;
+      if (dx <= -threshold) settle(idx + 1, true);
+      else if (dx >= threshold) settle(idx - 1, true);
+      else settle(idx, true);
+    }
+    decided = null; dx = 0;
+  });
+
+  settle(0, false);
+})();
+</script>
+
+</body></html>
